@@ -1,0 +1,174 @@
+{
+	"css": {
+		"source": {
+			"files": ["helpers.css", "styles.css"],
+			"names": {
+				"main": "app.css"
+			}
+		},
+		"vendor": {
+			"files": [
+				"css/vendor/sanitize.css/sanitize.css",
+				"css/vendor/font-awesome/font-awesome.css"
+			],
+			"names": {
+				"main": "vendor.css"
+			}
+		}
+	},
+	"dist": {
+		"source": {
+			"files": {
+				"css": [
+					"css/bundles/**/*.*",
+					"css/vendor/**/*.*",
+					"css/assets/**/*.*"
+				],
+				"favicon": ["favicon/**/*.{jpg,png,ico,svg}"],
+				"img": ["img/**/*.*"],
+				"js": [
+					"js/bundles/**/*.*",
+					"js/vendor/**/*.*",
+					"js/assets/**/*.*"
+				],
+				"root": [
+					"apple-touch-icon.png",
+					"browserconfig.xml",
+					"site.webmanifest",
+					"favicon.ico",
+					"index.html"
+				]
+			}
+		},
+		"tasks": [
+			"dist:clean",
+			"dist:favicon",
+			"dist:css",
+			"dist:img",
+			"dist:js",
+			"dist:root"
+		]
+	},
+	"gulp": {
+		"favicon": {
+			"tasks": [
+				"favicon:generate",
+				"favicon:root",
+				"favicon:delete",
+				"favicon:html",
+				"html"
+			]
+		},
+		"source": {
+			"files": [
+				"requires.js",
+				"paths.js",
+				"preconfig.js",
+				"configs.js",
+				"vars.js",
+				"injection.js",
+				"functions.js",
+				"tasks/init.js",
+				"tasks/dist.js",
+				"tasks/lib.js",
+				"tasks/watch.js",
+				"tasks/html.js",
+				"tasks/css.js",
+				"tasks/js.js",
+				"tasks/img.js",
+				"helpers/modernizr.js",
+				"helpers/tohtml.js",
+				"helpers/open.js",
+				"helpers/instance.js",
+				"helpers/pretty.js",
+				"helpers/module.js",
+				"helpers/eol.js",
+				"helpers/stats.js",
+				"helpers/files.js",
+				"helpers/dependency.js",
+				"helpers/make.js",
+				"helpers/lintjs.js",
+				"helpers/lintcss.js",
+				"helpers/linthtml.js",
+				"helpers/settings.js",
+				"helpers/indent.js",
+				"helpers/help.js",
+				"helpers/favicon.js"
+			],
+			"names": {
+				"default": "gulpfile.js",
+				"main": "gulpfile-main.js",
+				"setup": "gulpfile-setup.js"
+			}
+		},
+		"tasks": ["css", "js", "img", "html"],
+		"watch": {
+			"config": ["./configs/**/*.json"],
+			"css": {
+				"app": ["css{/source,/assets}/**/*.css"],
+				"vendor": ["css{/vendor,/assets}/**/*.css"]
+			},
+			"html": ["html/source/**/*.html"],
+			"img": ["img/**/*.*"],
+			"js": {
+				"app": ["js{/source,/assets}/**/*.js"],
+				"vendor": ["js{/vendor,/assets}/**/*.js"]
+			}
+		}
+	},
+	"html": {
+		"source": {
+			"files": [
+				"index/open.ig.html",
+				"head/open.ig.html",
+				"head/meta.html",
+				"head/favicon.html",
+				"head/css.html",
+				"head/js.html",
+				"head/close.ig.html",
+				"body/open.ig.html",
+				"body/content.html",
+				"body/js.html",
+				"body/close.ig.html",
+				"index/close.ig.html"
+			],
+			"names": {
+				"main": "index.html"
+			}
+		}
+	},
+	"img": {
+		"source": {
+			"files": ["**/*.*"]
+		}
+	},
+	"js": {
+		"source": {
+			"files": [
+				"app/iife/open.ig.js",
+				"app/__init.js",
+				"modules/libs.js",
+				"modules/globals.js",
+				"modules/utils.js",
+				"modules/$$.js",
+				"modules/core.js",
+				"modules/events.js",
+				"modules/main.js",
+				"app/iife/close.ig.js"
+			],
+			"names": {
+				"main": "app.js"
+			}
+		},
+		"vendor": {
+			"files": [
+				"js/vendor/modernizr/modernizr.js",
+				"js/vendor/jquery/jquery.js",
+				"js/vendor/fastclick/fastclick.js"
+			],
+			"names": {
+				"main": "vendor.js"
+			}
+		}
+	}
+}
