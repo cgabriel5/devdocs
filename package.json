@@ -1,6 +1,9 @@
 {
 	"author":
 		"Carlos Gabriel <carlosgabriel71@yahoo.com> (https://github.com/cgabriel5)",
+	"bin": {
+		"devdocs": "./index.js"
+	},
 	"bugs": {
 		"url": "https://github.com/cgabriel5/devdocs/issues"
 	},
@@ -78,6 +81,7 @@
 		"json-file": "^0.1.0",
 		"linenumber": "^1.0.0",
 		"marked": "^0.3.17",
+		"minimist": "^1.2.0",
 		"mkdirp": "^0.5.1",
 		"node-cleanup": "^2.1.2",
 		"node-cmd": "^3.0.0",
@@ -102,6 +106,7 @@
 	},
 	"homepage": "https://github.com/cgabriel5/devdocs#readme",
 	"license": "MIT",
+	"main": "index.js",
 	"name": "devdocs",
 	"private": true,
 	"repository": {
