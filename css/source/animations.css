@@ -1,0 +1,44 @@
+/*transition: height 500ms cubic-bezier(0.23, 1, 0.32, 1); height: 0; overflow-y: hidden; height: 138.96px*/
+
+@keyframes animate-fadein {
+	0% {
+		transform: translateY(-15px);
+		opacity: 0;
+	}
+
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.animate-fadein {
+	animation-name: animate-fadein;
+	animation-duration: 0.3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes highlight {
+	0% {
+		/*background: #ffe6b3;*/
+		background: #ffc758;
+	}
+
+	50% {
+		background: #ffffff;
+	}
+}
+
+/* [animation resources] */
+
+/* [source::api](http://www.w3schools.com/cssref/css3_pr_animation.asp)
+   [source](http://stackoverflow.com/questions/33835096/css-to-pan-background-image-back-and-forth)
+*/
+
+.highlight {
+	animation-name: highlight;
+	animation-duration: 3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}

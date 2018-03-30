@@ -1,1 +1,389 @@
 /* App styles here. */
+
+body {
+	margin: 0;
+	font-family: Source Sans Pro;
+	font-size: 16px;
+}
+
+.app {
+	display: flex;
+	flex-flow: row nowrap;
+	/*justify-content: flex-start;*//*align-items: stretch;*/
+	width: 1280px;
+	margin: auto;
+	min-height: calc(100vh);
+	height: auto;
+}
+
+.sidebar {
+	user-select: none;
+	touch-callout: none;
+	font-size: 16px;
+	/*width: 300px;*/
+	flex: 1 0 300px;
+	display: flex;
+	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
+	border-right: 1px solid #dddddd;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: space-between;
+}
+
+/* Make the sidebar fixed. */
+
+.sidebar {
+	position: fixed;
+	height: 100%;
+	overflow-y: auto;
+	width: 240px;
+}
+
+.markdown {
+	overflow: auto;
+	margin-left: 240px;
+	width: 100%;
+}
+
+.sidebar-show {
+	transform: translate3D(0, 0, 0) !important;
+}
+
+.menu {
+	margin-top: 50px;
+	width: 100%;
+}
+
+.menu ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/*.submenu {}*/
+
+/*.menu-item {}*/
+
+.menu-logo {
+	margin-bottom: 20px;
+}
+
+.menu-logo-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
+
+.menu-logo img {
+	max-width: 75%;
+}
+
+.menu-section-cont {
+	margin-left: 20px;
+	border-left: 1px solid #dddddd;
+}
+
+.l-1 {
+	font-weight: bold;
+	/* background: rgba(0, 0, 0, 0.03); */
+	padding: 10px 0 10px 20px;
+	/* border-radius: 5px; *//* border-bottom: 1px dashed #dddddd; *//*text-transform: capitalize;*/
+}
+
+.l-2 {
+	padding: 8px 25px 8px 20px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
+	font-weight: bold;
+}
+
+.l-3 {
+	padding: 6px 25px 6px 20px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
+	text-transform: capitalize;
+}
+
+.l-2:hover,
+.l-3:hover {
+	background: #f7f7f7;
+}
+
+ul.file-headers {
+	margin-left: 20px;
+	border-left: 1px solid #dddddd;
+}
+
+.headings-cont {
+	opacity: 0;
+	height: 0;
+	overflow: hidden;
+	transition: height 0.25s ease-out, opacity 0.4s ease-out;
+	backface-visibility: hidden;
+}
+
+/*
+.l-3:before {
+    content: '';
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+    height: 2px;
+    width: 12px;
+    background: #505d6b;
+    opacity: .3;
+} */
+
+.link,
+.link:visited {
+	/*color: #505d6b;*/
+	color: #333333;
+	text-decoration: none;
+	position: relative;
+}
+
+.active-page {
+	background-image: linear-gradient(to right, #ffffff, #fdfdfd, #fbfbfb, #f9f9f9, #f7f7f7);
+	/*border-right: 3px solid #6f42c1;*//* border-left: 3px solid #1267e8; *//* padding-bottom: 7px !important; */
+}
+
+.active-page .link {
+	color: #1267e8;
+	color: #0f91ee;
+	color: #2578f8;
+	font-weight: bold;
+}
+
+.logo-devdocs {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	padding: 20px 10px;
+	filter: grayscale(10);
+	opacity: 0.8;
+}
+
+.logo-devdocs img {
+	width: 18px;
+}
+
+.logo-devdocs-text {
+	margin-left: 5px;
+	font-weight: 600;
+}
+
+.btn {
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.btn-blue {
+	/*background: #699935;*//*background: #0f91ee;*/
+	background: #2578f8;
+	color: #ffffff;
+}
+
+.btn-blue:hover {
+	box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+}
+
+.btn-blue:active {
+	opacity: 0.7;
+}
+
+.btn-home {
+	padding: 12px 28px;
+	font-weight: bold;
+}
+
+.error-cont {
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+}
+
+.error-logo-cont {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 20px;
+	padding-top: 50px;
+}
+
+.error-logo {
+	filter: grayscale(1);
+}
+
+.error-msg-1 {
+	font-weight: bold;
+	color: #444444;
+	font-size: 24px;
+	padding-top: 20px;
+}
+
+.error-msg-2 {
+	color: #6d6d6d;
+	padding-top: 20px;
+}
+
+.error-btn-cont {
+	margin-top: 40px;
+}
+
+.loader {
+	position: fixed;
+	z-index: 1;
+	width: 0%;
+	height: 2px;
+	left: 0;
+	background: #2578f8;
+	transition: all 0.2s ease-in-out;
+}
+
+.sidebar-overlay {
+	z-index: 1;
+	position: fixed;
+	background: rgba(0, 0, 0, 0.05);
+	/* background: transparent; */
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+	transition: opacity 0.2s ease-in-out;
+	opacity: 1;
+}
+
+.topbar {
+	display: flex;
+	width: 100%;
+	background: #fbfbfb;
+	/* background: #24292e; *//* color: white; */
+	font-weight: bold;
+	padding: 7px 25px 8px 25px;
+	justify-content: space-between;
+	align-items: center;
+	/* position: fixed; */
+	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+	/* background: white; */
+	display: none;
+	font-size: 18px;
+}
+
+.topbar__ {
+	background: rgba(255, 255, 255, 0.9);
+	position: fixed;
+}
+
+.tb-menu {
+	padding: 7px;
+	cursor: pointer;
+	margin-left: -10px;
+}
+
+.tb-menu:active {
+	opacity: 0.7;
+}
+
+/* https://css-tricks.com/removing-the-dotted-outline/ */
+
+a {
+	outline: 0;
+}
+
+.noselect {
+	user-select: none;
+	touch-callout: none;
+}
+
+@media (max-width: 1325px) {
+	.app {
+		width: 1100px;
+	}
+
+	.sidebar {
+		flex: 1 0 240px;
+	}
+}
+
+@media (max-width: 1125px) {
+	.app {
+		width: 1000px;
+	}
+
+	.sidebar {
+		/*flex: 1 0 220px;*/
+	}
+}
+
+@media (max-width: 1024px) {
+	.app {
+		width: auto;
+	}
+}
+
+/*@media (max-width: 768px) {*/
+
+@media (max-width: 768px) {
+	/* Make the sidebar fixed. *//*.sidebar {
+	position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    width: 240px;
+}*/
+
+	.markdown {
+		margin-left: 0;
+	}
+
+	.app {
+		/* width: 900px; */
+		flex-flow: column nowrap;
+	}
+
+	.topbar {
+		display: flex;
+	}
+
+	.menu {
+		margin-top: 10px;
+	}
+
+	.sidebar {
+		width: 280px;
+		position: fixed;
+		left: 0;
+		top: 0;
+		height: 100%;
+		transform: translate3D(-100%, 0, 0);
+		transform: translate3D(calc(-100%), 0, 0);
+		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+		overflow: auto;
+		background: white;
+		z-index: 1;
+	}
+
+	.topbar {
+		background: rgba(255, 255, 255, 0.9);
+		position: fixed;
+	}
+
+	.markdown-body {
+		margin-top: 53px;
+		padding: 30px;
+	}
+}
+
+@media (max-width: 324px) {
+	.app {
+		width: 324px;
+	}
+}
