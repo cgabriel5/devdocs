@@ -1,26 +1,23 @@
-# devdocs
+<p align="center"><img src="./docs/branding/leaf-216.png?raw=true" alt="logo-leaf" title="something" width="8%"></p>
+<p align="center"><img src="./docs/branding/text.png?raw=true" alt="logo-text" title="something" width="25%"></p>
+<p align="center">A website documentation generator.</p>
+<h1></h1>
 
-A website documentation generator.
+### What is devdocs?
 
-### Purpose
+`devdocs` is a website documentation generator meant to be used with GitHub's `gh-pages`.
 
-The purpose of devdocs is to...
+### Demo
 
-### Live Demo
-
-Live demo can be accessed [here](https://cgabriel5.github.io/devdocs/).
+The demo is the generated documentation website for `devdocs`. It can be accessed [here](https://cgabriel5.github.io/devdocs/).
 
 ### How It Works
 
-Explain how it works...
+`devdocs` converts your `.md` to their `html` counterparts to generate a documentation website. Just install `devdocs`, create a the configuration file, and run the command to generate documentation website.
 
 ### How To Use
 
-Take a look at...
-
-### Issues
-
-* Issues if any...
+The [live demo](https://cgabriel5.github.io/devdocs/) showcases the generated `devdocs`'s project documentation!
 
 ### Contributing
 
@@ -30,7 +27,7 @@ See how to contribute [here](https://github.com/cgabriel5/devdocs/blob/master/CO
 
 ### TODO
 
-- [ ] TODO item.
+- [ ] Add doc versions (i.e. switch between different doc versions).
 
 ### License
 
