@@ -638,11 +638,12 @@ gulp.task("html:app", function(done) {
 
 	pump(
 		[
-			gulp.src(apath("./index.html")),
+			gulp.src(apath("./index-src.html")),
 			// Set the path to the favicons...
 			$.replace(/\$\{dir_path\}/g, __path),
 			// $.debug(),
 			$.htmlmin(HTMLMIN),
+			$.rename("index.html"),
 			gulp.dest(cwd)
 			// $.debug.edit()
 		],
