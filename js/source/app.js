@@ -10,11 +10,11 @@ document.onreadystatechange = function() {
 		function req_complete_loader() {
 			setTimeout(function() {
 				$loader.style.opacity = `0`;
-			}, 300);
+			}, 500);
 
 			setTimeout(function() {
 				$loader.style.display = "none";
-			}, 500);
+			}, 700);
 		}
 
 		// Get the loader element.
@@ -91,6 +91,7 @@ document.onreadystatechange = function() {
 
 				// Store the currently displayed file.
 				var current_file;
+				var menu_show_count = 0;
 
 				/**
 				 * Parse the URL query parameters.
@@ -210,6 +211,14 @@ document.onreadystatechange = function() {
 						$parent.classList.remove("active-page");
 						$parent.nextElementSibling.style.height = 0;
 						$parent.nextElementSibling.style.opacity = 0;
+
+						// Un-highlight the menu arrow and reset to right
+						// position.
+						let menu_arrow = $parent.children[0];
+						let menu_classes = menu_arrow.classList;
+						menu_classes.remove("menu-arrow-active");
+						menu_classes.remove("fa-angle-down");
+						menu_classes.add("fa-angle-right");
 					}
 
 					// Set the new highlight for the new current element.
@@ -220,11 +229,26 @@ document.onreadystatechange = function() {
 					}
 					if (filename !== "_404") {
 						$new_current.classList.add("active-page");
-						$new_current.nextElementSibling.style.height = get_height(
-							$new_current,
-							filename
-						);
-						$new_current.nextElementSibling.style.opacity = 1;
+
+						// Get the menu arrow element and its CSS classes.
+						let menu_arrow = $new_current.children[0];
+						let menu_classes = menu_arrow.classList;
+
+						setTimeout(function() {
+							// Change the menu arrow to be active (blue/down).
+							menu_classes.add("menu-arrow-active");
+							menu_classes.remove("fa-angle-right");
+							menu_classes.add("fa-angle-down");
+
+							$new_current.nextElementSibling.style.height = get_height(
+								$new_current,
+								filename
+							);
+							$new_current.nextElementSibling.style.opacity = 1;
+
+							// Increment the show counter.
+							menu_show_count++;
+						}, !menu_show_count ? 500 : 200);
 					}
 
 					// Reset the active element.
@@ -272,6 +296,16 @@ document.onreadystatechange = function() {
 				document.getElementById(
 					"menu-dynamic-cont"
 				).innerHTML = data.menu.join("");
+
+				// Add the social links.
+				if (data.socials) {
+					document
+						.getElementById("sidebar")
+						.children[0].insertAdjacentHTML(
+							"beforeend",
+							data.socials
+						);
+				}
 
 				// Parse the URL query parameters.
 				var params = parameters();

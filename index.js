@@ -149,6 +149,7 @@ if (!configpath) {
 let config = require(configpath);
 let root = get(config, "root", "docs/");
 let toc = get(config, "toc", []);
+let links = get(config, "links", {});
 let logo = config.logo;
 let title = config.title;
 let debug = get(config, "debug", true);
@@ -161,7 +162,7 @@ config.files._404 = remove_space(
 	'<div class="markdown-body animate-fadein"> \
 	<div class="error-cont"> \
 		<div class="error-logo-cont"><img alt="logo-leaf" class="error-logo" src="${dir_path}/img/leaf-216.png" width="30%"></div> \
-		<div class="error-msg-1">Whoops...</div> \
+		<div class="error-msg-1"><i class="far fa-frown"></i></div> \
 		<div class="error-msg-2">The page trying to be viewed does not exist.</div> \
 		<div class="error-btn-cont"> \
 			<span class="btn btn-blue btn-home noselect" id="btn-home">Take me home</span> \
@@ -264,6 +265,51 @@ let counter_dir = 1;
 // All processed directory data will be contained in this array.
 config.dirs = [];
 
+// Supported social platforms for social links.
+let socials = {
+	user: "fas fa-user-circle",
+	facebook: "fab fa-facebook-square",
+	twitter: "fab fa-twitter-square",
+	youtube: "fab fa-youtube-square",
+	vimeo: "fab fa-vimeo-square",
+	google_plus: "fab fa-google-plus-square",
+	reddit: "fab fa-reddit-square",
+	pinterest: "fab fa-pinterest-square",
+	snapchat: "fab fa-snapchat-square",
+	tumblr: "fab fa-tumblr-square",
+	github: "fab fa-github-square",
+	bitbucket: "fab fa-bitbucket",
+	blogger: "fab fa-blogger",
+	stumbleupon: "fab fa-stumbleupon-circle"
+};
+
+// Build the social links if provide.
+let links_html = ['<div id="link-socials" class="link-socials">'];
+if (links) {
+	// Loop over the links.
+	links.forEach(function(item) {
+		// Get the needed information.
+		let platform = item[0].toLowerCase();
+		let url = item[1];
+
+		// Get the font-awesome classes.
+		let fa_classes = socials[platform];
+
+		// Only make the HTML for the platform if the platform is supported.
+		if (fa_classes) {
+			links_html.push(
+				`<div class="social-link"><a href="${url}" target="_blank" class="social-link"><i class="${fa_classes}"></i></a></div>`
+			);
+		} else {
+			print.gulp.warn(
+				`'${platform}' was ignored as it's not a supported social link.`
+			);
+		}
+	});
+}
+// Close the HTML.
+links_html.push("</div>");
+
 // Loop over Table-Of-Contents key to generate the HTML files from Markdown.
 toc.forEach(function(directory) {
 	// Create an object to store all directory information.
@@ -310,7 +356,7 @@ toc.forEach(function(directory) {
 		// Store the file information.
 		__file.name = file;
 		__file.alias = alias_file;
-		__file.html = `<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}"><a class="link" href="#" data-file="${dirname}/${file}">${alias_file}</a></li>`;
+		__file.html = `<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}"><i class="fas fa-angle-right menu-arrow" data-file="${dirname}/${file}"></i><a class="link" href="#" data-file="${dirname}/${file}">${alias_file}</a></li>`;
 		// All processed file headings will be contained here.
 		__file.headings = [];
 
@@ -480,8 +526,8 @@ gulp.task("css:app", function(done) {
 	// The default CSS style sheets.
 	let css_source_files = [
 		"css/vendor/sanitize.css/sanitize.css",
-		"css/source/github-markdown.css",
-		"css/vendor/font-awesome/font-awesome.css"
+		"css/source/github-markdown.css"
+		// "css/vendor/font-awesome/font-awesome.css"
 	];
 
 	// Add needed syntax highlight CSS file depending on what was provided
@@ -497,7 +543,7 @@ gulp.task("css:app", function(done) {
 			css_source_files.push("css/source/highlightjs.css");
 		} else {
 			// Default to prismjs.
-			css_source_files.push("css/source/prismjs.css");
+			css_source_files.push("css/source/prism-github.css");
 		}
 	}
 
@@ -648,30 +694,31 @@ gulp.task("favicon:app", function(done) {
 	);
 });
 
-// Copy the needed font files.
-gulp.task("fonts:app", function(done) {
-	pump(
-		[
-			gulp.src(apath(globall("./css/assets/fonts/"))),
-			// $.debug(),
-			gulp.dest(path.join(outputpath, "/fonts"))
-			// $.debug.edit()
-		],
-		function() {
-			if (debug) {
-				print.gulp.info("Copied needed font files.");
-			}
+// // Copy the needed font files.
+// gulp.task("fonts:app", function(done) {
+// 	pump(
+// 		[
+// 			gulp.src(apath(globall("./css/assets/fonts/"))),
+// 			// $.debug(),
+// 			gulp.dest(path.join(outputpath, "/fonts"))
+// 			// $.debug.edit()
+// 		],
+// 		function() {
+// 			if (debug) {
+// 				print.gulp.info("Copied needed font files.");
+// 			}
 
-			done();
-		}
-	);
-});
+// 			done();
+// 		}
+// 	);
+// });
 
 // Save the configuration data in its own file to access it in the front-end.
 gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
 	config.logoHTML = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
 	config.menu = menu;
+	config.socials = links_html.join("");
 
 	pump(
 		[
@@ -732,7 +779,7 @@ Promise.all(promises)
 				"html:app",
 				"img:app",
 				"favicon:app",
-				"fonts:app",
+				// "fonts:app",
 				"json-data:app",
 				function() {
 					print.gulp.success("Documentation generated.");
