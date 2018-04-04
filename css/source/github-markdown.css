@@ -407,8 +407,8 @@
 
 .markdown-body .anchor {
 	line-height: 1;
-	float: left;
-	margin-left: -20px;
+	/* Keep the anchor hyper-link on the right due limited space on mobile
+	devices.*//*float: left;*//*margin-left: -20px;*/
 	padding-right: 4px;
 }
 
