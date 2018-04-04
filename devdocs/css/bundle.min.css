@@ -1011,8 +1011,8 @@ textarea,
 
 .markdown-body .anchor {
 	line-height: 1;
-	float: left;
-	margin-left: -20px;
+	/* Keep the anchor hyper-link on the right due limited space on mobile
+	devices.*//*float: left;*//*margin-left: -20px;*/
 	padding-right: 4px;
 }
 
@@ -1492,7 +1492,15 @@ pre[class*="language-"] {
 
 body {
 	margin: 0;
-	font-family: Source Sans Pro;
+	font-family: -apple-system,
+                 BlinkMacSystemFont,
+                 "Segoe UI",
+                 Helvetica,
+                 Arial,
+                 sans-serif,
+                 "Apple Color Emoji",
+                 "Segoe UI Emoji",
+                 "Segoe UI Symbol";
 	font-size: 16px;
 }
 
@@ -1521,14 +1529,14 @@ body {
 	touch-callout: none;
 	font-size: 16px;
 	/*width: 300px;*/
-	-webkit-box-flex: 1;
-	-webkit-flex: 1 0 300px;
-	    -ms-flex: 1 0 300px;
-	        flex: 1 0 300px;
 	display: -webkit-box;
 	display: -webkit-flex;
 	display: -ms-flexbox;
 	display: flex;
+	-webkit-box-flex: 1;
+	-webkit-flex: 1 0 300px;
+	    -ms-flex: 1 0 300px;
+	        flex: 1 0 300px;
 	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	border-right: 1px solid #dddddd;
 	display: flex;
@@ -1835,7 +1843,7 @@ ul.file-headers {
 .sidebar-overlay {
 	z-index: 1;
 	position: fixed;
-	background: rgba(0, 0, 0, 0.05);
+	background: rgba(0, 0, 0, 0.1);
 	/* background: transparent; */
 	top: 0;
 	left: 0;
@@ -1844,6 +1852,7 @@ ul.file-headers {
 	display: none;
 	transition: opacity 0.2s ease-in-out;
 	opacity: 1;
+	cursor: pointer;
 }
 
 .topbar {
@@ -1855,7 +1864,7 @@ ul.file-headers {
 	background: #fbfbfb;
 	/* background: #24292e; *//* color: white; */
 	font-weight: bold;
-	padding: 7px 25px 8px;
+	padding: 5px 20px;
 	-webkit-box-pack: justify;
 	-webkit-justify-content: space-between;
 	-ms-flex-pack: justify;
@@ -1868,7 +1877,6 @@ ul.file-headers {
 	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
 	/* background: white; */
 	display: none;
-	font-size: 18px;
 }
 
 .topbar__ {
@@ -1980,6 +1988,7 @@ a {
 		overflow: auto;
 		background: white;
 		z-index: 1;
+		border-right: 1px solid rgba(0, 0, 0, 0.15);
 	}
 
 	.topbar {
@@ -1988,16 +1997,17 @@ a {
 	}
 
 	.markdown-body {
-		margin-top: 53px;
-		padding: 30px;
+		margin-top: 45px;
+		padding: 15px;
+		font-size: 14px;
 	}
 }
 
-@media (max-width: 324px) {
+/* @media (max-width: 324px) {
 	.app {
-		width: 324px;
+		width: auto;
 	}
-}
+} */
 
 .link-socials {
 	display: -webkit-box;
