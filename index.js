@@ -580,7 +580,9 @@ gulp.task("css:app", function(done) {
 				autoprefixer(AUTOPREFIXER),
 				perfectionist(PERFECTIONIST)
 			]),
-			// $.clean_css(),
+			// CSS style must be prefixed for it to work at the moment.
+			$.replace(/overflow\-scrolling/g, "-webkit-overflow-scrolling"),
+			$.clean_css(),
 			gulp.dest(path.join(outputpath, "/css"))
 			// $.debug.edit()
 		],
