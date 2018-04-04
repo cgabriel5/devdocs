@@ -645,6 +645,7 @@
 	font-size: 85%;
 	line-height: 1.45;
 	overflow: auto;
+	overflow-scrolling: touch;
 	padding: 16px;
 	border-radius: 3px;
 	/* Custom color *//*background-color: #f6f8fa;*/
