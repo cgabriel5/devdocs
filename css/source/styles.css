@@ -287,6 +287,7 @@ ul.file-headers {
 	display: none;
 	transition: opacity 0.2s ease-in-out;
 	opacity: 1;
+	cursor: pointer;
 }
 
 .topbar {
