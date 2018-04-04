@@ -600,6 +600,7 @@ gulp.task("js:app", function(done) {
 		[
 			gulp.src([
 				apath("./js/vendor/httpjs/http.js"),
+				apath("./js/vendor/fastclick/fastclick.js"),
 				apath("./js/source/app.js")
 			]),
 			// Replace the default output path with the provided one.

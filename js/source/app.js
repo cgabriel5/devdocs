@@ -1,6 +1,11 @@
 document.onreadystatechange = function() {
 	// All resources have loaded (document + subresources).
 	if (document.readyState === "complete") {
+		// Init FastClickJS.
+		if ("addEventListener" in document) {
+			FastClick.attach(document.body);
+		}
+
 		var request_path = "./devdocs/data.json";
 		// Make the request to get the devdocs data file.
 
