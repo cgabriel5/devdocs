@@ -289,6 +289,9 @@
 .markdown-body h3 {
 	font-size: 20px;
 	font-weight: 600;
+	/* For custom highlight purpose. */
+	border-radius: 4px;
+	padding: 0 5px;
 }
 
 .markdown-body h4 {
