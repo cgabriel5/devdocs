@@ -22,6 +22,7 @@ body {
 	margin: auto;
 	min-height: calc(100vh);
 	height: auto;
+	overflow-x: hidden;
 }
 
 .sidebar {
@@ -29,11 +30,10 @@ body {
 	touch-callout: none;
 	font-size: 16px;
 	/*width: 300px;*/
+	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	display: flex;
 	flex: 1 0 300px;
-	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	border-right: 1px solid #dddddd;
-	display: flex;
 	flex-flow: column nowrap;
 	justify-content: space-between;
 }
@@ -43,7 +43,10 @@ body {
 .sidebar {
 	position: fixed;
 	height: 100%;
+	overflow-x: hidden;
 	overflow-y: auto;
+	/* Make scrolling smooth in iOS */
+	overflow-scrolling: touch;
 	width: 240px;
 }
 
@@ -287,28 +290,20 @@ ul.file-headers {
 	display: none;
 	transition: opacity 0.2s ease-in-out;
 	opacity: 1;
-	cursor: pointer;
 }
 
 .topbar {
 	display: flex;
 	width: 100%;
 	background: #fbfbfb;
-	/* background: #24292e; *//* color: white; */
 	font-weight: bold;
 	padding: 5px 20px 5px;
 	justify-content: space-between;
 	align-items: center;
-	/* position: fixed; */
 	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
-	/* background: white; */
 	display: none;
 	z-index: 1;
-}
-
-.topbar__ {
-	background: rgba(255, 255, 255, 0.9);
-	position: fixed;
+	backdrop-filter: blur(10px);
 }
 
 .tb-menu {
@@ -330,6 +325,17 @@ a {
 .noselect {
 	user-select: none;
 	touch-callout: none;
+}
+
+.topbar, .markdown {
+	transform: translate3D(0, 0, 0);
+	transform: translate3D(calc(0), 0, 0);
+	transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.mobile-slide {
+	transform: translate3D(240px, 0, 0);
+	transform: translate3D(calc(240px), 0, 0);
 }
 
 @media (max-width: 1325px) {
@@ -358,16 +364,7 @@ a {
 	}
 }
 
-/*@media (max-width: 768px) {*/
-
 @media (max-width: 768px) {
-	/* Make the sidebar fixed. *//*.sidebar {
-	position: fixed;
-    height: 100%;
-    overflow-y: auto;
-    width: 240px;
-}*/
-
 	.markdown {
 		margin-left: 0;
 	}
@@ -379,6 +376,8 @@ a {
 
 	.topbar {
 		display: flex;
+		position: fixed;
+		background: rgba(255, 255, 255, 0.85);
 	}
 
 	.menu {
@@ -394,16 +393,20 @@ a {
 		transform: translate3D(-100%, 0, 0);
 		transform: translate3D(calc(-100%), 0, 0);
 		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
-		overflow: auto;
-		overflow-scrolling: touch;
 		background: white;
 		z-index: 2;
 		border-right: 1px solid rgba(0, 0, 0, 0.15);
+	}/* To make the sidebar constantly show the y-scroller make the div
+	dip/overflow. This or simply giving the .menu a min-height: 101%; also
+	works. */
+
+	.logo-devdocs {
+		margin-bottom: -40px;
 	}
 
-	.topbar {
-		background: rgba(255, 255, 255, 0.9);
-		position: fixed;
+	.mobile-slide {
+		transform: translate3D(280px, 0, 0);
+		transform: translate3D(calc(280px), 0, 0);
 	}
 
 	.markdown-body {
