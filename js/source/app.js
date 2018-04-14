@@ -886,8 +886,22 @@ document.onreadystatechange = function() {
 						var $target = e.target;
 						var classes = $target.classList;
 
-						// The hamburger menu was clicked.
-						if (classes.contains("mobile-menu-ham")) {
+						// Get touched coordinates.
+						var touch_info = e.targetTouches[0];
+						var x = touch_info.clientX;
+						var y = touch_info.clientY;
+						// The allowed range the touched pixels can be in
+						// to still allow for the mobile trigger to happen.
+						var range = 45;
+
+						// The hamburger menu was clicked OR the allowed area
+						// range was touched.
+						if (
+							classes.contains("mobile-menu-ham") ||
+							(x <= range &&
+								y <= range &&
+								$overlay.style.display !== "block")
+						) {
 							// Show the sidebar.
 							$sidebar.classList.add("sidebar-show");
 
