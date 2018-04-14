@@ -12,6 +12,7 @@ body {
                  "Segoe UI Emoji",
                  "Segoe UI Symbol";
 	font-size: 16px;
+	overflow-y: scroll;
 }
 
 .app {
@@ -131,10 +132,10 @@ ul.file-headers {
 }
 
 .headings-cont {
-	opacity: 0;
+	/*opacity: 0;*/
 	height: 0;
 	overflow: hidden;
-	transition: height 0.25s ease-out, opacity 0.4s ease-out;
+	/*transition: height 0.25s ease-out, opacity 0.4s ease-out;*/
 	backface-visibility: hidden;
 }
 
