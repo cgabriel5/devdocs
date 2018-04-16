@@ -353,10 +353,14 @@ toc.forEach(function(directory) {
 			alias_file = modifier(file, "file");
 		}
 
+		// Build the file path.
+		let fpath = `${dirname}/${file}`;
+
 		// Store the file information.
+		__file.dirname = fpath;
 		__file.name = file;
 		__file.alias = alias_file;
-		__file.html = `<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}"><i class="fas fa-angle-right menu-arrow" data-file="${dirname}/${file}"></i><a class="link" href="#" data-file="${dirname}/${file}">${alias_file}</a></li>`;
+		__file.html = `<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}"><i class="fas fa-angle-right menu-arrow" data-file="${fpath}"></i><a class="link" href="#" data-file="${fpath}">${alias_file}</a></li>`;
 		// All processed file headings will be contained here.
 		__file.headings = [];
 
@@ -368,7 +372,7 @@ toc.forEach(function(directory) {
 		// Store the first file.
 		if (!first_file) {
 			// Attach the first file to the config object.
-			config.first_file = `${dirname}/${file}`;
+			config.first_file = `${fpath}`;
 			// Set the flag to true.
 			first_file = true;
 		}
@@ -459,7 +463,7 @@ toc.forEach(function(directory) {
 
 						// Add the second level menu template string.
 						headings.push(
-							`<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${dirname}/${file}">${normalized_id}</a></li>`
+							`<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
 						);
 					});
 					// Add the closing tag to the headings HTML.
@@ -473,13 +477,10 @@ toc.forEach(function(directory) {
 					data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
 
 					// Add to the object
-					config.files[`${dirname}/${file}`] = data;
+					config.files[`${fpath}`] = data;
 
 					if (debug) {
-						print.gulp.info(
-							"Processed",
-							chalk.magenta(`${dirname}/${file}`)
-						);
+						print.gulp.info("Processed", chalk.magenta(`${fpath}`));
 					}
 
 					// Finally, resolve the Promise and return the file path,
