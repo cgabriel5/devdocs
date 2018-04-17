@@ -162,10 +162,10 @@ config.files._404 = remove_space(
 	'<div class="markdown-body animate-fadein"> \
 	<div class="error-cont"> \
 		<div class="error-logo-cont"><img alt="logo-leaf" class="error-logo" src="${dir_path}/img/leaf-216.png" width="30%"></div> \
-		<div class="error-msg-1"><i class="far fa-frown"></i></div> \
+		<div class="error-msg-1"><i class="fas fa-exclamation-circle"></i></div> \
 		<div class="error-msg-2">The page trying to be viewed does not exist.</div> \
 		<div class="error-btn-cont"> \
-			<span class="btn btn-blue btn-home noselect" id="btn-home">Take me home</span> \
+			<span class="btn btn-white btn-home noselect" id="btn-home">Take me home</span> \
 		</div> \
 	</div> \
 </div>'
