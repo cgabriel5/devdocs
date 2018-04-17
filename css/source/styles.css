@@ -316,14 +316,13 @@ ul.file-headers {
 	height: 50px;
 	z-index: 0;
 	position: fixed;
-	/*box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.1);*/
-	box-shadow: 0 0 10px 7px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 0 10px 7px rgba(0, 0, 0, 0.05);
 	border-radius: 450px/15px;
 	display: none;
 	transition: box-shadow 0.2s ease-in-out;
 }
 
-.tb-percent-scrolled {
+/*.tb-percent-scrolled {
 	position: fixed;
 	width: 0;
 	height: 2px;
@@ -331,7 +330,7 @@ ul.file-headers {
 	z-index: 1;
 	bottom: -1px;
 	left: 0;
-}
+}*/
 
 .tb-menu {
 	padding: 7px;
@@ -361,9 +360,14 @@ ul.file-headers {
 	text-overflow: ellipsis;
 }
 
-.scroll-icon {
+.scroll-icon-middle {
 	margin-top: 1px;
 	padding: 0 4px;
+}
+
+.scroll-icon-right {
+	margin-top: 1px;
+	padding: 0 0 0 4px;
 }
 
 .none {
