@@ -224,8 +224,9 @@ ul.file-headers {
 }
 
 .btn-home {
-	padding: 12px 28px;
-	font-weight: bold;
+	padding: 8px 10px;
+	font-weight: 700;
+	font-size: 12px;
 }
 
 .error-cont {
@@ -254,7 +255,7 @@ ul.file-headers {
 	/*color: #444444;*/
 	color: #999999;
 	/*font-size: 24px;*/
-	font-size: 54px;
+	font-size: 35px;
 	/*padding-top: 20px;*/
 }
 
@@ -262,11 +263,13 @@ ul.file-headers {
 	color: #6d6d6d;
 	/*padding-top: 20px;*/
 	padding-top: 10px;
+	width: 200px;
+	text-align: center;
 }
 
 .error-btn-cont {
-	/*margin-top: 40px;*/
-	margin-top: 35px;
+	/*margin-top: 40px;*//*margin-top: 35px;*/
+	margin-top: 25px;
 }
 
 .loader {
