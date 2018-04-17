@@ -248,7 +248,7 @@ document.onreadystatechange = function() {
 		 * @resource [https://stackoverflow.com/a/8028584]
 		 */
 		function percent_scrolled() {
-			var h = document.scrollingElement,
+			var h = document.documentElement,
 				b = document.body,
 				st = "scrollTop",
 				sh = "scrollHeight";
@@ -258,7 +258,7 @@ document.onreadystatechange = function() {
 				(h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
 
 			// If the page is not scrollable reset the percent to 0.
-			if ($delement.scrollHeight === $delement.clientHeight) {
+			if (h.scrollHeight === h.clientHeight) {
 				percent = 0;
 			}
 
@@ -971,7 +971,7 @@ document.onreadystatechange = function() {
 
 				document
 					.getElementById("scroll-dynamic")
-					.addEventListener("click", function(e) {
+					.addEventListener("touchstart", function(e) {
 						var $header = headers.active;
 
 						// Scroll to the header.
