@@ -1343,6 +1343,213 @@ document.onreadystatechange = function() {
 						touchmove_handler,
 						false
 					);
+
+					// Touch slide code.
+
+					var reset;
+					var x_start;
+					var velocity;
+					var slide_target;
+					var slide_animation;
+					var sidebar_width;
+					document.body.addEventListener(
+						"touchstart",
+						function(e) {
+							// The touched on element must be the sidebar or a sidebar
+							// descendant.
+							if (build_path(e).includes($sidebar)) {
+								// Get the touch event information.
+								var info = e.targetTouches[0];
+
+								// Get the touched element and x coordinate.
+								x_start = info.pageX;
+								slide_target = info.target;
+								// Store the start time/x position to later determine
+								// the slide velocity on touchmove.
+								velocity = {
+									time: e.timeStamp,
+									position: x_start
+								};
+
+								// Store the sidebar with.
+								sidebar_width =
+									getComputedStyle(
+										$sidebar,
+										null
+									).width.replace("px", "") * 1;
+
+								// Remove all transitions to animations instant.
+								var $els = [
+									$sidebar,
+									$topbar,
+									$markdown,
+									$shadow,
+									$overlay
+								];
+								for (var i = 0, l = $els.length; i < l; i++) {
+									$els[i].style.transition = "none";
+								}
+
+								// Prevent any unintentional scrolling.
+								// e.preventDefault();
+								// e.stopPropagation();
+							}
+						}
+						// { passive: false }
+					);
+
+					document.body.addEventListener(
+						"touchmove",
+						function(e) {
+							if (slide_target && velocity) {
+								// Get the touch event information.
+								var info = e.targetTouches[0];
+								var x = info.pageX;
+
+								// Calculate the change in movement.
+								var delta_x = x - x_start;
+								var delta_x_content = sidebar_width + delta_x;
+
+								// [https://stackoverflow.com/a/10996533]
+								// Calculate the swipe velocity.
+								// Formula: v = abs(x2 - x1) / (t2 - t1)
+								var v =
+									Math.abs(x - velocity.position) /
+									(e.timeStamp - velocity.time);
+
+								// Default to false.
+								reset = false;
+
+								// Set a left bound. Once hit anymore movement
+								// will be canceled.
+								if (delta_x_content <= 0) {
+									return;
+								} else if (
+									// Once the delta_x_content difference is
+									// less than 150 pixels or the velocity is
+									// greater or equal to 1 the reset flag is
+									// set. Therefore on touchend when the flag
+									// is set the sidebar and everything else
+									// will be reset.
+									delta_x_content <= 150 ||
+									Math.floor(v) >= 1
+								) {
+									reset = true;
+								}
+
+								// If the movement is to the left animate the
+								// movement.
+								if (Math.sign(delta_x) === -1) {
+									slide_animation = request_aframe(function(
+										timestamp
+									) {
+										var css_rule = "transform";
+										var priority = "important";
+										var content_def = `translateX(${delta_x_content}px)`;
+
+										// [https://stackoverflow.com/a/7919637]
+										$sidebar.style.setProperty(
+											css_rule,
+											`translateX(${delta_x}px)`,
+											priority
+										);
+										$topbar.style.setProperty(
+											css_rule,
+											content_def,
+											priority
+										);
+										$markdown.style.setProperty(
+											css_rule,
+											content_def,
+											priority
+										);
+										$shadow.style.setProperty(
+											css_rule,
+											content_def,
+											priority
+										);
+
+										// As the slide movement happens add opacity
+										// to the content elements and sidebar.
+										var opacity_calc =
+											Math.abs(1 / delta_x) * 40;
+										$overlay.style.opacity =
+											Math.abs(opacity_calc) - 0.15;
+										$sidebar.style.opacity = opacity_calc;
+									});
+
+									// Prevent y-scrolling.
+									e.preventDefault();
+									e.stopPropagation();
+								}
+							}
+						},
+
+						{ passive: false }
+					);
+
+					document.body.addEventListener("touchend", function(e) {
+						// Always reset.
+						x_start = null;
+						velocity = null;
+
+						if (!slide_target) {
+							return;
+						}
+
+						var cancel =
+							window.cancelAnimationFrame ||
+							window.mozCancelAnimationFrame;
+
+						if (reset) {
+							// Cancel any on-going sliding animate frame request.
+							if (slide_animation) {
+								cancel(slide_animation);
+								slide_animation = null;
+							}
+
+							// Clear variables.
+							reset = null;
+							slide_target = null;
+
+							// Remove transitions
+							$sidebar.removeAttribute("style");
+							$topbar.removeAttribute("style");
+							$markdown.removeAttribute("style");
+							$shadow.removeAttribute("style");
+							$overlay.removeAttribute("style");
+							$overlay.style.display = "block";
+
+							// The sidebar overlay was clicked.
+
+							// Hide the sidebar.
+							$sidebar.classList.remove("sidebar-show");
+							$overlay.style.opacity = 0;
+
+							// Slide the topbar + markdown contents to the right.
+							$topbar.classList.remove("mobile-slide");
+							$markdown.classList.remove("mobile-slide");
+							$overlay.style.display = "none";
+						} else {
+							// The slide movement occurred but the movement was
+							// not enough to cause the reset.
+
+							// Cancel any on-going sliding animate frame request.
+							if (slide_animation) {
+								cancel(slide_animation);
+								slide_animation = null;
+							}
+
+							// Remove transitions
+							$sidebar.removeAttribute("style");
+							$topbar.removeAttribute("style");
+							$markdown.removeAttribute("style");
+							$shadow.removeAttribute("style");
+							$overlay.removeAttribute("style");
+							$overlay.style.display = "block";
+							$overlay.style.opacity = 1;
+						}
+					});
 				}
 			})
 			.catch(function(msg) {
