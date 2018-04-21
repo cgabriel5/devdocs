@@ -291,9 +291,9 @@ ul.file-headers {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	display: none;
-	transition: opacity 0.2s ease-in-out;
-	opacity: 1;
+	/*display: none;*/
+	transition: opacity 0.5s ease-in-out;
+	/* opacity: 0; */
 }
 
 .topbar {
@@ -311,6 +311,10 @@ ul.file-headers {
 }
 
 /* [https://codepen.io/hoshts/pen/BHoij?editors=1100] */
+
+.tb-logo {
+	cursor: pointer;
+}
 
 .tb-shadow {
 	top: -15px;
@@ -388,6 +392,18 @@ a {
 	touch-callout: none;
 }
 
+.pnone {
+	pointer-events: none;
+}
+
+.opa1 {
+	opacity: 1;
+}
+
+.opa0 {
+	opacity: 0;
+}
+
 .topbar, .markdown {
 	transform: translate3D(0, 0, 0);
 	transform: translate3D(calc(0), 0, 0);
@@ -397,6 +413,30 @@ a {
 .mobile-slide {
 	transform: translate3D(240px, 0, 0);
 	transform: translate3D(calc(240px), 0, 0);
+}
+
+.tdelay05 {
+	transition-delay: 0.05s !important;
+}
+
+.tdelay1 {
+	transition-delay: 0.1s !important;
+}
+
+.tdelay15 {
+	transition-delay: 0.15s !important;
+}
+
+.tdelay2 {
+	transition-delay: 0.2s !important;
+}
+
+.tdelay25 {
+	transition-delay: 0.25s !important;
+}
+
+.markdown {
+	will-change: contents;
 }
 
 @media (max-width: 1325px) {

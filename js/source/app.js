@@ -18,7 +18,7 @@ document.onreadystatechange = function() {
 		var $loader = document.getElementById("loader");
 		var $topbar = document.getElementById("topbar");
 		var $sidebar = document.getElementById("sidebar");
-		var $shadow = document.getElementById("tb-shadow");
+		// var $shadow = document.getElementById("tb-shadow");
 		var $markdown = document.getElementById("markdown");
 		// var $scrolled = document.getElementById("tb-percent-scrolled");
 		var $overlay = document.getElementsByClassName("sidebar-overlay")[0];
@@ -30,6 +30,47 @@ document.onreadystatechange = function() {
 		var SCROLL_TIME = 250;
 
 		// Functions //
+
+		/**
+		 * Determines which animation[start|end|interation] event
+		 *     the user's browser supports and returns it.
+		 *
+		 * @param {string} type - The event type: either start,
+		 *     end, or iteration.
+		 * @return {string} - The browser prefixed transition event.
+		 *
+		 * @resource [https://davidwalsh.name/css-animation-callback]
+		 * @resource [https://github.com/cgabriel5/snippets/blob/master/js/detection/which_animation_transition_event.js]
+		 */
+		var which_transition_event = function(type) {
+			// Lowercase type.
+			type = type.toLowerCase();
+
+			var el = document.createElement("div"),
+				transitions = {
+					transition: "transition",
+					// Opera prefix info: [https://developer.mozilla.org/en-US/docs/Web/Events/transitionend]
+					OTransition: "oTransition",
+					otransition: "otransition",
+					MozTransition: "transition",
+					WebkitTransition: "webkitTransition",
+					MSTransition: "MSTransition"
+				};
+
+			for (var transition in transitions) {
+				if (el.style[transition] !== undefined) {
+					// Cache value.
+					var value = transitions[transition];
+					// Determine if suffix needs to be capitalized.
+					var end = value.match(/[A-Z]/)
+						? type.charAt(0).toUpperCase() + type.substring(1)
+						: type;
+
+					// Return prefixed event.
+					return value + end;
+				}
+			}
+		};
 
 		/**
 		 * Debounces provided function.
@@ -283,6 +324,15 @@ document.onreadystatechange = function() {
 		};
 
 		/**
+		 * Detect whether UA is a mobile device.
+		 *
+		 * @return {boolean} - Boolean indicating if UA is a mobile device.
+		 */
+		var is_mobile = function() {
+			return window.navigator.userAgent.toLowerCase().includes("mobi");
+		};
+
+		/**
 		 * Get the provided element's top coordinate position in relation to the
 		 *     page and y-scroll amount.
 		 *
@@ -367,6 +417,7 @@ document.onreadystatechange = function() {
 				// Store the currently displayed file.
 				var current_file;
 				var running_menu_animation;
+				var sb_animation;
 
 				// Functions:Scoped:Inner //
 
@@ -541,7 +592,7 @@ document.onreadystatechange = function() {
 						// Remove the highlight.
 						$parent.classList.remove("active-page");
 
-						// Animate menu height opening.
+						// Animate menu height closing.
 						var animation = animate({
 							from: {
 								a:
@@ -630,6 +681,9 @@ document.onreadystatechange = function() {
 										// works.
 										$parent.classList.remove("highlight");
 
+										// Let browser know to optimize scrolling.
+										perf_hint($delement, "scroll-position");
+
 										// Use a timeout to let the injected HTML load
 										// and parse properly. Otherwise, getBoundingClientRect
 										// will return incorrect values.
@@ -653,6 +707,9 @@ document.onreadystatechange = function() {
 													$parent.classList.add(
 														"highlight"
 													);
+
+													// Remove optimization.
+													perf_unhint($delement);
 												}
 											});
 										}, 300);
@@ -681,6 +738,9 @@ document.onreadystatechange = function() {
 								// works.
 								$parent.classList.remove("highlight");
 
+								// Let browser know to optimize scrolling.
+								perf_hint($delement, "scroll-position");
+
 								// Use a timeout to let the injected HTML load
 								// and parse properly. Otherwise, getBoundingClientRect
 								// will return incorrect values.
@@ -699,6 +759,9 @@ document.onreadystatechange = function() {
 											averageFps
 										) {
 											$parent.classList.add("highlight");
+
+											// Remove optimization.
+											perf_unhint($delement);
 										}
 									});
 								}, 300);
@@ -746,6 +809,67 @@ document.onreadystatechange = function() {
 					// Reset the scroll to max-bottom - 1??? // $el.scrollTop = $el.scrollHeight - 1;
 				}
 
+				/**
+				 * Show the sidebar.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
+				function show_sidebar() {
+					request_aframe(function(t) {
+						// Show the sidebar.
+						$sidebar.classList.add("sidebar-show");
+
+						// Show the overlay.
+						var classes_overlay = $overlay.classList;
+						classes_overlay.add("tdelay1");
+						classes_overlay.remove("none");
+						setTimeout(function() {
+							classes_overlay.remove("opa0");
+							classes_overlay.add("opa1");
+						}, 0);
+					});
+				}
+
+				/**
+				 * Hide the sidebar.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
+				function hide_sidebar() {
+					request_aframe(function(t) {
+						// Hide the sidebar.
+
+						// Show the overlay.
+						var classes_overlay = $overlay.classList;
+						classes_overlay.remove("opa1");
+						classes_overlay.add("opa0");
+
+						// Show the sidebar.
+						var classes_sidebar = $sidebar.classList;
+						classes_sidebar.remove("sidebar-show");
+					});
+				}
+
+				/**
+				 * Tell the browser to prep for a performance gain.
+				 *
+				 * @return {undefined} - Nothing.
+				 *
+				 * @resource [https://dev.opera.com/articles/css-will-change-property/]
+				 */
+				function perf_hint($el, props) {
+					$el.style.willChange = props || "transform";
+				}
+
+				/**
+				 * Remove performance CSS.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
+				function perf_unhint($el) {
+					$el.style.willChange = "auto";
+				}
+
 				// AppCode:Scoped:Inner //
 
 				// Enclose in a timeout to give the loader a chance to fade away.
@@ -785,6 +909,26 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					inject(params.page ? params.page : data.first_file);
+
+					// // Inject CSS to page.
+					// var stylesheets = document.styleSheets;
+					// var stylesheet;
+					// for (var key in stylesheets) {
+					// 	if (stylesheets.hasOwnProperty(key)) {
+					// 		var sheet = stylesheets[key];
+					// 		var href = sheet.href;
+					// 		if (href && href.includes("bundle.min.css")) {
+					// 			stylesheet = sheet;
+					// 			break;
+					// 		}
+					// 	}
+					// }
+					// if (stylesheet) {
+					// 	stylesheet.insertRule(
+					// 		".sidebar {will-change: transform;}",
+					// 		stylesheet.cssRules.length
+					// 	);
+					// }
 				}, 200);
 
 				// EventListeners:Scoped:Inner //
@@ -804,18 +948,18 @@ document.onreadystatechange = function() {
 					// 	$scrolled.style.width = `${percent_scrolled() + ""}%`;
 					// });
 
-					// Show/hide tb shadow.
-					if (!window.matchMedia("(min-width: 769px)").matches) {
-						if (y <= 0) {
-							$shadow.style.display = "none";
-						} else {
-							request_aframe(function(timestamp) {
-								$shadow.style.display = "block";
-								$shadow.style.top =
-									y <= 16 ? -15 + y / 4 + "px" : "-10px";
-							});
-						}
-					}
+					// // Show/hide tb shadow.
+					// if (!window.matchMedia("(min-width: 769px)").matches) {
+					// 	if (y <= 0) {
+					// 		$shadow.style.display = "none";
+					// 	} else {
+					// 		request_aframe(function(timestamp) {
+					// 			$shadow.style.display = "block";
+					// 			$shadow.style.top =
+					// 				y <= 16 ? -15 + y / 4 + "px" : "-10px";
+					// 		});
+					// 	}
+					// }
 
 					// Show the current header thats in view/range.
 					var list = headers.list;
@@ -905,24 +1049,17 @@ document.onreadystatechange = function() {
 							window.matchMedia("(min-width: 769px)").matches &&
 							$overlay.style.display === "block"
 						) {
+							sb_animation = true;
+
 							// Hide the sidebar.
-							$sidebar.classList.remove("sidebar-show");
-							$overlay.style.opacity = 0;
-
-							// Slide the topbar + markdown contents to the right.
-							$topbar.classList.remove("mobile-slide");
-							$markdown.classList.remove("mobile-slide");
-
-							setTimeout(function() {
-								$overlay.style.display = "none";
-							}, 150);
+							hide_sidebar();
 						}
 
-						// Hide the tb shadow div.
-						if (window.matchMedia("(min-width: 769px)").matches) {
-							$shadow.style.display = "none";
-							$shadow.style.top = null;
-						}
+						// // Hide the tb shadow div.
+						// if (window.matchMedia("(min-width: 769px)").matches) {
+						// 	$shadow.style.display = "none";
+						// 	$shadow.style.top = null;
+						// }
 
 						get_headers(45);
 					}),
@@ -969,48 +1106,57 @@ document.onreadystatechange = function() {
 					}
 				});
 
-				document
-					.getElementById("scroll-dynamic")
-					.addEventListener("touchstart", function(e) {
-						var $header = headers.active;
+				/**
+				 * Handle the click/touchstart on the dynamic scroll element.
+				 */
+				var dynamic_handler = function(e) {
+					var $header = headers.active;
+
+					// Scroll to the header.
+					if ($header) {
+						$header.classList.remove("highlight");
+
+						// Let browser know to optimize scrolling.
+						perf_hint($delement, "scroll-position");
 
 						// Scroll to the header.
-						if ($header) {
-							console.log("scrolled");
-							$header.classList.remove("highlight");
+						animate({
+							from: { a: window.pageYOffset },
+							to: {
+								a: get_element_top_pos($header)
+							},
+							duration: 250,
+							onProgress: function(values) {
+								$delement.scrollTop = values.a;
+							},
+							onComplete: function(actualDuration, averageFps) {
+								// Highlight the header.
+								$header.classList.add("highlight");
 
-							// Scroll to the header.
-							animate({
-								from: { a: window.pageYOffset },
-								to: {
-									a: get_element_top_pos($header)
-								},
-								duration: 250,
-								onProgress: function(values) {
-									$delement.scrollTop = values.a;
-								},
-								onComplete: function(
-									actualDuration,
-									averageFps
-								) {
-									// Highlight the header.
-									$header.classList.add("highlight");
-								}
-							});
-
-							// Get the anchor href.
-							var href = $header.children[0].getAttribute("href");
-
-							// Don't store the same hash. Only store if the hash
-							// is different than the current hash.
-							if (location.hash !== href) {
-								history.pushState({}, null, `${href}`);
+								// Remove optimization.
+								perf_unhint($delement);
 							}
+						});
 
-							e.preventDefault();
-							return;
+						// Get the anchor href.
+						var href = $header.children[0].getAttribute("href");
+
+						// Don't store the same hash. Only store if the hash
+						// is different than the current hash.
+						if (location.hash !== href) {
+							history.pushState({}, null, `${href}`);
 						}
-					});
+
+						e.preventDefault();
+						return;
+					}
+				};
+				document
+					.getElementById("scroll-dynamic")
+					.addEventListener("touchstart", dynamic_handler);
+				document
+					.getElementById("scroll-dynamic")
+					.addEventListener("click", dynamic_handler);
 
 				// Listen to clicks.
 				document.addEventListener("click", function(e) {
@@ -1072,6 +1218,9 @@ document.onreadystatechange = function() {
 						// Remove the class before adding.
 						$header.classList.remove("highlight");
 
+						// Let browser know to optimize scrolling.
+						perf_hint($delement, "scroll-position");
+
 						// Scroll to the header.
 						animate({
 							from: { a: window.pageYOffset },
@@ -1086,22 +1235,18 @@ document.onreadystatechange = function() {
 								// Highlight the header.
 								$header.classList.add("highlight");
 
+								// Remove optimization.
+								perf_unhint($delement);
+
 								// Hide the mobile sidebar + overlay.
 								if (
 									getComputedStyle($overlay).display ===
 									"block"
 								) {
+									sb_animation = true;
+
 									// Hide the sidebar.
-									$sidebar.classList.remove("sidebar-show");
-									$overlay.style.opacity = 0;
-
-									// Slide the topbar + markdown contents to the right.
-									$topbar.classList.remove("mobile-slide");
-									$markdown.classList.remove("mobile-slide");
-
-									setTimeout(function() {
-										$overlay.style.display = "none";
-									}, 150);
+									hide_sidebar();
 								}
 							}
 						});
@@ -1121,6 +1266,25 @@ document.onreadystatechange = function() {
 						$target = document.querySelector(
 							`a.link[data-file='${filename}']`
 						).parentNode;
+					} else if (
+						classes.contains("mobile-menu-ham") &&
+						$overlay.style.display !== "block"
+					) {
+						// The hamburger menu was clicked OR the allowed area
+						// range was touched.
+						sb_animation = true;
+
+						// Show the sidebar.
+						show_sidebar();
+
+						return;
+					} else if (classes.contains("sidebar-overlay")) {
+						sb_animation = true;
+
+						// Hide the sidebar.
+						hide_sidebar();
+
+						return;
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -1140,6 +1304,9 @@ document.onreadystatechange = function() {
 						if ($header) {
 							$header.classList.remove("highlight");
 
+							// Let browser know to optimize scrolling.
+							perf_hint($delement, "scroll-position");
+
 							// Scroll to the header.
 							animate({
 								from: { a: window.pageYOffset },
@@ -1156,6 +1323,9 @@ document.onreadystatechange = function() {
 								) {
 									// Highlight the header.
 									$header.classList.add("highlight");
+
+									// Remove optimization.
+									perf_unhint($delement);
 								}
 							});
 
@@ -1197,6 +1367,9 @@ document.onreadystatechange = function() {
 						// Set the HTML.
 						inject(filename, $target);
 
+						// Let browser know to optimize scrolling.
+						perf_hint($delement, "scroll-position");
+
 						// Use a timeout to let the injected HTML load/parse.
 						setTimeout(function() {
 							// Scroll to the top of the page.
@@ -1208,6 +1381,10 @@ document.onreadystatechange = function() {
 								duration: 250,
 								onProgress: function(values) {
 									$delement.scrollTop = values.a;
+								},
+								onComplete: function() {
+									// Remove optimization.
+									perf_unhint($delement);
 								}
 							});
 						}, 300);
@@ -1216,65 +1393,104 @@ document.onreadystatechange = function() {
 					}
 				});
 
+				// Listen to sidebar showing/hiding transition ends to reset
+				// the needed elements.
+				document.addEventListener(
+					which_transition_event("end"),
+					function(e) {
+						// Get needed event info.
+						var $target = e.target;
+						var pname = e.propertyName;
+
+						if ($target === $overlay) {
+							// Get the overlay opacity.
+							var opacity =
+								getComputedStyle($overlay, null).opacity * 1;
+
+							// Reset the overlay.
+							var classes_overlay = $overlay.classList;
+
+							if (opacity === 1) {
+								// Sidebar shown.
+								// Reset the overlay.
+							} else if (opacity === 0) {
+								// Sidebar hidden.
+
+								// Reset the overlay.
+								classes_overlay.add("none");
+								classes_overlay.remove("tdelay1");
+							}
+
+							// Turn off the animation flag.
+							sb_animation = false;
+						}
+					}
+				);
+
 				// [http://patrickmuff.ch/blog/2014/10/01/how-we-fixed-the-webkit-overflow-scrolling-touch-bug-on-ios/]
 				// [https://stackoverflow.com/a/33024813]
 				// [https://stackoverflow.com/a/41601290]
 				// [https://stackoverflow.com/a/41565471]
 				if (touchsupport()) {
-					document.addEventListener("touchstart", function(e) {
-						// Get the target element.
-						var $target = e.target;
-						var classes = $target.classList;
+					document.addEventListener(
+						"touchstart",
+						function(e) {
+							// Prevent further animations if animation ongoing.
+							if (sb_animation) {
+								return;
+							}
 
-						// Get touched coordinates.
-						var touch_info = e.targetTouches[0];
-						var x = touch_info.clientX;
-						var y = touch_info.clientY;
-						// The allowed range the touched pixels can be in
-						// to still allow for the mobile trigger to happen.
-						var range = 45;
+							// Get the target element.
+							var $target = e.target;
+							var classes = $target.classList;
 
-						// The hamburger menu was clicked OR the allowed area
-						// range was touched.
-						if (
-							classes.contains("mobile-menu-ham") ||
-							(x <= range &&
-								y <= range &&
-								$overlay.style.display !== "block")
-						) {
-							// Show the sidebar.
-							$sidebar.classList.add("sidebar-show");
+							// Get touched coordinates.
+							var touch_info = e.targetTouches[0];
+							var x = touch_info.clientX;
+							var y = touch_info.clientY;
+							// The allowed range the touched pixels can be in
+							// to still allow for the mobile trigger to happen.
+							var range = 45;
 
-							// Slide the topbar + markdown contents to the right.
-							$topbar.classList.add("mobile-slide");
-							$markdown.classList.add("mobile-slide");
+							// The hamburger menu was clicked OR the allowed area
+							// range was touched.
+							if (
+								classes.contains("mobile-menu-ham") ||
+								(x <= range &&
+									y <= range &&
+									$overlay.style.display !== "block")
+							) {
+								sb_animation = true;
 
-							$overlay.style.display = "block";
-							setTimeout(function() {
-								$overlay.style.opacity = 1;
-							}, 150);
-						} else if (classes.contains("sidebar-overlay")) {
-							// The sidebar overlay was clicked.
+								// Show the sidebar.
+								show_sidebar();
 
-							// Hide the sidebar.
-							$sidebar.classList.remove("sidebar-show");
-							$target.style.opacity = 0;
+								// Prevent later click event handlers.
+								// [https://stackoverflow.com/a/39575105]
+								// [https://stackoverflow.com/a/48536959]
+								// [https://stackoverflow.com/a/41289160]
+								e.preventDefault();
+							} else if (classes.contains("sidebar-overlay")) {
+								sb_animation = true;
 
-							// Slide the topbar + markdown contents to the right.
-							$topbar.classList.remove("mobile-slide");
-							$markdown.classList.remove("mobile-slide");
+								// Hide the sidebar.
+								hide_sidebar();
 
-							setTimeout(function() {
-								$target.style.display = "none";
-							}, 150);
-						}
+								// Prevent later click event handlers.
+								// [https://stackoverflow.com/a/39575105]
+								// [https://stackoverflow.com/a/48536959]
+								// [https://stackoverflow.com/a/41289160]
+								e.preventDefault();
+							}
 
-						// [https://stackoverflow.com/a/42288386]
-						// [https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action]
-						// [https://github.com/OwlCarousel2/OwlCarousel2/issues/1790]
-						// [https://developers.google.com/web/updates/2017/01/scrolling-intervention]
-						// e.preventDefault();
-					});
+							// [https://stackoverflow.com/a/42288386]
+							// [https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action]
+							// [https://github.com/OwlCarousel2/OwlCarousel2/issues/1790]
+							// [https://developers.google.com/web/updates/2017/01/scrolling-intervention]
+							// e.preventDefault();
+						},
+						{ passive: false }
+					);
 
 					// Store the Y position on touch start.
 					var _clientY = null;
@@ -1344,212 +1560,212 @@ document.onreadystatechange = function() {
 						false
 					);
 
-					// Touch slide code.
+					// // Touch slide code.
 
-					var reset;
-					var x_start;
-					var velocity;
-					var slide_target;
-					var slide_animation;
-					var sidebar_width;
-					document.body.addEventListener(
-						"touchstart",
-						function(e) {
-							// The touched on element must be the sidebar or a sidebar
-							// descendant.
-							if (build_path(e).includes($sidebar)) {
-								// Get the touch event information.
-								var info = e.targetTouches[0];
+					// var reset;
+					// var x_start;
+					// var velocity;
+					// var slide_target;
+					// var slide_animation;
+					// var sidebar_width;
+					// document.body.addEventListener(
+					// 	"touchstart",
+					// 	function(e) {
+					// 		// The touched on element must be the sidebar or a sidebar
+					// 		// descendant.
+					// 		if (build_path(e).includes($sidebar)) {
+					// 			// Get the touch event information.
+					// 			var info = e.targetTouches[0];
 
-								// Get the touched element and x coordinate.
-								x_start = info.pageX;
-								slide_target = info.target;
-								// Store the start time/x position to later determine
-								// the slide velocity on touchmove.
-								velocity = {
-									time: e.timeStamp,
-									position: x_start
-								};
+					// 			// Get the touched element and x coordinate.
+					// 			x_start = info.pageX;
+					// 			slide_target = info.target;
+					// 			// Store the start time/x position to later determine
+					// 			// the slide velocity on touchmove.
+					// 			velocity = {
+					// 				time: e.timeStamp,
+					// 				position: x_start
+					// 			};
 
-								// Store the sidebar with.
-								sidebar_width =
-									getComputedStyle(
-										$sidebar,
-										null
-									).width.replace("px", "") * 1;
+					// 			// Store the sidebar with.
+					// 			sidebar_width =
+					// 				getComputedStyle(
+					// 					$sidebar,
+					// 					null
+					// 				).width.replace("px", "") * 1;
 
-								// Remove all transitions to animations instant.
-								var $els = [
-									$sidebar,
-									$topbar,
-									$markdown,
-									$shadow,
-									$overlay
-								];
-								for (var i = 0, l = $els.length; i < l; i++) {
-									$els[i].style.transition = "none";
-								}
+					// 			// Remove all transitions to animations instant.
+					// 			var $els = [
+					// 				$sidebar,
+					// 				$topbar,
+					// 				$markdown,
+					// 				$shadow,
+					// 				$overlay
+					// 			];
+					// 			for (var i = 0, l = $els.length; i < l; i++) {
+					// 				$els[i].style.transition = "none";
+					// 			}
 
-								// Prevent any unintentional scrolling.
-								// e.preventDefault();
-								// e.stopPropagation();
-							}
-						}
-						// { passive: false }
-					);
+					// 			// Prevent any unintentional scrolling.
+					// 			// e.preventDefault();
+					// 			// e.stopPropagation();
+					// 		}
+					// 	}
+					// 	// { passive: false }
+					// );
 
-					document.body.addEventListener(
-						"touchmove",
-						function(e) {
-							if (slide_target && velocity) {
-								// Get the touch event information.
-								var info = e.targetTouches[0];
-								var x = info.pageX;
+					// document.body.addEventListener(
+					// 	"touchmove",
+					// 	function(e) {
+					// 		if (slide_target && velocity) {
+					// 			// Get the touch event information.
+					// 			var info = e.targetTouches[0];
+					// 			var x = info.pageX;
 
-								// Calculate the change in movement.
-								var delta_x = x - x_start;
-								var delta_x_content = sidebar_width + delta_x;
+					// 			// Calculate the change in movement.
+					// 			var delta_x = x - x_start;
+					// 			var delta_x_content = sidebar_width + delta_x;
 
-								// [https://stackoverflow.com/a/10996533]
-								// Calculate the swipe velocity.
-								// Formula: v = abs(x2 - x1) / (t2 - t1)
-								var v =
-									Math.abs(x - velocity.position) /
-									(e.timeStamp - velocity.time);
+					// 			// [https://stackoverflow.com/a/10996533]
+					// 			// Calculate the swipe velocity.
+					// 			// Formula: v = abs(x2 - x1) / (t2 - t1)
+					// 			var v =
+					// 				Math.abs(x - velocity.position) /
+					// 				(e.timeStamp - velocity.time);
 
-								// Default to false.
-								reset = false;
+					// 			// Default to false.
+					// 			reset = false;
 
-								// Set a left bound. Once hit anymore movement
-								// will be canceled.
-								if (delta_x_content <= 0) {
-									return;
-								} else if (
-									// Once the delta_x_content difference is
-									// less than 150 pixels or the velocity is
-									// greater or equal to 1 the reset flag is
-									// set. Therefore on touchend when the flag
-									// is set the sidebar and everything else
-									// will be reset.
-									delta_x_content <= 150 ||
-									Math.floor(v) >= 1
-								) {
-									reset = true;
-								}
+					// 			// Set a left bound. Once hit anymore movement
+					// 			// will be canceled.
+					// 			if (delta_x_content <= 0) {
+					// 				return;
+					// 			} else if (
+					// 				// Once the delta_x_content difference is
+					// 				// less than 150 pixels or the velocity is
+					// 				// greater or equal to 1 the reset flag is
+					// 				// set. Therefore on touchend when the flag
+					// 				// is set the sidebar and everything else
+					// 				// will be reset.
+					// 				delta_x_content <= 150 ||
+					// 				Math.floor(v) >= 1
+					// 			) {
+					// 				reset = true;
+					// 			}
 
-								// If the movement is to the left animate the
-								// movement.
-								if (Math.sign(delta_x) === -1) {
-									slide_animation = request_aframe(function(
-										timestamp
-									) {
-										var css_rule = "transform";
-										var priority = "important";
-										var content_def = `translateX(${delta_x_content}px)`;
+					// 			// If the movement is to the left animate the
+					// 			// movement.
+					// 			if (Math.sign(delta_x) === -1) {
+					// 				slide_animation = request_aframe(function(
+					// 					timestamp
+					// 				) {
+					// 					var css_rule = "transform";
+					// 					var priority = "important";
+					// 					var content_def = `translateX(${delta_x_content}px)`;
 
-										// [https://stackoverflow.com/a/7919637]
-										$sidebar.style.setProperty(
-											css_rule,
-											`translateX(${delta_x}px)`,
-											priority
-										);
-										$topbar.style.setProperty(
-											css_rule,
-											content_def,
-											priority
-										);
-										$markdown.style.setProperty(
-											css_rule,
-											content_def,
-											priority
-										);
-										$shadow.style.setProperty(
-											css_rule,
-											content_def,
-											priority
-										);
+					// 					// [https://stackoverflow.com/a/7919637]
+					// 					$sidebar.style.setProperty(
+					// 						css_rule,
+					// 						`translateX(${delta_x}px)`,
+					// 						priority
+					// 					);
+					// 					$topbar.style.setProperty(
+					// 						css_rule,
+					// 						content_def,
+					// 						priority
+					// 					);
+					// 					$markdown.style.setProperty(
+					// 						css_rule,
+					// 						content_def,
+					// 						priority
+					// 					);
+					// 					$shadow.style.setProperty(
+					// 						css_rule,
+					// 						content_def,
+					// 						priority
+					// 					);
 
-										// As the slide movement happens add opacity
-										// to the content elements and sidebar.
-										var opacity_calc =
-											Math.abs(1 / delta_x) * 40;
-										$overlay.style.opacity =
-											Math.abs(opacity_calc) - 0.15;
-										$sidebar.style.opacity = opacity_calc;
-									});
+					// 					// As the slide movement happens add opacity
+					// 					// to the content elements and sidebar.
+					// 					var opacity_calc =
+					// 						Math.abs(1 / delta_x) * 40;
+					// 					$overlay.style.opacity =
+					// 						Math.abs(opacity_calc) - 0.15;
+					// 					$sidebar.style.opacity = opacity_calc;
+					// 				});
 
-									// Prevent y-scrolling.
-									e.preventDefault();
-									e.stopPropagation();
-								}
-							}
-						},
+					// 				// Prevent y-scrolling.
+					// 				e.preventDefault();
+					// 				e.stopPropagation();
+					// 			}
+					// 		}
+					// 	},
 
-						{ passive: false }
-					);
+					// 	{ passive: false }
+					// );
 
-					document.body.addEventListener("touchend", function(e) {
-						// Always reset.
-						x_start = null;
-						velocity = null;
+					// document.body.addEventListener("touchend", function(e) {
+					// 	// Always reset.
+					// 	x_start = null;
+					// 	velocity = null;
 
-						if (!slide_target) {
-							return;
-						}
+					// 	if (!slide_target) {
+					// 		return;
+					// 	}
 
-						var cancel =
-							window.cancelAnimationFrame ||
-							window.mozCancelAnimationFrame;
+					// 	var cancel =
+					// 		window.cancelAnimationFrame ||
+					// 		window.mozCancelAnimationFrame;
 
-						if (reset) {
-							// Cancel any on-going sliding animate frame request.
-							if (slide_animation) {
-								cancel(slide_animation);
-								slide_animation = null;
-							}
+					// 	if (reset) {
+					// 		// Cancel any on-going sliding animate frame request.
+					// 		if (slide_animation) {
+					// 			cancel(slide_animation);
+					// 			slide_animation = null;
+					// 		}
 
-							// Clear variables.
-							reset = null;
-							slide_target = null;
+					// 		// Clear variables.
+					// 		reset = null;
+					// 		slide_target = null;
 
-							// Remove transitions
-							$sidebar.removeAttribute("style");
-							$topbar.removeAttribute("style");
-							$markdown.removeAttribute("style");
-							$shadow.removeAttribute("style");
-							$overlay.removeAttribute("style");
-							$overlay.style.display = "block";
+					// 		// Remove transitions
+					// 		$sidebar.removeAttribute("style");
+					// 		$topbar.removeAttribute("style");
+					// 		$markdown.removeAttribute("style");
+					// 		$shadow.removeAttribute("style");
+					// 		$overlay.removeAttribute("style");
+					// 		$overlay.style.display = "block";
 
-							// The sidebar overlay was clicked.
+					// 		// The sidebar overlay was clicked.
 
-							// Hide the sidebar.
-							$sidebar.classList.remove("sidebar-show");
-							$overlay.style.opacity = 0;
+					// 		// Hide the sidebar.
+					// 		$sidebar.classList.remove("sidebar-show");
+					// 		$overlay.style.opacity = 0;
 
-							// Slide the topbar + markdown contents to the right.
-							$topbar.classList.remove("mobile-slide");
-							$markdown.classList.remove("mobile-slide");
-							$overlay.style.display = "none";
-						} else {
-							// The slide movement occurred but the movement was
-							// not enough to cause the reset.
+					// 		// Slide the topbar + markdown contents to the right.
+					// 		$topbar.classList.remove("mobile-slide");
+					// 		$markdown.classList.remove("mobile-slide");
+					// 		$overlay.style.display = "none";
+					// 	} else {
+					// 		// The slide movement occurred but the movement was
+					// 		// not enough to cause the reset.
 
-							// Cancel any on-going sliding animate frame request.
-							if (slide_animation) {
-								cancel(slide_animation);
-								slide_animation = null;
-							}
+					// 		// Cancel any on-going sliding animate frame request.
+					// 		if (slide_animation) {
+					// 			cancel(slide_animation);
+					// 			slide_animation = null;
+					// 		}
 
-							// Remove transitions
-							$sidebar.removeAttribute("style");
-							$topbar.removeAttribute("style");
-							$markdown.removeAttribute("style");
-							$shadow.removeAttribute("style");
-							$overlay.removeAttribute("style");
-							$overlay.style.display = "block";
-							$overlay.style.opacity = 1;
-						}
-					});
+					// 		// Remove transitions
+					// 		$sidebar.removeAttribute("style");
+					// 		$topbar.removeAttribute("style");
+					// 		$markdown.removeAttribute("style");
+					// 		$shadow.removeAttribute("style");
+					// 		$overlay.removeAttribute("style");
+					// 		$overlay.style.display = "block";
+					// 		$overlay.style.opacity = 1;
+					// 	}
+					// });
 				}
 			})
 			.catch(function(msg) {
