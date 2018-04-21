@@ -1,6 +1,6 @@
 /*transition: height 500ms cubic-bezier(0.23, 1, 0.32, 1); height: 0; overflow-y: hidden; height: 138.96px*/
 
-@keyframes animate-fadein {
+/*@keyframes animate-fadein {
 	0% {
 		transform: translateY(-15px);
 		opacity: 0;
@@ -15,6 +15,23 @@
 .animate-fadein {
 	animation-name: animate-fadein;
 	animation-duration: 0.3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}*/
+
+@keyframes animate-fadein {
+	0% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
+
+.animate-fadein {
+	animation-name: animate-fadein;
+	animation-duration: 0.2s;
 	animation-timing-function: ease-in-out;
 	animation-iteration-count: 1;
 }
