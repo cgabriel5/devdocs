@@ -428,9 +428,7 @@ document.onreadystatechange = function() {
 				 *
 				 * @return {undefined} - Nothing.
 				 */
-				function get_headers(offset) {
-					offset = offset || 0;
-
+				function get_headers() {
 					// Empty the headers object.
 					for (var key in headers) {
 						if (headers.hasOwnProperty(key)) {
@@ -438,13 +436,19 @@ document.onreadystatechange = function() {
 						}
 					}
 
+					// Take that into account the markdown body top margin.
+					var offset =
+						getComputedStyle(
+							$markdown.children[0],
+							null
+						).marginTop.replace("px", "") * 1;
+
 					// Get the headers.
 					var $headers = document.querySelectorAll("h2,h3,h4,h5,h6");
 					// Store the headers top offset positions.
 					var list = [];
 
-					// Loop over the headers to get the top
-					// offset positions.
+					// Loop over the headers to get the top offset positions.
 					for (var i = 0, l = $headers.length; i < l; i++) {
 						// Get the header.
 						var $header = $headers[i];
@@ -556,10 +560,12 @@ document.onreadystatechange = function() {
 								// Scroll to the position. Don't use an animation
 								// as alt + (<-- or -->) needs to be done and
 								// felt very quick.
-								$delement.scrollTop = get_element_top_pos(
-									$parent
-								);
-								$parent.classList.add("highlight");
+								setTimeout(function() {
+									$delement.scrollTop = get_element_top_pos(
+										$parent
+									);
+									$parent.classList.add("highlight");
+								}, 0);
 							}
 						}
 
@@ -684,18 +690,21 @@ document.onreadystatechange = function() {
 										// Let browser know to optimize scrolling.
 										perf_hint($delement, "scroll-position");
 
+										// Animation from-to.
+										var from = window.pageYOffset;
+										var to = get_element_top_pos($parent);
+
 										// Use a timeout to let the injected HTML load
 										// and parse properly. Otherwise, getBoundingClientRect
 										// will return incorrect values.
 										setTimeout(function() {
 											animate({
-												from: { a: window.pageYOffset },
-												to: {
-													a: get_element_top_pos(
-														$parent
-													)
-												},
-												duration: 250,
+												from: { a: from },
+												to: { a: to },
+												duration: scroll_duration(
+													from,
+													to
+												),
 												onProgress: function(values) {
 													$delement.scrollTop =
 														values.a;
@@ -741,16 +750,18 @@ document.onreadystatechange = function() {
 								// Let browser know to optimize scrolling.
 								perf_hint($delement, "scroll-position");
 
+								// Animation from-to.
+								var from = window.pageYOffset;
+								var to = get_element_top_pos($parent);
+
 								// Use a timeout to let the injected HTML load
 								// and parse properly. Otherwise, getBoundingClientRect
 								// will return incorrect values.
 								setTimeout(function() {
 									animate({
-										from: { a: window.pageYOffset },
-										to: {
-											a: get_element_top_pos($parent)
-										},
-										duration: 250,
+										from: { a: from },
+										to: { a: to },
+										duration: scroll_duration(from, to),
 										onProgress: function(values) {
 											$delement.scrollTop = values.a;
 										},
@@ -868,6 +879,31 @@ document.onreadystatechange = function() {
 				 */
 				function perf_unhint($el) {
 					$el.style.willChange = "auto";
+				}
+
+				/**
+				 * Calculate the duration based on the amount needed to
+				 *     scroll. The more distance needed to be scrolled,
+				 *     the slower the scroll. The shorter the scroll
+				 *     distance the faster the scroll animation.
+				 *
+				 * @param  {number} from [description]
+				 * @param  {number} to   [description]
+				 * @return {number} - The calculated scroll duration.
+				 */
+				function scroll_duration(from, to) {
+					// Get the scrolling distance.
+					var delta_distance = Math.abs(to - from);
+
+					// Calculate the duration.
+					var duration = delta_distance / 1.5 + delta_distance * 0.4;
+
+					// Reset the duration to fit within the min/max bounds.
+					// [https://stackoverflow.com/a/16861139]
+					duration = Math.min(duration, 800);
+					duration = Math.max(duration, 150);
+
+					return duration;
 				}
 
 				// AppCode:Scoped:Inner //
@@ -1061,7 +1097,7 @@ document.onreadystatechange = function() {
 						// 	$shadow.style.top = null;
 						// }
 
-						get_headers(45);
+						get_headers();
 					}),
 					200
 				);
@@ -1119,13 +1155,15 @@ document.onreadystatechange = function() {
 						// Let browser know to optimize scrolling.
 						perf_hint($delement, "scroll-position");
 
+						// Animation from-to.
+						var from = window.pageYOffset;
+						var to = get_element_top_pos($header);
+
 						// Scroll to the header.
 						animate({
-							from: { a: window.pageYOffset },
-							to: {
-								a: get_element_top_pos($header)
-							},
-							duration: 250,
+							from: { a: from },
+							to: { a: to },
+							duration: scroll_duration(from, to),
 							onProgress: function(values) {
 								$delement.scrollTop = values.a;
 							},
@@ -1221,13 +1259,15 @@ document.onreadystatechange = function() {
 						// Let browser know to optimize scrolling.
 						perf_hint($delement, "scroll-position");
 
+						// Animation from-to.
+						var from = window.pageYOffset;
+						var to = get_element_top_pos($header);
+
 						// Scroll to the header.
 						animate({
-							from: { a: window.pageYOffset },
-							to: {
-								a: get_element_top_pos($header)
-							},
-							duration: 250,
+							from: { a: from },
+							to: { a: to },
+							duration: scroll_duration(from, to),
 							onProgress: function(values) {
 								$delement.scrollTop = values.a;
 							},
@@ -1307,13 +1347,15 @@ document.onreadystatechange = function() {
 							// Let browser know to optimize scrolling.
 							perf_hint($delement, "scroll-position");
 
+							// Animation from-to.
+							var from = window.pageYOffset;
+							var to = get_element_top_pos($header);
+
 							// Scroll to the header.
 							animate({
-								from: { a: window.pageYOffset },
-								to: {
-									a: get_element_top_pos($header)
-								},
-								duration: 250,
+								from: { a: from },
+								to: { a: to },
+								duration: scroll_duration(from, to),
 								onProgress: function(values) {
 									$delement.scrollTop = values.a;
 								},
@@ -1370,15 +1412,17 @@ document.onreadystatechange = function() {
 						// Let browser know to optimize scrolling.
 						perf_hint($delement, "scroll-position");
 
+						// Animation from-to.
+						var from = window.pageYOffset;
+						var to = 0;
+
 						// Use a timeout to let the injected HTML load/parse.
 						setTimeout(function() {
 							// Scroll to the top of the page.
 							animate({
-								from: { a: window.pageYOffset },
-								to: {
-									a: 0
-								},
-								duration: 250,
+								from: { a: from },
+								to: { a: to },
+								duration: scroll_duration(from, to),
 								onProgress: function(values) {
 									$delement.scrollTop = values.a;
 								},

@@ -314,6 +314,7 @@ ul.file-headers {
 
 .tb-logo {
 	cursor: pointer;
+	margin-right: -5px;
 }
 
 .tb-shadow {
