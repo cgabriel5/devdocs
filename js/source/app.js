@@ -111,6 +111,37 @@ document.onreadystatechange = function() {
 		};
 
 		/**
+		 * Throttles provided function.
+		 *
+		 * @param {function} func - The function to throttle.
+		 * @param {number} time - The time to throttle by.
+		 * @param {object} scope - The scope in which to run function with.
+		 *
+		 * @return {function} - The new throttled function.
+		 * @resouce [https://remysharp.com/2010/07/21/throttling-function-calls]
+		 */
+		var throttle = function(func, time, scope) {
+			time = time || 250;
+			var last, deferTimer;
+			return function() {
+				var context = scope || this,
+					now = +new Date(),
+					args = arguments;
+				if (last && now < last + time) {
+					// hold on to it
+					clearTimeout(deferTimer);
+					deferTimer = setTimeout(function() {
+						last = now;
+						func.apply(context, args);
+					}, time);
+				} else {
+					last = now;
+					func.apply(context, args);
+				}
+			};
+		};
+
+		/**
 		 * Determine correct requestAnimationFrame function.
 
 		 * @return {function} - The correct function to use.
@@ -436,6 +467,8 @@ document.onreadystatechange = function() {
 						}
 					}
 
+					// document.getElementById("test").innerHTML = "";
+
 					// Take that into account the markdown body top margin.
 					var offset =
 						getComputedStyle(
@@ -454,12 +487,61 @@ document.onreadystatechange = function() {
 						var $header = $headers[i];
 						// Get the top offset position.
 						var pos = Math.floor(
-							$header.offsetTop + $header.offsetHeight - offset
+							// $header.offsetTop + $header.offsetHeight - offset
+							$header.offsetTop - offset - 6
+							// $header.getBoundingClientRect().top - offset - 6
 						);
+
+						// 						// Inject the clone to the DOM.
+						// 						document.getElementById("test").insertAdjacentHTML(
+						// 							"afterbegin",
+
+						// 							// <div class="tested" style="
+						// 							//     position: absolute;
+						// 							//     z-index: ${123 + i};
+						// 							//     left: 0;
+						// 							//     top: ${$header.offsetTop}px;
+						// 							//     width: 100%;
+						// 							//     height: 2px;
+						// 							//     background: coral;
+						// 							// "></div><div class="tested" style="
+						// 							//     position: absolute;
+						// 							//     z-index: ${124 + i};
+						// 							//     left: 0;
+						// 							//     top: ${$header.offsetTop - offset - 6}px;
+						// 							//     width: 100%;
+						// 							//     height: 2px;
+						// 							//     background: green;
+						// 							// "></div>
+
+						// 							`<div class="tested" style="
+						//     position: absolute;
+						//     z-index: ${124 + i};
+						//     left: 0;
+						//     top: ${$header.offsetTop - offset - 6}px;
+						//     width: 100%;
+						//     height: 2px;
+						//     background: blue;
+						// "></div>`
+						// 						);
+
+						// 						// console.log(
+						// 						// 	i,
+						// 						// 	offset,
+						// 						// 	"coral",
+						// 						// 	$header.offsetTop,
+						// 						// 	"green",
+						// 						// 	$header.offsetTop - offset - 6,
+						// 						// 	$header.getBoundingClientRect().top,
+						// 						// 	$markdown.children[0].getBoundingClientRect().top
+						// 						// );
+
 						// Store the header offset.
 						list.push(pos);
 						headers[pos] = $header;
 					}
+
+					// console.log(">>>>", list, headers);
 
 					// Store the list.
 					headers.list = list;
@@ -529,7 +611,9 @@ document.onreadystatechange = function() {
 					// Re-grab the markdown element.
 					$markdown = document.getElementById("markdown");
 
-					get_headers();
+					setTimeout(function() {
+						get_headers();
+					}, 1500);
 				}
 
 				/**
@@ -974,93 +1058,160 @@ document.onreadystatechange = function() {
 				var $tb_filename = document.getElementById("scroll-filename");
 				var $tb_static = document.getElementById("scroll-static");
 				var $tb_dynamic = document.getElementById("scroll-dynamic");
+				var $tb_scroll = document.getElementById("topbar-scroll");
+
 				var last_top_text;
+				var scroll_count = -1;
+				var tb2_fadeout_timer;
 				//
-				window.addEventListener("scroll", function(event) {
-					var y = Math.floor(window.pageYOffset);
+				window.addEventListener(
+					"scroll",
+					throttle(function(event) {
+						// Get the y scroll position.
+						var y = Math.floor(window.pageYOffset);
 
-					// // Show the percentage scrolled.
-					// request_aframe(function(timestamp) {
-					// 	$scrolled.style.width = `${percent_scrolled() + ""}%`;
-					// });
+						// console.log(">>>", y);
 
-					// // Show/hide tb shadow.
-					// if (!window.matchMedia("(min-width: 769px)").matches) {
-					// 	if (y <= 0) {
-					// 		$shadow.style.display = "none";
-					// 	} else {
-					// 		request_aframe(function(timestamp) {
-					// 			$shadow.style.display = "block";
-					// 			$shadow.style.top =
-					// 				y <= 16 ? -15 + y / 4 + "px" : "-10px";
-					// 		});
-					// 	}
-					// }
+						// // As the scroll event fires many times a second it can
+						// // be very taxing on the app performance. Therefore, cut
+						// // down to n amount of times the event gets fired.
+						// // if (++scroll_count % 3 !== 0) {
+						// if (++scroll_count % 2 !== 0) {
+						// 	console.log(">>>>>>>>>>>>>", `on ${scroll_count}`);
+						// 	return;
+						// }
 
-					// Show the current header thats in view/range.
-					var list = headers.list;
-					if (list) {
-						// [https://stackoverflow.com/a/1147768]
-						var body = document.body;
-						var max_scroll_height = Math.max(
-							body.scrollHeight,
-							body.offsetHeight,
-							$delement.clientHeight,
-							$delement.scrollHeight,
-							$delement.offsetHeight
-						);
+						// // Get the y scroll position.
+						// var y = Math.floor(window.pageYOffset);
 
-						var $header;
-						var last = list[list.length - 1] || 0;
-						for (var i = 0, l = list.length; i < l; i++) {
-							var current = list[i];
-							var next = list[i + 1] || last;
-							// If it's the last position extend to the max
-							// window scroll height.
-							if (l - 1 === i) {
-								next = max_scroll_height;
-							}
+						// console.log(">>>", y);
 
-							// Position be either one of the following:
-							if (y >= current && y <= next) {
-								var $header = headers[current];
-								// Store the header.
-								headers.active = $header;
-								break;
-							}
-						}
+						// // Show the percentage scrolled.
+						// request_aframe(function(timestamp) {
+						// 	$scrolled.style.width = `${percent_scrolled() + ""}%`;
+						// });
 
-						if ($header) {
-							// $tb_logo.classList.remove("none");
-							$tb_static.classList.add("none");
-							$tb_dynamic.classList.remove("none");
-						} else {
-							// $tb_logo.classList.add("none");
-							$tb_dynamic.classList.add("none");
-							$tb_static.classList.remove("none");
-						}
+						// // Show/hide tb shadow.
+						// if (!window.matchMedia("(min-width: 769px)").matches) {
+						// 	if (y <= 0) {
+						// 		$shadow.style.display = "none";
+						// 	} else {
+						// 		request_aframe(function(timestamp) {
+						// 			$shadow.style.display = "block";
+						// 			$shadow.style.top =
+						// 				y <= 16 ? -15 + y / 4 + "px" : "-10px";
+						// 		});
+						// 	}
+						// }
 
-						var text = $header
-							? $header.textContent.trim()
-							: data.title;
-						// Store the text.
-						if (text !== last_top_text) {
-							// Get the file name alias from the data.
-							var filename = "devdocs";
-							var dirs = data.dirs[0].files;
-							for (var i = 0, l = dirs.length; i < l; i++) {
-								if (dirs[i].dirname === current_file) {
-									filename = dirs[i].alias;
+						// Show the current header thats in view/range.
+						var list = headers.list;
+						if (list) {
+							// [https://stackoverflow.com/a/1147768]
+							var body = document.body;
+							var max_scroll_height = Math.max(
+								body.scrollHeight,
+								body.offsetHeight,
+								$delement.clientHeight,
+								$delement.scrollHeight,
+								$delement.offsetHeight
+							);
+
+							var $header;
+							var last = list[list.length - 1] || 0;
+							for (var i = 0, l = list.length; i < l; i++) {
+								var current = list[i];
+								var next = list[i + 1] || last;
+								// If it's the last position extend to the max
+								// window scroll height.
+								if (l - 1 === i) {
+									next = max_scroll_height;
+								}
+
+								// Position be either one of the following:
+								if (y >= current && y <= next) {
+									var $header = headers[current];
+									// Store the header.
+									headers.active = $header;
 									break;
 								}
 							}
 
-							$tb_dirname.textContent = filename;
-							$tb_filename.textContent = text;
-							last_top_text = text;
+							// if ($header) {
+							// 	// $tb_logo.classList.remove("none");
+							// 	$tb_static.classList.add("none");
+							// 	$tb_dynamic.classList.remove("none");
+							// } else {
+							// 	// $tb_logo.classList.add("none");
+							// 	$tb_dynamic.classList.add("none");
+							// 	$tb_static.classList.remove("none");
+							// }
+
+							// console.log("...", [$header, y]);
+							if ($header) {
+								if (
+									// $tb_scroll.classList.contains("opa0") &&
+									$tb_scroll.classList.contains("none") ||
+									tb2_fadeout_timer
+								) {
+									// Clear any existing timer.
+									if (tb2_fadeout_timer) {
+										clearTimeout(tb2_fadeout_timer);
+									}
+
+									// Remove the class.
+									$tb_scroll.classList.remove("opa0");
+									$tb_scroll.classList.remove("none");
+									$tb_scroll.classList.add("opa1");
+								}
+							} else {
+								if (
+									// $tb_scroll.classList.contains("opa1") &&
+									!$tb_scroll.classList.contains("none") ||
+									y <= 0
+								) {
+									// Remove the class.
+									$tb_scroll.classList.remove("opa1");
+									$tb_scroll.classList.add("opa0");
+
+									if (!tb2_fadeout_timer) {
+										tb2_fadeout_timer = setTimeout(
+											function() {
+												$tb_scroll.classList.add(
+													"none"
+												);
+												tb2_fadeout_timer = null;
+											},
+											200
+										);
+									}
+								}
+
+								return;
+							}
+
+							var text = $header
+								? $header.textContent.trim()
+								: data.title;
+							// Store the text.
+							if (text !== last_top_text) {
+								// Get the file name alias from the data.
+								var filename = "devdocs";
+								var dirs = data.dirs[0].files;
+								for (var i = 0, l = dirs.length; i < l; i++) {
+									if (dirs[i].dirname === current_file) {
+										filename = dirs[i].alias;
+										break;
+									}
+								}
+
+								$tb_dirname.textContent = filename;
+								$tb_filename.textContent = text;
+								last_top_text = text;
+							}
 						}
-					}
-				});
+					}, 75)
+				);
 
 				// When the URL changes (history) update the HTML content.
 				window.addEventListener("popstate", function(event) {
@@ -1155,9 +1306,14 @@ document.onreadystatechange = function() {
 						// Let browser know to optimize scrolling.
 						perf_hint($delement, "scroll-position");
 
+						// Note: Find a way to not have this hard-coded.
+						var dynamic_scroller_height = 33;
+
 						// Animation from-to.
 						var from = window.pageYOffset;
-						var to = get_element_top_pos($header);
+						var to =
+							get_element_top_pos($header) -
+							dynamic_scroller_height;
 
 						// Scroll to the header.
 						animate({
@@ -1189,12 +1345,8 @@ document.onreadystatechange = function() {
 						return;
 					}
 				};
-				document
-					.getElementById("scroll-dynamic")
-					.addEventListener("touchstart", dynamic_handler);
-				document
-					.getElementById("scroll-dynamic")
-					.addEventListener("click", dynamic_handler);
+				$tb_scroll.addEventListener("touchstart", dynamic_handler);
+				$tb_scroll.addEventListener("click", dynamic_handler);
 
 				// Listen to clicks.
 				document.addEventListener("click", function(e) {

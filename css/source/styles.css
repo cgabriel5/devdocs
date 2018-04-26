@@ -350,6 +350,32 @@ ul.file-headers {
 	opacity: 0.7;
 }
 
+.topbar-scroll {
+	position: absolute;
+	top: 0;
+	left: 0;
+	/*background: #2578f8;*//*background: #2578f8;*//*background: #5a79c7;*/
+	background: rgba(90, 121, 199, 0.98);
+	/* background: #c75a5a; *//* background: #7c5ac7; *//* background: #5a83c7; *//* background: #3367d6; *//* background: white; *//* background: #fff5cc; *//* background: #f3f3f3; *//* color: #71471c; *//* color: #2578f8; */
+	color: white;
+	width: 100%;
+	padding: 8px 20px;
+	z-index: 1;
+	margin-top: 42px;
+	font-size: 12px;
+	font-weight: 700;
+	display: flex;
+	cursor: pointer;
+	transition: 0.2s ease-in-out;
+	border-top: 1px solid rgba(0, 0, 0, 0.0975);
+	border-bottom: 1px solid #71471c12;
+	backdrop-filter: blur(10px);
+}
+
+.topbar-scroll:active {
+	opacity: 0.5;
+}
+
 .scroll-def {
 	font-size: 12px;
 	padding: 4px 8px;
@@ -358,9 +384,9 @@ ul.file-headers {
 	border: 1px solid rgba(0, 0, 0, 0.0975);
 }
 
-.scroll-dynamic {
+/*.scroll-dynamic {
 	display: flex;
-}
+}*/
 
 .scroll-df-text {
 	white-space: nowrap;
@@ -527,11 +553,10 @@ a {
 @media (max-width: 324px) {
 	/*	.app {
 		width: auto;
-	}*/
-
+	}*//*
 	.scroll-df-text {
 		max-width: 90px;
-	}
+	}*/
 }
 
 .link-socials {
