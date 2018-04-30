@@ -12,7 +12,7 @@ body {
                  "Segoe UI Emoji",
                  "Segoe UI Symbol";
 	font-size: 16px;
-	overflow-y: scroll;
+	/*overflow-y: scroll;*/
 }
 
 .app {
@@ -23,7 +23,7 @@ body {
 	margin: auto;
 	min-height: calc(100vh);
 	height: auto;
-	overflow-x: hidden;
+	/*overflow-x: hidden;*/
 }
 
 .sidebar {
@@ -52,7 +52,7 @@ body {
 }
 
 .markdown {
-	overflow: auto;
+	/*overflow: auto;*/
 	margin-left: 240px;
 	width: 100%;
 }
@@ -493,6 +493,18 @@ a {
 }
 
 @media (min-width: 768px) {
+	body {
+		overflow-y: scroll;
+	}
+
+	.app {
+		overflow-x: hidden;
+	}
+
+	.markdown {
+		overflow: auto;
+	}
+
 	.tb-shadow {
 		display: none !important;
 	}
@@ -548,6 +560,42 @@ a {
 		padding: 15px;
 		font-size: 14px;
 	}
+
+	.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6 {
+		position: sticky !important;
+		top: 43px;
+		background: white;
+		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
+        margin-left: 0px;
+        width: calc(100% + 0px);
+        width: 100%;*/
+		display: flex;
+		flex-flow: row nowrap;
+		white-space: nowrap;
+		overflow-x: auto;
+		overflow-y: hidden;
+		text-overflow: initial;
+		/* Full Width Tweak *//*font-size: 15px;*/
+		border-radius: 0 !important;
+		margin-left: -15px;
+		width: calc(100% + 30px);
+		padding: 10px 20px;
+		/* Make scrolling smooth in iOS */
+		overflow-scrolling: touch;
+	}/*
+	.markdown h3::after {
+		content: "";
+		position: fixed;
+		width: 23px;
+		height: 100%;
+		margin-top: -8px;
+		right: 0;
+		top: 0;
+		background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%);
+		background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 60%);
+		background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%);
+	}*/
 }
 
 @media (max-width: 324px) {
