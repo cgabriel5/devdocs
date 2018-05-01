@@ -582,6 +582,7 @@ a {
 		padding: 10px 20px;
 		/* Make scrolling smooth in iOS */
 		overflow-scrolling: touch;
+		z-index: 1;
 	}/*
 	.markdown h3::after {
 		content: "";
