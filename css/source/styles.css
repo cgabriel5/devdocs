@@ -485,12 +485,8 @@ ul.file-headers {
 	background: red;
 	width: 200px;
 	height: 7px;
-	/* border: 0px solid rgba(255, 255, 255, 0.99); */
-	border: 1px solid #727272;
-	border: 1px solid #8c8c8c;
-	/* border: 2px solid transparent; *//*background: #73a73af7;*//*background: #d8d8d8;*/
-	background: #c0c0bf;
-	background: #e2e2e2;
+	/* border: 0px solid rgba(255, 255, 255, 0.99); *//*border: 1px solid #727272;*//*border: 1px solid #8c8c8c;*//* box-shadow: inset 0px 1px 0px 0px #8c8c8c14; *//* border: 2px solid transparent; *//*background: #73a73af7;*//*background: #d8d8d8;*//*background: #c0c0bf;*//*background: #e2e2e2;*/
+	background: #d4d4d4;
 	/* background: #727272; */
 	border-radius: 100px;
 	display: flex;
@@ -498,6 +494,7 @@ ul.file-headers {
 	overflow: hidden;
 	transition: opacity 0.2s ease-in-out;
 	margin-top: 30px;
+	background-clip: content-box;
 }
 
 .loader {
