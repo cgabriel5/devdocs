@@ -16,6 +16,7 @@ document.onreadystatechange = function() {
 		// Get needed elements.
 		var $delement = document.scrollingElement;
 		var $loader = document.getElementById("loader");
+		var $loader_cont = document.getElementById("loader-cont");
 		var $topbar = document.getElementById("topbar");
 		var $sidebar = document.getElementById("sidebar");
 		// var $shadow = document.getElementById("tb-shadow");
@@ -404,15 +405,25 @@ document.onreadystatechange = function() {
 				// Start splash animation.
 				var $splash = document.getElementById("splash-loader");
 				var $splash_icon = document.getElementById("sl-icon");
+				var $splash_icon_cont = document.getElementById(
+					"splash-loader-icon-cont"
+				);
 				var $app = document.getElementById("app");
 
+				$loader_cont.classList.add("animate-pulse-fade");
 				// $splash_icon.classList.add("animate-icon");
 				// $splash_icon.classList.remove("sl-icon-off");
 
 				// Fade-out the loader.
 				setTimeout(function() {
-					$loader.style.opacity = `0`;
-					$loader.style.display = "none";
+					// $loader.style.opacity = `0`;
+					// $loader.style.display = "none";
+					// $loader_cont.style.display = "none";
+					$loader_cont.classList.remove("animate-pulse-fade");
+					$splash_icon_cont.style.transform = "translateY(50px)";
+					// $splash_icon_cont.style.marginTop = "0px";
+					// $splash_icon_cont.style.marginBottom = "0px";
+					$loader_cont.style.opacity = "0";
 
 					setTimeout(function() {
 						$splash.classList.add("opa0");
@@ -420,7 +431,7 @@ document.onreadystatechange = function() {
 						$splash_icon.style.transform = "scale(1.5)";
 
 						$app.classList.remove("none");
-					}, 0);
+					}, 200);
 				}, 500);
 
 				// Set the title if provided.
