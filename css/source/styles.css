@@ -404,6 +404,61 @@ ul.file-headers {
 	padding: 0 0 0 4px;
 }
 
+.splash-loader {
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: fixed;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	/* background: #699935; *//*background: #f4f4f4;*//*background: #f1f1f1;*//*background: rgba(0, 0, 0, 0.5);*/
+	background: rgba(255, 255, 255, 0.7);
+	transition: opacity 0.6s ease-in-out;
+	/*opacity: 0;*//*opacity: 1;*/
+	z-index: 2;
+}
+
+.splash-loader-icon-cont {
+	width: 120px;
+	height: 120px;
+	min-width: 120px;
+}
+
+.splash-loader-icon {
+	width: 900px;
+	height: 900px;
+	border-radius: 400px 1000px 0 1000px;
+	/*background: #699935;*//*background: #f3f3f3;*//*background: #b1b1b1;*//*background: #d8d8d8;*/
+	transform: translate3d(0, 0, 0) scale(0.6);
+	box-shadow: inset 0 3px 0 0 rgba(0, 0, 0, 0.02);
+	width: 100%;
+	height: 100%;
+	border-radius: 100px 250px 0 250px;
+	transition: background 0.2s ease-in-out, transform 0.8s ease-in-out;
+}
+
+/*.splash-loader-icon:after {
+  content:"";
+  display:block;
+  width: 100%;
+  height: 100%;
+  border-radius: 100px 250px 0 250px;
+  border: 5px solid #ffffffc9;
+  position:absolute;
+  animation: pulse 2s ease 0s infinite;
+}*/
+
+.sl-icon-off {
+	background: #d8d8d8;
+}
+
+.sl-icon-on {
+	background: #699935;
+}
+
 .none {
 	display: none;
 }
