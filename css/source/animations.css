@@ -82,3 +82,24 @@
 		background: #699935;
 	}
 }
+
+.animate-pulse-fade {
+	animation-name: animate-pulse-fade;
+	animation-duration: 2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+
+@keyframes animate-pulse-fade {
+	0% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 1;
+	}
+}
