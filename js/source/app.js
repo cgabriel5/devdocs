@@ -410,7 +410,7 @@ document.onreadystatechange = function() {
 				);
 				var $app = document.getElementById("app");
 
-				$loader_cont.classList.add("animate-pulse-fade");
+				// $loader_cont.classList.add("animate-pulse-fade");
 				// $splash_icon.classList.add("animate-icon");
 				// $splash_icon.classList.remove("sl-icon-off");
 
@@ -419,7 +419,7 @@ document.onreadystatechange = function() {
 					// $loader.style.opacity = `0`;
 					// $loader.style.display = "none";
 					// $loader_cont.style.display = "none";
-					$loader_cont.classList.remove("animate-pulse-fade");
+					// $loader_cont.classList.remove("animate-pulse-fade");
 					$splash_icon_cont.style.transform = "translateY(50px)";
 					// $splash_icon_cont.style.marginTop = "0px";
 					// $splash_icon_cont.style.marginBottom = "0px";
