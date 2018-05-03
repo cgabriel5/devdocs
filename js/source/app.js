@@ -237,17 +237,14 @@ document.onreadystatechange = function() {
 		 * @return {undefined} - Nothing.
 		 */
 		var done_loader = false;
-		var loader = function(e) {
+		var loader = function(e, percent) {
 			function animate_loader() {
 				// Stop animating once the complete flag is set.
 				if (done_loader === true) {
 					return;
 				}
 
-				if (e.lengthComputable) {
-					// Calculate the percentage.
-					var percent = e.loaded / e.total * 100;
-
+				if (e.lengthComputable && percent) {
 					// Update the loader with the percent.
 					$loader.style.width = `${percent}%`;
 
