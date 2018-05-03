@@ -414,9 +414,8 @@ ul.file-headers {
 	/*	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;
-	align-items: center;*//* background: #699935; *//*background: #f4f4f4;*//*background: #f1f1f1;*//*background: rgba(0, 0, 0, 0.5);*//*background: rgba(255, 255, 255, 0.7);*/
-	background: #699935;
-	background: #e2e2e2;
+	align-items: center;*//* background: #699935; *//*background: #f4f4f4;*//*background: #f1f1f1;*//*background: rgba(0, 0, 0, 0.5);*//*background: rgba(255, 255, 255, 0.7);*//*background: #699935;*//*background: #e2e2e2;*/
+	background: #eeeeee;
 	transition: opacity 0.6s ease-in-out;
 	/*opacity: 0;*//*opacity: 1;*/
 	z-index: 2;
@@ -468,12 +467,8 @@ ul.file-headers {
 }*/
 
 .sl-icon-off {
-	/*background: #d8d8d8;*/
-	background: white;
-	background: #ffffff;
-	background: #d8d8d8;
-	background: #727272;
-	background: #8c8c8c;
+	/*background: #d8d8d8;*//*background: white;*//*background: #ffffff;*//*background: #d8d8d8;*//*background: #727272;*//*background: #8c8c8c;*/
+	background: #b8b8b8;
 }
 
 .sl-icon-on {
@@ -484,9 +479,9 @@ ul.file-headers {
 .loader-cont {
 	background: red;
 	width: 200px;
-	height: 7px;
-	/* border: 0px solid rgba(255, 255, 255, 0.99); *//*border: 1px solid #727272;*//*border: 1px solid #8c8c8c;*//* box-shadow: inset 0px 1px 0px 0px #8c8c8c14; *//* border: 2px solid transparent; *//*background: #73a73af7;*//*background: #d8d8d8;*//*background: #c0c0bf;*//*background: #e2e2e2;*/
-	background: #d4d4d4;
+	height: 6px;
+	/* border: 0px solid rgba(255, 255, 255, 0.99); *//*border: 1px solid #727272;*//*border: 1px solid #8c8c8c;*//* box-shadow: inset 0px 1px 0px 0px #8c8c8c14; *//* border: 2px solid transparent; *//*background: #73a73af7;*//*background: #d8d8d8;*//*background: #c0c0bf;*//*background: #e2e2e2;*//*background: #d4d4d4;*/
+	background: #e6e6e7;
 	/* background: #727272; */
 	border-radius: 100px;
 	display: flex;
@@ -500,8 +495,8 @@ ul.file-headers {
 .loader {
 	/*width: 70%;*//*background: white;*/
 	width: 0%;
-	background: #727272;
-	background: #8c8c8c;
+	/*background: #727272;*//*background: #8c8c8c;*/
+	background: #b8b8b8;
 	transition: all 0.2s ease-in-out;
 }
 

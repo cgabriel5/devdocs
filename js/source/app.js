@@ -239,7 +239,12 @@ document.onreadystatechange = function() {
 		var done_loader = false;
 		var loader = function(e) {
 			function animate_loader() {
-				if (e.lengthComputable && done_loader !== true) {
+				// Stop animating once the complete flag is set.
+				if (done_loader === true) {
+					return;
+				}
+
+				if (e.lengthComputable) {
 					// Calculate the percentage.
 					var percent = e.loaded / e.total * 100;
 
@@ -254,6 +259,17 @@ document.onreadystatechange = function() {
 						// Else continue animating.
 						request_aframe(animate_loader);
 					}
+				} else {
+					// Chrome for whatever reason sometimes returns
+					// e.lengthComputable as false which prevent the
+					// progress loader. Therefore, when the property
+					// is returned as false we simply set the progress
+					// to complete (100%).
+
+					// End animating.
+					$loader.style.width = `100%`;
+					done_loader = true;
+					return;
 				}
 			}
 			// Start animating.
