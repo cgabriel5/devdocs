@@ -616,6 +616,10 @@
 							} else {
 								// https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/Using_XMLHttpRequest
 								// Unable to compute progress information since the total size is unknown
+
+								// Still call progress handler but set percent as null to help distingush whether
+								// there was actual progress or not.
+								progress.call(xhr, e, null);
 							}
 						};
 						callbacks.abort = function(e) {
