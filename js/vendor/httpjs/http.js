@@ -619,6 +619,7 @@
 
 								// Still call progress handler but set percent as null to help distingush whether
 								// there was actual progress or not.
+								// [https://stackoverflow.com/a/11848934]
 								progress.call(xhr, e, null);
 							}
 						};
