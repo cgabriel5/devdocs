@@ -423,29 +423,21 @@ document.onreadystatechange = function() {
 				);
 				var $app = document.getElementById("app");
 
-				// $loader_cont.classList.add("animate-pulse-fade");
-				// $splash_icon.classList.add("animate-icon");
-				// $splash_icon.classList.remove("sl-icon-off");
-
 				// Fade-out the loader.
 				setTimeout(function() {
-					// $loader.style.opacity = `0`;
-					// $loader.style.display = "none";
-					// $loader_cont.style.display = "none";
-					// $loader_cont.classList.remove("animate-pulse-fade");
-					$splash_icon_cont.style.transform = "translateY(50px)";
-					// $splash_icon_cont.style.marginTop = "0px";
-					// $splash_icon_cont.style.marginBottom = "0px";
 					$loader_cont.style.opacity = "0";
 
 					setTimeout(function() {
+						$splash_icon_cont.classList.remove("none");
 						$splash.classList.add("opa0");
-						$splash_icon.classList.add("sl-icon-on");
-						$splash_icon.style.transform = "scale(1.5)";
 
-						$app.classList.remove("none");
+						setTimeout(function() {
+							$splash_icon.style.transform = "scale(1.5)";
+
+							$app.classList.remove("none");
+						}, 100);
 					}, 200);
-				}, 500);
+				}, 300);
 
 				// Set the title if provided.
 				if (data.title) {
