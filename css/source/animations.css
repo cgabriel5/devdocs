@@ -104,3 +104,24 @@
 	}
 }
 */
+
+.animate-pulse {
+	animation-name: animate-pulse;
+	animation-duration: 0.7s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+
+@keyframes animate-pulse {
+	0% {
+		transform: translate3d(0, 0, 0) scale(0.5);
+	}
+
+	50% {
+		transform: translate3d(0, 0, 0) scale(0.6);
+	}
+
+	100% {
+		transform: translate3d(0, 0, 0) scale(0.5);
+	}
+}

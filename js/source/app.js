@@ -15,8 +15,8 @@ document.onreadystatechange = function() {
 
 		// Get needed elements.
 		var $delement = document.scrollingElement;
-		var $loader = document.getElementById("loader");
-		var $loader_cont = document.getElementById("loader-cont");
+		// var $loader = document.getElementById("loader");
+		// var $loader_cont = document.getElementById("loader-cont");
 		var $topbar = document.getElementById("topbar");
 		var $sidebar = document.getElementById("sidebar");
 		// var $shadow = document.getElementById("tb-shadow");
@@ -238,40 +238,59 @@ document.onreadystatechange = function() {
 		 */
 		var done_loader = false;
 		var loader = function(e, percent) {
-			function animate_loader() {
-				// Stop animating once the complete flag is set.
-				if (done_loader === true) {
-					return;
-				}
+			// Start splash animation.
+			var $splash = document.getElementById("splash-loader");
+			var $splash_icon = document.getElementById("sl-icon");
 
-				if (e.lengthComputable && percent) {
-					// Update the loader with the percent.
-					$loader.style.width = `${percent}%`;
+			if (!done_loader && (percent === 100 || percent === null)) {
+				$splash.classList.add("opa0");
 
-					// Once fully loaded end animating.
-					if (percent === 100) {
-						done_loader = true;
-						return;
-					} else {
-						// Else continue animating.
-						request_aframe(animate_loader);
-					}
-				} else {
-					// Chrome for whatever reason sometimes returns
-					// e.lengthComputable as false which prevent the
-					// progress loader. Therefore, when the property
-					// is returned as false we simply set the progress
-					// to complete (100%).
+				setTimeout(function() {
+					$splash_icon.style.transform = "scale(1)";
 
-					// End animating.
-					$loader.style.width = `100%`;
-					done_loader = true;
-					return;
-				}
+					setTimeout(function() {
+						$topbar.classList.remove("none");
+					}, 400);
+				}, 0);
+			} else {
+				return;
 			}
-			// Start animating.
-			request_aframe(animate_loader);
 		};
+		// var loader = function(e, percent) {
+		// 	function animate_loader() {
+		// 		// Stop animating once the complete flag is set.
+		// 		if (done_loader === true) {
+		// 			return;
+		// 		}
+
+		// 		if (e.lengthComputable && percent) {
+		// 			// Update the loader with the percent.
+		// 			$loader.style.width = `${percent}%`;
+
+		// 			// Once fully loaded end animating.
+		// 			if (percent === 100) {
+		// 				done_loader = true;
+		// 				return;
+		// 			} else {
+		// 				// Else continue animating.
+		// 				request_aframe(animate_loader);
+		// 			}
+		// 		} else {
+		// 			// Chrome for whatever reason sometimes returns
+		// 			// e.lengthComputable as false which prevent the
+		// 			// progress loader. Therefore, when the property
+		// 			// is returned as false we simply set the progress
+		// 			// to complete (100%).
+
+		// 			// End animating.
+		// 			$loader.style.width = `100%`;
+		// 			done_loader = true;
+		// 			return;
+		// 		}
+		// 	}
+		// 	// Start animating.
+		// 	request_aframe(animate_loader);
+		// };
 
 		/**
 		 * Creates the target elements path (target elements parents).
@@ -415,30 +434,6 @@ document.onreadystatechange = function() {
 				}
 			})
 			.then(function(data) {
-				// Start splash animation.
-				var $splash = document.getElementById("splash-loader");
-				var $splash_icon = document.getElementById("sl-icon");
-				var $splash_icon_cont = document.getElementById(
-					"splash-loader-icon-cont"
-				);
-				var $app = document.getElementById("app");
-
-				// Fade-out the loader.
-				setTimeout(function() {
-					$loader_cont.style.opacity = "0";
-
-					setTimeout(function() {
-						$splash_icon_cont.classList.remove("none");
-						$splash.classList.add("opa0");
-
-						setTimeout(function() {
-							$splash_icon.style.transform = "scale(1.5)";
-
-							$app.classList.remove("none");
-						}, 100);
-					}, 200);
-				}, 300);
-
 				// Set the title if provided.
 				if (data.title) {
 					document.title = data.title;
