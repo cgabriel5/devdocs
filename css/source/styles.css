@@ -313,7 +313,7 @@ ul.file-headers {
 /* [https://codepen.io/hoshts/pen/BHoij?editors=1100] */
 
 .tb-logo {
-	cursor: pointer;
+	/*cursor: pointer;*/
 	margin-right: -5px;
 }
 
@@ -382,6 +382,10 @@ ul.file-headers {
 	border-radius: 100px;
 	background: #ffffff;
 	border: 1px solid rgba(0, 0, 0, 0.0975);
+}
+
+.flex {
+	display: flex;
 }
 
 /*.scroll-dynamic {
