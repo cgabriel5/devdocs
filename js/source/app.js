@@ -25,6 +25,8 @@ document.onreadystatechange = function() {
 		var $overlay = document.getElementsByClassName("sidebar-overlay")[0];
 		var $splash = document.getElementById("splash-loader");
 		var $splash_icon = document.getElementById("sl-icon");
+		var $tb_title = document.getElementById("scroll-title");
+		var $tb_filename = document.getElementById("scroll-filename");
 
 		// Variables //
 
@@ -176,14 +178,18 @@ document.onreadystatechange = function() {
 			var duration = options.duration || 1000,
 				ease =
 					options.easing ||
+					// function(n) {
+					// 	// [https://github.com/component/ease/blob/master/index.js#L16]
+					// 	n *= 2;
+					// 	if (n < 1) return 0.5 * n * n;
+					// 	return -0.5 * (--n * (n - 2) - 1);
+					// },
 					function(n) {
-						// [https://github.com/component/ease/blob/master/index.js#L16]
-						n *= 2;
-						if (n < 1) return 0.5 * n * n;
-						return -0.5 * (--n * (n - 2) - 1);
+						return 0.5 * (1 - Math.cos(Math.PI * n));
 					},
-				onProgress = options.onProgress || function() {},
-				onComplete = options.onComplete || function() {},
+				noop = function() {},
+				onProgress = options.onProgress || noop,
+				onComplete = options.onComplete || noop,
 				from = options.from || {},
 				to = options.to || {},
 				// Store the timer ID.
@@ -210,7 +216,10 @@ document.onreadystatechange = function() {
 					}
 				}
 
-				onProgress(values);
+				// Stop animation progress when false is returned.
+				if (onProgress(values) === false) {
+					progress = 1;
+				}
 
 				if (progress === 1) {
 					onComplete(deltaTime);
@@ -397,13 +406,29 @@ document.onreadystatechange = function() {
 		};
 
 		/**
-		 * Get the provided element's top coordinate position in relation to the
-		 *     page and y-scroll amount.
+		 * Detect whether viewport is within "mobile" size.
+		 *
+		 * @return {boolean} - Boolean indicating whether in "mobile" size.
+		 */
+		var is_mobile_viewport = function() {
+			return !window.matchMedia("(min-width: 769px)").matches;
+		};
+
+		/**
+		 * Get the provided element's top coordinates.
 		 *
 		 * @return {number} - The top position.
 		 */
-		var get_element_top_pos = function($el) {
-			return $el.getBoundingClientRect().top + window.pageYOffset - 50;
+		var coors = function($el) {
+			// Get the rect information.
+			var rect = $el.getBoundingClientRect();
+
+			// Add the page coor positions.
+			rect.pageY = rect.top + window.pageYOffset;
+			rect.pageX = rect.left + window.pageXOffset;
+
+			// Return rect object.
+			return rect;
 		};
 
 		// ------------------------------------------------------------
@@ -449,6 +474,9 @@ document.onreadystatechange = function() {
 				// Set the title if provided.
 				if (data.title) {
 					document.title = data.title;
+
+					// Set the topbar information.
+					$tb_title.textContent = data.title;
 				}
 
 				// Note: Pre-load logo to prevent "blinking in".
@@ -488,6 +516,52 @@ document.onreadystatechange = function() {
 				var sb_animation;
 
 				// Functions:Scoped:Inner //
+
+				/**
+				 * Scroll to header.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
+				var scroll = function($el, callback) {
+					// Calculate the to y scroll offset position.
+					var to = scroll.offset($el);
+
+					// Scroll to the header.
+					animate({
+						from: { a: window.pageYOffset },
+						to: { a: to },
+						duration: scroll_duration(to),
+						onProgress: function(values) {
+							// The progress value.
+							var val = values.a;
+
+							// Edge case: when scrolling to bottom
+							// cancel scrolling once the value exceeds
+							// that of the scrollable height. Or else
+							// the animation will take longer to end.
+							// Causing a sense of lag.
+							if (
+								Math.ceil($delement.clientHeight + val) - 10 >=
+								Math.ceil($delement.scrollHeight)
+							) {
+								return false;
+							}
+
+							// Set the scrolltop value.
+							$delement.scrollTop = val;
+						},
+						onComplete: callback
+					});
+				};
+				// Calculate scroll offset for mobile and desktop views.
+				scroll.offset = function($el) {
+					// Calculate the to y scroll position.
+					return is_mobile_viewport()
+						? // For "mobile" size.
+							coors($el.nextElementSibling).pageY - 100
+						: // Desktop size.
+							coors($el).pageY - 10;
+				};
 
 				// Contain all content headers.
 				var headers = {};
@@ -662,6 +736,43 @@ document.onreadystatechange = function() {
 				}
 
 				/**
+				 * Inject the file name in the topbar. Only for mobile view.
+				 *
+				 * @param {string} filename - The file name.
+				 * @param {object} data - The server data object.
+				 * @return {undefined} - Nothing.
+				 */
+				function inject_filename(filename, data) {
+					// If there is not current file name return.
+					if (!filename) {
+						return;
+					}
+
+					// Loop over the data dirs to get the file alias.
+					var dirs = data.dirs[0].files;
+					for (var i = 0, l = dirs.length; i < l; i++) {
+						if (dirs[i].dirname === filename) {
+							filename = dirs[i].alias;
+							break;
+						}
+					}
+
+					// Get the needed element.
+					var $scroll_tb_file_cont = document.getElementById(
+						"scroll-tb-file-cont"
+					);
+
+					// If a file name exists, set it.
+					if (filename) {
+						$scroll_tb_file_cont.classList.remove("none");
+						$tb_filename.textContent = filename;
+					} else {
+						// Else, hide the element.
+						$scroll_tb_file_cont.classList.add("none");
+					}
+				}
+
+				/**
 				 * Inject the data HTML to the page.
 				 *
 				 * @param {string} filename - The file name.
@@ -690,9 +801,11 @@ document.onreadystatechange = function() {
 								// as alt + (<-- or -->) needs to be done and
 								// felt very quick.
 								setTimeout(function() {
-									$delement.scrollTop = get_element_top_pos(
+									// Instantly scroll to position.
+									$delement.scrollTop = scroll.offset(
 										$parent
 									);
+
 									$parent.classList.add("highlight");
 								}, 0);
 							}
@@ -800,6 +913,9 @@ document.onreadystatechange = function() {
 								// Inject the html.
 								replace_html(file);
 
+								// Show the current filename.
+								inject_filename(current_file, data);
+
 								// Get the hash.
 								var hash = location.hash;
 
@@ -819,36 +935,20 @@ document.onreadystatechange = function() {
 										// Let browser know to optimize scrolling.
 										perf_hint($delement, "scroll-position");
 
-										// Animation from-to.
-										var from = window.pageYOffset;
-										var to = get_element_top_pos($parent);
-
 										// Use a timeout to let the injected HTML load
 										// and parse properly. Otherwise, getBoundingClientRect
 										// will return incorrect values.
 										setTimeout(function() {
-											animate({
-												from: { a: from },
-												to: { a: to },
-												duration: scroll_duration(
-													from,
-													to
-												),
-												onProgress: function(values) {
-													$delement.scrollTop =
-														values.a;
-												},
-												onComplete: function(
-													actualDuration,
-													averageFps
-												) {
-													$parent.classList.add(
-														"highlight"
-													);
+											// Scroll to the header.
+											scroll($parent, function() {
+												// console.log("C");
 
-													// Remove optimization.
-													perf_unhint($delement);
-												}
+												$parent.classList.add(
+													"highlight"
+												);
+
+												// Remove optimization.
+												perf_unhint($delement);
 											});
 										}, 300);
 									}
@@ -859,8 +959,13 @@ document.onreadystatechange = function() {
 						// Store the animation to cancel if another animation is needed to run.
 						running_menu_animation = animation;
 					} else {
+						// 404 File.
+
 						// Inject the html.
 						replace_html(file);
+
+						// Show the current filename.
+						inject_filename(current_file, data);
 
 						// Get the hash.
 						var hash = location.hash;
@@ -879,30 +984,18 @@ document.onreadystatechange = function() {
 								// Let browser know to optimize scrolling.
 								perf_hint($delement, "scroll-position");
 
-								// Animation from-to.
-								var from = window.pageYOffset;
-								var to = get_element_top_pos($parent);
-
 								// Use a timeout to let the injected HTML load
 								// and parse properly. Otherwise, getBoundingClientRect
 								// will return incorrect values.
 								setTimeout(function() {
-									animate({
-										from: { a: from },
-										to: { a: to },
-										duration: scroll_duration(from, to),
-										onProgress: function(values) {
-											$delement.scrollTop = values.a;
-										},
-										onComplete: function(
-											actualDuration,
-											averageFps
-										) {
-											$parent.classList.add("highlight");
+									// Scroll to the header.
+									scroll($parent, function() {
+										// console.log("D");
 
-											// Remove optimization.
-											perf_unhint($delement);
-										}
+										$parent.classList.add("highlight");
+
+										// Remove optimization.
+										perf_unhint($delement);
 									});
 								}, 300);
 							}
@@ -1016,23 +1109,33 @@ document.onreadystatechange = function() {
 				 *     the slower the scroll. The shorter the scroll
 				 *     distance the faster the scroll animation.
 				 *
-				 * @param  {number} from [description]
-				 * @param  {number} to   [description]
+				 * @param  {number} to - The new "to" location.
 				 * @return {number} - The calculated scroll duration.
 				 */
-				function scroll_duration(from, to) {
-					// Get the scrolling distance.
-					var delta_distance = Math.abs(to - from);
+				function scroll_duration(to) {
+					// Calculate the diff in distance and use that as the duration.
+					var duration = Math.abs(window.pageYOffset - to);
 
-					// Calculate the duration.
-					var duration = delta_distance / 1.5 + delta_distance * 0.4;
-
-					// Reset the duration to fit within the min/max bounds.
-					// [https://stackoverflow.com/a/16861139]
-					duration = Math.min(duration, 800);
-					duration = Math.max(duration, 150);
+					// Set lower and upper time limits.
+					// Anything over 1000 gets reset to 1000.
+					duration = Math.min(duration, 1000);
+					// Anything below 225 gets reset to 225.
+					duration = Math.max(duration, 225);
 
 					return duration;
+
+					// // Get the scrolling distance.
+					// var delta_distance = Math.abs(to - from);
+
+					// // Calculate the duration.
+					// var duration = delta_distance / 1.5 + delta_distance * 0.4;
+
+					// // Reset the duration to fit within the min/max bounds.
+					// // [https://stackoverflow.com/a/16861139]
+					// duration = Math.min(duration, 800);
+					// duration = Math.max(duration, 150);
+
+					// return duration;
 				}
 
 				// AppCode:Scoped:Inner //
@@ -1104,15 +1207,16 @@ document.onreadystatechange = function() {
 				// EventListeners:Scoped:Inner //
 
 				// var $tb_logo = document.getElementById("tb-logo");
-				var $tb_dirname = document.getElementById("scroll-dirname");
-				var $tb_filename = document.getElementById("scroll-filename");
-				var $tb_static = document.getElementById("scroll-static");
-				var $tb_dynamic = document.getElementById("scroll-dynamic");
-				var $tb_scroll = document.getElementById("topbar-scroll");
+				// var $tb_dirname = document.getElementById("scroll-dirname");
+				// var $tb_title = document.getElementById("scroll-title");
+				// var $tb_filename = document.getElementById("scroll-filename");
+				// var $tb_static = document.getElementById("scroll-static");
+				// var $tb_dynamic = document.getElementById("scroll-dynamic");
+				// var $tb_scroll = document.getElementById("topbar-scroll");
 
-				var last_top_text;
-				var scroll_count = -1;
-				var tb2_fadeout_timer;
+				// var last_top_text;
+				// var scroll_count = -1;
+				// var tb2_fadeout_timer;
 				// //
 				// window.addEventListener(
 				// 	"scroll",
@@ -1120,21 +1224,16 @@ document.onreadystatechange = function() {
 				// 		// Get the y scroll position.
 				// 		var y = Math.floor(window.pageYOffset);
 
-				// 		// console.log(">>>", y);
-
 				// 		// // As the scroll event fires many times a second it can
 				// 		// // be very taxing on the app performance. Therefore, cut
 				// 		// // down to n amount of times the event gets fired.
 				// 		// // if (++scroll_count % 3 !== 0) {
 				// 		// if (++scroll_count % 2 !== 0) {
-				// 		// 	console.log(">>>>>>>>>>>>>", `on ${scroll_count}`);
 				// 		// 	return;
 				// 		// }
 
 				// 		// // Get the y scroll position.
 				// 		// var y = Math.floor(window.pageYOffset);
-
-				// 		// console.log(">>>", y);
 
 				// 		// // Show the percentage scrolled.
 				// 		// request_aframe(function(timestamp) {
@@ -1197,7 +1296,6 @@ document.onreadystatechange = function() {
 				// 			// 	$tb_static.classList.remove("none");
 				// 			// }
 
-				// 			// console.log("...", [$header, y]);
 				// 			if ($header) {
 				// 				if (
 				// 					// $tb_scroll.classList.contains("opa0") &&
@@ -1461,35 +1559,24 @@ document.onreadystatechange = function() {
 						// Let browser know to optimize scrolling.
 						perf_hint($delement, "scroll-position");
 
-						// Animation from-to.
-						var from = window.pageYOffset;
-						var to = get_element_top_pos($header);
-
 						// Scroll to the header.
-						animate({
-							from: { a: from },
-							to: { a: to },
-							duration: scroll_duration(from, to),
-							onProgress: function(values) {
-								$delement.scrollTop = values.a;
-							},
-							onComplete: function(actualDuration, averageFps) {
-								// Highlight the header.
-								$header.classList.add("highlight");
+						scroll($header, function() {
+							// console.log("A");
 
-								// Remove optimization.
-								perf_unhint($delement);
+							// Highlight the header.
+							$header.classList.add("highlight");
 
-								// Hide the mobile sidebar + overlay.
-								if (
-									getComputedStyle($overlay).display ===
-									"block"
-								) {
-									sb_animation = true;
+							// Remove optimization.
+							perf_unhint($delement);
 
-									// Hide the sidebar.
-									hide_sidebar();
-								}
+							// Hide the mobile sidebar + overlay.
+							if (
+								getComputedStyle($overlay).display === "block"
+							) {
+								sb_animation = true;
+
+								// Hide the sidebar.
+								hide_sidebar();
 							}
 						});
 
@@ -1554,34 +1641,15 @@ document.onreadystatechange = function() {
 							// Let browser know to optimize scrolling.
 							perf_hint($delement, "scroll-position");
 
-							// Animation from-to.
-							var from = window.pageYOffset;
-							var to = get_element_top_pos($header);
-
-							if (
-								!window.matchMedia("(min-width: 769px)").matches
-							) {
-								to = $header.nextElementSibling.offsetTop - 100;
-							}
-
 							// Scroll to the header.
-							animate({
-								from: { a: from },
-								to: { a: to },
-								duration: scroll_duration(from, to),
-								onProgress: function(values) {
-									$delement.scrollTop = values.a;
-								},
-								onComplete: function(
-									actualDuration,
-									averageFps
-								) {
-									// Highlight the header.
-									$header.classList.add("highlight");
+							scroll($header, function() {
+								// console.log("B");
 
-									// Remove optimization.
-									perf_unhint($delement);
-								}
+								// Highlight the header.
+								$header.classList.add("highlight");
+
+								// Remove optimization.
+								perf_unhint($delement);
 							});
 
 							// Get the anchor href.
@@ -1622,29 +1690,30 @@ document.onreadystatechange = function() {
 						// Set the HTML.
 						inject(filename, $target);
 
-						// Let browser know to optimize scrolling.
-						perf_hint($delement, "scroll-position");
+						// Skip scrolling to the top when its the same file.
+						if (filename !== current_file) {
+							// Let browser know to optimize scrolling.
+							perf_hint($delement, "scroll-position");
 
-						// Animation from-to.
-						var from = window.pageYOffset;
-						var to = 0;
+							// Use a timeout to let the injected HTML load/parse.
+							setTimeout(function() {
+								// Scroll to the top of the page.
+								animate({
+									from: { a: window.pageYOffset },
+									to: { a: 0 },
+									duration: scroll_duration(0),
+									onProgress: function(values) {
+										$delement.scrollTop = values.a;
+									},
+									onComplete: function() {
+										// console.log("E");
 
-						// Use a timeout to let the injected HTML load/parse.
-						setTimeout(function() {
-							// Scroll to the top of the page.
-							animate({
-								from: { a: from },
-								to: { a: to },
-								duration: scroll_duration(from, to),
-								onProgress: function(values) {
-									$delement.scrollTop = values.a;
-								},
-								onComplete: function() {
-									// Remove optimization.
-									perf_unhint($delement);
-								}
-							});
-						}, 300);
+										// Remove optimization.
+										perf_unhint($delement);
+									}
+								});
+							}, 300);
+						}
 
 						e.preventDefault();
 					}
