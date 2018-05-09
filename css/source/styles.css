@@ -292,7 +292,7 @@ ul.file-headers {
 	width: 100%;
 	height: 100%;
 	/*display: none;*/
-	transition: opacity 0.5s ease-in-out;
+	transition: opacity 0.3s ease-in-out;
 	/* opacity: 0; */
 }
 

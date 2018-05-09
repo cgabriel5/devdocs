@@ -215,8 +215,8 @@ document.onreadystatechange = function() {
 				onProgress = options.onProgress || noop,
 				onComplete = options.onComplete || noop,
 				onSkip = options.onSkip || noop,
-				from = options.from || {},
-				to = options.to || {},
+				from = options.from,
+				to = options.to,
 				// Store the timer ID.
 				tid,
 				// Relay back some meta data.
@@ -226,6 +226,11 @@ document.onreadystatechange = function() {
 					to: to,
 					from: from
 				};
+
+			// A from and to value is required.
+			if (typeof from !== "number" || typeof to !== "number") {
+				return;
+			}
 
 			// Runtime variables.
 			var startTime = Date.now();
@@ -240,34 +245,22 @@ document.onreadystatechange = function() {
 				var deltaTime = Date.now() - startTime,
 					progress = Math.min(deltaTime / duration, 1),
 					factor = ease(progress),
-					values = {},
-					property;
+					property,
+					value;
 
 				// Increment the tick.
 				meta.tick++;
 
-				for (property in from) {
-					if (
-						from.hasOwnProperty(property) &&
-						to.hasOwnProperty(property)
-					) {
-						values[property] =
-							from[property] +
-							(to[property] - from[property]) * factor;
-					}
-				}
+				// Calculate the value.
+				value = from + (to - from) * factor;
 
 				// Stop animation progress when false is returned.
-				if (onProgress(values, meta) === false) {
-					progress = 1;
+				if (onProgress(value, meta) === false || progress === 1) {
+					return onComplete(deltaTime, meta);
 				}
 
-				if (progress === 1) {
-					onComplete(deltaTime, meta);
-				} else {
-					// Continue requesting the animation frame.
-					tid = request_aframe(update);
-				}
+				// Continue requesting the animation frame.
+				tid = request_aframe(update);
 			}
 
 			// Run the first frame request.
@@ -570,8 +563,8 @@ document.onreadystatechange = function() {
 
 					// Scroll to the header.
 					animate({
-						from: { a: window.pageYOffset },
-						to: { a: to },
+						from: window.pageYOffset,
+						to: to,
 						duration: scroll_duration(to),
 						onSkip: function() {
 							var de = document.documentElement;
@@ -579,10 +572,7 @@ document.onreadystatechange = function() {
 								return true;
 							}
 						},
-						onProgress: function(values, meta) {
-							// The progress value.
-							var val = values.a;
-
+						onProgress: function(val, meta) {
 							// Edge case: when scrolling to bottom
 							// cancel scrolling once the value exceeds
 							// that of the scrollable height. Or else
@@ -592,7 +582,7 @@ document.onreadystatechange = function() {
 								// When scrolling down and percent scrolled
 								// is >= 100 stop animation.
 								percent_scrolled() >= 100 &&
-								Math.sign(meta.from.a - meta.to.a) === -1
+								Math.sign(meta.from - meta.to) === -1
 							) {
 								return false;
 							}
@@ -890,20 +880,14 @@ document.onreadystatechange = function() {
 
 						// Animate menu height closing.
 						var animation = animate({
-							from: {
-								a:
-									getComputedStyle(
-										$parent.nextElementSibling
-									).height.replace("px", "") * 1
-							},
-							to: {
-								a: 0
-							},
+							from:
+								getComputedStyle(
+									$parent.nextElementSibling
+								).height.replace("px", "") * 1,
+							to: 0,
 							duration: 300,
-							onProgress: function(values) {
-								$parent.nextElementSibling.style.height = `${
-									values.a
-								}px`;
+							onProgress: function(val) {
+								$parent.nextElementSibling.style.height = `${val}px`;
 							}
 						});
 
@@ -941,19 +925,15 @@ document.onreadystatechange = function() {
 
 						// Animate menu height opening.
 						var animation = animate({
-							from: { a: 0 },
-							to: {
-								a:
-									get_height($new_current, filename).replace(
-										"px",
-										""
-									) * 1
-							},
+							from: 0,
+							to:
+								get_height($new_current, filename).replace(
+									"px",
+									""
+								) * 1,
 							duration: 300,
-							onProgress: function(values) {
-								$new_current.nextElementSibling.style.height = `${
-									values.a
-								}px`;
+							onProgress: function(val) {
+								$new_current.nextElementSibling.style.height = `${val}px`;
 							},
 							onComplete: function(actualDuration, averageFps) {
 								$new_current.nextElementSibling.style.opacity = 1;
@@ -1513,11 +1493,11 @@ document.onreadystatechange = function() {
 
 				// 		// Scroll to the header.
 				// 		animate({
-				// 			from: { a: from },
-				// 			to: { a: to },
+				// 			from: from,
+				// 			to: to,
 				// 			duration: scroll_duration(from, to),
-				// 			onProgress: function(values) {
-				// 				$sroot.scrollTop = values.a;
+				// 			onProgress: function(val) {
+				// 				$sroot.scrollTop = val;
 				// 			},
 				// 			onComplete: function(actualDuration, averageFps) {
 				// 				// Highlight the header.
@@ -1755,11 +1735,11 @@ document.onreadystatechange = function() {
 							setTimeout(function() {
 								// Scroll to the top of the page.
 								animate({
-									from: { a: window.pageYOffset },
-									to: { a: 0 },
+									from: window.pageYOffset,
+									to: 0,
 									duration: scroll_duration(0),
-									onProgress: function(values) {
-										$sroot.scrollTop = values.a;
+									onProgress: function(val) {
+										$sroot.scrollTop = val;
 									},
 									onComplete: function() {
 										// console.log("E");
