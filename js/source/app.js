@@ -14,7 +14,6 @@ document.onreadystatechange = function() {
 		// Elements //
 
 		// Get needed elements.
-		var $delement = document.scrollingElement;
 		// var $loader = document.getElementById("loader");
 		// var $loader_cont = document.getElementById("loader-cont");
 		var $topbar = document.getElementById("topbar");
@@ -35,6 +34,31 @@ document.onreadystatechange = function() {
 		var SCROLL_TIME = 250;
 
 		// Functions //
+
+		/**
+		 * Find the browser root element. The root element differs
+		 *     in browsers. Thid function determines which to use.
+		 *     The returned element element can then be used like
+		 *     so: $root.scrollTop = 0;
+		 *
+		 * @return {HTMLElement} - The browser root element.
+		 *
+		 * @resource [https://gist.github.com/electerious/7ad886432f55cfcb4222]
+		 * @resource [https://medium.com/@bdc/stripe-open-source-behind-the-scenes-59790999dea0]
+		 */
+		var $sroot = (function() {
+			if ("scrollingElement" in document) {
+				return document.scrollingElement;
+			}
+
+			var initial = document.documentElement.scrollTop;
+			document.documentElement.scrollTop = initial + 1;
+
+			var updated = document.documentElement.scrollTop;
+			document.documentElement.scrollTop = initial;
+
+			return updated > initial ? document.documentElement : document.body;
+		})();
 
 		/**
 		 * Determines which animation[start|end|interation] event
@@ -354,31 +378,31 @@ document.onreadystatechange = function() {
 			return params;
 		};
 
-		// /**
-		//  * Get the amount page the has been y-scrolled as a percent.
-		//  *
-		//  * @return {number} - The percent scrolled.
-		//  *
-		//  * @resource [https://stackoverflow.com/a/8028584]
-		//  */
-		// function percent_scrolled() {
-		// 	var h = document.documentElement,
-		// 		b = document.body,
-		// 		st = "scrollTop",
-		// 		sh = "scrollHeight";
+		/**
+		 * Get the amount page the has been y-scrolled as a percent.
+		 *
+		 * @return {number} - The percent scrolled.
+		 *
+		 * @resource [https://stackoverflow.com/a/8028584]
+		 */
+		function percent_scrolled() {
+			var h = document.documentElement,
+				b = document.body,
+				st = "scrollTop",
+				sh = "scrollHeight";
 
-		// 	// Calculate the percent.
-		// 	var percent =
-		// 		(h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+			// Calculate the percent.
+			var percent =
+				(h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
 
-		// 	// If the page is not scrollable reset the percent to 0.
-		// 	if (h.scrollHeight === h.clientHeight) {
-		// 		percent = 0;
-		// 	}
+			// If the page is not scrollable reset the percent to 0.
+			if (h.scrollHeight === h.clientHeight) {
+				percent = 0;
+			}
 
-		// 	// Return the percent.
-		// 	return percent;
-		// }
+			// Return the percent.
+			return percent;
+		}
 
 		/**
 		 * Detect whether device supports touch events.
@@ -540,15 +564,12 @@ document.onreadystatechange = function() {
 							// that of the scrollable height. Or else
 							// the animation will take longer to end.
 							// Causing a sense of lag.
-							if (
-								Math.ceil($delement.clientHeight + val) - 10 >=
-								Math.ceil($delement.scrollHeight)
-							) {
+							if (percent_scrolled() >= 100) {
 								return false;
 							}
 
 							// Set the scrolltop value.
-							$delement.scrollTop = val;
+							$sroot.scrollTop = val;
 						},
 						onComplete: callback
 					});
@@ -802,9 +823,7 @@ document.onreadystatechange = function() {
 								// felt very quick.
 								setTimeout(function() {
 									// Instantly scroll to position.
-									$delement.scrollTop = scroll.offset(
-										$parent
-									);
+									$sroot.scrollTop = scroll.offset($parent);
 
 									$parent.classList.add("highlight");
 								}, 0);
@@ -933,7 +952,7 @@ document.onreadystatechange = function() {
 										$parent.classList.remove("highlight");
 
 										// Let browser know to optimize scrolling.
-										perf_hint($delement, "scroll-position");
+										perf_hint($sroot, "scroll-position");
 
 										// Use a timeout to let the injected HTML load
 										// and parse properly. Otherwise, getBoundingClientRect
@@ -948,7 +967,7 @@ document.onreadystatechange = function() {
 												);
 
 												// Remove optimization.
-												perf_unhint($delement);
+												perf_unhint($sroot);
 											});
 										}, 300);
 									}
@@ -982,7 +1001,7 @@ document.onreadystatechange = function() {
 								$parent.classList.remove("highlight");
 
 								// Let browser know to optimize scrolling.
-								perf_hint($delement, "scroll-position");
+								perf_hint($sroot, "scroll-position");
 
 								// Use a timeout to let the injected HTML load
 								// and parse properly. Otherwise, getBoundingClientRect
@@ -995,7 +1014,7 @@ document.onreadystatechange = function() {
 										$parent.classList.add("highlight");
 
 										// Remove optimization.
-										perf_unhint($delement);
+										perf_unhint($sroot);
 									});
 								}, 300);
 							}
@@ -1119,8 +1138,8 @@ document.onreadystatechange = function() {
 					// Set lower and upper time limits.
 					// Anything over 1000 gets reset to 1000.
 					duration = Math.min(duration, 1000);
-					// Anything below 225 gets reset to 225.
-					duration = Math.max(duration, 225);
+					// Anything below 350 gets reset to 350.
+					duration = Math.max(duration, 350);
 
 					return duration;
 
@@ -1261,9 +1280,9 @@ document.onreadystatechange = function() {
 				// 			var max_scroll_height = Math.max(
 				// 				body.scrollHeight,
 				// 				body.offsetHeight,
-				// 				$delement.clientHeight,
-				// 				$delement.scrollHeight,
-				// 				$delement.offsetHeight
+				// 				$sroot.clientHeight,
+				// 				$sroot.scrollHeight,
+				// 				$sroot.offsetHeight
 				// 			);
 
 				// 			var $header;
@@ -1452,7 +1471,7 @@ document.onreadystatechange = function() {
 				// 		$header.classList.remove("highlight");
 
 				// 		// Let browser know to optimize scrolling.
-				// 		perf_hint($delement, "scroll-position");
+				// 		perf_hint($sroot, "scroll-position");
 
 				// 		// Note: Find a way to not have this hard-coded.
 				// 		var dynamic_scroller_height = 33;
@@ -1469,14 +1488,14 @@ document.onreadystatechange = function() {
 				// 			to: { a: to },
 				// 			duration: scroll_duration(from, to),
 				// 			onProgress: function(values) {
-				// 				$delement.scrollTop = values.a;
+				// 				$sroot.scrollTop = values.a;
 				// 			},
 				// 			onComplete: function(actualDuration, averageFps) {
 				// 				// Highlight the header.
 				// 				$header.classList.add("highlight");
 
 				// 				// Remove optimization.
-				// 				perf_unhint($delement);
+				// 				perf_unhint($sroot);
 				// 			}
 				// 		});
 
@@ -1557,7 +1576,7 @@ document.onreadystatechange = function() {
 						$header.classList.remove("highlight");
 
 						// Let browser know to optimize scrolling.
-						perf_hint($delement, "scroll-position");
+						perf_hint($sroot, "scroll-position");
 
 						// Scroll to the header.
 						scroll($header, function() {
@@ -1567,7 +1586,7 @@ document.onreadystatechange = function() {
 							$header.classList.add("highlight");
 
 							// Remove optimization.
-							perf_unhint($delement);
+							perf_unhint($sroot);
 
 							// Hide the mobile sidebar + overlay.
 							if (
@@ -1639,7 +1658,7 @@ document.onreadystatechange = function() {
 							$header.classList.remove("highlight");
 
 							// Let browser know to optimize scrolling.
-							perf_hint($delement, "scroll-position");
+							perf_hint($sroot, "scroll-position");
 
 							// Scroll to the header.
 							scroll($header, function() {
@@ -1649,7 +1668,7 @@ document.onreadystatechange = function() {
 								$header.classList.add("highlight");
 
 								// Remove optimization.
-								perf_unhint($delement);
+								perf_unhint($sroot);
 							});
 
 							// Get the anchor href.
@@ -1693,7 +1712,7 @@ document.onreadystatechange = function() {
 						// Skip scrolling to the top when its the same file.
 						if (filename !== current_file) {
 							// Let browser know to optimize scrolling.
-							perf_hint($delement, "scroll-position");
+							perf_hint($sroot, "scroll-position");
 
 							// Use a timeout to let the injected HTML load/parse.
 							setTimeout(function() {
@@ -1703,13 +1722,13 @@ document.onreadystatechange = function() {
 									to: { a: 0 },
 									duration: scroll_duration(0),
 									onProgress: function(values) {
-										$delement.scrollTop = values.a;
+										$sroot.scrollTop = values.a;
 									},
 									onComplete: function() {
 										// console.log("E");
 
 										// Remove optimization.
-										perf_unhint($delement);
+										perf_unhint($sroot);
 									}
 								});
 							}, 300);
