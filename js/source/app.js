@@ -651,6 +651,7 @@ document.onreadystatechange = function() {
 							// $header.getBoundingClientRect().top - offset - 6
 						);
 
+						// [http://jsbin.com/filopozege/edit?html,css,output]
 						// 						// Inject the clone to the DOM.
 						// 						document.getElementById("test").insertAdjacentHTML(
 						// 							"afterbegin",
