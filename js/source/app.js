@@ -961,7 +961,7 @@ document.onreadystatechange = function() {
 										$parent.classList.remove("highlight");
 
 										// Let browser know to optimize scrolling.
-										// perf_hint($sroot, "scroll-position");
+										perf_hint($sroot, "scroll-position");
 
 										// Use a timeout to let the injected HTML load
 										// and parse properly. Otherwise, getBoundingClientRect
@@ -976,7 +976,7 @@ document.onreadystatechange = function() {
 												);
 
 												// Remove optimization.
-												// perf_unhint($sroot);
+												perf_unhint($sroot);
 											});
 										}, 300);
 									}
@@ -1010,7 +1010,7 @@ document.onreadystatechange = function() {
 								$parent.classList.remove("highlight");
 
 								// Let browser know to optimize scrolling.
-								// perf_hint($sroot, "scroll-position");
+								perf_hint($sroot, "scroll-position");
 
 								// Use a timeout to let the injected HTML load
 								// and parse properly. Otherwise, getBoundingClientRect
@@ -1023,7 +1023,7 @@ document.onreadystatechange = function() {
 										$parent.classList.add("highlight");
 
 										// Remove optimization.
-										// perf_unhint($sroot);
+										perf_unhint($sroot);
 									});
 								}, 300);
 							}
@@ -1118,18 +1118,18 @@ document.onreadystatechange = function() {
 				 *
 				 * @resource [https://dev.opera.com/articles/css-will-change-property/]
 				 */
-				// function perf_hint($el, props) {
-				// 	$el.style.willChange = props || "transform";
-				// }
+				function perf_hint($el, props) {
+					$el.style.willChange = props || "transform";
+				}
 
 				/**
 				 * Remove performance CSS.
 				 *
 				 * @return {undefined} - Nothing.
 				 */
-				// function perf_unhint($el) {
-				// 	$el.style.willChange = "auto";
-				// }
+				function perf_unhint($el) {
+					$el.style.willChange = "auto";
+				}
 
 				/**
 				 * Calculate the duration based on the amount needed to
@@ -1585,7 +1585,7 @@ document.onreadystatechange = function() {
 						$header.classList.remove("highlight");
 
 						// Let browser know to optimize scrolling.
-						// perf_hint($sroot, "scroll-position");
+						perf_hint($sroot, "scroll-position");
 
 						// Store the header to scroll to it later.
 						$sb_animation_header = $header;
@@ -1675,7 +1675,7 @@ document.onreadystatechange = function() {
 							$header.classList.remove("highlight");
 
 							// Let browser know to optimize scrolling.
-							// perf_hint($sroot, "scroll-position");
+							perf_hint($sroot, "scroll-position");
 
 							// Scroll to the header.
 							scroll($header, function() {
@@ -1685,7 +1685,7 @@ document.onreadystatechange = function() {
 								$header.classList.add("highlight");
 
 								// Remove optimization.
-								// perf_unhint($sroot);
+								perf_unhint($sroot);
 							});
 
 							// Get the anchor href.
@@ -1729,7 +1729,7 @@ document.onreadystatechange = function() {
 						// Skip scrolling to the top when its the same file.
 						if (filename !== current_file) {
 							// Let browser know to optimize scrolling.
-							// perf_hint($sroot, "scroll-position");
+							perf_hint($sroot, "scroll-position");
 
 							// Use a timeout to let the injected HTML load/parse.
 							setTimeout(function() {
@@ -1743,8 +1743,9 @@ document.onreadystatechange = function() {
 									},
 									onComplete: function() {
 										// console.log("E");
+
 										// Remove optimization.
-										// perf_unhint($sroot);
+										perf_unhint($sroot);
 									}
 								});
 							}, 300);
@@ -1786,14 +1787,24 @@ document.onreadystatechange = function() {
 							var opacity =
 								getComputedStyle($overlay, null).opacity * 1;
 
-							// Reset the overlay.
+							// Get needed classes.
 							var classes_overlay = $overlay.classList;
+							var classes_sidebar = $sidebar.classList;
 
 							if (opacity === 1) {
 								// Sidebar shown.
 								// Reset the overlay.
 							} else if (opacity === 0) {
 								// Sidebar hidden.
+
+								// Note: Having the sidebar "visible", although
+								// offscreen causes scrolling to lag in mobile.
+								// Therefore, once the overlay fades out "reset"
+								// the sidebar by hiding then unhiding it.
+								classes_sidebar.add("none");
+								setTimeout(function() {
+									classes_sidebar.remove("none");
+								}, 0);
 
 								// Reset the overlay.
 								classes_overlay.add("none");
@@ -1812,7 +1823,7 @@ document.onreadystatechange = function() {
 										);
 
 										// Remove optimization.
-										// perf_unhint($sroot);
+										perf_unhint($sroot);
 
 										// Reset the var.
 										$sb_animation_header = null;
