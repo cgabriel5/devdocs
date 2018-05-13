@@ -36,6 +36,7 @@
 		</div>
 	</div>
 	<div id="app" class="app">
+		<div id="main-overlay" class="main-overlay none"></div>
 		<div class="sidebar-overlay opa0 none"></div>
 		<div class="sidebar" id="sidebar">
 			<div class="menu">
@@ -49,7 +50,10 @@
 		</div>
 		<div id="topbar" class="topbar animate-fadein none">
 			<!-- <div id="tb-percent-scrolled" class="tb-percent-scrolled"></div> -->
-			<div class="tb-menu mobile-menu-ham"><i aria-hidden="true" class="fas fa-bars mobile-menu-ham"></i></div>
+			<div class="flex flex-center">
+				<div class="tb-menu flex mobile-menu-ham"><i aria-hidden="true" class="fas fa-bars mobile-menu-ham"></i></div>
+				<div id="topbar-loader" class="topbar-loader none"></div>
+			</div>
 			<div id="tb-logo" class="tb-logo">
 				<div id="scroll-static" class="scroll-static scroll-def flex">
 					<div id="scroll-title" class="scroll-df-text">devdocs</div>
