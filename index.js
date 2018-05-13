@@ -170,6 +170,8 @@ config.files._404 = remove_space(
 	</div> \
 </div>'
 );
+// Add the svg loader.
+config.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
 
 // Honor the CLI outputpath parameter but if nothing is provided reset the
 // value to the config given value. If nothing is found in the config file
