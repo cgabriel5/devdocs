@@ -51,6 +51,33 @@ body {
 	width: 240px;
 }
 
+/*
+iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
+to become invisible when header scrolling. This seems to solve the issue.
+
+[https://stackoverflow.com/a/3921870]
+[https://stackoverflow.com/a/3461770]
+[https://www.drupal.org/project/flexslider/issues/1748514]
+[https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/]
+[https://github.com/scottjehl/Device-Bugs/issues/8]
+[https://stackoverflow.com/a/19172250]
+[https://github.com/janpaepke/ScrollMagic/issues/467]
+[https://davidwalsh.name/translate3d]
+[https://github.com/nolimits4web/Swiper/issues/45]
+[https://stanko.github.io/ios-safari-scroll-position-fixed/]
+[https://github.com/scottjehl/Device-Bugs/issues/8#issuecomment-5742063]
+[https://stackoverflow.com/a/11634004]
+[https://stackoverflow.com/a/36606198]
+[https://stackoverflow.com/a/11782061]
+[https://github.com/leafo/sticky-kit/issues/213#issuecomment-291172357]
+[https://stackoverflow.com/a/10122689]
+[https://stackoverflow.com/a/43188105]
+*/
+
+.sidebar > * {
+	transform: translateZ(0);
+}
+
 .markdown {
 	/*overflow: auto;*/
 	margin-left: 240px;
@@ -550,6 +577,10 @@ ul.file-headers {
 	display: none !important;
 }
 
+.hidden {
+	visibility: hidden;
+}
+
 /* https://css-tricks.com/removing-the-dotted-outline/ */
 
 a {
@@ -706,7 +737,7 @@ a {
 
 	.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6 {
 		position: sticky !important;
-		top: 40px;
+		top: 41px;
 		background: white;
 		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
         margin-left: 0px;
@@ -714,6 +745,7 @@ a {
         width: 100%;*/
 		display: flex;
 		flex-flow: row nowrap;
+		align-items: center;
 		white-space: nowrap;
 		overflow-x: auto;
 		overflow-y: hidden;
