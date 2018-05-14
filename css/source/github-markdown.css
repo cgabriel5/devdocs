@@ -411,8 +411,8 @@
 .markdown-body .anchor {
 	line-height: 1;
 	/* Keep the anchor hyper-link on the right due limited space on mobile
-	devices.*//*float: left;*//*margin-left: -20px;*/
-	padding-right: 4px;
+	devices.*//*float: left;*//*margin-left: -20px;*//*padding-right: 4px;*/
+	margin-left: 6px;
 }
 
 .markdown-body .anchor:focus {
@@ -484,7 +484,7 @@
 .markdown-body h4 .octicon-link,
 .markdown-body h5 .octicon-link,
 .markdown-body h6 .octicon-link {
-	visibility: hidden;
+	/*visibility: hidden;*/
 	vertical-align: middle;
 	color: #1b1f23;
 }
@@ -504,7 +504,7 @@
 .markdown-body h4:hover .anchor .octicon-link,
 .markdown-body h5:hover .anchor .octicon-link,
 .markdown-body h6:hover .anchor .octicon-link {
-	visibility: visible;
+	/*visibility: visible;*/
 }
 
 .markdown-body h1 {
