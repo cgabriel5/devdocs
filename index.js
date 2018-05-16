@@ -379,6 +379,13 @@ toc.forEach(function(directory) {
 			first_file = true;
 		}
 
+		// Placehold the eventual file before parsed/modified/worked on contents. Once the
+		// promise is resolved the -1 will be replaced with the actual worked on file contents.
+		// This is done do maintain the file's array order. As promises end once they are
+		// resolved, smaller files end quicker. This sometimes causes for the files to be added
+		// in the wrong order.
+		config.files[`${fpath}`] = -1;
+
 		// Create a Promise for each file.
 		let promise = new Promise(function(resolve, reject) {
 			// Found headings in the file will be stored in this array.
@@ -478,8 +485,12 @@ toc.forEach(function(directory) {
 					// Finally reset the data to the newly parsed/modified HTML.
 					data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
 
-					// Add to the object
-					config.files[`${fpath}`] = data;
+					// Add to the object.
+					var _placeholder = config.files[`${fpath}`];
+					if (_placeholder && _placeholder === -1) {
+						// Set the actual contents to the data object.
+						config.files[`${fpath}`] = data;
+					}
 
 					if (debug) {
 						print.gulp.info("Processed", chalk.magenta(`${fpath}`));
