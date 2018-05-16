@@ -107,22 +107,13 @@
 
 .animate-pulse {
 	animation-name: animate-pulse;
-	animation-duration: 0.8s;
+	animation-duration: 0.6s;
 	animation-timing-function: ease-in-out;
 	animation-iteration-count: 1;
 }
 
 @keyframes animate-pulse {
-	0% {
+	40% {
 		transform: translate3d(0, 0, 0) scale(0.5);
 	}
-
-	25% {
-		transform: translate3d(0, 0, 0) scale(0.4);
-	}
-
-	50% {
-		transform: translate3d(0, 0, 0) scale(0.6);
-		/*opacity: 0;*/
-	}/*100% {*//*transform: translate3d(0, 0, 0) scale(0.5);*//*opacity: 0;*//*}*/
 }
