@@ -286,12 +286,13 @@
 	font-weight: 600;
 }
 
-.markdown-body h3 {
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
 	font-size: 20px;
 	font-weight: 600;
-	/* For custom highlight purpose. */
-	border-radius: 4px;
-	padding: 0 5px;
+	/* For custom highlight purpose. *//*border-radius: 4px;*//*padding: 0 5px;*/
+	margin-left: -5px;
+	padding-left: 5px;
+	width: calc(100% + 5px);
 }
 
 .markdown-body h4 {
@@ -509,13 +510,17 @@
 
 .markdown-body h1 {
 	font-size: 2em;
-	padding-bottom: 0.3em;
+	/* padding-bottom: 0.3em; */
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
 	border-bottom: 1px solid #eaecef;
 }
 
 .markdown-body h2 {
 	font-size: 1.5em;
-	padding-bottom: 0.3em;
+	/* padding-bottom: 0.3em; */
+	padding-top: 0.2em;
+	padding-bottom: 0.2em;
 	border-bottom: 1px solid #eaecef;
 }
 

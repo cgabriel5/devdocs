@@ -669,6 +669,7 @@ document.onreadystatechange = function() {
 				var scroll = function($el, callback) {
 					// Calculate the to y scroll offset position.
 					var to = scroll.offset($el);
+					var from = window.pageYOffset;
 
 					// Store the scroll position to allow for the cancellation
 					// of the animation when any manual scrolling is done.
@@ -682,12 +683,19 @@ document.onreadystatechange = function() {
 
 					// Scroll to the header.
 					scroll.animation = animate({
-						from: window.pageYOffset,
+						from: from,
 						to: to,
 						duration: scroll_duration(to),
 						onSkip: function() {
 							var de = document.documentElement;
-							if (de.scrollHeight === de.clientHeight) {
+							if (
+								// When the page is not scrollable
+								// (no overflow), skip to immediately invoke
+								// the callback.
+								de.scrollHeight === de.clientHeight ||
+								// Skip if the from/to is the same position.
+								Math.floor(to) === Math.floor(from)
+							) {
 								return true;
 							}
 						},
@@ -751,7 +759,7 @@ document.onreadystatechange = function() {
 					// Calculate the to y scroll position.
 					return is_mobile_viewport()
 						? // For "mobile" size.
-							coors($el.nextElementSibling).pageY - 98
+							coors($el.nextElementSibling).pageY - 86
 						: // Desktop size.
 							coors($el).pageY - 10;
 				};
@@ -990,7 +998,9 @@ document.onreadystatechange = function() {
 
 								// Remove the class to make sure the highlight
 								// works.
-								$parent.classList.remove("highlight");
+								$parent.classList.remove(
+									"animate-header-highlight"
+								);
 								// Scroll to the position. Don't use an animation
 								// as alt + (<-- or -->) needs to be done and
 								// felt very quick.
@@ -998,7 +1008,9 @@ document.onreadystatechange = function() {
 									// Instantly scroll to position.
 									$sroot.scrollTop = scroll.offset($parent);
 
-									$parent.classList.add("highlight");
+									$parent.classList.add(
+										"animate-header-highlight"
+									);
 								}, 0);
 							}
 						}
@@ -1117,7 +1129,9 @@ document.onreadystatechange = function() {
 
 										// Remove the class to make sure the highlight
 										// works.
-										$parent.classList.remove("highlight");
+										$parent.classList.remove(
+											"animate-header-highlight"
+										);
 
 										// Let browser know to optimize scrolling.
 										perf_hint($sroot, "scroll-position");
@@ -1131,7 +1145,7 @@ document.onreadystatechange = function() {
 												// console.log("C");
 
 												$parent.classList.add(
-													"highlight"
+													"animate-header-highlight"
 												);
 
 												// Remove optimization.
@@ -1166,7 +1180,9 @@ document.onreadystatechange = function() {
 
 								// Remove the class to make sure the highlight
 								// works.
-								$parent.classList.remove("highlight");
+								$parent.classList.remove(
+									"animate-header-highlight"
+								);
 
 								// Let browser know to optimize scrolling.
 								perf_hint($sroot, "scroll-position");
@@ -1179,7 +1195,9 @@ document.onreadystatechange = function() {
 									scroll($parent, function() {
 										// console.log("D");
 
-										$parent.classList.add("highlight");
+										$parent.classList.add(
+											"animate-header-highlight"
+										);
 
 										// Remove optimization.
 										perf_unhint($sroot);
@@ -1638,7 +1656,7 @@ document.onreadystatechange = function() {
 
 				// 	// Scroll to the header.
 				// 	if ($header) {
-				// 		$header.classList.remove("highlight");
+				// 		$header.classList.remove("animate-header-highlight");
 
 				// 		// Let browser know to optimize scrolling.
 				// 		perf_hint($sroot, "scroll-position");
@@ -1662,7 +1680,7 @@ document.onreadystatechange = function() {
 				// 			},
 				// 			onComplete: function(actualDuration, averageFps) {
 				// 				// Highlight the header.
-				// 				$header.classList.add("highlight");
+				// 				$header.classList.add("animate-header-highlight");
 
 				// 				// Remove optimization.
 				// 				perf_unhint($sroot);
@@ -1743,45 +1761,39 @@ document.onreadystatechange = function() {
 						).parentNode;
 
 						// Remove the class before adding.
-						$header.classList.remove("highlight");
+						$header.classList.remove("animate-header-highlight");
 
 						// Let browser know to optimize scrolling.
 						perf_hint($sroot, "scroll-position");
 
-						// Store the header to scroll to it later.
-						$sb_animation_header = $header;
+						// Store the header to scroll to it later if in the
+						// mobile viewport view.
+						if (is_mobile_viewport()) {
+							$sb_animation_header = $header;
 
-						// // Scroll to header after sliding away the sidebar.
-						// // Scroll to the header.
-						// scroll($header, function() {
-						// 	// console.log("A");
+							// Hide the sidebar.
+							sb_animation = true;
+							hide_sidebar();
+						} else {
+							// Scroll to the header.
+							scroll($header, function() {
+								// console.log("A:Desktop");
 
-						// 	// Highlight the header.
-						// 	$header.classList.add("highlight");
+								// Highlight the header.
+								$header.classList.add(
+									"animate-header-highlight"
+								);
 
-						// 	// Remove optimization.
-						// 	perf_unhint($sroot);
-
-						// 	// Hide the mobile sidebar + overlay.
-						// 	if (
-						// 		getComputedStyle($overlay).display === "block"
-						// 	) {
-						// 		sb_animation = true;
-
-						// 		// Hide the sidebar.
-						// 		hide_sidebar();
-						// 	}
-						// });
+								// Remove optimization.
+								perf_unhint($sroot);
+							});
+						}
 
 						// Don't store the same hash. Only store if the hash
 						// is different than the current hash.
 						if (location.hash !== href) {
 							history.pushState({}, null, `${href}`);
 						}
-
-						// Hide the sidebar.
-						sb_animation = true;
-						hide_sidebar();
 
 						return;
 					} else if (classes.contains("btn-home")) {
@@ -1833,7 +1845,9 @@ document.onreadystatechange = function() {
 
 						// Scroll to the header.
 						if ($header) {
-							$header.classList.remove("highlight");
+							$header.classList.remove(
+								"animate-header-highlight"
+							);
 
 							// Let browser know to optimize scrolling.
 							perf_hint($sroot, "scroll-position");
@@ -1843,7 +1857,9 @@ document.onreadystatechange = function() {
 								// console.log("B");
 
 								// Highlight the header.
-								$header.classList.add("highlight");
+								$header.classList.add(
+									"animate-header-highlight"
+								);
 
 								// Remove optimization.
 								perf_unhint($sroot);
@@ -2017,11 +2033,11 @@ document.onreadystatechange = function() {
 								if ($sb_animation_header) {
 									// Scroll to the header.
 									scroll($sb_animation_header, function() {
-										// console.log("A");
+										// console.log("A:Mobile");
 
 										// Highlight the header.
 										$sb_animation_header.classList.add(
-											"highlight"
+											"animate-header-highlight"
 										);
 
 										// Remove optimization.
