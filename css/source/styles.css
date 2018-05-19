@@ -51,6 +51,38 @@ body {
 	width: 240px;
 }
 
+/*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-button {
+    width: 0;
+    height: 0
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(136,136,136,0.4);
+    border-radius: 0
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(136,136,136,.5)
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgba(136,136,136,.7)
+}
+
+::-webkit-scrollbar-track {
+    background: 0 0;
+    border-radius: 0
+}
+
+::-webkit-scrollbar-corner {
+    background: rgba(175,6,6,.05)
+}*/
+
 /*
 iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
 to become invisible when header scrolling. This seems to solve the issue.
@@ -142,12 +174,13 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .l-3 {
-	padding: 6px 25px 6px 20px;
+	padding: 5px 25px 5px 20px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
 	text-transform: capitalize;
+	font-size: 14px;
 }
 
 .l-2:hover,
@@ -735,7 +768,7 @@ a {
 
 	.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6 {
 		position: sticky !important;
-		top: 41px;
+		top: 40px;
 		background: white;
 		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
         margin-left: 0px;
@@ -752,10 +785,16 @@ a {
 		border-radius: 0 !important;
 		margin-left: -15px;
 		width: calc(100% + 30px);
-		padding: 10px 20px;
+		padding: 10px 15px;
 		/* Make scrolling smooth in iOS */
 		overflow-scrolling: touch;
 		z-index: 1;
+		font-size: 20px;
+		font-weight: 600;
+		/*border-radius: 4px;*/
+		border-bottom: 1px solid #eaecef;
+		margin-top: 0;
+		margin-bottom: 0;
 	}/*
 	.markdown h3::after {
 		content: "";
@@ -770,6 +809,10 @@ a {
         background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 60%);
 		background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%);
 	}*/
+
+	.header-spacer {
+		padding-bottom: 8px;
+	}
 }
 
 @media (max-width: 324px) {

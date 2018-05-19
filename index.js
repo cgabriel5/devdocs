@@ -461,7 +461,7 @@ toc.forEach(function(directory) {
 					});
 
 					// Get all headings in the HTML.
-					$("h2 a, h3 a, h4 a, h5 a, h5 a").each(function(i, elem) {
+					$("h2 a, h3 a, h4 a, h5 a, h6 a").each(function(i, elem) {
 						// Cache the element.
 						let $el = $(this);
 
@@ -482,8 +482,80 @@ toc.forEach(function(directory) {
 					// file object.
 					__file.headings.push(headings.join(""));
 
+					// Add the header spacer.
+					$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
+						// Don't add the spacer class if the header group
+						// is empty. (no siblings.)
+						var spacer_class = !/h[1-6]/i.test(
+							$(this).next()[0].name
+						)
+							? " class='header-spacer'"
+							: "";
+						$(this).after(`<div${spacer_class}></div>`);
+					});
+
 					// Finally reset the data to the newly parsed/modified HTML.
 					data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
+
+					// Wrap the headers with their "contents".
+					// [https://stackoverflow.com/a/21420210]
+					var index_of_regexp = function(string, regex, fromIndex) {
+						var str = fromIndex
+							? string.substring(fromIndex)
+							: string;
+						var match = str.match(regex);
+						return match ? str.indexOf(match[0]) + fromIndex : -1;
+					};
+
+					var indices = [];
+					var index = index_of_regexp(data, /<h[1-6].*?>/i, 0);
+					while (index !== -1) {
+						indices.push(index);
+
+						index = index_of_regexp(
+							data,
+							/<h[1-6].*?>/i,
+							index + 1
+						);
+					}
+
+					// [https://stackoverflow.com/a/25329247]
+					String.prototype.insertTextAtIndices = function(text) {
+						return this.replace(/./g, function(character, index) {
+							return text[index]
+								? text[index] + character
+								: character;
+						});
+					};
+
+					// Create the HTML inserts.
+					var inserts = {};
+					indices.forEach(function(index, i) {
+						// <h1st --> Start.
+						// <h2nd --> End+Start.
+						// <h3rd --> End+Start.
+						// <h4th --> End+Start, Find ending tag.
+
+						// Start.
+						if (i === 0) {
+							inserts[index] =
+								'<div class="header-content-ddwrap">';
+							// End+Start.
+						} else if (i === indices.length - 1) {
+							inserts[index] =
+								'</div><div class="header-content-ddwrap">';
+							inserts[data.length] = "</div>";
+						} else {
+							// End+Start, Find ending tag.
+							inserts[index] =
+								'</div><div class="header-content-ddwrap">';
+						}
+					});
+
+					// Reset the data.
+					data = data
+						.insertTextAtIndices(inserts)
+						.replace(/<\/?(html|body|head)>/gi, "");
 
 					// Add to the object.
 					var _placeholder = config.files[`${fpath}`];
