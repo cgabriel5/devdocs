@@ -180,7 +180,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 	white-space: nowrap;
 	cursor: pointer;
 	text-transform: capitalize;
-	font-size: 14px;
+	/*font-size: 14px;*/
 }
 
 .l-2:hover,
@@ -433,6 +433,7 @@ ul.file-headers {
 	padding: 7px;
 	cursor: pointer;
 	margin-left: -10px;
+	font-size: 18px;
 }
 
 .tb-menu:active {
@@ -469,7 +470,7 @@ ul.file-headers {
 	font-size: 12px;
 	padding: 4px 8px;
 	border-radius: 100px;
-	background: #ffffff;
+	/*background: #ffffff;*/
 	border: 1px solid rgba(0, 0, 0, 0.0975);
 }
 
@@ -763,13 +764,14 @@ a {
 	.markdown-body {
 		margin-top: 40px;
 		padding: 15px;
-		font-size: 14px;
+		font-size: 15px;
 	}
 
 	.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6 {
 		position: sticky !important;
-		top: 40px;
-		background: white;
+		top: 42px;
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(10px);
 		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
         margin-left: 0px;
         width: calc(100% + 0px);
@@ -789,7 +791,7 @@ a {
 		/* Make scrolling smooth in iOS */
 		overflow-scrolling: touch;
 		z-index: 1;
-		font-size: 20px;
+		font-size: 18px;
 		font-weight: 600;
 		/*border-radius: 4px;*/
 		border-bottom: 1px solid #eaecef;
@@ -811,7 +813,7 @@ a {
 	}*/
 
 	.header-spacer {
-		padding-bottom: 8px;
+		padding-bottom: 24px;
 	}
 }
 

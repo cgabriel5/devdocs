@@ -190,6 +190,14 @@ mkdirp.sync(outputpath);
 if (highlighter && ["p", "h"].includes(highlighter.charAt(0))) {
 	marked.setOptions({
 		highlight: function(code, language) {
+			// Reset languages.
+			if (language) {
+				// Reset "md" to "markup".
+				if (language.toLowerCase() === "md") {
+					language = "markup";
+				}
+			}
+
 			// Determine what highlighter to use. Either prismjs or highlightjs.
 			if (highlighter[0] === "h") {
 				// Use highlightjs.
@@ -416,6 +424,7 @@ toc.forEach(function(directory) {
 						let $el = $(this);
 						// Get the attributes.
 						let href = $el.attr("href");
+						let href_untouched = href; // The original href.
 						let href_lower = href.toLowerCase();
 
 						// Only when the anchor has an href attribute.
@@ -448,6 +457,8 @@ toc.forEach(function(directory) {
 
 								// Set the final href.
 								$el.attr("data-file", href);
+								// Set the untouched original href.
+								$el.attr("data-file-untouched", href_untouched);
 								// Set class to denote its a documentation link.
 								$el.addClass("link-doc");
 							} else {
