@@ -51,37 +51,264 @@ body {
 	width: 240px;
 }
 
+/* Scrollbar-START:MacOS Style */
+
+/*
+Scrollbar Style Sources:
+[https://stackoverflow.com/a/24405833]
+[https://gist.github.com/jbrewer/2571697]
+[https://stackoverflow.com/a/33809641]
+[https://gist.github.com/howar31/127f71018a9ef025291f9c76293972ea]
+[https://codepen.io/waterplea/pen/dVMopv]
+[https://poselab.com/en/blog/custom-scrollbars-in-webkit/]
+[https://stackoverflow.com/a/9356321]
+[https://css-tricks.com/custom-scrollbars-in-webkit/]
+[https://css-tricks.com/almanac/properties/s/scrollbar/]
+[https://scotch.io/tutorials/customize-the-browsers-scrollbar-with-css]
+ */
+
 /*::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+	width: 15px;
+	height: 15px;
+	background: #f8f8f8;
+}
+
+::-webkit-scrollbar:window-inactive {
+	background: #f8f8f850;
 }
 
 ::-webkit-scrollbar-button {
-    width: 0;
-    height: 0
+	width: 0;
+	height: 0;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: rgba(136,136,136,0.4);
-    border-radius: 0
+	background: #c1c1c1;
+	border-radius: 1000px;
+	border: 4px solid transparent;
+	background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+	background: #c1c1c150;
+	border-radius: 1000px;
+	border: 4px solid transparent;
+	background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: rgba(136,136,136,.5)
+	background: #7d7d7d;
+	border: 4px solid transparent;
+	background-clip: content-box;
 }
 
-::-webkit-scrollbar-thumb:active {
-    background: rgba(136,136,136,.7)
+::-webkit-scrollbar-thumb:window-inactive:hover {
+	background: #c1c1c150;
+	border: 4px solid transparent;
+	background-clip: content-box;
 }
 
 ::-webkit-scrollbar-track {
-    background: 0 0;
-    border-radius: 0
+	background: 0 0;
+	border-radius: 0;
+}
+
+::-webkit-scrollbar-track:vertical {
+	background: 0 0;
+	border-radius: 0;
+	border-left: 1px solid #eaeaea;
+}
+
+::-webkit-scrollbar-track:horizontal {
+	background: 0 0;
+	border-radius: 0;
+	border-top: 1px solid #eaeaea;
+}
+
+::-webkit-scrollbar-track:vertical:window-inactive {
+	border-left: 1px solid #eaeaea50;
+}
+
+::-webkit-scrollbar-track:horizontal:window-inactive {
+	border-top: 1px solid #eaeaea50;
 }
 
 ::-webkit-scrollbar-corner {
-    background: rgba(175,6,6,.05)
+	background: #ffffff;
+	border-top: 1px solid #dddddd;
+	border-left: 1px solid #dddddd;
 }*/
+
+/* Scrollbar-END:MacOS Style */
+
+/*::-webkit-scrollbar-button {
+	background-size: 100%;
+	height: 10px;
+	width: 10px;
+	-webkit-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-button:horizontal:increment {
+	background-image: url(../img/arrow-down.png);
+}
+
+::-webkit-scrollbar-button:horizontal:decrement {
+	background-image: url(../img/arrow-down.png);
+}
+
+::-webkit-scrollbar-button:vertical:increment {
+	background-image: url(../img/arrow-down.png);
+}
+
+::-webkit-scrollbar-button:vertical:decrement {
+	background-image: url(../img/arrow-down.png);
+}*/
+
+/*::-webkit-scrollbar-button:vertical:decrement {
+	background-image: url(../img/arrow-down.png),
+                      -webkit-linear-gradient(left, #f9f9f9 50%, #e2e2e2 100%);
+	background-repeat: no-repeat;
+	background-position: 3px 4px, 0 0;
+}
+
+::-webkit-scrollbar-button:vertical:increment {
+	background-image: url(../img/arrow-down.png),
+                      -webkit-linear-gradient(left, #f9f9f9 50%, #e2e2e2 100%);
+	background-repeat: no-repeat;
+	background-position: 3px 5px, 0 0;
+}
+
+::-webkit-scrollbar-button:horizontal:decrement {
+	background-image: url(../img/arrow-down.png),
+                      -webkit-linear-gradient(top, #f9f9f9 50%, #e2e2e2 100%);
+	background-repeat: no-repeat;
+	background-position: 4px 3px, 0 0;
+}
+
+::-webkit-scrollbar-button:horizontal:increment {
+	background-image: url(../img/arrow-down.png),
+                      -webkit-linear-gradient(top, #f9f9f9 50%, #e2e2e2 100%);
+	background-repeat: no-repeat;
+	background-position: 5px 3px, 0 0;
+}*/
+
+/*corner resizer*/
+
+/*::-webkit-resizer {
+     background: #f2f2f2 url(scrollbar/resizer.png) no-repeat 2px 4px;
+     border-top: 1px solid #d9d9d9;
+     border-left: 1px solid #d9d9d9
+}*/
+
+/* SCROLL Button:START; */
+
+/*::-webkit-scrollbar-button:end {
+	display: block;
+}
+
+::-webkit-scrollbar-button:start {
+	display: none;
+}
+
+::-webkit-scrollbar-button:disabled {
+	display: none !important;
+}
+
+::-webkit-scrollbar:vertical:corner-present {
+	border-bottom-width: 0;
+}
+
+::-webkit-scrollbar-track:vertical:disabled:corner-present {
+	margin-bottom: 5px;
+}
+
+::-webkit-scrollbar-button:vertical {
+	height: 20px;
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button.png) 2 0 2 0;
+	border-color: transparent;
+	border-width: 2px 0;
+}
+
+::-webkit-scrollbar-button:vertical:decrement {
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
+                      url(resources/vertical-button-background.png);
+	background-repeat: no-repeat, repeat-y;
+	background-position: 3px 3px, 0 0;
+}
+
+::-webkit-scrollbar-button:vertical:decrement:hover {
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-hover.png) 2 0 2 0;
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
+                      url(resources/vertical-button-background-hover.png);
+}
+
+::-webkit-scrollbar-button:vertical:decrement:active {
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-active.png) 2 0 2 0;
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
+                      url(resources/vertical-button-background-active.png);
+}
+
+::-webkit-scrollbar-button:vertical:decrement:window-inactive {
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-inactive.png) 2 0 2 0;
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
+                      url(resources/vertical-button-background-inactive.png);
+}
+
+::-webkit-scrollbar-button:vertical:increment {
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
+                      url(resources/vertical-button-background.png);
+	background-repeat: no-repeat, repeat-y;
+	background-position: 3px 8px, 0 0;
+}
+
+::-webkit-scrollbar-button:vertical:increment:hover {
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-hover.png) 2 0 2 0;
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
+                      url(resources/vertical-button-background-hover.png);
+}
+
+::-webkit-scrollbar-button:vertical:increment:active {
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-active.png) 2 0 2 0;
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
+                      url(resources/vertical-button-background-active.png);
+}
+
+::-webkit-scrollbar-button:vertical:increment:window-inactive {
+	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-inactive.png) 2 0 2 0;
+	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
+                      url(resources/vertical-button-background-inactive.png);
+}
+
+::-webkit-scrollbar-button:double-button:vertical:start:decrement,::-webkit-scrollbar-button:vertical:start:decrement {
+	height: 14px;
+	border-bottom-width: 0;
+	background-position: 3px 3px, 0 0;
+}
+
+::-webkit-scrollbar-button:double-button:vertical:start:increment,::-webkit-scrollbar-button:vertical:start:increment {
+	background-position: 3px 4px, 0 0;
+}
+
+,::-webkit-scrollbar-button:double-button:vertical:end:decrement {
+	background-position: 3px 8px, 0 0;
+}
+
+::-webkit-scrollbar-button:double-button:vertical:end:increment {
+	height: 14px;
+	border-top-width: 0;
+	background-position: 3px 4px, 0 0;
+}
+
+::-webkit-scrollbar-button:vertical:end:increment:corner-present {
+	border-bottom-width: 0;
+	height: 19px;
+}*/
+
+/* ::-webkit-scrollbar-button:double-button:vertical:end:increment:corner-present,::-webkit-scrollbar-button:vertical:end:increment:corner-present {
+    height: 13px
+} */
+
+/* SCROLL Button:END; */
 
 /*
 iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
@@ -174,13 +401,18 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .l-3 {
-	padding: 5px 25px 5px 20px;
+	padding: 6px 25px 6px 20px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
 	text-transform: capitalize;
-	/*font-size: 14px;*/
+	font-size: 15px;
+	border-right: 2px solid transparent;
+}
+
+.l-3:hover {
+	border-right: 2px solid #2578f8;
 }
 
 .l-2:hover,
@@ -240,6 +472,8 @@ ul.file-headers {
 	align-items: center;
 	padding: 10px 10px;
 	filter: grayscale(10);
+	margin-bottom: -40px;
+	padding: 50px 0 30px 0;
 	/*opacity: 1;*/
 }
 
@@ -750,11 +984,9 @@ a {
 		will-change: transform;
 	}/* To make the sidebar constantly show the y-scroller make the div
 	dip/overflow. This or simply giving the .menu a min-height: 101%; also
-	works. */
-
-	.logo-devdocs {
+	works. *//*	.logo-devdocs {
 		margin-bottom: -40px;
-	}
+	}*/
 
 	.mobile-slide {
 		transform: translate3D(280px, 0, 0);

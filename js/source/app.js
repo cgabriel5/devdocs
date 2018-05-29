@@ -469,12 +469,23 @@ document.onreadystatechange = function() {
 		};
 
 		/**
-		 * Detect whether UA is a mobile device.
+		 * Return the UAParser parsed user agent object.
 		 *
-		 * @return {boolean} - Boolean indicating if UA is a mobile device.
+		 * @return {object} - The UAParser object.
+		 */
+		var user_agent = function() {
+			return UAParser(navigator.userAgent);
+		};
+
+		/**
+		 * Detect whether the device a "mobile" device. Basically anything other than a
+		 *     desktop device.
+		 *
+		 * @return {boolean} - Boolean indicating whether the device is "mobile".
 		 */
 		var is_mobile = function() {
-			return window.navigator.userAgent.toLowerCase().includes("mobi");
+			// Only apply to Chrome WebKit/Desktop browser.
+			return user_agent().device.type;
 		};
 
 		/**
@@ -484,6 +495,46 @@ document.onreadystatechange = function() {
 		 */
 		var is_mobile_viewport = function() {
 			return !window.matchMedia("(min-width: 769px)").matches;
+		};
+
+		/**
+		 * Determine whether browser is Chrome and running a desktop device.
+		 *
+		 * @return {boolean} - Boolean indicating whether browser is Chrome
+		 *     and running a desktop device.
+		 */
+		var is_desktop_chrome = function() {
+			// Get the user agent object.
+			var ua = user_agent();
+
+			// Only apply to Chrome WebKit/Desktop browser.
+			return ua.browser.name &&
+				/^(chr)/i.test(ua.browser.name) &&
+				!ua.device.type
+				? true
+				: false;
+		};
+
+		/**
+		 * Get the CSS style sheet object that matches the provided title.
+		 *
+		 * @return {object} - The CSS object stylesheet. Undefined when
+		 *     the sheet is not found.
+		 */
+		var stylesheet = function(title) {
+			// Get the sheets.
+			var sheets = document.styleSheets;
+
+			// Loop over and return the sheet with the matching title.
+			for (var i = 0, l = sheets.length; i < l; i++) {
+				var sheet = sheets[i];
+				if (sheet.title === title) {
+					return sheet;
+				}
+			}
+
+			// A sheet was not found matching the provided title.
+			return undefined;
 		};
 
 		/**
@@ -531,6 +582,46 @@ document.onreadystatechange = function() {
 				}
 			})
 			.then(function(data) {
+				/**
+				 * Add MacOS scrollbars style sheet.
+				 *
+				 * @return {object} - The style sheet object.
+				 *
+				 * @resource [https://davidwalsh.name/add-rules-stylesheets]
+				 */
+				(function() {
+					// Only if engine is webkit.
+					if (user_agent().engine.name !== "WebKit") {
+						return;
+					}
+
+					// Create the element.
+					var style = document.createElement("style");
+
+					// "Name" the sheet.
+					style.setAttribute("title", "dd/mac-scrollbars");
+
+					// WebKit hack :(.
+					style.appendChild(document.createTextNode(""));
+
+					// Add the <style> element to the page.
+					document.head.appendChild(style);
+
+					// Get the sheet itself.
+					var sheet = style.sheet;
+
+					// Only enable MacOS style scrollbars when running Chrome
+					// on a desktop device.
+					if (!is_desktop_chrome()) {
+						sheet.disabled = true;
+					}
+
+					// Add the styles.
+					data.styles_macos_sb.forEach(function(rule, index) {
+						sheet.insertRule(rule, sheet.cssRules.length);
+					});
+				})();
+
 				// $splash_icon.style.transform = "scale(0.4)";
 				$splash_icon.classList.add("animate-pulse");
 
@@ -677,9 +768,31 @@ document.onreadystatechange = function() {
 
 					// Cancel any current header scrolling animation.
 					if (scroll.animation) {
-						scroll.animation.cancel();
+						scroll.animation.cancel(function() {
+							// Remove event listeners.
+							scroll.remove_handlers();
+						});
 						scroll.animation = null;
 					}
+
+					// Add event handlers to be able to cancel the scrolling.
+					document.addEventListener(
+						"touchmove",
+						scroll.animation_handler,
+						{
+							passive: false
+						}
+					);
+					document.addEventListener(
+						"wheel",
+						scroll.animation_handler,
+						false
+					);
+					document.addEventListener(
+						"keydown",
+						scroll.animation_handler,
+						false
+					);
 
 					// Scroll to the header.
 					scroll.animation = animate({
@@ -694,35 +807,36 @@ document.onreadystatechange = function() {
 								// the callback.
 								de.scrollHeight === de.clientHeight ||
 								// Skip if the from/to is the same position.
-								Math.floor(to) === Math.floor(from)
+								Math.floor(to) === Math.floor(from) ||
+								Math.abs(to - from) <= 1
 							) {
 								return true;
 							}
 						},
 						onProgress: function(val, meta) {
-							// Round the value to make canceling the scroll
-							// possible.
-							val = Math.floor(val);
+							// // Round the value to make canceling the scroll
+							// // possible.
+							// val = Math.floor(val);
 
-							// Cancel scroll when manually scrolling.
-							// [https://github.com/madebysource/animated-scrollto#animated-scrollto]
-							if (lastpos) {
-								if (lastpos === $sroot.scrollTop) {
-									lastpos = val;
-									// Continue to set scroll position...
-								} else {
-									// Cancel scrolling.
-									scroll.animation.cancel();
-									// Return false to not run the callback.
-									return false;
-								}
-							} else {
-								lastpos = val;
-								// Continue to set scroll position...
-							}
+							// // Cancel scroll when manually scrolling.
+							// // [https://github.com/madebysource/animated-scrollto#animated-scrollto]
+							// if (lastpos) {
+							// 	if (Math.abs(lastpos - $sroot.scrollTop) <= 1) {
+							// 		lastpos = val;
+							// 		// Continue to set scroll position...
+							// 	} else {
+							// 		// Cancel scrolling.
+							// 		scroll.animation.cancel();
+							// 		// Return false to not run the callback.
+							// 		return false;
+							// 	}
+							// } else {
+							// 	lastpos = val;
+							// 	// Continue to set scroll position...
+							// }
 
 							// Set the scrolltop value.
-							$sroot.scrollTop = val;
+							// $sroot.scrollTop = val;
 
 							// Edge case: when scrolling to bottom
 							// cancel scrolling once the value exceeds
@@ -732,7 +846,7 @@ document.onreadystatechange = function() {
 							if (
 								// When scrolling down and percent scrolled
 								// is >= 100 stop animation.
-								percent_scrolled() >= 100 &&
+								Math.round(percent_scrolled()) >= 100 &&
 								Math.sign(meta.from - meta.to) === -1
 							) {
 								// Scroll to the bottom of the page.
@@ -741,12 +855,16 @@ document.onreadystatechange = function() {
 								return true;
 							}
 
-							// // Set the scrolltop value.
-							// $sroot.scrollTop = val;
+							// Set the scrolltop value.
+							$sroot.scrollTop = val;
 						},
 						onComplete: function() {
+							// Remove event listeners.
+							scroll.remove_handlers();
+
 							// Reset the variable.
 							scroll.animation = null;
+
 							// Run the callback.
 							callback();
 						}
@@ -762,6 +880,51 @@ document.onreadystatechange = function() {
 							coors($el.nextElementSibling).pageY - 86
 						: // Desktop size.
 							coors($el).pageY - 10;
+				};
+				scroll.animation_handler = function(e) {
+					// Cancel event if no animation is ongoing.
+					if (!scroll.animation) {
+						return;
+					}
+
+					// Keys can also be used: up/down/space-bar/esc keys will
+					// cancel the animation.
+					if (
+						e.type === "keydown" &&
+						![38, 40, 32, 27].includes(e.which)
+					) {
+						return;
+					}
+
+					// If a scrolling animation is ongoing cancel the scrolling.
+
+					// Cancel any current header scrolling animation.
+					scroll.animation.cancel(function() {
+						scroll.remove_handlers();
+					});
+					scroll.animation = null;
+
+					e.preventDefault();
+					e.stopPropagation();
+				};
+				scroll.remove_handlers = function() {
+					// [https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener]
+
+					document.removeEventListener(
+						"touchmove",
+						scroll.animation_handler,
+						false
+					);
+					document.removeEventListener(
+						"wheel",
+						scroll.animation_handler,
+						false
+					);
+					document.removeEventListener(
+						"keydown",
+						scroll.animation_handler,
+						false
+					);
 				};
 
 				// Contain all content headers.
@@ -1583,6 +1746,19 @@ document.onreadystatechange = function() {
 				window.addEventListener(
 					"resize",
 					debounce(function(event) {
+						// If the flag is not set then disable the sheet.
+						var sheet = stylesheet("dd/mac-scrollbars");
+						if (sheet) {
+							sheet.disabled = !is_desktop_chrome();
+
+							// Reset mobile scrollbars.
+							var classes = $sroot.classList;
+							classes.add("none");
+							setTimeout(function() {
+								classes.remove("none");
+							}, 0);
+						}
+
 						// When the window is no longer in a mobile size
 						// and the sidebar is showing, hide the sidebar and
 						// reset the content + topbar.
