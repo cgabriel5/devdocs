@@ -172,6 +172,68 @@ config.files._404 = remove_space(
 );
 // Add the svg loader.
 config.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
+// Add the MacOS scrollbar styles.
+config.styles_macos_sb = [
+	`::-webkit-scrollbar {
+	width: 15px;
+	height: 15px;
+	background: #f8f8f8;
+}`,
+	`::-webkit-scrollbar:window-inactive {
+	background: #f8f8f850;
+}`,
+	`::-webkit-scrollbar-button {
+	width: 0;
+	height: 0;
+}`,
+	`::-webkit-scrollbar-thumb {
+	background: #c1c1c1;
+	border-radius: 1000px;
+	border: 4px solid transparent;
+	background-clip: content-box;
+}`,
+	`::-webkit-scrollbar-thumb:window-inactive {
+	background: #c1c1c150;
+	border-radius: 1000px;
+	border: 4px solid transparent;
+	background-clip: content-box;
+}`,
+	`::-webkit-scrollbar-thumb:hover {
+	background: #7d7d7d;
+	border: 4px solid transparent;
+	background-clip: content-box;
+}`,
+	`::-webkit-scrollbar-thumb:window-inactive:hover {
+	background: #c1c1c150;
+	border: 4px solid transparent;
+	background-clip: content-box;
+}`,
+	`::-webkit-scrollbar-track {
+	background: 0 0;
+	border-radius: 0;
+}`,
+	`::-webkit-scrollbar-track:vertical {
+	background: 0 0;
+	border-radius: 0;
+	border-left: 1px solid #eaeaea;
+}`,
+	`::-webkit-scrollbar-track:horizontal {
+	background: 0 0;
+	border-radius: 0;
+	border-top: 1px solid #eaeaea;
+}`,
+	`::-webkit-scrollbar-track:vertical:window-inactive {
+	border-left: 1px solid #eaeaea50;
+}`,
+	`::-webkit-scrollbar-track:horizontal:window-inactive {
+	border-top: 1px solid #eaeaea50;
+}`,
+	`::-webkit-scrollbar-corner {
+	background: #ffffff;
+	border-top: 1px solid #dddddd;
+	border-left: 1px solid #dddddd;
+}`
+];
 
 // Honor the CLI outputpath parameter but if nothing is provided reset the
 // value to the config given value. If nothing is found in the config file
@@ -700,6 +762,7 @@ gulp.task("js:app", function(done) {
 			gulp.src([
 				apath("./js/vendor/httpjs/http.js"),
 				apath("./js/vendor/fastclick/fastclick.js"),
+				apath("./js/vendor/uaparserjs/uaparser.js"),
 				// apath("./js/vendor/smoothscrolljs/smoothscroll.js"),
 				// apath("./js/vendor/smoothscrolljs/zenscroll.js"),
 				apath("./js/source/app.js")
