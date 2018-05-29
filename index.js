@@ -175,8 +175,8 @@ config.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
 // Add the MacOS scrollbar styles.
 config.styles_macos_sb = [
 	`::-webkit-scrollbar {
-	width: 15px;
-	height: 15px;
+	width: 16px;
+	height: 16px;
 	background: #f8f8f8;
 }`,
 	`::-webkit-scrollbar:window-inactive {
