@@ -105,6 +105,43 @@ document.onreadystatechange = function() {
 		};
 
 		/**
+		 * Determines which animation[start|end|interation] event
+		 *     the user's browser supports and returns it.
+		 *
+		 * @param {string} type - The event type: either start,
+		 *     end, or iteration.
+		 * @return {string} - The browser prefixed transition event.
+		 *
+		 * @resource [https://davidwalsh.name/css-animation-callback]
+		 * @resource [https://github.com/cgabriel5/snippets/blob/master/js/detection/which_animation_transition_event.js]
+		 */
+		var which_animation_event = function(type) {
+			// lowercase type
+			type = type.toLowerCase();
+			var el = document.createElement("div"),
+				animations = {
+					animation: "animation",
+					OAnimation: "oAnimation",
+					oanimation: "oanimation",
+					MozAnimation: "animation",
+					WebkitAnimation: "webkitAnimation",
+					MSAnimation: "MSAnimation"
+				};
+			for (var animation in animations) {
+				if (el.style[animation] !== undefined) {
+					// cache value
+					var value = animations[animation];
+					// determine if suffix needs to be capitalized
+					var end = value.match(/[A-Z]/)
+						? type.charAt(0).toUpperCase() + type.substring(1)
+						: type;
+					// return prefixed event
+					return value + end;
+				}
+			}
+		};
+
+		/**
 		 * Debounces provided function.
 		 *
 		 * @param {function} func - The function to debounce.
@@ -646,14 +683,14 @@ document.onreadystatechange = function() {
 				// $splash_icon.style.transform = "scale(0.4)";
 				$splash_icon.classList.add("animate-pulse");
 
+				// // setTimeout(function() {
+				// // $splash.classList.add("opa0");
+				// // $splash_icon.style.transform = "scale(0.6)";
 				// setTimeout(function() {
-				// $splash.classList.add("opa0");
-				// $splash_icon.style.transform = "scale(0.6)";
-				setTimeout(function() {
-					$splash_icon.classList.add("opa0");
-					// $splash_icon.style.opacity = "0";
-					// }, 100);
-				}, 250);
+				// 	$splash_icon.classList.add("opa0");
+				// 	// $splash_icon.style.opacity = "0";
+				// 	// }, 100);
+				// }, 250);
 
 				// Set the title if provided.
 				if (data.title) {
@@ -1620,7 +1657,7 @@ document.onreadystatechange = function() {
 					// 		stylesheet.cssRules.length
 					// 	);
 					// }
-				}, 200);
+				}, 500);
 
 				// EventListeners:Scoped:Inner //
 
@@ -2267,6 +2304,20 @@ document.onreadystatechange = function() {
 				// Observe body on body.
 				observer.observe(document.body, observerConfig);
 
+				// Listen to the end of the splash animation.
+				document.addEventListener(
+					which_animation_event("start"),
+					function(e) {
+						if (e.animationName === "animate-pulse") {
+							setTimeout(function() {
+								// Remove the class and hide the splash elements.
+								$splash.classList.add("opa0");
+								$topbar.classList.remove("none");
+							}, 250);
+						}
+					}
+				);
+
 				// Listen to sidebar showing/hiding transition ends to reset
 				// the needed elements.
 				document.addEventListener(
@@ -2276,15 +2327,15 @@ document.onreadystatechange = function() {
 						var $target = e.target;
 						var pname = e.propertyName;
 
-						// Hide the splash element.
-						if (
-							$target.classList.contains("splash-loader-icon") &&
-							pname === "opacity"
-						) {
-							// Remove the class and hide the splash elements.
-							$splash.classList.add("opa0");
-							$topbar.classList.remove("none");
-						}
+						// // Hide the splash element.
+						// if (
+						// 	$target.classList.contains("splash-loader-icon") &&
+						// 	pname === "opacity"
+						// ) {
+						// 	// Remove the class and hide the splash elements.
+						// 	$splash.classList.add("opa0");
+						// 	$topbar.classList.remove("none");
+						// }
 						if (
 							$target.classList.contains("splash-loader") &&
 							pname === "opacity"
