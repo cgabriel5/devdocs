@@ -557,14 +557,69 @@ toc.forEach(function(directory) {
 
 					// Add the header spacer.
 					$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
 						// Don't add the spacer class if the header group
 						// is empty. (no siblings.)
-						var spacer_class = !/h[1-6]/i.test(
-							$(this).next()[0].name
-						)
+						var spacer_class = !/h[1-6]/i.test($el.next()[0].name)
 							? " class='header-spacer'"
 							: "";
-						$(this).after(`<div${spacer_class}></div>`);
+						$el.after(`<div${spacer_class}></div>`);
+					});
+
+					// Hide code blocks that are too big.
+					$("pre code[class^='lang']").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Get text (code) and file stats.
+						let text = $el.text().trim();
+						let lines = text.split("\n").length;
+						let chars = text.split("").length;
+
+						// If the code is > 40 lines show an expander.
+						if (lines >= 40) {
+							// Get the parent element.
+							let $parent = $el.parent();
+
+							// Add the expander.
+							$parent.before(`<div class="show-code-cont">
+									<div class="code-template-cont">
+										<div class="code-template-line">
+											<div class="code-template code-template-len40"></div>
+											<div class="code-template code-template-len100"></div>
+										</div>
+										<div class="code-template-left-pad code-template-line">
+											<div class="code-template code-template-len40"></div>
+											<div class="code-template code-template-len130"></div>
+										</div>
+										<div class="code-template-left-pad code-template-line">
+											<div class="code-template code-template-len40"></div>
+											<div class="code-template code-template-len80"></div>
+											<div class="code-template code-template-len70"></div>
+										</div>
+										<div class="code-template-line">
+											<div class="code-template code-template-len40"></div>
+											<div class="code-template code-template-len50"></div>
+										</div>
+									</div>
+									<div class="show-code-message-cont">
+										<div>
+											<div>
+												<span class="bold noselect">Show code block</span>
+												<div class="show-code-file-info">
+													<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>`);
+
+							// Finally hide the element.
+							$parent.addClass("none");
+							$parent.addClass("animate-fadein");
+						}
 					});
 
 					// Finally reset the data to the newly parsed/modified HTML.

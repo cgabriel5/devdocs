@@ -1527,6 +1527,34 @@ document.onreadystatechange = function() {
 					// return duration;
 				}
 
+				/**
+				 * Determine whether the provided element is or is part of
+				 *     of a code expander element.
+				 *
+				 * @param  {htmlelement} $el - The element to check.
+				 * @return {htmlelement|false} - The expander element or false it not
+				 *     the element.
+				 */
+				function is_code_expander($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("show-code-cont")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
 				// AppCode:Scoped:Inner //
 
 				// Enclose in a timeout to give the loader a chance to fade away.
@@ -2012,6 +2040,13 @@ document.onreadystatechange = function() {
 						hide_sidebar();
 
 						return;
+					} else if (is_code_expander($target)) {
+						// Reset the target.
+						$target = is_code_expander($target);
+
+						// Hide the element.
+						$target.classList.add("none");
+						$target.nextElementSibling.classList.remove("none");
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -2390,6 +2425,15 @@ document.onreadystatechange = function() {
 								// [https://stackoverflow.com/a/48536959]
 								// [https://stackoverflow.com/a/41289160]
 								e.preventDefault();
+							} else if (is_code_expander($target)) {
+								// Reset the target.
+								$target = is_code_expander($target);
+
+								// Hide the element.
+								$target.classList.add("none");
+								$target.nextElementSibling.classList.remove(
+									"none"
+								);
 							}
 
 							// [https://stackoverflow.com/a/42288386]
