@@ -74,6 +74,19 @@ function remove_space(string) {
 }
 
 /**
+ * Add commas to a number every thousand.
+ *
+ * @param {number} x - The number to adds commas to.
+ *
+ * @resource [https://stackoverflow.com/a/2901298]
+ */
+function add_commas_to_num(x) {
+	var parts = x.toString().split(".");
+	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	return parts.join(".");
+}
+
+/**
  * Create the absolute path while taking into account the app/module directory.
  *
  * @param  {string} __path - The path to resolve.
@@ -575,8 +588,8 @@ toc.forEach(function(directory) {
 
 						// Get text (code) and file stats.
 						let text = $el.text().trim();
-						let lines = text.split("\n").length;
-						let chars = text.split("").length;
+						let lines = add_commas_to_num(text.split("\n").length);
+						let chars = add_commas_to_num(text.split("").length);
 
 						// If the code is > 40 lines show an expander.
 						if (lines >= 40) {

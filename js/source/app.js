@@ -741,12 +741,26 @@ document.onreadystatechange = function() {
 
 				// Functions:Scoped:Inner //
 
+				/**
+				 * Generatet the CSS loader HTML.
+				 *
+				 * @param  {string} name - The name of the CSS loader to use.
+				 * @param  {number} size - The dimensions the loader should be.
+				 * @return {string} - The CSS loader HTML string.
+				 */
+				function cssloader(name, size) {
+					size = size || 16;
+					return `<div class="loader-base loader-bg-${name ||
+						"base"}" style="width:${size}px;height:${size}px;"></div>`;
+				}
+
 				function show_tb_loader() {
 					// Show the main overlay.
 					$moverlay.classList.remove("none");
 
 					// Show the topbar loader.
-					$tb_loader.innerHTML = data.loader;
+					// $tb_loader.innerHTML = data.loader;
+					$tb_loader.innerHTML = cssloader("dark", 16);
 					$tb_loader.classList.remove("none");
 				}
 
@@ -776,7 +790,11 @@ document.onreadystatechange = function() {
 					$el.children[0].classList.add("none");
 					// Add the loader.
 					// $el.insertAdjacentHTML("afterbegin", data.loader);
-					$el.children[0].insertAdjacentHTML("afterend", data.loader);
+					// $el.children[0].insertAdjacentHTML("afterend", data.loader);
+					$el.children[0].insertAdjacentHTML(
+						"afterend",
+						cssloader("dark", 10)
+					);
 					$el.children[1].classList.add("mr5");
 
 					// Set the flag.
@@ -2476,16 +2494,17 @@ document.onreadystatechange = function() {
 								// [https://stackoverflow.com/a/48536959]
 								// [https://stackoverflow.com/a/41289160]
 								e.preventDefault();
-							} else if (is_code_expander($target)) {
-								// Reset the target.
-								$target = is_code_expander($target);
-
-								// Hide the element.
-								$target.classList.add("none");
-								$target.nextElementSibling.classList.remove(
-									"none"
-								);
 							}
+							// else if (is_code_expander($target)) {
+							// 	// Reset the target.
+							// 	$target = is_code_expander($target);
+
+							// 	// Hide the element.
+							// 	$target.classList.add("none");
+							// 	$target.nextElementSibling.classList.remove(
+							// 		"none"
+							// 	);
+							// }
 
 							// [https://stackoverflow.com/a/42288386]
 							// [https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action]
