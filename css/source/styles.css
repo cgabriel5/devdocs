@@ -622,7 +622,7 @@ ul.file-headers {
 /* [https://codepen.io/hoshts/pen/BHoij?editors=1100] */
 
 .topbar-loader {
-	margin: -2px 15px 0 5px;
+	margin: 0 15px 0 5px;
 }
 
 .mr5 {
@@ -1000,6 +1000,24 @@ a {
 /* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
 
 /* Used SVG to CSS converter: [https://websemantics.uk/tools/svg-to-background-image-conversion/] */
+
+.mloader {
+	border-radius: 50%;
+	border: 3px solid;
+	border-color: #555555 #dddddd #dddddd;
+	animation: animate-spin 0.5s linear infinite;
+	position: relative;
+}
+
+@keyframes animate-spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
 
 .loader-base {
 	background-position: center;

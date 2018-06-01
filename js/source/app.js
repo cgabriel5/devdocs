@@ -749,9 +749,10 @@ document.onreadystatechange = function() {
 				 * @return {string} - The CSS loader HTML string.
 				 */
 				function cssloader(name, size) {
-					size = size || 16;
-					return `<div class="loader-base loader-bg-${name ||
-						"base"}" style="width:${size}px;height:${size}px;"></div>`;
+					// size = size || 16;
+					// return `<div class="loader-base loader-bg-${name ||
+					// 	"base"}" style="width:${size}px;height:${size}px;"></div>`;
+					return `<div class="mloader" style="width:${size}px;height:${size}px;"></div>`;
 				}
 
 				function show_tb_loader() {
