@@ -25,6 +25,8 @@ let findup = require("find-up");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
 let cheerio = require("cheerio");
+let Entities = require("html-entities").XmlEntities;
+let entities = new Entities();
 
 // Lazy load gulp plugins.
 let $ = require("gulp-load-plugins")({
@@ -610,12 +612,7 @@ toc.forEach(function(directory) {
 						}
 
 						// Get the text/code.
-						let text = $el
-							.html()
-							.replace(/\&amp\;/gi, "&")
-							.replace(/\&lt\;/gi, "<")
-							.replace(/\&gt\;/gi, ">")
-							.replace(/\&quot\;/gi, '"');
+						let text = entities.decode($el.html());
 
 						// Check for the lang attribute.
 						var lang = $el.attr().lang;
@@ -671,12 +668,7 @@ toc.forEach(function(directory) {
 						// Get the text/code.
 						// [https://stackoverflow.com/a/6234804]
 						// [https://github.com/cheeriojs/cheerio#loading]
-						let text = $el
-							.html()
-							.replace(/\&amp\;/gi, "&")
-							.replace(/\&lt\;/gi, "<")
-							.replace(/\&gt\;/gi, ">")
-							.replace(/\&quot\;/gi, '"');
+						let text = entities.decode($el.html());
 
 						// Check for the lang attribute.
 						var lang = $el.attr().lang;
