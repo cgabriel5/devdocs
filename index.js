@@ -108,6 +108,18 @@ function upath(__path, recursive) {
 	return path.resolve(process.cwd(), __path);
 }
 
+/**
+ * @description [Generates a simple ID containing letters and numbers.]
+ * @param  {Number} length [The length the ID should be. Max length is 22 characters]
+ * @return {String}        [The newly generated ID.]
+ * @source {http://stackoverflow.com/a/38622545}
+ */
+function id(length) {
+	return Math.random()
+		.toString(36)
+		.substr(2, length);
+}
+
 // Get the CLI parameters.
 let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
 let configpath = argv.config || argv.c;
@@ -705,8 +717,18 @@ toc.forEach(function(directory) {
 							// Get the parent element.
 							let $parent = $el.parent();
 
+							var uid = `exp-${id(20)}${id(20)}`;
+
 							// Add the expander.
-							$parent.before(`<div class="show-code-cont">
+							$parent.before(
+								`<div class="expander-close-cont none">
+									<div></div>
+									<div>
+										<i class="fas fa-caret-square-up expander-close" data-expid="${uid}"></i>
+									</div>
+								</div>`
+							);
+							$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
 											<div class="code-template code-template-len40"></div>
@@ -741,6 +763,7 @@ toc.forEach(function(directory) {
 							// Finally hide the element.
 							$parent.addClass("none");
 							$parent.addClass("animate-fadein");
+							$parent.attr("id", uid);
 						}
 					});
 
@@ -770,6 +793,9 @@ toc.forEach(function(directory) {
 					}
 
 					// [https://stackoverflow.com/a/25329247]
+					// [https://stackoverflow.com/a/21420210]
+					// [https://stackoverflow.com/a/3410557]
+					// [https://stackoverflow.com/a/274094]
 					String.prototype.insertTextAtIndices = function(text) {
 						return this.replace(/./g, function(character, index) {
 							return text[index]
@@ -940,6 +966,7 @@ gulp.task("js:app", function(done) {
 				apath("./js/vendor/httpjs/http.js"),
 				apath("./js/vendor/fastclick/fastclick.js"),
 				apath("./js/vendor/uaparserjs/uaparser.js"),
+				apath("./js/vendor/clipboardjs/clipboard.js"),
 				// apath("./js/vendor/smoothscrolljs/smoothscroll.js"),
 				// apath("./js/vendor/smoothscrolljs/zenscroll.js"),
 				apath("./js/source/app.js")

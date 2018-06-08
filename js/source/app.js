@@ -29,6 +29,7 @@ document.onreadystatechange = function() {
 		var $tb_title = document.getElementById("scroll-title");
 		var $tb_filename = document.getElementById("scroll-filename");
 		var $tb_loader = document.getElementById("topbar-loader");
+		var $copied_message = document.getElementById("copied-message");
 
 		// Variables //
 
@@ -610,6 +611,53 @@ document.onreadystatechange = function() {
 
 			// Return rect object.
 			return rect;
+		};
+
+		/**
+		 * Select the text of an element.
+		 *
+		 * @param  {htmlelement} $el - The element.
+		 * @return {undefined} - Nothing.
+		 *
+		 * @resource [https://www.sanwebe.com/2014/04/select-all-text-in-element-on-click]
+		 */
+		var selection = function($el) {
+			// First clear any current range selection.
+			// [https://stackoverflow.com/a/3171348]
+			var sel = window.getSelection
+				? window.getSelection()
+				: document.selection;
+			if (sel) {
+				if (sel.removeAllRanges) {
+					sel.removeAllRanges();
+				} else if (sel.empty) {
+					sel.empty();
+				}
+			}
+
+			var sel, range;
+			if (window.getSelection && document.createRange) {
+				//Browser compatibility
+				sel = window.getSelection();
+				if (sel.toString() == "") {
+					//no text selection
+					window.setTimeout(function() {
+						range = document.createRange(); //range object
+						range.selectNodeContents($el); //sets Range
+						sel.removeAllRanges(); //remove all ranges from selection
+						sel.addRange(range); //add Range to a Selection.
+					}, 1);
+				}
+			} else if (document.selection) {
+				//older ie
+				sel = document.selection.createRange();
+				if (sel.text == "") {
+					//no text selection
+					range = document.body.createTextRange(); //Creates TextRange object
+					range.moveToElementText($el); //sets Range
+					range.select(); //make selection.
+				}
+			}
 		};
 
 		// ------------------------------------------------------------
@@ -1977,6 +2025,108 @@ document.onreadystatechange = function() {
 				// $tb_scroll.addEventListener("click", dynamic_handler);
 
 				// Listen to clicks.
+				document.addEventListener("dblclick", function(e) {
+					// Get the target element.
+					var $target = e.target;
+					var filename;
+					var classes = $target.classList;
+
+					function is_code_pre_code_element($el) {
+						// Get the target element parents.
+						var parents = build_path({ target: $el });
+
+						// Loop over the parents and check if any is a header
+						// element.
+						for (var i = 0, l = parents.length; i < l; i++) {
+							var parent = parents[i];
+
+							// The parent must be a:
+							// - pre element
+							// - contain only 1 child
+							// - child must contain the class "lang-*"
+
+							if (
+								parent.classList &&
+								parent.tagName === "PRE" &&
+								parent.children.length === 1 &&
+								/\slang-.*\s/.test(
+									" " +
+										(parent.children[0].className || "") +
+										" "
+								)
+							) {
+								return parent;
+							}
+						}
+
+						// Not the element needed.
+						return false;
+					}
+
+					// [https://github.com/zenorocha/clipboard.js/issues/389#issuecomment-301916808]
+					// [https://github.com/zenorocha/clipboard.js/issues/112]
+					// [https://gist.github.com/rproenca/64781c6a1329b48a455b645d361a9aa3]
+					// [https://stackoverflow.com/a/46858939]
+					function clipboard($el, event) {
+						var cb = new ClipboardJS($el, {
+							target: function(trigger) {
+								return $el;
+							},
+							text: function(trigger) {
+								return $el.textContent;
+							}
+						});
+
+						cb.on("success", function(e) {
+							cb.off("error");
+							cb.off("success");
+							cb.destroy();
+
+							// Show the message.
+							$copied_message.classList.remove("opa0");
+							$copied_message.classList.remove("none");
+
+							// Select the text.
+							selection($el);
+
+							if (window.copy_timer) {
+								clearTimeout(window.copy_timer);
+							}
+							window.copy_timer = setTimeout(function() {
+								$copied_message.classList.add("opa0");
+								window.copy_timer = setTimeout(function() {
+									clearTimeout(window.copy_timer);
+									window.copy_timer = null;
+									delete window.copy_timer;
+
+									$copied_message.classList.add("none");
+								}, 2000);
+							}, 2000);
+						});
+
+						cb.on("error", function(e) {
+							cb.off("error");
+							cb.off("success");
+							cb.destroy();
+
+							if (window.copy_timer) {
+								clearTimeout(window.copy_timer);
+							}
+						});
+
+						// cb.onClick(event);
+						cb.onClick({ currentTarget: $el });
+					}
+
+					var $el = is_code_pre_code_element($target);
+					if ($el) {
+						e.preventDefault();
+						e.stopPropagation();
+
+						clipboard($el, e);
+					}
+				});
+
 				document.addEventListener("click", function(e) {
 					// Get the target element.
 					var $target = e.target;
@@ -2103,6 +2253,25 @@ document.onreadystatechange = function() {
 						// Hide the element.
 						$target.classList.add("none");
 						$target.nextElementSibling.classList.remove("none");
+
+						setTimeout(function() {
+							$target.previousElementSibling.classList.remove(
+								"none"
+							);
+						}, 150);
+					} else if (classes.contains("expander-close")) {
+						var close_code_cont = $target.parentNode.parentNode;
+
+						// Close the target element contain parent element.
+						close_code_cont.classList.add("none");
+						// Hide the code element.
+						document
+							.getElementById($target.getAttribute("data-expid"))
+							.classList.add("none");
+						// Show the show-code-cont element.
+						close_code_cont.nextElementSibling.classList.remove(
+							"none"
+						);
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -2426,92 +2595,158 @@ document.onreadystatechange = function() {
 				// [https://stackoverflow.com/a/41601290]
 				// [https://stackoverflow.com/a/41565471]
 				if (touchsupport()) {
+					var clickTimer;
 					document.addEventListener(
 						"touchstart",
 						function(e) {
-							// Prevent further animations if animation ongoing.
-							if (sb_animation) {
-								return;
-							}
+							// [https://stackoverflow.com/a/26809354]
+							if (!clickTimer) {
+								// Single tap.
+								clickTimer = setTimeout(function() {
+									clearTimeout(clickTimer);
+									clickTimer = null;
 
-							// Get the target element.
-							var $target = e.target;
-							var classes = $target.classList;
+									// Run the regular code.
 
-							// Get touched coordinates.
-							var touch_info = e.targetTouches[0];
-							var x = touch_info.clientX;
-							var y = touch_info.clientY;
-							// The allowed range the touched pixels can be in
-							// to still allow for the mobile trigger to happen.
-							var range =
-								getComputedStyle($topbar).height.replace(
-									"px",
-									""
-								) *
-									1 -
-								1;
+									// Prevent further animations if animation ongoing.
+									if (sb_animation) {
+										return;
+									}
 
-							// The hamburger menu was clicked OR the allowed area
-							// range was touched.
-							if (
-								classes.contains("mobile-menu-ham") ||
-								(x <= range &&
-									y <= range &&
-									$overlay.style.display !== "block")
-							) {
-								// Cancel any current header scrolling animation.
-								if (scroll.animation) {
-									scroll.animation.cancel();
-									scroll.animation = null;
+									// Get the target element.
+									var $target = e.target;
+									var classes = $target.classList;
+
+									// Get touched coordinates.
+									var touch_info = e.targetTouches[0];
+									var x = touch_info.clientX;
+									var y = touch_info.clientY;
+									// The allowed range the touched pixels can be in
+									// to still allow for the mobile trigger to happen.
+									var range =
+										getComputedStyle(
+											$topbar
+										).height.replace("px", "") *
+											1 -
+										1;
+
+									// The hamburger menu was clicked OR the allowed area
+									// range was touched.
+									if (
+										classes.contains("mobile-menu-ham") ||
+										(x <= range &&
+											y <= range &&
+											$overlay.style.display !== "block")
+									) {
+										// Cancel any current header scrolling animation.
+										if (scroll.animation) {
+											scroll.animation.cancel();
+											scroll.animation = null;
+										}
+
+										// Note: Weird browser behavior. Sometimes while
+										// header scrolling and the sidebar is opened
+										// the sidebar is not visible but still
+										// useable. Hiding/showing the sidebar fixes
+										// this.
+										$sidebar.classList.add("none");
+										$sidebar.classList.remove("none");
+
+										sb_animation = true;
+
+										// Show the sidebar.
+										show_sidebar();
+
+										// Prevent later click event handlers.
+										// [https://stackoverflow.com/a/39575105]
+										// [https://stackoverflow.com/a/48536959]
+										// [https://stackoverflow.com/a/41289160]
+										e.preventDefault();
+									} else if (
+										classes.contains("sidebar-overlay")
+									) {
+										sb_animation = true;
+
+										// Hide the sidebar.
+										hide_sidebar();
+
+										// Prevent later click event handlers.
+										// [https://stackoverflow.com/a/39575105]
+										// [https://stackoverflow.com/a/48536959]
+										// [https://stackoverflow.com/a/41289160]
+										e.preventDefault();
+									}
+									// else if (is_code_expander($target)) {
+									// 	// Reset the target.
+									// 	$target = is_code_expander($target);
+
+									// 	// Hide the element.
+									// 	$target.classList.add("none");
+									// 	$target.nextElementSibling.classList.remove(
+									// 		"none"
+									// 	);
+									// }
+
+									// [https://stackoverflow.com/a/42288386]
+									// [https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action]
+									// [https://github.com/OwlCarousel2/OwlCarousel2/issues/1790]
+									// [https://developers.google.com/web/updates/2017/01/scrolling-intervention]
+									// e.preventDefault();
+								}, 220);
+							} else {
+								// Double tap.
+								clearTimeout(clickTimer);
+								clickTimer = null;
+
+								// Get the target element.
+								var $target = e.target;
+
+								function is_code_pre_code_element($el) {
+									// Get the target element parents.
+									var parents = build_path({ target: $el });
+
+									// Loop over the parents and check if any is a header
+									// element.
+									for (
+										var i = 0, l = parents.length;
+										i < l;
+										i++
+									) {
+										var parent = parents[i];
+
+										// The parent must be a:
+										// - pre element
+										// - contain only 1 child
+										// - child must contain the class "lang-*"
+
+										if (
+											parent.classList &&
+											parent.tagName === "PRE" &&
+											parent.children.length === 1 &&
+											/\slang-.*\s/.test(
+												" " +
+													(parent.children[0]
+														.className || "") +
+													" "
+											)
+										) {
+											return parent;
+										}
+									}
+
+									// Not the element needed.
+									return false;
 								}
 
-								// Note: Weird browser behavior. Sometimes while
-								// header scrolling and the sidebar is opened
-								// the sidebar is not visible but still
-								// useable. Hiding/showing the sidebar fixes
-								// this.
-								$sidebar.classList.add("none");
-								$sidebar.classList.remove("none");
+								var $el = is_code_pre_code_element($target);
+								if ($el) {
+									e.preventDefault();
+									e.stopPropagation();
 
-								sb_animation = true;
-
-								// Show the sidebar.
-								show_sidebar();
-
-								// Prevent later click event handlers.
-								// [https://stackoverflow.com/a/39575105]
-								// [https://stackoverflow.com/a/48536959]
-								// [https://stackoverflow.com/a/41289160]
-								e.preventDefault();
-							} else if (classes.contains("sidebar-overlay")) {
-								sb_animation = true;
-
-								// Hide the sidebar.
-								hide_sidebar();
-
-								// Prevent later click event handlers.
-								// [https://stackoverflow.com/a/39575105]
-								// [https://stackoverflow.com/a/48536959]
-								// [https://stackoverflow.com/a/41289160]
-								e.preventDefault();
+									// Select the text.
+									selection($el);
+								}
 							}
-							// else if (is_code_expander($target)) {
-							// 	// Reset the target.
-							// 	$target = is_code_expander($target);
-
-							// 	// Hide the element.
-							// 	$target.classList.add("none");
-							// 	$target.nextElementSibling.classList.remove(
-							// 		"none"
-							// 	);
-							// }
-
-							// [https://stackoverflow.com/a/42288386]
-							// [https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action]
-							// [https://github.com/OwlCarousel2/OwlCarousel2/issues/1790]
-							// [https://developers.google.com/web/updates/2017/01/scrolling-intervention]
-							// e.preventDefault();
 						},
 						{ passive: false }
 					);
