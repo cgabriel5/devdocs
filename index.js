@@ -25,6 +25,8 @@ let findup = require("find-up");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
 let cheerio = require("cheerio");
+let Entities = require("html-entities").XmlEntities;
+let entities = new Entities();
 
 // Lazy load gulp plugins.
 let $ = require("gulp-load-plugins")({
@@ -104,6 +106,18 @@ function apath(__path) {
  */
 function upath(__path, recursive) {
 	return path.resolve(process.cwd(), __path);
+}
+
+/**
+ * @description [Generates a simple ID containing letters and numbers.]
+ * @param  {Number} length [The length the ID should be. Max length is 22 characters]
+ * @return {String}        [The newly generated ID.]
+ * @source {http://stackoverflow.com/a/38622545}
+ */
+function id(length) {
+	return Math.random()
+		.toString(36)
+		.substr(2, length);
 }
 
 // Get the CLI parameters.
@@ -280,10 +294,15 @@ if (highlighter && ["p", "h"].includes(highlighter.charAt(0))) {
 			} else {
 				// Use prismjs.
 				// Default to markup when language is undefined or get an error.
-				return prism.highlight(
-					code,
-					prism.languages[language || "markup"]
-				);
+
+				try {
+					return prism.highlight(
+						code,
+						prism.languages[language || "markup"]
+					);
+				} catch (err) {
+					return code;
+				}
 			}
 		}
 	});
@@ -491,7 +510,10 @@ toc.forEach(function(directory) {
 					}
 
 					// Use cheerio to parse the HTML data.
-					let $ = cheerio.load(data);
+					// [https://github.com/cheeriojs/cheerio/issues/957]
+					let $ = cheerio.load(data, {
+						// decodeEntities: false
+					});
 
 					// Grab all anchor elements to
 					$("a").each(function(i, elem) {
@@ -581,6 +603,105 @@ toc.forEach(function(directory) {
 						$el.after(`<div${spacer_class}></div>`);
 					});
 
+					// Convert HTML pre tags.
+					$("pre > code").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Get the classes.
+						var classes = $el.attr()["class"];
+
+						// Element cannot contain any lang-* class.
+						if (/\slang-.*\s/.test(` ${classes || ""} `)) {
+							return;
+						}
+
+						var $parent = $el.parent();
+						var sibling_count = $parent.children().length;
+						// The code element must be the only child element.
+						if (sibling_count !== 1) {
+							return;
+						}
+
+						// Get the text/code.
+						let text = entities.decode($el.html());
+
+						// Check for the lang attribute.
+						var lang = $el.attr().lang;
+
+						// Look at the parent for the lang.
+						if (!lang) {
+							lang = $parent.attr().lang;
+						}
+
+						// Set a lang default.
+						lang = lang || "markup";
+
+						// Remove the lang attribute.
+						$el.removeAttr("lang");
+						$parent.removeAttr("lang");
+
+						// Add attribute to the code element only.
+						$el.attr("lang", lang);
+
+						// Used marked to add highlighting.
+						var highlighted = marked(
+							`\`\`\`${lang}\n${text.trim()}\n\`\`\``
+						)
+							.trim()
+							.replace(/^\<(pre|code)\>|\<\/(pre|code)\>$/g, "");
+
+						// Reset the element HTML.
+						$parent.html(highlighted);
+					});
+
+					$("pre").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Get the classes.
+						var classes = $el.attr()["class"];
+
+						// Element cannot contain any lang-* class.
+						if (/\slang-.*\s/.test(` ${classes || ""} `)) {
+							return;
+						}
+
+						// var $parent = $el.parent();
+						var sibling_count = $el.children().length;
+						var $fchild = $el.children().first();
+
+						// If the element contains child elements the
+						// first element cannot be a tag element.
+						if ($fchild[0] && $fchild[0].name === "code") {
+							return;
+						}
+
+						// Get the text/code.
+						// [https://stackoverflow.com/a/6234804]
+						// [https://github.com/cheeriojs/cheerio#loading]
+						let text = entities.decode($el.html());
+
+						// Check for the lang attribute.
+						var lang = $el.attr().lang;
+
+						// Set a lang default.
+						lang = lang || "markup";
+
+						// Remove the lang attribute.
+						$el.removeAttr("lang");
+
+						// Used marked to add highlighting.
+						var highlighted = marked(
+							`\`\`\`${lang}\n${text.trim()}\n\`\`\``
+						)
+							.trim()
+							.replace(/^\<(pre|code)\>|\<\/(pre|code)\>$/g, "");
+
+						// Reset the element HTML.
+						$el.html(highlighted);
+					});
+
 					// Hide code blocks that are too big.
 					$("pre code[class^='lang']").each(function(i, elem) {
 						// Cache the element.
@@ -596,8 +717,18 @@ toc.forEach(function(directory) {
 							// Get the parent element.
 							let $parent = $el.parent();
 
+							var uid = `exp-${id(20)}${id(20)}`;
+
 							// Add the expander.
-							$parent.before(`<div class="show-code-cont">
+							$parent.before(
+								`<div class="expander-close-cont none">
+									<div></div>
+									<div>
+										<i class="fas fa-caret-square-up expander-close" data-expid="${uid}"></i>
+									</div>
+								</div>`
+							);
+							$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
 											<div class="code-template code-template-len40"></div>
@@ -632,6 +763,7 @@ toc.forEach(function(directory) {
 							// Finally hide the element.
 							$parent.addClass("none");
 							$parent.addClass("animate-fadein");
+							$parent.attr("id", uid);
 						}
 					});
 
@@ -661,6 +793,9 @@ toc.forEach(function(directory) {
 					}
 
 					// [https://stackoverflow.com/a/25329247]
+					// [https://stackoverflow.com/a/21420210]
+					// [https://stackoverflow.com/a/3410557]
+					// [https://stackoverflow.com/a/274094]
 					String.prototype.insertTextAtIndices = function(text) {
 						return this.replace(/./g, function(character, index) {
 							return text[index]
@@ -831,6 +966,7 @@ gulp.task("js:app", function(done) {
 				apath("./js/vendor/httpjs/http.js"),
 				apath("./js/vendor/fastclick/fastclick.js"),
 				apath("./js/vendor/uaparserjs/uaparser.js"),
+				apath("./js/vendor/clipboardjs/clipboard.js"),
 				// apath("./js/vendor/smoothscrolljs/smoothscroll.js"),
 				// apath("./js/vendor/smoothscrolljs/zenscroll.js"),
 				apath("./js/source/app.js")

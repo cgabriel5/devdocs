@@ -995,6 +995,7 @@ a {
 
 .show-code-message-cont div:first-child {
 	min-width: 50%;
+	padding: 3px;
 }
 
 /* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
@@ -1049,6 +1050,71 @@ a {
 .loader-bg-lighter {
 	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f0edf0'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f5f3f5' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f9f7f9' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fcfbfc' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
 }*/
+
+.expander-close-cont {
+	border-radius: 1000px;
+	font-size: 18px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	cursor: pointer;
+}
+
+.expander-close {
+	position: absolute;
+	margin-left: -23px;
+	margin-top: -3px;
+	padding: 5px;
+	background: 0 0;
+	opacity: 0.3;
+}
+
+.expander-close:hover {
+	color: #2578f8;
+	opacity: 1;
+}
+
+.expander-close:active {
+	color: #2578f8;
+	opacity: 0.5;
+}
+
+.copied-message {
+	position: absolute;
+	position: fixed;
+	z-index: 10;
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	padding: 10px;
+	/*bottom: 0;*/
+	transition: opacity 0.2s ease-in-out;
+}
+
+.copied-message span {
+	padding: 10px;
+	color: white;
+	background: #2578f8;
+	border-radius: 4px;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 10px;
+	/*box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.05);*/
+}
+
+.copied-message i {
+	font-size: 12px;
+}
+
+::-moz-selection {
+	color: inherit;
+}
+
+::selection {
+	color: inherit;
+}
 
 @media (max-width: 366px) {
 	.show-code-message-cont {
