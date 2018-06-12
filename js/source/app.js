@@ -786,6 +786,7 @@ document.onreadystatechange = function() {
 				var $sb_animation_header;
 				var sb_active_el_loader;
 				var scroll_to_top;
+				var clipboardjs_instance;
 
 				// Functions:Scoped:Inner //
 
@@ -1659,6 +1660,26 @@ document.onreadystatechange = function() {
 					return false;
 				}
 
+				function is_close_code($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("btn-cba-collapse")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
 				// AppCode:Scoped:Inner //
 
 				// Enclose in a timeout to give the loader a chance to fade away.
@@ -2045,16 +2066,24 @@ document.onreadystatechange = function() {
 							// - contain only 1 child
 							// - child must contain the class "lang-*"
 
+							// The element must either be the code or the
+							// pre element.
 							if (
-								parent.classList &&
-								parent.tagName === "PRE" &&
-								parent.children.length === 1 &&
-								/\slang-.*\s/.test(
-									" " +
-										(parent.children[0].className || "") +
-										" "
-								)
+								(parent.classList &&
+									parent.tagName === "CODE" &&
+									/\slang-.*\s/.test(
+										" " + (parent.className || "") + " "
+									)) ||
+								(parent.classList &&
+									parent.tagName === "PRE" &&
+									parent.children.length === 2)
 							) {
+								// If the element is the code element reset
+								// the element to the parent element.
+								if (parent.tagName === "CODE") {
+									parent = parent.parentNode;
+								}
+
 								return parent;
 							}
 						}
@@ -2069,11 +2098,11 @@ document.onreadystatechange = function() {
 					// [https://stackoverflow.com/a/46858939]
 					function clipboard($el, event) {
 						var cb = new ClipboardJS($el, {
-							target: function(trigger) {
-								return $el;
-							},
+							// target: function(trigger) {
+							// 	return $el;
+							// },
 							text: function(trigger) {
-								return $el.textContent;
+								return $el.children[1].textContent.trim();
 							}
 						});
 
@@ -2259,19 +2288,21 @@ document.onreadystatechange = function() {
 								"none"
 							);
 						}, 150);
-					} else if (classes.contains("expander-close")) {
-						var close_code_cont = $target.parentNode.parentNode;
+					} else if (is_close_code($target)) {
+						// Reset the target.
+						$target = is_close_code($target);
 
-						// Close the target element contain parent element.
-						close_code_cont.classList.add("none");
-						// Hide the code element.
-						document
-							.getElementById($target.getAttribute("data-expid"))
-							.classList.add("none");
-						// Show the show-code-cont element.
-						close_code_cont.nextElementSibling.classList.remove(
-							"none"
+						// Get the pre element.
+						var $pre = document.getElementById(
+							$target.getAttribute("data-expid")
 						);
+						// Get the show-code-cont element.
+						var $show = $pre.previousElementSibling;
+
+						// Hide the pre.
+						$pre.classList.add("none");
+						// Show the show.
+						$show.classList.remove("none");
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -2474,6 +2505,55 @@ document.onreadystatechange = function() {
 									}
 								});
 							}
+
+							// Set up the ClipboardJS.
+							// Remove previous clipboardjs instance
+							if (clipboardjs_instance) {
+								clipboardjs_instance.destroy();
+							}
+							// Set up the clipboardjs listeners.
+							clipboardjs_instance = new ClipboardJS(
+								".btn-cba-copy",
+								{
+									text: function(trigger) {
+										// Get the text content from the pre element.
+										return document
+											.getElementById(
+												trigger.getAttribute(
+													"data-expid"
+												)
+											)
+											.getElementsByTagName("code")[0]
+											.textContent.trim();
+									}
+								}
+							);
+
+							clipboardjs_instance.on("success", function(e) {
+								// Show the message.
+								$copied_message.classList.remove("opa0");
+								$copied_message.classList.remove("none");
+
+								if (window.copy_timer) {
+									clearTimeout(window.copy_timer);
+								}
+								window.copy_timer = setTimeout(function() {
+									$copied_message.classList.add("opa0");
+									window.copy_timer = setTimeout(function() {
+										clearTimeout(window.copy_timer);
+										window.copy_timer = null;
+										delete window.copy_timer;
+
+										$copied_message.classList.add("none");
+									}, 2000);
+								}, 2000);
+							});
+
+							clipboardjs_instance.on("error", function(e) {
+								if (window.copy_timer) {
+									clearTimeout(window.copy_timer);
+								}
+							});
 						}
 					});
 				});

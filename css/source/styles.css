@@ -1313,3 +1313,36 @@ a.social-link:active, a.social-link:hover {
 .menu-arrow-active {
 	color: #2578f8;
 }
+
+.code-block-actions-cont {
+	width: 100%;
+	display: flex;
+	justify-content: flex-end;
+	padding-bottom: 5px;
+	font-family: -apple-system,
+                 BlinkMacSystemFont,
+                 "Segoe UI",
+                 Helvetica,
+                 Arial,
+                 sans-serif,
+                 "Apple Color Emoji",
+                 "Segoe UI Emoji",
+                 "Segoe UI Symbol";
+}
+
+.code-block-action {
+	font-weight: 700;
+	color: #999999;
+	padding: 3px 10px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	box-shadow: none;
+	margin-left: 5px;
+}
+
+.code-block-action:hover, .code-block-action:active {
+	color: #333333;
+}
+
+.code-block-action i {
+	margin-top: -3px;
+}
