@@ -720,12 +720,6 @@ toc.forEach(function(directory) {
 
 						// If the code is > 40 lines show an expander.
 						if (lines >= 40) {
-							// Add the action buttons
-							$parent.prepend(`<div class="code-block-actions-cont">
-	<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard"></i></span>
-	<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-times-circle"></i></span>
-</div>`);
-
 							$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
@@ -758,12 +752,18 @@ toc.forEach(function(directory) {
 									</div>
 								</div>`);
 
+							// Add the action buttons
+							$parent.before(`<div class="code-block-actions-cont none animate-fadein">
+												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span>
+												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}">collapse</span>
+							</div>`);
+
 							// Finally hide the element.
 							$parent.addClass("none");
 							$parent.addClass("animate-fadein");
 						} else {
-							$parent.prepend(
-								`<div class="code-block-actions-cont"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard"></i></span></div>`
+							$parent.before(
+								`<div class="code-block-actions-cont animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
 							);
 						}
 						$parent.attr("id", uid);
