@@ -1356,6 +1356,14 @@ a.social-link:active, a.social-link:hover {
 		color: inherit;
 		opacity: 1;
 	}
+
+	.line-num-first {
+		display: none;
+	}
+
+	.line-num-second {
+		position: relative;
+	}
 }
 
 @media (max-width: 324px) {
