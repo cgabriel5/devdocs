@@ -627,6 +627,9 @@
 
 .markdown-body pre {
 	word-wrap: normal;
+	/* For the line number element container. */
+	display: flex;
+	flex-flow: row nowrap;
 }
 
 .markdown-body pre > code {
@@ -654,7 +657,7 @@
 	line-height: 1.45;
 	overflow: auto;
 	overflow-scrolling: touch;
-	padding: 16px;
+	/*padding: 16px;*/
 	border-radius: 3px;
 	/* Custom color *//*background-color: #f6f8fa;*/
 	background-color: #fbfbfb;
@@ -685,6 +688,8 @@
 	color: #333333;
 	/*background: #f6f8fa;*/
 	background: #fbfbfb;
+	/* For line numbers. */
+	padding: 10px 10px 10px 0;
 }
 
 .markdown-body pre code::before,
