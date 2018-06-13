@@ -767,6 +767,34 @@ toc.forEach(function(directory) {
 							);
 						}
 						$parent.attr("id", uid);
+
+						// Set the line numbers element.
+
+						// Trim the HTML.
+						let html = $el.html().trim();
+						// Reset the HTML.
+						$el.html(html);
+						// Get the text.
+						text = $el.text();
+						// Get the number of lines.
+						lines = text.split("\n").length;
+
+						var line_nums = [];
+						for (var i = 0, l = lines; i < l; i++) {
+							line_nums.push(`<div>${i + 1}</div>`);
+						}
+						// Add the line numbers HTML.
+						$parent.prepend(
+							// Note: Insert a duplicate element to allow the
+							// second element to be able to be "fixed". This
+							// allows the code element to be properly adjacent
+							// to the fixed element.
+							`<div class="line-num noselect pnone">${line_nums.join(
+								""
+							)}</div><div class="line-num noselect pnone fixed">${line_nums.join(
+								""
+							)}</div>`
+						);
 					});
 
 					// Finally reset the data to the newly parsed/modified HTML.

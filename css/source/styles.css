@@ -717,6 +717,10 @@ ul.file-headers {
 	align-items: center;
 }
 
+.fixed {
+	position: fixed;
+}
+
 /*.scroll-dynamic {
 	display: flex;
 }*/
@@ -1189,6 +1193,14 @@ a.social-link:active, a.social-link:hover {
 
 .code-block-action i {
 	margin-top: -3px;
+}
+
+.line-num {
+	margin-right: 10px;
+	color: #919191;
+	border-right: 1px solid #c8c8c87a;
+	padding: 10px;
+	background: #fbfbfb;
 }
 
 @media (max-width: 366px) {
