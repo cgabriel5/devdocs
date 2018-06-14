@@ -1199,7 +1199,7 @@ a.social-link:active, a.social-link:hover {
 	margin-right: 10px;
 	color: #919191;
 	border-right: 1px solid #c8c8c87a;
-	padding: 10px;
+	padding: 10px 5px 10px 10px;
 	background: #fbfbfb;
 }
 
