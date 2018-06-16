@@ -120,6 +120,69 @@ function id(length) {
 		.substr(2, length);
 }
 
+/**
+ * Expand custom tags.
+ *
+ * @param  {string} text - The file text contents.
+ * @return {string} string - The file contents with the custom smg tags
+ *     expanded.
+ */
+function expand_custom_tags(text) {
+	// 1. Expand custom [msg] tags.
+	var icon_lookup = {
+		check: "check-circle",
+		info: "info-circle",
+		question: "question-circle",
+		error: "times-circle",
+		warning: "exclamation-circle",
+		update: "plus-circle",
+		code: "code",
+		file: "file-code",
+		link: "external-link-square-alt",
+		default: ""
+	};
+	text = text.replace(/\[msg[\s\S]*?\/msg\]/gim, function(match) {
+		// Dynamically generate the regexp.
+		var r = function(attr) {
+			return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
+		};
+
+		// Get the open tag information.
+		var opentag_info = match.match(/\[msg[\s\S]*?\]/im)[0] || "default";
+
+		// Get the icon.
+		var icon = opentag_info.match(r("icon"));
+		if (icon && icon[2]) {
+			icon = `<i class="fas fa-${icon_lookup[icon[2]]}"></i> `;
+		} else {
+			icon = "";
+		}
+
+		// Get the color.
+		var color = opentag_info.match(r("color"));
+		color = color ? color[2] : "";
+		color = color ? color : "";
+
+		// Get the title.
+		var title = opentag_info.match(r("title"));
+		title = title ? title[2] : "";
+		title = title ? title : "";
+		if (title) {
+			title = `<div class="dd-message-title">${icon}<span>${title}</span></div>`;
+		}
+
+		// Get the message.
+		var message = match.match(/\[msg.*?\]([\s\S]*?)\[\/msg\]/im);
+		message = message ? message[1] : "";
+		message = message.trim();
+
+		// Build and return the HTML.
+		return `<div class="dd-message-wrapper"><div class="dd-message-base dd-message--${color}">${title}<div>${message}</div></div></div>`;
+	});
+
+	return text;
+}
+
 // Get the CLI parameters.
 let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
 let configpath = argv.config || argv.c;
@@ -500,6 +563,9 @@ toc.forEach(function(directory) {
 				if (err) {
 					return reject([`${__path} could not be opened.`, err]);
 				}
+
+				// Expand any custom tags.
+				contents = expand_custom_tags(contents);
 
 				marked(contents, { renderer: renderer }, function(err, data) {
 					if (err) {
