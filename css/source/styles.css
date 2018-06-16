@@ -48,6 +48,7 @@ body {
 	overflow-y: auto;
 	/* Make scrolling smooth in iOS */
 	overflow-scrolling: touch;
+	/* Width of the sizebar. */
 	width: 240px;
 }
 
@@ -338,7 +339,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .markdown {
-	/*overflow: auto;*/
+	/*overflow: auto;*//* Width of the sizebar. */
 	margin-left: 240px;
 	width: 100%;
 }
@@ -398,6 +399,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 	font-weight: bold;
 	display: flex;
 	align-items: center;
+	transition: all 0.2s ease-in-out;
 }
 
 .l-3 {
@@ -415,8 +417,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 	border-right: 2px solid #2578f8;
 }
 
-.l-2:hover,
-.l-3:hover {
+.l-2:hover:not(.active-page),.l-3:hover:not(.active-page) {
 	background: #f7f7f7;
 }
 
@@ -456,13 +457,24 @@ ul.file-headers {
 .active-page {
 	background-image: linear-gradient(to right, #ffffff, #fdfdfd, #fbfbfb, #f9f9f9, #f7f7f7);
 	/*border-right: 3px solid #6f42c1;*//* border-left: 3px solid #1267e8; *//* padding-bottom: 7px !important; */
+	background: #f4f4f4;
+	margin: 0 3px;
+	border-radius: 4px;
+	margin-bottom: 5px;
+	margin-top: 5px;
 }
 
 .active-page .link {
-	color: #1267e8;
-	color: #0f91ee;
+	/*color: #1267e8;*//*color: #0f91ee;*/
 	color: #2578f8;
+	/*color: white;*//*color: #333;*/
 	font-weight: bold;
+}
+
+/* Don't add a top margin to the first li element when the active-page class it on. */
+
+.menu-section-cont li:first-child.l-2.active-page {
+	margin: 0 3px 8px 3px;
 }
 
 .logo-devdocs {
@@ -878,14 +890,17 @@ a {
 	opacity: 0;
 }
 
-.topbar, .markdown {
+.topbar,
+.markdown {
 	transform: translate3D(0, 0, 0);
 	transform: translate3D(calc(0), 0, 0);
 	transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease-in-out;
 }
 
 .mobile-slide {
+	/* Width of the sizebar. */
 	transform: translate3D(240px, 0, 0);
+	/* Width of the sizebar. */
 	transform: translate3D(calc(240px), 0, 0);
 }
 
@@ -924,11 +939,13 @@ a {
 	border: 1px solid rgba(0, 0, 0, 0.095);
 }
 
-.show-code-cont:active span,.show-code-cont:hover span {
+.show-code-cont:active span,
+.show-code-cont:hover span {
 	color: #2578f8;
 }
 
-.show-code-cont:hover, .show-code-cont:active {
+.show-code-cont:hover,
+.show-code-cont:active {
 	border: 1px solid #2578f8;
 }
 
@@ -1147,7 +1164,8 @@ a {
 	color: #c6c5c5;
 }
 
-a.social-link:active, a.social-link:hover {
+a.social-link:active,
+a.social-link:hover {
 	color: #444444;
 }
 
@@ -1186,7 +1204,8 @@ a.social-link:active, a.social-link:hover {
 	opacity: 0.4;
 }
 
-.code-block-action:hover, .code-block-action:active {
+.code-block-action:hover,
+.code-block-action:active {
 	color: #333333;
 	opacity: 1;
 }
@@ -1199,8 +1218,136 @@ a.social-link:active, a.social-link:hover {
 	margin-right: 10px;
 	color: #919191;
 	border-right: 1px solid #c8c8c87a;
-	padding: 10px 5px 10px 10px;
+	/*padding: 10px 5px 10px 10px;*/
+	padding: 16px 10px 16px 16px;
 	background: #fbfbfb;
+}
+
+/* Custom Messages */
+
+.dd-message-wrapper {
+	padding: 6px 0;
+}
+
+.dd-message-base {
+	display: flex;
+	flex-flow: column nowrap;
+	padding: 10px 16px;
+	border-radius: 4px;
+	border: 1px solid #e8e8e8;
+	/*border-left-width: 5px;*//*border-left-style: solid;*/
+	background: white;
+	/*border-left-color: white;*/
+	white-space: pre-wrap;
+}
+
+.dd-message-title {
+	font-weight: bold;
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: start;
+	align-items: center;
+}
+
+.dd-message-base i {
+	/*font-size: 13px;*/
+	margin-right: 8px;
+}
+
+/* Message Colors */
+
+/* Flat colors: [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS] */
+
+.dd-message--grapefruit {
+	border-left: 5px solid #ed5565;
+	/*border-left-color: #ed5565;*//*background: #da445320;*/
+	background: #ffffff;
+}
+
+.dd-message--bittersweet {
+	border-left: 5px solid #fc6e51;
+	/*border-left-color: #fc6e51;*//*background: #e9573f20;*/
+	background: #ffffff;
+}
+
+.dd-message--honeybutter {
+	border-left: 5px solid #fee450;
+	/*border-left-color: #fee450;*//*background: #fffade;*/
+	background: #ffffff;
+}
+
+.dd-message--sunflower {
+	border-left: 5px solid #ffce54;
+	/*border-left-color: #ffce54;*//*background: #f6bb4220;*/
+	background: #ffffff;
+}
+
+.dd-message--grass {
+	border-left: 5px solid #a0d468;
+	/*border-left-color: #a0d468;*//*background: #8cc15220;*/
+	background: #ffffff;
+}
+
+.dd-message--mint {
+	border-left: 5px solid #48cfad;
+	/*border-left-color: #48cfad;*//*background: #37bc9b20;*/
+	background: #ffffff;
+}
+
+.dd-message--sky {
+	border-left: 5px solid #4fc1e9;
+	/*border-left-color: #4fc1e9;*//*background: #3bafda20;*/
+	background: #ffffff;
+}
+
+.dd-message--bluejeans {
+	border-left: 5px solid #5d9cec;
+	/*border-left-color: #5d9cec;*//*background: #4a89dc20;*/
+	background: #ffffff;
+}
+
+.dd-message--aqua {
+	border-left: 5px solid #4894f6;
+	/*border-left-color: #4894f6;*//*background: #4894f620;*/
+	background: #ffffff;
+}
+
+.dd-message--lavender {
+	border-left: 5px solid #ac92ec;
+	/*border-left-color: #ac92ec;*//*background: #967adc20;*/
+	background: #ffffff;
+}
+
+.dd-message--pinkrose {
+	border-left: 5px solid #ec87c0;
+	/*border-left-color: #ec87c0;*//*background: #d770ad20;*/
+	background: #ffffff;
+}
+
+.dd-message--lightgray {
+	/*border-left-color: #f5f7fa;*/
+	border-left: 5px solid #e3e3e4;
+	/*border-left-color: #e3e3e4;*//*background: #e6e9ed20;*//*background: #fbfbfb;*/
+	background: #ffffff;
+}
+
+.dd-message--mediumgray {
+	border-left: 5px solid #ccd1d9;
+	/*border-left-color: #ccd1d9;*//*background: #aab2bd20;*/
+	background: #ffffff;
+}
+
+.dd-message--darkgray {
+	border-left: 5px solid #656d78;
+	/*border-left-color: #656d78;*//*background: #434a5420;*/
+	background: #ffffff;
+}
+
+.dd-message--spacegray {
+	border-left: 5px solid #5d687b;
+	/*border-left-color: #5d687b;*//*background: #474c54;*/
+	background: #ffffff;
+	/*color: #e6e2e2;*/
 }
 
 @media (max-width: 366px) {
@@ -1215,6 +1362,7 @@ a.social-link:active, a.social-link:hover {
 	}
 
 	.sidebar {
+		/* Width of the sizebar. */
 		flex: 1 0 240px;
 	}
 }
@@ -1303,7 +1451,12 @@ a.social-link:active, a.social-link:hover {
 		font-size: 15px;
 	}
 
-	.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6 {
+	.markdown-body h1,
+	.markdown-body h2,
+	.markdown-body h3,
+	.markdown-body h4,
+	.markdown-body h5,
+	.markdown-body h6 {
 		position: sticky !important;
 		top: 42px;
 		background: rgba(255, 255, 255, 0.95);
