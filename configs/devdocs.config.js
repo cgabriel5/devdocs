@@ -15,7 +15,7 @@ module.exports = {
 	},
 	toc: [
 		{
-			".": ["main", "configuration", "cli"]
+			".": ["main", "configuration", "cli", "extendables"]
 		}
 	],
 	links: [["github", "https://github.com/cgabriel5/devdocs"]]
