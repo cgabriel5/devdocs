@@ -641,6 +641,10 @@ ul.file-headers {
 	margin-right: 5px;
 }
 
+.mr3 {
+	margin-bottom: 3px;
+}
+
 .loader-img {
 	height: 16px;
 	width: 16px;
@@ -944,9 +948,23 @@ a {
 	color: #2578f8;
 }
 
+.show-code-cont:active,
 .show-code-cont:hover,
-.show-code-cont:active {
+.show-code-cont:active .show-code-lang,
+.show-code-cont:hover .show-code-lang {
 	border: 1px solid #2578f8;
+}
+
+.show-code-lang {
+	text-transform: uppercase;
+	font-weight: bold;
+	padding: 4px;
+	font-size: 10px;
+	border-radius: 3px;
+	border: 1px solid rgb(207, 207, 207);
+	color: #949494;
+	margin-left: 5px;
+	background: white;
 }
 
 .code-template-cont {
@@ -1223,6 +1241,49 @@ a.social-link:hover {
 	background: #fbfbfb;
 }
 
+/* Custom expandable */
+
+.dd-expandable-base {
+	display: flex;
+	flex-flow: column nowrap;
+	border: 1px solid transparent;
+	background: white;
+	/*white-space: pre-wrap;*/
+}
+
+.dd-expandable-message {
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	font-weight: 700;
+	/* background: #f1f1f17d; */
+	padding: 6px 0;
+	/*border-radius: 100px;*/
+	pointer: cursor;
+	/* font-size: 14px; */
+	transition: all 0.2s ease-in-out;
+}
+
+.dd-expandable-message-active {
+	/*background: #2578f820;*/
+	background: #f7f7f7;
+	border-radius: 3px;
+	padding: 6px 10px;
+}
+
+.dd-expandable-message-icon {
+	transition: transform 0.4s cubic-bezier(0.04, 0.78, 0.54, 1.13);
+}
+
+.dd-expandable-message-icon-active {
+	transform: rotate(450deg);
+	color: #2578f8;
+}
+
+.dd-expandable-content {
+	/*margin-top: 20px;*//*margin-left: 20px;*/
+}
+
 /* Custom Messages */
 
 .dd-message-wrapper {
@@ -1348,6 +1409,10 @@ a.social-link:hover {
 	/*border-left-color: #5d687b;*//*background: #474c54;*/
 	background: #ffffff;
 	/*color: #e6e2e2;*/
+}
+
+details, summary {
+	outline: none;
 }
 
 @media (max-width: 366px) {
