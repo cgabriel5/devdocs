@@ -128,57 +128,93 @@ function id(length) {
  *     expanded.
  */
 function expand_custom_tags(text) {
-	// 1. Expand custom [msg] tags.
-	var icon_lookup = {
-		check: "check-circle",
-		info: "info-circle",
-		question: "question-circle",
-		error: "times-circle",
-		warning: "exclamation-circle",
-		update: "plus-circle",
-		code: "code",
-		file: "file-code",
-		link: "external-link-square-alt",
-		default: ""
-	};
-	text = text.replace(/\[msg[\s\S]*?\/msg\]/gim, function(match) {
-		// Dynamically generate the regexp.
-		var r = function(attr) {
-			return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
+	// Replace all custom tags until they have all been replaced.
+	while (/\[(note|expand)[\s\S]*?\/\1\]/gim.test(text)) {
+		// 1. Expand custom [note] tags.
+		var icon_lookup = {
+			check: "check-circle",
+			info: "info-circle",
+			question: "question-circle",
+			error: "times-circle",
+			warning: "exclamation-circle",
+			update: "plus-circle",
+			code: "code",
+			file: "file-code",
+			link: "external-link-square-alt",
+			default: ""
 		};
+		text = text.replace(/\[note[\s\S]*?\/note\]/gim, function(match) {
+			// Dynamically generate the regexp.
+			var r = function(attr) {
+				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
+			};
 
-		// Get the open tag information.
-		var opentag_info = match.match(/\[msg[\s\S]*?\]/im)[0] || "default";
+			// Get the open tag information.
+			var opentag_info =
+				match.match(/\[note[\s\S]*?\]/im)[0] || "default";
 
-		// Get the icon.
-		var icon = opentag_info.match(r("icon"));
-		if (icon && icon[2]) {
-			icon = `<i class="fas fa-${icon_lookup[icon[2]]}"></i> `;
-		} else {
-			icon = "";
-		}
+			// Get the icon.
+			var icon = opentag_info.match(r("icon"));
+			if (icon && icon[2]) {
+				icon = `<i class="fas fa-${icon_lookup[icon[2]]}"></i> `;
+			} else {
+				icon = "";
+			}
 
-		// Get the color.
-		var color = opentag_info.match(r("color"));
-		color = color ? color[2] : "";
-		color = color ? color : "";
+			// Get the color.
+			var color = opentag_info.match(r("color"));
+			color = color ? color[2] : "";
+			color = color ? color : "";
 
-		// Get the title.
-		var title = opentag_info.match(r("title"));
-		title = title ? title[2] : "";
-		title = title ? title : "";
-		if (title) {
-			title = `<div class="dd-message-title">${icon}<span>${title}</span></div>`;
-		}
+			// Get the title.
+			var title = opentag_info.match(r("title"));
+			title = title ? title[2] : "";
+			title = title ? title : "";
+			if (title) {
+				title = `<div class="dd-message-title">${icon}<span>${title}</span></div>`;
+			}
 
-		// Get the message.
-		var message = match.match(/\[msg.*?\]([\s\S]*?)\[\/msg\]/im);
-		message = message ? message[1] : "";
-		message = message.trim();
+			// Get the message.
+			var message = match.match(/\[note.*?\]([\s\S]*?)\[\/note\]/im);
+			message = message ? message[1] : "";
+			message = message.trim();
 
-		// Build and return the HTML.
-		return `<div class="dd-message-wrapper"><div class="dd-message-base dd-message--${color}">${title}<div>${message}</div></div></div>`;
-	});
+			// Build and return the HTML.
+			return `<div class="dd-message-wrapper"><div class="dd-message-base dd-message--${color}">${title}<div>${message}</div></div></div>`;
+		});
+
+		// 2. Expand custom [expand] tags.
+		text = text.replace(/\[expand[\s\S]*?\/expand\]/gim, function(match) {
+			// Dynamically generate the regexp.
+			var r = function(attr) {
+				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
+			};
+
+			// Get the open tag information.
+			var opentag_info =
+				match.match(/\[expand[\s\S]*?\]/im)[0] || "default";
+
+			// Get the title.
+			var title = opentag_info.match(r("title"));
+			title = title ? title[2] : "";
+			title = title ? title : "Expand";
+
+			// Get the message.
+			var message = match.match(/\[expand.*?\]([\s\S]*?)\[\/expand\]/im);
+			message = message ? message[1] : "";
+			message = message.trim();
+
+			// Build and return the HTML.
+			return `<details><summary>${title}</summary>${message}</details>`;
+			// 			return `
+			// <div class="dd-expandable-base" style="border: 1px solid red;">
+			// 	<div class="dd-expandable-message"><i class="fas fa-chevron-circle-right mr5"></i><span>${title}</span></div>
+			// 	<div class="dd-expandable-content none" style="background: coral;">${message}</div>
+			// </div>`;
+		});
+	}
+
+	// print.gulp.warn(text);
 
 	return text;
 }
@@ -577,7 +613,7 @@ toc.forEach(function(directory) {
 
 					// Use cheerio to parse the HTML data.
 					// [https://github.com/cheeriojs/cheerio/issues/957]
-					let $ = cheerio.load(data, {
+					var $ = cheerio.load(data, {
 						// decodeEntities: false
 					});
 
@@ -786,6 +822,19 @@ toc.forEach(function(directory) {
 
 						// If the code is > 40 lines show an expander.
 						if (lines >= 40) {
+							// Get the language.
+							var classes = $el.attr()["class"];
+							var lang = " ";
+							if (classes) {
+								var langmatch = (` ${classes} `.match(
+									/ (lang-.+) /i
+								) || "")[1];
+								if (langmatch) {
+									langmatch = langmatch.replace(/lang-/i, "");
+									lang = ` <span class="show-code-lang">${langmatch}</span>`;
+								}
+							}
+
 							$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
@@ -809,7 +858,7 @@ toc.forEach(function(directory) {
 									<div class="show-code-message-cont">
 										<div>
 											<div>
-												<span class="bold noselect">Show code block</span>
+												<span class="bold noselect">Show block ${lang}</span>
 												<div class="show-code-file-info">
 													<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
 												</div>
@@ -864,7 +913,12 @@ toc.forEach(function(directory) {
 					});
 
 					// Finally reset the data to the newly parsed/modified HTML.
-					data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
+					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
+					// data = $.html().replace(/<\/?(html|body|head)>/gi, "");
+					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
+
+					// print.gulp.error(data.substring(0, 100));
+					// return;
 
 					// Wrap the headers with their "contents".
 					// [https://stackoverflow.com/a/21420210]
@@ -925,9 +979,111 @@ toc.forEach(function(directory) {
 					});
 
 					// Reset the data.
-					data = data
-						.insertTextAtIndices(inserts)
-						.replace(/<\/?(html|body|head)>/gi, "");
+					data = data.insertTextAtIndices(inserts);
+
+					// ---------------------------------------------------------
+					// ---------------------------------------------------------
+
+					// Use cheerio to parse the HTML data.
+					var $ = cheerio.load(data, {});
+
+					// Work on the details element.
+					var test = $("details");
+					var b = [];
+					test.each(function(i, elem) {
+						b.push($(this));
+					});
+					b.reverse();
+					for (var i = 0, l = test.length; i < l; i++) {
+						// Cache the element.
+						var $el = b[i];
+
+						// Check that the first child is a summary element.
+						let $fchild = $el.children().first();
+
+						// If the element contains child elements the
+						// first element cannot be a tag element.
+						if (!$fchild[0] || $fchild[0].name !== "summary") {
+							// print.gulp.warn("skipped", i);
+							return;
+						}
+
+						// Get the summary tag text.
+						var title = $fchild.html();
+						// Then remove the element from the DOM.
+						$fchild.remove();
+						// Now get the HTML from the details element.
+						var html = $el.html();
+
+						// Run the html through marked.
+						var result = marked(html);
+
+						//
+						var _$ = cheerio.load(result, {});
+
+						// Add the header spacer.
+						_$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
+
+							$el.attr("style", "position: unset !important;");
+
+							// Check the next sibling element.
+							var $next = $el.next();
+							if ($next && $next.attr()["class"]) {
+								// Get the classes.
+								var classes = $next.attr()["class"];
+
+								// Element cannot contain any lang-* class.
+								if (
+									/\sheader-spacer.*\s/.test(
+										` ${classes || ""} `
+									)
+								) {
+									return;
+								}
+							}
+
+							// Don't add the spacer class if the header group
+							// is empty. (no siblings.)
+							var spacer_class = !/h[1-6]/i.test(
+								$el.next()[0].name
+							)
+								? " class='header-spacer'"
+								: "";
+							$el.after(`<div${spacer_class}></div>`);
+						});
+
+						result = _$.html();
+
+						// print.gulp.error(result);
+
+						// Insert the new HTML before the details element.
+						$el.before(`<div class="dd-expandable-base">
+						<div class="dd-expandable-message"><i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i><span>${title}</span></div>
+						<div class="dd-expandable-content none animate-fadein">${result}</div>
+					</div>`);
+						// Remove the details element.
+						$el.remove();
+
+						// Finally, reset the element HTML.
+						// $el.html(`<summary>${title}</summary>${result}`);
+					}
+
+					// ---------------------------------------------------------
+					// ---------------------------------------------------------
+
+					// Finally reset the data to the newly parsed/modified HTML.
+					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
+					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
+
+					// // Reset the data.
+					// data = data
+					// 	.insertTextAtIndices(inserts)
+					// 	.replace(/<\/?(html|body|head)>/gi, "");
+
+					// Finally reset the data to the newly parsed/modified HTML.
+					data = `<div class="markdown-body animate-fadein">${data}</div>`;
 
 					// Add to the object.
 					var _placeholder = config.files[`${fpath}`];
