@@ -46,9 +46,21 @@ Default coloring:
 
 ### Code groups
 
-Code blocks can be grouped together then toggled via a tabs UI.
+Code blocks can be grouped together then toggled via tabs.
 
-[codegroup tabs="HTML;JS;CSS"]
+[codegroup tabs="Syntax;HTML;JS;CSS"]
+<pre lang="md">
+&lbrack;codegroup tabs="1stTabName;NthTabName"&rbrack;
+&grave;&grave;&grave;&InvisibleComma;
+Code block 1.
+&grave;&grave;&grave;&InvisibleComma;
+
+&grave;&grave;&grave;&InvisibleComma;
+Code block 2.
+&grave;&grave;&grave;&InvisibleComma;
+&lbrack;/codegroup&rbrack;
+</pre>
+
 ```html{9}{example.html}
 <!DOCTYPE html>
 <html>
@@ -80,11 +92,19 @@ Lines in code blocks can be highlighted. The code block itself can also be named
 
 <pre lang="md">
 &grave;&grave;&grave;js{1,2-7,!5}{example.js}
-// Code logic...
+// This will highlight lines 1 through 7 but not 5.
+&grave;&grave;&grave;&InvisibleComma;
+
+&grave;&grave;&grave;js{}{example.js}
+// Only naming a code block.
+&grave;&grave;&grave;&InvisibleComma;
+
+&grave;&grave;&grave;js{2,7}
+// Only line highlighting.
 &grave;&grave;&grave;&InvisibleComma;
 </pre>
-[/note]
 
+[codegroup tabs="JS Example;CSS Example"]
 ```js{4}{example.js}
 // Get the element.
 var $element = document.getElementById("message");
@@ -97,3 +117,5 @@ body {
     background: #ffffff;
 }
 ```
+[/codegroup]
+[/note]
