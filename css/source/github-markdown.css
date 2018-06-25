@@ -580,7 +580,8 @@
 }
 
 .markdown-body table {
-	display: block;
+	/* display: block; */
+	display: table;
 	overflow: auto;
 	width: 100%;
 }
