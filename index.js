@@ -1121,14 +1121,23 @@ toc.forEach(function(directory) {
 						var line_nums = [];
 						for (var i = 0, l = lines; i < l; i++) {
 							// Check whether the line needs to be highlighted.
-							var needs_highlight = hlines_array.includes(i + 1)
+							var needs_highlight = hlines_array.includes(i + 1);
+							var highlight_num = needs_highlight
 								? " class='line-block-highlight'"
 								: "";
+							var highlight_line = needs_highlight
+								? " line-num-line-highlight"
+								: "";
 							line_nums.push(
-								`<div class="line-num-cont"><span${needs_highlight}>${i +
+								`<div class="line-num-cont${highlight_line}"><span${highlight_num}>${i +
 									1}</span></div>`
 							);
 						}
+						line_nums = line_nums.join("");
+						var line_nums_no_highlight = line_nums.replace(
+							/line-num-line-highlight/g,
+							""
+						);
 
 						// Add the block code name.
 						var blockname_html = "";
@@ -1147,11 +1156,10 @@ toc.forEach(function(directory) {
 							// second element to be able to be "fixed". This
 							// allows the code element to be properly adjacent
 							// to the fixed element.
-							`${blockname_html}<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
-								""
-							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${line_nums.join(
-								""
-							)}</div>`
+							`${blockname_html}
+							<div class="line-num line-num-first noselect pnone ${top_pad_fix} line-num-line-highlight-cont">${line_nums}</div>
+							<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums_no_highlight}</div>
+							<div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${line_nums_no_highlight}</div>`
 						);
 					});
 

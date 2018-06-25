@@ -1275,6 +1275,19 @@ a.social-link:hover {
 	background: #fbfbfb;
 }
 
+.line-num-line-highlight-cont {
+	position: absolute;
+	width: 100%;
+	background: transparent;
+	margin-top: -1px;
+	border-right: none;
+}
+
+.line-num-line-highlight {
+	background: #698cfe20;
+	/* box-shadow: inset -1px -1px 0px 0px #698cfe20, inset 32px 1px 0px 0px #698cfe20; *//*border-radius: 3px;*/
+}
+
 .line-num-cont {
 	position: relative;
 	/*display: flex;*/
@@ -1496,6 +1509,10 @@ details, summary {
 	cursor: pointer;
 	color: #999999;
 	font-weight: bold;
+	max-width: 150px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .codegroup-tab:hover {
@@ -1515,7 +1532,7 @@ details, summary {
 	overflow-y: hide;
 	overflow-x: auto;
 	overflow: auto;
-	-webkit-overflow-scrolling: touch;
+	overflow-scrolling: touch;
 }
 
 .padtop-26 {
