@@ -1147,11 +1147,11 @@ toc.forEach(function(directory) {
 							// second element to be able to be "fixed". This
 							// allows the code element to be properly adjacent
 							// to the fixed element.
-							`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
+							`${blockname_html}<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
 								""
 							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${line_nums.join(
 								""
-							)}</div>${blockname_html}`
+							)}</div>`
 						);
 					});
 
