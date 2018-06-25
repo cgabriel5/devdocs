@@ -1271,7 +1271,7 @@ a.social-link:hover {
 	color: #919191;
 	border-right: 1px solid #c8c8c87a;
 	/*padding: 10px 5px 10px 10px;*//*padding: 16px 10px 16px 16px;*//*padding: 16px 0;*/
-	padding: 16px 0 16px 10px;
+	padding: 16px 3px 16px 10px;
 	background: #fbfbfb;
 }
 
@@ -1295,7 +1295,7 @@ a.social-link:hover {
 	border-radius: 3px;
 }
 
-.line-block-highlight:after {
+/* .line-block-highlight:after {
 	content: "";
 	position: absolute;
 	height: 0;
@@ -1304,7 +1304,8 @@ a.social-link:hover {
 	border-left: 4px solid #698cfe;
 	margin-left: 10px;
 	margin-top: 4px;
-	/*
+}
+.line-block-highlight:after {
     content: "";
     position: absolute;
     height: 0;
@@ -1312,8 +1313,8 @@ a.social-link:hover {
     border-bottom: 8px solid transparent;
     border-left: 8px solid #698cfe;
     margin-left: 9px;
-    margin-top: 0px;*/
-}
+    margin-top: 0px;
+} */
 
 /* Custom expandable */
 
@@ -1372,8 +1373,8 @@ a.social-link:hover {
 	border: 1px solid #e8e8e8;
 	/*border-left-width: 5px;*//*border-left-style: solid;*/
 	background: white;
-	/*border-left-color: white;*/
-	white-space: pre-wrap;
+	/*border-left-color: white;*//*white-space: pre-wrap;*/
+	white-space: unset;
 }
 
 .dd-message-title {
@@ -1687,6 +1688,10 @@ details, summary {
 
 	.line-num-second {
 		position: relative;
+	}
+
+	.line-block-highlight {
+		box-shadow: none;
 	}
 }
 

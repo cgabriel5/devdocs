@@ -793,6 +793,7 @@ document.onreadystatechange = function() {
 				var sb_active_el_loader;
 				var scroll_to_top;
 				var clipboardjs_instance;
+				var first_animation;
 
 				// Functions:Scoped:Inner //
 
@@ -1390,67 +1391,76 @@ document.onreadystatechange = function() {
 						}
 
 						// Animate menu height opening.
-						var animation = animate({
-							from: 0,
-							to:
-								get_height($new_current, filename).replace(
-									"px",
-									""
-								) * 1,
-							duration: 400,
-							onProgress: function(val) {
-								$new_current.nextElementSibling.style.height = `${val}px`;
-							},
-							onComplete: function(actualDuration, averageFps) {
-								$new_current.nextElementSibling.style.opacity = 1;
+						setTimeout(function() {
+							var animation = animate({
+								from: 0,
+								to:
+									get_height($new_current, filename).replace(
+										"px",
+										""
+									) * 1,
+								duration: 400,
+								onProgress: function(val) {
+									$new_current.nextElementSibling.style.height = `${val}px`;
+								},
+								onComplete: function(
+									actualDuration,
+									averageFps
+								) {
+									$new_current.nextElementSibling.style.opacity = 1;
 
-								// Inject the html.
-								replace_html(file);
+									// Inject the html.
+									replace_html(file);
 
-								// Show the current filename.
-								inject_filename(current_file, data);
+									// Show the current filename.
+									inject_filename(current_file, data);
 
-								// Get the hash.
-								var hash = location.hash;
+									// Get the hash.
+									var hash = location.hash;
 
-								// Scroll to hash.
-								if (hash) {
-									var $el = document.getElementById(
-										hash.slice(1)
-									);
-									if ($el) {
-										// Get the header element.
-										var $parent = $el.parentNode;
-
-										// Remove the class to make sure the highlight
-										// works.
-										$parent.classList.remove(
-											"animate-header-highlight"
+									// Scroll to hash.
+									if (hash) {
+										var $el = document.getElementById(
+											hash.slice(1)
 										);
+										if ($el) {
+											// Get the header element.
+											var $parent = $el.parentNode;
 
-										// Let browser know to optimize scrolling.
-										perf_hint($sroot, "scroll-position");
+											// Remove the class to make sure the highlight
+											// works.
+											$parent.classList.remove(
+												"animate-header-highlight"
+											);
 
-										// Use a timeout to let the injected HTML load
-										// and parse properly. Otherwise, getBoundingClientRect
-										// will return incorrect values.
-										setTimeout(function() {
-											// Scroll to the header.
-											scroll($parent, function() {
-												// console.log("C");
+											// Let browser know to optimize scrolling.
+											perf_hint(
+												$sroot,
+												"scroll-position"
+											);
 
-												$parent.classList.add(
-													"animate-header-highlight"
-												);
+											// Use a timeout to let the injected HTML load
+											// and parse properly. Otherwise, getBoundingClientRect
+											// will return incorrect values.
+											setTimeout(function() {
+												// Scroll to the header.
+												scroll($parent, function() {
+													// console.log("C");
 
-												// Remove optimization.
-												perf_unhint($sroot);
-											});
-										}, 300);
+													$parent.classList.add(
+														"animate-header-highlight"
+													);
+
+													// Remove optimization.
+													perf_unhint($sroot);
+												});
+											}, 300);
+										}
 									}
 								}
-							}
-						});
+							});
+						}, first_animation ? 0 : 300);
+						first_animation = true;
 
 						// Store the animation to cancel if another animation is needed to run.
 						running_menu_animation = animation;
