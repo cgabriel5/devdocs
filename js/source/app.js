@@ -1711,6 +1711,68 @@ document.onreadystatechange = function() {
 					return false;
 				}
 
+				function is_codegroup_tab($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("codegroup-tab")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
+				function is_codegroup_actions_child($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains(
+								"code-block-actions-cont-group"
+							)
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
+				function is_codegroup_block($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("code-block-grouped")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
 				// AppCode:Scoped:Inner //
 
 				// Enclose in a timeout to give the loader a chance to fade away.
@@ -2365,6 +2427,35 @@ document.onreadystatechange = function() {
 								"dd-expandable-message-icon-active"
 							);
 						}
+					} else if (is_codegroup_tab($target)) {
+						// Reset the target.
+						$target = is_codegroup_tab($target);
+
+						// Get the tab index.
+						var tindex = $target.getAttribute("data-tab-index") * 1;
+
+						// Get the codegroup.
+						var $codegroup =
+							$target.parentNode.parentNode.nextElementSibling
+								.children;
+
+						// Get the tab elements.
+						var $tabs = $target.parentNode.children;
+
+						// Remove the active class.
+						for (var i = 0, l = $tabs.length; i < l; i++) {
+							$tabs[i].classList.remove("codegroup-tab-active");
+						}
+						// Highlight the clicked tab element.
+						$target.classList.add("codegroup-tab-active");
+
+						// Hide all the children except the one that matches
+						// the tab index.
+						for (var i = 0, l = $codegroup.length; i < l; i++) {
+							$codegroup[i].classList[
+								i === tindex ? "remove" : "add"
+							]("none");
+						}
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -2578,6 +2669,30 @@ document.onreadystatechange = function() {
 								".btn-cba-copy",
 								{
 									text: function(trigger) {
+										// Check whether the button is part of
+										// of a codegroup.
+										if (
+											is_codegroup_actions_child(trigger)
+										) {
+											// Get the container parent.
+											var $cont = is_codegroup_actions_child(
+												trigger
+											);
+
+											// Get the visible code block.
+											var $block = $cont.nextElementSibling.querySelectorAll(
+												"pre:not(.none)"
+											)[0];
+
+											if ($block) {
+												// Set the correct id.
+												trigger.setAttribute(
+													"data-expid",
+													$block.getAttribute("id")
+												);
+											}
+										}
+
 										// Get the text content from the pre element.
 										return document
 											.getElementById(
@@ -2852,7 +2967,19 @@ document.onreadystatechange = function() {
 
 									setTimeout(function() {
 										// Programmatically click the copy button.
-										$el.previousElementSibling
+
+										var $el_;
+
+										// When clicking a codegroup block.
+										if (is_codegroup_block($el)) {
+											$el_ =
+												$el.parentNode
+													.previousElementSibling;
+										} else {
+											$el_ = $el.previousElementSibling;
+										}
+
+										$el_
 											.getElementsByClassName(
 												"btn-cba-copy"
 											)[0]

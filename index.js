@@ -66,6 +66,58 @@ let globall = utils.globall;
 // let escape = utils.escape;
 
 /**
+ * Create an array based off a number range. For example,
+ * given the range 1-3 an array [1, 2, 3] will be returned.
+ *
+ * @param  {number|string} start - The range start.
+ * @param  {number|string} stop - The range stop.
+ * @param  {number|string} step - The range step.
+ * @return {array} - The range array.
+ *
+ * @resource [https://stackoverflow.com/a/44957114]
+ */
+function range(start, stop, step) {
+	step = step || 1;
+	stop = stop + 1;
+
+	return Array((stop - start) / step)
+		.fill(start)
+		.map((x, y) => x + y * step);
+}
+
+/**
+ * Make the provided array unique.
+ *
+ * @param  {array} array - The array to clean.
+ * @param  {boolean} flag_sort - Flag indicating whether the array needs to be sorted.
+ * @return {array} - The worked on array.
+ *
+ * @resource [http://stackoverflow.com/questions/1960473/unique-values-in-an-array/39272981#39272981]
+ * @ersource [http://stackoverflow.com/questions/1063007/how-to-sort-an-array-of-integers-correctly/21595293#21595293]
+ */
+function make_unique(array, flag_sort) {
+	// make array unique
+	array = array.filter(function(x, i, a_) {
+		return a_.indexOf(x) === i;
+	});
+	// sort the array if flag set
+	// **Note: does not sort numbers
+	if (flag_sort) {
+		if (flag_sort === "alpha") {
+			array = array.sort(function(a, b) {
+				return a.localeCompare(b);
+			});
+		} else if (flag_sort === "number") {
+			array.sort(function(a, b) {
+				return a - b;
+			});
+		}
+	}
+	// return the array
+	return array;
+}
+
+/**
  * Remove line breaks and tab characters from a string.
  *
  * @param  {string} string - The string to use.
@@ -129,7 +181,7 @@ function id(length) {
  */
 function expand_custom_tags(text) {
 	// Replace all custom tags until they have all been replaced.
-	while (/\[(note|expand)[\s\S]*?\/\1\]/gim.test(text)) {
+	while (/\[(note|expand|codegroup)[\s\S]*?\/\1\]/gim.test(text)) {
 		// 1. Expand custom [note] tags.
 		var icon_lookup = {
 			check: "check-circle",
@@ -211,6 +263,59 @@ function expand_custom_tags(text) {
 			// 	<div class="dd-expandable-message"><i class="fas fa-chevron-circle-right mr5"></i><span>${title}</span></div>
 			// 	<div class="dd-expandable-content none" style="background: coral;">${message}</div>
 			// </div>`;
+		});
+
+		// 3. Expand custom [codegroup] tags.
+		text = text.replace(/\[codegroup[\s\S]*?\/codegroup\]/gim, function(
+			match
+		) {
+			// Dynamically generate the regexp.
+			var r = function(attr) {
+				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
+			};
+
+			// Get the open tag information.
+			var opentag_info =
+				match.match(/\[codegroup[\s\S]*?\]/im)[0] || "default";
+
+			// Get the tabs.
+			var tabs_string = opentag_info.match(r("tabs"));
+			tabs_string = tabs_string ? tabs_string[2] : "";
+			tabs_string = tabs_string ? tabs_string : "";
+
+			// Build the tabs HTML.
+			var tabs = tabs_string.split(";");
+			var tabs_html = [];
+			tabs.forEach(function(tab, i) {
+				var is_first = i === 0 ? " codegroup-tab-active" : "";
+				tabs_html.push(
+					`<span class="codegroup-tab${is_first}" data-tab-index="${i}">${tab.trim()}</span>`
+				);
+			});
+
+			// Get the message.
+			var message = match.match(
+				/\[codegroup.*?\]([\s\S]*?)\[\/codegroup\]/im
+			);
+			message = message ? message[1] : "";
+			message = message.trim();
+
+			// Run the html through marked.
+			var result = marked(message, { renderer: renderer });
+
+			// Generate a special ID for the pre element.
+			var uid = `exp-${id(20)}${id(20)}`;
+
+			// Build and return the HTML.
+			return `
+<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
+	<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
+	<div class="flex flex-center mr5">
+		<span class="btn btn-white noselect code-block-action btn-cba-copy">copy</span>
+	</div>
+</div>
+<div class="code-block-grouped" data-cgroup-id="${uid}">${result}</div>
+`;
 		});
 	}
 
@@ -412,6 +517,45 @@ if (highlighter && ["p", "h"].includes(highlighter.charAt(0))) {
 
 // Make a reference to the marked Renderer.
 let renderer = new marked.Renderer();
+
+// Take into account custom line-numbers, block-name
+// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L880]
+renderer.code = function(code, lang, escaped) {
+	// Get the language, line numbers?, and block name?.
+	var r = /([\w]+)?({.*?})?({.*?})?/i;
+
+	// Default to "markup".
+	lang = lang || "markup";
+
+	var parts = lang.match(r);
+	lang = parts[1] || "markup";
+	var lines = (parts[2] || "").replace(/^\{|\}$/g, "");
+	var name = (parts[3] || "").replace(/^\{|\}$/g, "");
+
+	if (this.options.highlight) {
+		var out = this.options.highlight(code, lang);
+		if (out != null && out !== code) {
+			escaped = true;
+			code = out;
+		}
+	}
+
+	// if (!lang) {
+	// 	return (
+	// 		"<pre><code>" +
+	// 		(escaped ? code : escape(code, true)) +
+	// 		"</code></pre>"
+	// 	);
+	// }
+
+	return (
+		// (escaped ? code : escape(code, true)) +
+		`<pre><code class="${this.options.langPrefix}${escape(
+			lang,
+			true
+		)}" data-highlight-lines="${lines}" data-block-name="${name}">${code}</code></pre>\n`
+	);
+};
 
 // Add GitHub like anchors to headings.
 // [https://github.com/markedjs/marked/blob/master/lib/marked.js#L822]
@@ -671,12 +815,19 @@ toc.forEach(function(directory) {
 					});
 
 					// Get all headings in the HTML.
-					$("h2 a, h3 a, h4 a, h5 a, h6 a").each(function(i, elem) {
+					$(
+						"h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
+					).each(function(i, elem) {
 						// Cache the element.
 						let $el = $(this);
 
 						// Get the element id.
 						let id = $el.attr().id;
+
+						// If an ID does not exist just skip it.
+						if (!id) {
+							return;
+						}
 						// Normalize the id by removing all hyphens.
 						let normalized_id = id.replace(/-/g, " ").trim();
 
@@ -748,7 +899,8 @@ toc.forEach(function(directory) {
 
 						// Used marked to add highlighting.
 						var highlighted = marked(
-							`\`\`\`${lang}\n${text.trim()}\n\`\`\``
+							`\`\`\`${lang}\n${text.trim()}\n\`\`\``,
+							{ renderer: renderer }
 						)
 							.trim()
 							.replace(/^\<(pre|code)\>|\<\/(pre|code)\>$/g, "");
@@ -795,13 +947,39 @@ toc.forEach(function(directory) {
 
 						// Used marked to add highlighting.
 						var highlighted = marked(
-							`\`\`\`${lang}\n${text.trim()}\n\`\`\``
+							`\`\`\`${lang}\n${text.trim()}\n\`\`\``,
+							{ renderer: renderer }
 						)
 							.trim()
 							.replace(/^\<(pre|code)\>|\<\/(pre|code)\>$/g, "");
 
 						// Reset the element HTML.
 						$el.html(highlighted);
+					});
+
+					// Hide all but the first code block.
+					$(".code-block-grouped").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Get the code blocks.
+						let $blocks = $el.find("pre");
+
+						// Hide all the blocks except the first.
+						if ($blocks.length) {
+							// The first code block.
+							$blocks
+								.filter(function(i, el) {
+									return i === 0;
+								})
+								.attr("class", "animate-fadein");
+							// The remaining code blocks.
+							$blocks = $blocks
+								.filter(function(i, el) {
+									return i !== 0;
+								})
+								.attr("class", "none animate-fadein");
+						}
 					});
 
 					// Hide code blocks that are too big.
@@ -816,6 +994,12 @@ toc.forEach(function(directory) {
 
 						// Get the parent element.
 						let $parent = $el.parent();
+
+						// Note: Skip this entirely for codegroups.
+						// Check whether it's part of a codegroup.
+						var is_partof_codegroup = $el
+							.parents()
+							.filter(".code-block-grouped").length;
 
 						// Generate a special ID for the pre element.
 						var uid = `exp-${id(20)}${id(20)}`;
@@ -867,19 +1051,25 @@ toc.forEach(function(directory) {
 									</div>
 								</div>`);
 
-							// Add the action buttons
-							$parent.before(`<div class="code-block-actions-cont none animate-fadein">
+							// Dont't add the buttons when the block is part of a group.
+							if (!is_partof_codegroup) {
+								// Add the action buttons
+								$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
 												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span>
 												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}">collapse</span>
 							</div>`);
+							}
 
 							// Finally hide the element.
 							$parent.addClass("none");
 							$parent.addClass("animate-fadein");
 						} else {
-							$parent.before(
-								`<div class="code-block-actions-cont animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
-							);
+							// Dont't add the buttons when the block is part of a group.
+							if (!is_partof_codegroup) {
+								$parent.before(
+									`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
+								);
+							}
 						}
 						$parent.attr("id", uid);
 
@@ -894,21 +1084,74 @@ toc.forEach(function(directory) {
 						// Get the number of lines.
 						lines = text.split("\n").length;
 
+						// Check for line highlight numbers/ranges.
+						var hlines = $el.attr()["data-highlight-lines"];
+						var hlines_array = [];
+						if (hlines) {
+							// Turn into an array.
+							var parts = hlines.split(",");
+							var excludes = [];
+							parts.forEach(function(item, i) {
+								item = item.trim();
+								if (item.includes("-")) {
+									var _parts = item.split("-");
+									hlines_array = hlines_array.concat(
+										range(_parts[0] * 1, _parts[1] * 1)
+									);
+								} else if (item.startsWith("!")) {
+									excludes.push(item.replace(/\!/g, "") * 1);
+								} else {
+									hlines_array.push(item * 1);
+								}
+							});
+
+							// Make the array unique and sort.
+							hlines_array = make_unique(hlines_array).sort(
+								function(a, b) {
+									return a - b;
+								}
+							);
+
+							// Remove the excluded numbers.
+							hlines_array = hlines_array.filter(function(num) {
+								return !excludes.includes(num);
+							});
+						}
+
 						var line_nums = [];
 						for (var i = 0, l = lines; i < l; i++) {
-							line_nums.push(`<div>${i + 1}</div>`);
+							// Check whether the line needs to be highlighted.
+							var needs_highlight = hlines_array.includes(i + 1)
+								? " class='line-block-highlight'"
+								: "";
+							line_nums.push(
+								`<div class="line-num-cont"><span${needs_highlight}>${i +
+									1}</span></div>`
+							);
 						}
+
+						// Add the block code name.
+						var blockname_html = "";
+						var top_pad_fix = "";
+						// Check for line highlight numbers/ranges.
+						var blockname = $el.attr()["data-block-name"] || "";
+						if (blockname) {
+							blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
+							top_pad_fix = "padtop-26";
+							$el.addClass(top_pad_fix);
+						}
+
 						// Add the line numbers HTML.
 						$parent.prepend(
 							// Note: Insert a duplicate element to allow the
 							// second element to be able to be "fixed". This
 							// allows the code element to be properly adjacent
 							// to the fixed element.
-							`<div class="line-num line-num-first noselect pnone hidden">${line_nums.join(
+							`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
 								""
-							)}</div><div class="line-num line-num-second noselect pnone fixed">${line_nums.join(
+							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${line_nums.join(
 								""
-							)}</div>`
+							)}</div>${blockname_html}`
 						);
 					});
 
@@ -1016,7 +1259,7 @@ toc.forEach(function(directory) {
 						var html = $el.html();
 
 						// Run the html through marked.
-						var result = marked(html);
+						var result = marked(html, { renderer: renderer });
 
 						//
 						var _$ = cheerio.load(result, {});
