@@ -43,3 +43,57 @@ Default coloring:
 [note title="" color="grapefruit" icon="check"]Not providing a title disregards the icon.[/note]
 [note title="" color="grass" icon="info"]Not providing a title disregards the icon.[/note]
 [/expand]
+
+### Code groups
+
+Code blocks can be grouped together then toggled via a tabs UI.
+
+[codegroup tabs="HTML;JS;CSS"]
+```html{9}{example.html}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <div id="message">Hello World.</div>
+</body>
+</html>
+```
+
+```js
+// Get the element.
+var $element = document.getElementById("message");
+// Change the text.
+$element.textContent = "Hello World!";
+```
+
+```css
+body {
+    background: #ffffff;
+}
+```
+[/codegroup]
+
+[note title="Line highlighting/Naming" icon="info" color="aqua"]
+Lines in code blocks can be highlighted. The code block itself can also be named as shown below.
+
+<pre lang="md">
+&grave;&grave;&grave;js{1,2-7,!5}{example.js}
+// Code logic...
+&grave;&grave;&grave;&InvisibleComma;
+</pre>
+[/note]
+
+```js{4}{example.js}
+// Get the element.
+var $element = document.getElementById("message");
+// Change the text.
+$element.textContent = "Hello World!";
+```
+
+```css{1-3,!2}{example.css}
+body {
+    background: #ffffff;
+}
+```
