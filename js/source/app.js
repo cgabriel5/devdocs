@@ -1164,6 +1164,21 @@ document.onreadystatechange = function() {
 					headers.list = list;
 				}
 
+				var reset_cblock_width_highlight = function() {
+					var $blocks = document.querySelectorAll(
+						"pre code[class^='lang']"
+					);
+					for (var i = 0, l = $blocks.length; i < l; i++) {
+						let $block = $blocks[i];
+						let $parent = $blocks[i].parentNode;
+						if ($parent.scrollWidth > $parent.clientWidth) {
+							$block.style.width = "auto";
+						} else {
+							$block.removeAttribute("style");
+						}
+					}
+				};
+
 				// Contain all the sidebar submenu heights.
 				var heights = {};
 				/**
@@ -2049,6 +2064,9 @@ document.onreadystatechange = function() {
 						// }
 
 						get_headers();
+
+						// Reset code block width/highlight.
+						reset_cblock_width_highlight();
 					}),
 					200
 				);
@@ -2206,7 +2224,9 @@ document.onreadystatechange = function() {
 							text: function(trigger) {
 								return $el
 									.getElementsByTagName("code")[0]
-									.textContent.trim();
+									.getAttribute("data-orig-text")
+									.trim();
+								// .textContent.trim();
 							}
 						});
 
@@ -2711,7 +2731,9 @@ document.onreadystatechange = function() {
 												)
 											)
 											.getElementsByTagName("code")[0]
-											.textContent.trim();
+											.getAttribute("data-orig-text")
+											.trim();
+										// .textContent.trim();
 									}
 								}
 							);
@@ -2741,6 +2763,9 @@ document.onreadystatechange = function() {
 									clearTimeout(window.copy_timer);
 								}
 							});
+
+							// Reset code block width/highlight.
+							reset_cblock_width_highlight();
 
 							// // Set the line numbers element.
 

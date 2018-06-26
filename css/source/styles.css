@@ -399,7 +399,8 @@ to become invisible when header scrolling. This seems to solve the issue.
 	font-weight: bold;
 	display: flex;
 	align-items: center;
-	transition: all 0.2s ease-in-out;
+	/*transition: all 0.2s ease-in-out;*/
+	transition: background 0.2s ease-in-out;
 }
 
 .l-3 {
@@ -1208,15 +1209,13 @@ a.social-link:hover {
 }
 
 .code-block-name-cont {
-	position: absolute;
-	margin-top: -27px;
+	/*position: absolute;*//*margin-top: -27px;*/
 }
 
 .codeblock-name {
-	padding: 2px 10px 2px 10px;
+	/*	padding: 2px 10px 2px 10px;
 	border-radius: 3px 3px 0 0;
 	font-size: 11px;
-	/* display: flex; *//* justify-content: center; *//* align-items: center; */
 	font-weight: bold;
 	color: #949494;
 	color: #b7b7b7;
@@ -1224,6 +1223,19 @@ a.social-link:hover {
 	position: absolute;
 	margin-top: 10px;
 	margin-top: 27px;
+	z-index: 1;
+	border-right: 1px solid #c8c8c87a;
+	border-bottom: 1px solid #c8c8c87a;
+	border-radius: 3px 0 3px 0;*/
+	padding: 2px 10px;
+	font-size: 11px;
+	font-weight: 700;
+	color: #949494;
+	color: #b7b7b7;
+	background: #fbfbfb;
+	position: absolute;
+	margin-top: -26px;
+	margin-left: -10px;
 	z-index: 1;
 	border-right: 1px solid #c8c8c87a;
 	border-bottom: 1px solid #c8c8c87a;
@@ -1267,7 +1279,7 @@ a.social-link:hover {
 }
 
 .line-num {
-	margin-right: 10px;
+	/*margin-right: 10px;*/
 	color: #919191;
 	border-right: 1px solid #c8c8c87a;
 	/*padding: 10px 5px 10px 10px;*//*padding: 16px 10px 16px 16px;*//*padding: 16px 0;*/
@@ -1509,10 +1521,10 @@ details, summary {
 	cursor: pointer;
 	color: #999999;
 	font-weight: bold;
-	max-width: 150px;
+	/*	max-width: 150px;
 	white-space: nowrap;
 	overflow: hidden;
-	text-overflow: ellipsis;
+	text-overflow: ellipsis;*/
 }
 
 .codegroup-tab:hover {
@@ -1533,6 +1545,11 @@ details, summary {
 	overflow-x: auto;
 	overflow: auto;
 	overflow-scrolling: touch;
+}
+
+.lang-code-line {
+	padding: 0 10px;
+	border-radius: 3px;
 }
 
 .padtop-26 {
