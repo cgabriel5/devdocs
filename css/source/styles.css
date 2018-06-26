@@ -1521,6 +1521,7 @@ details, summary {
 	cursor: pointer;
 	color: #999999;
 	font-weight: bold;
+	white-space: pre;
 	/*	max-width: 150px;
 	white-space: nowrap;
 	overflow: hidden;

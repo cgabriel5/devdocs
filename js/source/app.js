@@ -2486,6 +2486,11 @@ document.onreadystatechange = function() {
 								i === tindex ? "remove" : "add"
 							]("none");
 						}
+
+						setTimeout(function() {
+							// Reset code block width/highlight.
+							reset_cblock_width_highlight();
+						}, 300);
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -2764,8 +2769,10 @@ document.onreadystatechange = function() {
 								}
 							});
 
-							// Reset code block width/highlight.
-							reset_cblock_width_highlight();
+							setTimeout(function() {
+								// Reset code block width/highlight.
+								reset_cblock_width_highlight();
+							}, 300);
 
 							// // Set the line numbers element.
 
