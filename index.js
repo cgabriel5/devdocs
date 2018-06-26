@@ -324,6 +324,42 @@ function expand_custom_tags(text) {
 	return text;
 }
 
+function lines_to_highlight($el) {
+	// Check for line highlight numbers/ranges.
+	var hlines = $el.attr()["data-highlight-lines"];
+	var hlines_array = [];
+	if (hlines) {
+		// Turn into an array.
+		var parts = hlines.split(",");
+		var excludes = [];
+		parts.forEach(function(item, i) {
+			item = item.trim();
+			if (item.includes("-")) {
+				var _parts = item.split("-");
+				hlines_array = hlines_array.concat(
+					range(_parts[0] * 1, _parts[1] * 1)
+				);
+			} else if (item.startsWith("!")) {
+				excludes.push(item.replace(/\!/g, "") * 1);
+			} else {
+				hlines_array.push(item * 1);
+			}
+		});
+
+		// Make the array unique and sort.
+		hlines_array = make_unique(hlines_array).sort(function(a, b) {
+			return a - b;
+		});
+
+		// Remove the excluded numbers.
+		hlines_array = hlines_array.filter(function(num) {
+			return !excludes.includes(num);
+		});
+	}
+
+	return hlines_array;
+}
+
 // Get the CLI parameters.
 let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
 let configpath = argv.config || argv.c;
@@ -1084,44 +1120,13 @@ toc.forEach(function(directory) {
 						// Get the number of lines.
 						lines = text.split("\n").length;
 
-						// Check for line highlight numbers/ranges.
-						var hlines = $el.attr()["data-highlight-lines"];
-						var hlines_array = [];
-						if (hlines) {
-							// Turn into an array.
-							var parts = hlines.split(",");
-							var excludes = [];
-							parts.forEach(function(item, i) {
-								item = item.trim();
-								if (item.includes("-")) {
-									var _parts = item.split("-");
-									hlines_array = hlines_array.concat(
-										range(_parts[0] * 1, _parts[1] * 1)
-									);
-								} else if (item.startsWith("!")) {
-									excludes.push(item.replace(/\!/g, "") * 1);
-								} else {
-									hlines_array.push(item * 1);
-								}
-							});
-
-							// Make the array unique and sort.
-							hlines_array = make_unique(hlines_array).sort(
-								function(a, b) {
-									return a - b;
-								}
-							);
-
-							// Remove the excluded numbers.
-							hlines_array = hlines_array.filter(function(num) {
-								return !excludes.includes(num);
-							});
-						}
+						// Get the lines to highlight.
+						var _lines = lines_to_highlight($el);
 
 						var line_nums = [];
 						for (var i = 0, l = lines; i < l; i++) {
 							// Check whether the line needs to be highlighted.
-							var needs_highlight = hlines_array.includes(i + 1)
+							var needs_highlight = _lines.includes(i + 1)
 								? " class='line-block-highlight'"
 								: "";
 							line_nums.push(
@@ -1147,12 +1152,60 @@ toc.forEach(function(directory) {
 							// second element to be able to be "fixed". This
 							// allows the code element to be properly adjacent
 							// to the fixed element.
-							`${blockname_html}<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
+							`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
 								""
-							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${line_nums.join(
+							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
 								""
 							)}</div>`
 						);
+					});
+
+					// Hide code blocks that are too big.
+					$("pre code[class^='lang']").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Get text (code) and file stats.
+						let text = $el.html().trim();
+
+						// Store the original text.
+						$el.attr(
+							"data-orig-text",
+							entities.decode($el.text().trim())
+						);
+
+						function make_code_lines(text) {
+							text = text.trim();
+							text = `<div class="lang-code-line">${text}`;
+							// [https://stackoverflow.com/a/784547]
+							text = text.replace(/(?:\r\n|\r|\n)/g, function(
+								match
+							) {
+								return `</div><div class="lang-code-line">`;
+							});
+
+							text = `${text}</div>`;
+
+							// Final change...add empty lines.
+							text = text.replace(
+								/lang\-code\-line"\><\/div/g,
+								'lang-code-line">\n</div'
+							);
+
+							return text;
+						}
+
+						// Reset the HTML.
+						$el.html(make_code_lines(text));
+
+						// Get the lines to highlight.
+						var _lines = lines_to_highlight($el);
+						$el.find(".lang-code-line").each(function(i, elem) {
+							// Check whether the line needs to be highlighted.
+							if (_lines.includes(i + 1)) {
+								$(this).addClass("line-num-line-highlight");
+							}
+						});
 					});
 
 					// Finally reset the data to the newly parsed/modified HTML.
