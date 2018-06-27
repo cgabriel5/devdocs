@@ -1640,7 +1640,7 @@ details, summary {
 		background: white;
 		z-index: 2;
 		border-right: 1px solid rgba(0, 0, 0, 0.15);
-		will-change: transform;
+		will-change: transform, contents;
 	}/* To make the sidebar constantly show the y-scroller make the div
 	dip/overflow. This or simply giving the .menu a min-height: 101%; also
 	works. *//*	.logo-devdocs {

@@ -1367,9 +1367,26 @@ document.onreadystatechange = function() {
 									$parent.nextElementSibling
 								).height.replace("px", "") * 1,
 							to: 0,
-							duration: 350,
+							duration: 250,
+							onSkip: function() {
+								// Skip the animation if the next element is not an UL or
+								// else the wrong element will be removed.
+								if (
+									$parent.nextElementSibling.tagName !== "UL"
+								) {
+									return true;
+								}
+							},
 							onProgress: function(val) {
 								$parent.nextElementSibling.style.height = `${val}px`;
+							},
+							onComplete: function(actualDuration, averageFps) {
+								// Remove the submenu.
+								var $next = $parent.nextElementSibling;
+								if ($next.tagName === "UL") {
+									// Remove the virtual element.
+									$next.parentNode.removeChild($next);
+								}
 							}
 						});
 
@@ -1407,6 +1424,20 @@ document.onreadystatechange = function() {
 
 						// Animate menu height opening.
 						setTimeout(function() {
+							// Embed the current sub-menu list.
+							var dirs = data.dirs[0].files;
+							for (var i = 0, l = dirs.length; i < l; i++) {
+								var dir = dirs[i];
+								if (dir.dirname === filename) {
+									// Get the sub menu HTML and embed.
+									$new_current.insertAdjacentHTML(
+										"afterend",
+										dir.headings
+									);
+									break;
+								}
+							}
+
 							var animation = animate({
 								from: 0,
 								to:
@@ -1414,7 +1445,7 @@ document.onreadystatechange = function() {
 										"px",
 										""
 									) * 1,
-								duration: 400,
+								duration: 300,
 								onProgress: function(val) {
 									$new_current.nextElementSibling.style.height = `${val}px`;
 								},

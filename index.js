@@ -1671,7 +1671,8 @@ Promise.all(promises)
 
 				// Loop over all files  to get the HTML and headings.
 				directory.files.forEach(function(file) {
-					html.push(file.html, file.headings);
+					// html.push(file.html, file.headings);
+					html.push(file.html);
 				});
 
 				// Create the submenu for the current directory.
