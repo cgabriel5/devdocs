@@ -1459,7 +1459,6 @@ document.onreadystatechange = function() {
 							}
 
 							if (!$ul) {
-								console.log("NO UL");
 								return;
 							}
 
