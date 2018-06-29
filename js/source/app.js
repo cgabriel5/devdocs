@@ -788,12 +788,13 @@ document.onreadystatechange = function() {
 				// Store the currently displayed file.
 				var current_file;
 				var running_menu_animation;
+				var menu_anim_timer;
 				var sb_animation;
 				var $sb_animation_header;
 				var sb_active_el_loader;
 				var scroll_to_top;
 				var clipboardjs_instance;
-				var first_animation;
+				// var first_animation;
 
 				// Functions:Scoped:Inner //
 
@@ -1359,6 +1360,9 @@ document.onreadystatechange = function() {
 						// Remove the highlight.
 						$parent.classList.remove("active-page");
 
+						var id = $parent.id.replace(/[a-z\-]/g, "");
+						var $ul = document.getElementById(`menu-headers-${id}`);
+
 						// Animate menu height closing.
 						var animation = animate({
 							// delay: 30,
@@ -1367,9 +1371,24 @@ document.onreadystatechange = function() {
 									$parent.nextElementSibling
 								).height.replace("px", "") * 1,
 							to: 0,
-							duration: 350,
+							duration: 250,
+							onSkip: function() {
+								if (!$ul) {
+									return true;
+								}
+							},
 							onProgress: function(val) {
-								$parent.nextElementSibling.style.height = `${val}px`;
+								$ul.style.height = `${val}px`;
+							},
+							onComplete: function(actualDuration, averageFps) {
+								var $ulp = document.querySelector(
+									".menu-section-cont"
+								).firstChild;
+
+								// Remove the UL if it exists.
+								if ($ul && $ulp.contains($ul)) {
+									$ulp.removeChild($ul);
+								}
 							}
 						});
 
@@ -1400,13 +1419,46 @@ document.onreadystatechange = function() {
 						menu_classes.remove("fa-angle-right");
 						menu_classes.add("fa-angle-down");
 
-						if (running_menu_animation) {
-							// Cancel the current animation.
-							running_menu_animation.cancel();
-						}
+						// if (running_menu_animation) {
+						// 	// Cancel the curnew_currentrent animation.
+						// 	running_menu_animation.cancel();
+						// }
 
 						// Animate menu height opening.
-						setTimeout(function() {
+						if (menu_anim_timer) {
+							clearTimeout(menu_anim_timer);
+						}
+						menu_anim_timer = setTimeout(function() {
+							var id = $new_current.id.replace(/[a-z\-]/g, "");
+							var $ul = document.getElementById(
+								`menu-headers-${id}`
+							);
+
+							if (!$ul) {
+								// Embed the current sub-menu list.
+								var dirs = data.dirs[0].files;
+								for (var i = 0, l = dirs.length; i < l; i++) {
+									var dir = dirs[i];
+									if (dir.dirname === filename) {
+										// Get the sub menu HTML and embed.
+										$new_current.insertAdjacentHTML(
+											"afterend",
+											dir.headings
+										);
+
+										$ul = document.getElementById(
+											`menu-headers-${id}`
+										);
+										break;
+									}
+								}
+							}
+
+							if (!$ul) {
+								console.log("NO UL");
+								return;
+							}
+
 							var animation = animate({
 								from: 0,
 								to:
@@ -1414,15 +1466,15 @@ document.onreadystatechange = function() {
 										"px",
 										""
 									) * 1,
-								duration: 400,
+								duration: 300,
 								onProgress: function(val) {
-									$new_current.nextElementSibling.style.height = `${val}px`;
+									$ul.style.height = `${val}px`;
 								},
 								onComplete: function(
 									actualDuration,
 									averageFps
 								) {
-									$new_current.nextElementSibling.style.opacity = 1;
+									$ul.style.opacity = 1;
 
 									// Inject the html.
 									replace_html(file);
@@ -1474,8 +1526,9 @@ document.onreadystatechange = function() {
 									}
 								}
 							});
-						}, first_animation ? 0 : 300);
-						first_animation = true;
+						}, 225);
+						// }, first_animation ? 0 : 300);
+						// first_animation = true;
 
 						// Store the animation to cancel if another animation is needed to run.
 						running_menu_animation = animation;
