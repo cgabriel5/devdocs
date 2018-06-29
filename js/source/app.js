@@ -245,12 +245,16 @@ document.onreadystatechange = function() {
 					options.easing ||
 					// function(n) {
 					// 	// [https://github.com/component/ease/blob/master/index.js#L16]
+					// 	// [https://kodhus.com/easings/]
 					// 	n *= 2;
 					// 	if (n < 1) return 0.5 * n * n;
 					// 	return -0.5 * (--n * (n - 2) - 1);
 					// },
+					// function(n) {
+					// 	return 0.5 * (1 - Math.cos(Math.PI * n));
+					// },
 					function(n) {
-						return 0.5 * (1 - Math.cos(Math.PI * n));
+						return --n * n * n + 1;
 					},
 				noop = function() {},
 				onProgress = options.onProgress || noop,
@@ -2390,7 +2394,10 @@ document.onreadystatechange = function() {
 						// Get the header.
 						var $header = document.querySelector(
 							`[href='${href}'][class='anchor']`
-						).parentNode;
+						);
+						if ($header) {
+							$header = $header.parentNode;
+						}
 
 						// Remove the class before adding.
 						$header.classList.remove("animate-header-highlight");
