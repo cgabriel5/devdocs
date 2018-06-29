@@ -92,6 +92,7 @@
 		"object-path-get": "^1.0.0",
 		"opener": "^1.4.3",
 		"perfectionist": "^2.4.0",
+		"performance-now": "^2.1.0",
 		"postcss-merge-longhand": "^3.0.0",
 		"postcss-unprefix": "^2.1.1",
 		"prettier": "^1.10.2",

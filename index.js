@@ -28,6 +28,9 @@ let cheerio = require("cheerio");
 let Entities = require("html-entities").XmlEntities;
 let entities = new Entities();
 
+let now = require("performance-now");
+let tstart = now();
+
 // Lazy load gulp plugins.
 let $ = require("gulp-load-plugins")({
 	rename: {
@@ -437,6 +440,18 @@ config.files._404 = remove_space(
 	</div> \
 </div>'
 );
+// config.files._001 = remove_space(
+// 	`<div class="markdown-body animate-fadein">
+// 		<div class="dd-message-wrapper">
+// 			<div class="dd-message-base">
+// 				<div class="dd-message-title">
+// 					<i class="fas fa-info-circle"></i> <span>Nothing is opened.</span>
+// 				</div>
+// 				<div>Open a file from the sidebar.</div>
+// 			</div>
+// 		</div>
+// 	</div>`
+// );
 // Add the svg loader.
 config.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
 // Add the MacOS scrollbar styles.
@@ -864,16 +879,51 @@ toc.forEach(function(directory) {
 						if (!id) {
 							return;
 						}
-						// Normalize the id by removing all hyphens.
-						let normalized_id = id.replace(/-/g, " ").trim();
+						// // Normalize the id by removing all hyphens.
+						// let normalized_id = id.replace(/-/g, " ").trim();
 
 						// Add the second level menu template string.
 						headings.push(
-							`<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
+							// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
+							`<li class="l-3"><a class="link link-heading" href="#${id.replace(
+								/^[-]+|[-]+$/g,
+								""
+							)}" data-file="${fpath}">${$el
+								.parent()
+								.text()
+								.trim()}</a></li>`
 						);
 					});
 					// Add the closing tag to the headings HTML.
 					headings.push("</ul>");
+
+					// Reset all the anchor href.
+					$("a[href]").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Get the attributes.
+						let attrs = $el.attr();
+
+						// Get the element id.
+						let href = attrs.href;
+
+						// Only work on hrefs starting with "#".
+						if (href.startsWith("#")) {
+							href = href.replace(/\#/g, "");
+
+							$el.attr(
+								"href",
+								"#" + href.replace(/^[-]+|[-]+$/g, "")
+							);
+						}
+
+						// Add the "link-heading" class only when the href
+						// attribute is the only attribute.
+						if (Object.keys(attrs).length === 1 && href) {
+							$el.addClass("link-heading");
+						}
+					});
 
 					// Combine all the headings HTML and add to them to the
 					// file object.
@@ -1701,7 +1751,10 @@ Promise.all(promises)
 				// "fonts:app",
 				"json-data:app",
 				function() {
-					print.gulp.success("Documentation generated.");
+					print.gulp.success(
+						"Documentation generated",
+						chalk.green(((now() - tstart) / 1000).toFixed(2) + "s")
+					);
 				}
 			]);
 		},

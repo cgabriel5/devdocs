@@ -245,12 +245,16 @@ document.onreadystatechange = function() {
 					options.easing ||
 					// function(n) {
 					// 	// [https://github.com/component/ease/blob/master/index.js#L16]
+					// 	// [https://kodhus.com/easings/]
 					// 	n *= 2;
 					// 	if (n < 1) return 0.5 * n * n;
 					// 	return -0.5 * (--n * (n - 2) - 1);
 					// },
+					// function(n) {
+					// 	return 0.5 * (1 - Math.cos(Math.PI * n));
+					// },
 					function(n) {
-						return 0.5 * (1 - Math.cos(Math.PI * n));
+						return --n * n * n + 1;
 					},
 				noop = function() {},
 				onProgress = options.onProgress || noop,
@@ -788,12 +792,13 @@ document.onreadystatechange = function() {
 				// Store the currently displayed file.
 				var current_file;
 				var running_menu_animation;
+				var menu_anim_timer;
 				var sb_animation;
 				var $sb_animation_header;
 				var sb_active_el_loader;
 				var scroll_to_top;
 				var clipboardjs_instance;
-				var first_animation;
+				// var first_animation;
 
 				// Functions:Scoped:Inner //
 
@@ -1359,6 +1364,9 @@ document.onreadystatechange = function() {
 						// Remove the highlight.
 						$parent.classList.remove("active-page");
 
+						var id = $parent.id.replace(/[a-z\-]/g, "");
+						var $ul = document.getElementById(`menu-headers-${id}`);
+
 						// Animate menu height closing.
 						var animation = animate({
 							// delay: 30,
@@ -1369,23 +1377,21 @@ document.onreadystatechange = function() {
 							to: 0,
 							duration: 250,
 							onSkip: function() {
-								// Skip the animation if the next element is not an UL or
-								// else the wrong element will be removed.
-								if (
-									$parent.nextElementSibling.tagName !== "UL"
-								) {
+								if (!$ul) {
 									return true;
 								}
 							},
 							onProgress: function(val) {
-								$parent.nextElementSibling.style.height = `${val}px`;
+								$ul.style.height = `${val}px`;
 							},
 							onComplete: function(actualDuration, averageFps) {
-								// Remove the submenu.
-								var $next = $parent.nextElementSibling;
-								if ($next.tagName === "UL") {
-									// Remove the virtual element.
-									$next.parentNode.removeChild($next);
+								var $ulp = document.querySelector(
+									".menu-section-cont"
+								).firstChild;
+
+								// Remove the UL if it exists.
+								if ($ul && $ulp.contains($ul)) {
+									$ulp.removeChild($ul);
 								}
 							}
 						});
@@ -1417,25 +1423,43 @@ document.onreadystatechange = function() {
 						menu_classes.remove("fa-angle-right");
 						menu_classes.add("fa-angle-down");
 
-						if (running_menu_animation) {
-							// Cancel the current animation.
-							running_menu_animation.cancel();
-						}
+						// if (running_menu_animation) {
+						// 	// Cancel the curnew_currentrent animation.
+						// 	running_menu_animation.cancel();
+						// }
 
 						// Animate menu height opening.
-						setTimeout(function() {
-							// Embed the current sub-menu list.
-							var dirs = data.dirs[0].files;
-							for (var i = 0, l = dirs.length; i < l; i++) {
-								var dir = dirs[i];
-								if (dir.dirname === filename) {
-									// Get the sub menu HTML and embed.
-									$new_current.insertAdjacentHTML(
-										"afterend",
-										dir.headings
-									);
-									break;
+						if (menu_anim_timer) {
+							clearTimeout(menu_anim_timer);
+						}
+						menu_anim_timer = setTimeout(function() {
+							var id = $new_current.id.replace(/[a-z\-]/g, "");
+							var $ul = document.getElementById(
+								`menu-headers-${id}`
+							);
+
+							if (!$ul) {
+								// Embed the current sub-menu list.
+								var dirs = data.dirs[0].files;
+								for (var i = 0, l = dirs.length; i < l; i++) {
+									var dir = dirs[i];
+									if (dir.dirname === filename) {
+										// Get the sub menu HTML and embed.
+										$new_current.insertAdjacentHTML(
+											"afterend",
+											dir.headings
+										);
+
+										$ul = document.getElementById(
+											`menu-headers-${id}`
+										);
+										break;
+									}
 								}
+							}
+
+							if (!$ul) {
+								return;
 							}
 
 							var animation = animate({
@@ -1447,13 +1471,13 @@ document.onreadystatechange = function() {
 									) * 1,
 								duration: 300,
 								onProgress: function(val) {
-									$new_current.nextElementSibling.style.height = `${val}px`;
+									$ul.style.height = `${val}px`;
 								},
 								onComplete: function(
 									actualDuration,
 									averageFps
 								) {
-									$new_current.nextElementSibling.style.opacity = 1;
+									$ul.style.opacity = 1;
 
 									// Inject the html.
 									replace_html(file);
@@ -1505,8 +1529,9 @@ document.onreadystatechange = function() {
 									}
 								}
 							});
-						}, first_animation ? 0 : 300);
-						first_animation = true;
+						}, 225);
+						// }, first_animation ? 0 : 300);
+						// first_animation = true;
 
 						// Store the animation to cancel if another animation is needed to run.
 						running_menu_animation = animation;
@@ -2368,7 +2393,10 @@ document.onreadystatechange = function() {
 						// Get the header.
 						var $header = document.querySelector(
 							`[href='${href}'][class='anchor']`
-						).parentNode;
+						);
+						if ($header) {
+							$header = $header.parentNode;
+						}
 
 						// Remove the class before adding.
 						$header.classList.remove("animate-header-highlight");
