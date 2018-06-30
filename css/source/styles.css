@@ -425,7 +425,13 @@ to become invisible when header scrolling. This seems to solve the issue.
 ul.file-headers {
 	margin-left: 20px;
 	border-left: 1px solid #dddddd;
+	overflow: hidden;
 }
+
+/* .file-headers-active {
+	overflow: auto !important;
+	overflow-x: hidden !important;
+} */
 
 .headings-cont {
 	/*opacity: 0;*/
@@ -1253,8 +1259,9 @@ a.social-link:hover {
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	background: #f6f6f6;
+	/*background: #f6f6f6;*/
 	border-radius: 3px 3px 0 0;
+	margin-bottom: 3px;
 }
 
 .code-block-action {
@@ -1284,7 +1291,9 @@ a.social-link:hover {
 	border-right: 1px solid #c8c8c87a;
 	/*padding: 10px 5px 10px 10px;*//*padding: 16px 10px 16px 16px;*//*padding: 16px 0;*/
 	padding: 16px 3px 16px 10px;
-	background: #fbfbfb;
+	/*background: #fbfbfb;*/
+	background: #f8f8f8;
+	border-radius: 5px 0 0 5px;
 }
 
 .line-num-line-highlight-cont {
@@ -1520,24 +1529,19 @@ details, summary {
 	font-size: 13px;
 	cursor: pointer;
 	color: #999999;
-	font-weight: bold;
+	font-weight: 700;
 	white-space: pre;
-	/*	max-width: 150px;
-	white-space: nowrap;
-	overflow: hidden;
-	text-overflow: ellipsis;*/
+	border-radius: 3px;
 }
 
-.codegroup-tab:hover {
-	background: rgba(0, 0, 0, 0.04);
-	color: #333333;
-}
+/* .codegroup-tab:hover {
+    background: rgba(0,0,0,.04);
+    color: #333
+} */
 
 .codegroup-tab-active {
-	/*border-bottom: 1px solid #2578f8;*/
 	color: #333333;
-	background: rgba(0, 0, 0, 0.04);
-	box-shadow: inset 0 -2px 0 0 #2578f8;
+	/*     background: rgba(0,0,0,.04); *//*     box-shadow: inset 0 -2px 0 0 #2578f8 */
 }
 
 .tabs-cont {
@@ -1546,6 +1550,7 @@ details, summary {
 	overflow-x: auto;
 	overflow: auto;
 	overflow-scrolling: touch;
+	position: relative;
 }
 
 .lang-code-line {

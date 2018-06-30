@@ -798,6 +798,8 @@ document.onreadystatechange = function() {
 				var sb_active_el_loader;
 				var scroll_to_top;
 				var clipboardjs_instance;
+				var codeblock_scroll;
+				// var menu_scroll;
 				// var first_animation;
 
 				// Functions:Scoped:Inner //
@@ -813,7 +815,7 @@ document.onreadystatechange = function() {
 					// size = size || 16;
 					// return `<div class="loader-base loader-bg-${name ||
 					// 	"base"}" style="width:${size}px;height:${size}px;"></div>`;
-					return `<div class="mloader" style="width:${size}px;height:${size}px;"></div>`;
+					return `<div class="mloader" style="min-width:${size}px;min-height:${size}px;"></div>`;
 				}
 
 				function show_tb_loader() {
@@ -1367,34 +1369,44 @@ document.onreadystatechange = function() {
 						var id = $parent.id.replace(/[a-z\-]/g, "");
 						var $ul = document.getElementById(`menu-headers-${id}`);
 
-						// Animate menu height closing.
-						var animation = animate({
-							// delay: 30,
-							from:
-								getComputedStyle(
-									$parent.nextElementSibling
-								).height.replace("px", "") * 1,
-							to: 0,
-							duration: 250,
-							onSkip: function() {
-								if (!$ul) {
-									return true;
-								}
-							},
-							onProgress: function(val) {
-								$ul.style.height = `${val}px`;
-							},
-							onComplete: function(actualDuration, averageFps) {
-								var $ulp = document.querySelector(
-									".menu-section-cont"
-								).firstChild;
+						// If no UL list exist then skip the animation.
+						if ($ul) {
+							// // Reset the stying to hide the scrollbar.
+							// $ul.classList.remove("file-headers-active");
 
-								// Remove the UL if it exists.
-								if ($ul && $ulp.contains($ul)) {
-									$ulp.removeChild($ul);
+							// Animate menu height closing.
+							var animation = animate({
+								// delay: 30,
+								from:
+									getComputedStyle($ul).height.replace(
+										"px",
+										""
+									) * 1,
+								to: 0,
+								duration: 250,
+								onSkip: function() {
+									if (!$ul) {
+										return true;
+									}
+								},
+								onProgress: function(val) {
+									$ul.style.height = `${val}px`;
+								},
+								onComplete: function(
+									actualDuration,
+									averageFps
+								) {
+									var $ulp = document.querySelector(
+										".menu-section-cont"
+									).firstChild;
+
+									// Remove the UL if it exists.
+									if ($ul && $ulp.contains($ul)) {
+										$ulp.removeChild($ul);
+									}
 								}
-							}
-						});
+							});
+						}
 
 						// Un-highlight the menu arrow and reset to right
 						// position.
@@ -1462,13 +1474,23 @@ document.onreadystatechange = function() {
 								return;
 							}
 
+							// Calculate the UL elements height.
+							var height =
+								get_height($new_current, filename).replace(
+									"px",
+									""
+								) * 1;
+
+							// // Determine whether the UL element's height will
+							// // need to be capped at 350px.
+							// var _max_height = height > 350;
+							// if (_max_height) {
+							// 	height = 350;
+							// }
+
 							var animation = animate({
 								from: 0,
-								to:
-									get_height($new_current, filename).replace(
-										"px",
-										""
-									) * 1,
+								to: height,
 								duration: 300,
 								onProgress: function(val) {
 									$ul.style.height = `${val}px`;
@@ -1477,6 +1499,13 @@ document.onreadystatechange = function() {
 									actualDuration,
 									averageFps
 								) {
+									// if (_max_height) {
+									// 	// Reset the stying to hide the scrollbar.
+									// 	$ul.classList.add(
+									// 		"file-headers-active"
+									// 	);
+									// }
+
 									$ul.style.opacity = 1;
 
 									// Inject the html.
@@ -1487,6 +1516,11 @@ document.onreadystatechange = function() {
 
 									// Get the hash.
 									var hash = location.hash;
+
+									// // Cancel any current menu scroll.
+									// if (menu_scroll) {
+									// 	menu_scroll.cancel();
+									// }
 
 									// Scroll to hash.
 									if (hash) {
@@ -1523,6 +1557,30 @@ document.onreadystatechange = function() {
 
 													// Remove optimization.
 													perf_unhint($sroot);
+
+													// // Scroll to the menu item.
+													// menu_scroll = animate({
+													// 	from:
+													// 		$sidebar.scrollTop,
+													// 	to:
+													// 		$new_current.offsetTop +
+													// 		50 -
+													// 		20,
+													// 	duration: 225,
+
+													// 	onProgress: function(
+													// 		val
+													// 	) {
+													// 		$sidebar.scrollTop = val;
+													// 	},
+													// 	onComplete: function(
+													// 		actualDuration,
+													// 		averageFps
+													// 	) {
+													// 		// Reset the var.
+													// 		menu_scroll = null;
+													// 	}
+													// });
 												});
 											}, 300);
 										}
@@ -2517,8 +2575,29 @@ document.onreadystatechange = function() {
 							);
 						}
 					} else if (is_codegroup_tab($target)) {
+						// Cancel any current codeblock scroll.
+						if (codeblock_scroll) {
+							codeblock_scroll.cancel();
+						}
+
 						// Reset the target.
 						$target = is_codegroup_tab($target);
+						// Get the parent.
+						var $parent = $target.parentNode;
+
+						// Scroll to the menu item.
+						codeblock_scroll = animate({
+							from: $parent.scrollLeft,
+							to: $target.offsetLeft - 7,
+							duration: 225,
+							onProgress: function(val) {
+								$parent.scrollLeft = val;
+							},
+							onComplete: function(actualDuration, averageFps) {
+								// Reset the var.
+								codeblock_scroll = null;
+							}
+						});
 
 						// Get the tab index.
 						var tindex = $target.getAttribute("data-tab-index") * 1;
