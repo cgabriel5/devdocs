@@ -175,6 +175,23 @@ function id(length) {
 		.substr(2, length);
 }
 
+function extra_codeblock_space_placeholder(text) {
+	var r = /^[ \t]+```([\s\S]+?)```/gm;
+	text = text.replace(r, function(match) {
+		// Split the string into lines.
+		// [https://stackoverflow.com/a/45709854]
+		var lines = match.split(/\r?\n/);
+
+		// Append the placeholder after the first line.
+		// [https://stackoverflow.com/a/586189]
+		lines.splice(1, 0, "[::dd-clear-space]");
+
+		return lines.join("\n");
+	});
+	// Return the text.
+	return text;
+}
+
 /**
  * Expand custom tags.
  *
@@ -572,6 +589,16 @@ let renderer = new marked.Renderer();
 // Take into account custom line-numbers, block-name
 // [https://github.com/markedjs/marked/blob/master/lib/marked.js#L880]
 renderer.code = function(code, lang, escaped) {
+	// Flag.
+	var clear_space = "";
+	// Check for [::dd-clear-space].
+	if (code.includes("[::dd-clear-space]")) {
+		// Reset the flag.
+		clear_space = " data-clear-space='true' ";
+		// Remove the placeholder from the text.
+		code = code.replace(/\[\:\:dd-clear-space\]/, "");
+	}
+
 	// Get the language, line numbers?, and block name?.
 	var r = /([\w]+)?({.*?})?({.*?})?/i;
 
@@ -601,7 +628,7 @@ renderer.code = function(code, lang, escaped) {
 
 	return (
 		// (escaped ? code : escape(code, true)) +
-		`<pre><code class="${this.options.langPrefix}${escape(
+		`<pre><code${clear_space} class="${this.options.langPrefix}${escape(
 			lang,
 			true
 		)}" data-highlight-lines="${lines}" data-block-name="${name}">${code}</code></pre>\n`
@@ -794,6 +821,9 @@ toc.forEach(function(directory) {
 				if (err) {
 					return reject([`${__path} could not be opened.`, err]);
 				}
+
+				// Fix extra space before code blocks.
+				contents = extra_codeblock_space_placeholder(contents);
 
 				// Expand any custom tags.
 				contents = expand_custom_tags(contents);
@@ -1053,18 +1083,19 @@ toc.forEach(function(directory) {
 
 						// Hide all the blocks except the first.
 						if ($blocks.length) {
-							// The first code block.
-							$blocks
-								.filter(function(i, el) {
-									return i === 0;
-								})
-								.attr("class", "animate-fadein");
+							// // The first code block.
+							// $blocks
+							// 	.filter(function(i, el) {
+							// 		return i === 0;
+							// 	})
+							// 	.attr("class", "animate-fadein");
 							// The remaining code blocks.
 							$blocks = $blocks
 								.filter(function(i, el) {
 									return i !== 0;
 								})
-								.attr("class", "none animate-fadein");
+								// .attr("class", "none animate-fadein");
+								.attr("class", "none");
 						}
 					});
 
@@ -1258,6 +1289,46 @@ toc.forEach(function(directory) {
 						});
 					});
 
+					// Note: If code blocks are indented lines will then have
+					// some indentation. Messing up the lines. This removed it.
+					$("code[data-clear-space]").each(function(i, elem) {
+						// Cache the element.
+						let $el = $(this);
+
+						// Remove the attribute.
+						$el.removeAttr("data-clear-space");
+
+						// Get the lang-code-line elements.
+						let $lines = $el.find(".lang-code-line");
+
+						// Now loop over the remaining lines and remove
+						// the first space.
+						$lines.each(function(i, elem) {
+							let $el = $(this);
+							let text = $el.html();
+							if (/^\s/.test(text)) {
+								// Remove the first space.
+								text = text.replace(/^\s/, "");
+								// Reset the text.
+								$el.html(text);
+							}
+						});
+
+						// Reset the orig-text attribute.
+						let otext = $el.attr("data-orig-text").split(/\r?\n/);
+						for (var i = 0, l = otext.length; i < l; i++) {
+							let text = otext[i];
+							if (/^\s/.test(text)) {
+								// Remove the first space.
+								otext[i] = text.replace(/^\s/, "");
+							}
+						}
+						$el.attr(
+							"data-orig-text",
+							entities.decode(otext.join("\n"))
+						);
+					});
+
 					// Finally reset the data to the newly parsed/modified HTML.
 					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
 					// data = $.html().replace(/<\/?(html|body|head)>/gi, "");
@@ -1406,7 +1477,7 @@ toc.forEach(function(directory) {
 
 						// Insert the new HTML before the details element.
 						$el.before(`<div class="dd-expandable-base">
-						<div class="dd-expandable-message"><i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i><span>${title}</span></div>
+						<div class="dd-expandable-message noselect"><i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i><span>${title}</span></div>
 						<div class="dd-expandable-content none animate-fadein">${result}</div>
 					</div>`);
 						// Remove the details element.
