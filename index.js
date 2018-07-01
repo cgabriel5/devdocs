@@ -843,54 +843,65 @@ toc.forEach(function(directory) {
 					});
 
 					// Grab all anchor elements to
-					$("a").each(function(i, elem) {
+					$("a[href]").each(function(i, elem) {
 						// Cache the element.
 						let $el = $(this);
 						// Get the attributes.
-						let href = $el.attr("href");
+						let attrs = $el.attr();
+						let href = attrs.href;
 						let href_untouched = href; // The original href.
 						let href_lower = href.toLowerCase();
 
-						// Only when the anchor has an href attribute.
-						if (href) {
-							// If an href exists, and it is not an http(s) link or
-							// scheme-less URLs, and it ends with .md then we have
-							// a link that is another documentation file that needs
-							// to be linked to.
-							if (
-								!(
-									href_lower.startsWith("htt") ||
-									href_lower.startsWith("//")
-								) &&
-								href_lower.endsWith(".md")
-							) {
-								// Set the new href.
-								$el.attr("href", "#");
+						// Clean the href.
+						href = href.replace(/^[-]+|[-]+$/g, "");
 
-								// Reset the href by removing any starting dot,
-								// forward-slashes, and the .md extension.
-								href = href.replace(/^[\.\/]+|\.md$/gi, "");
+						// Reset the name and ID attributes.
+						let name = attrs.name;
+						if (name && name.includes(href.replace(/^#/g, ""))) {
+							$el.attr("name", name.replace(/^[-]+|[-]+$/g, ""));
+						}
+						let id = attrs.id;
+						if (id && id.includes(href.replace(/^#/g, ""))) {
+							$el.attr("id", id.replace(/^[-]+|[-]+$/g, ""));
+						}
 
-								// Remove the root from the href.
-								if (href.startsWith(root)) {
-									href = href.replace(root, "");
-								}
+						// If an href exists, and it is not an http(s) link or
+						// scheme-less URLs, and it ends with .md then we have
+						// a link that is another documentation file that needs
+						// to be linked to.
+						if (
+							!(
+								href_lower.startsWith("htt") ||
+								href_lower.startsWith("//")
+							) &&
+							href_lower.endsWith(".md")
+						) {
+							// Set the new href.
+							$el.attr("href", "#");
 
-								// Add the dot slash to the href.
-								href = `./${href}`;
+							// Reset the href by removing any starting dot,
+							// forward-slashes, and the .md extension.
+							href = href.replace(/^[\.\/]+|\.md$/gi, "");
 
-								// Set the final href.
-								$el.attr("data-file", href);
-								// Set the untouched original href.
-								$el.attr("data-file-untouched", href_untouched);
-								// Set class to denote its a documentation link.
-								$el.addClass("link-doc");
-							} else {
-								// Open all http links in their own tabs by
-								// adding the _blank value. Skip hashes.
-								if (!href.startsWith("#")) {
-									$el.attr("target", "_blank");
-								}
+							// Remove the root from the href.
+							if (href.startsWith(root)) {
+								href = href.replace(root, "");
+							}
+
+							// Add the dot slash to the href.
+							href = `./${href}`;
+
+							// Set the final href.
+							$el.attr("data-file", href);
+							// Set the untouched original href.
+							$el.attr("data-file-untouched", href_untouched);
+							// Set class to denote its a documentation link.
+							$el.addClass("link-doc");
+						} else {
+							// Open all http links in their own tabs by
+							// adding the _blank value. Skip hashes.
+							if (!href.startsWith("#")) {
+								$el.attr("target", "_blank");
 							}
 						}
 					});
