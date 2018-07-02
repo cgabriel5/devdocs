@@ -342,6 +342,10 @@ to become invisible when header scrolling. This seems to solve the issue.
 	/*overflow: auto;*//* Width of the sizebar. */
 	margin-left: 240px;
 	width: 100%;
+	transition: opacity 0.2s ease-in-out;
+	opacity: 1;
+	/*filter: grayscale(0);*/
+	background: transparent;
 }
 
 .sidebar-show {
@@ -391,10 +395,10 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .l-2 {
-	padding: 8px 25px 8px 20px;
-	text-overflow: ellipsis;
+	padding: 8px 10px 8px 20px;
+	/*text-overflow: ellipsis;
 	overflow: hidden;
-	white-space: nowrap;
+	white-space: nowrap;*/
 	cursor: pointer;
 	font-weight: bold;
 	display: flex;
@@ -403,14 +407,53 @@ to become invisible when header scrolling. This seems to solve the issue.
 	transition: background 0.2s ease-in-out;
 }
 
+.l-2-main-cont {
+	width: 100%;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.l-2-link {
+	max-width: 130px;
+}
+
+.truncate {
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.link-headings-count {
+	font-size: 11px;
+	font-weight: bold;
+	color: #d0d0d0;
+	padding: 3px 3px 2px 3px;
+	border-radius: 4px;
+	border: 1px solid transparent;
+	display: flex;
+	transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+}
+
+.active-page .link-headings-count {
+	color: #666666;
+	background: white;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 .l-3 {
-	padding: 6px 25px 6px 20px;
+	/*	padding: 6px 25px 6px 20px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
-	/*text-transform: capitalize;*/
+	font-size: 15px;*/
+	padding: 5px 20px 5px 20px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: pointer;
 	font-size: 15px;
+	/*text-transform: capitalize;*/
 	border-right: 2px solid transparent;
 }
 
@@ -515,12 +558,19 @@ ul.file-headers {
 .btn {
 	cursor: pointer;
 	border-radius: 4px;
-	border: 1px solid rgba(0, 0, 0, 0.2);
+	border: 1px solid rgba(0, 0, 0, 0.17);
 }
 
 .btn-white {
 	color: #333333;
-	background: white;
+	background: #ffffff;
+	transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+	/*     box-shadow: 0 1px 0 0 rgba(0,0,0,.03) */
+}
+
+.btn-white:hover {
+	color: #333333;
+	background: #99999905;
 	box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.03);
 }
 
@@ -587,7 +637,9 @@ ul.file-headers {
 	margin-top: 25px;
 }
 
-.loader-top {
+/* Old top loader CSS. */
+
+/*.loader-top {
 	position: fixed;
 	z-index: 3;
 	width: 0%;
@@ -595,6 +647,58 @@ ul.file-headers {
 	left: 0;
 	background: #2578f8;
 	transition: all 0.2s ease-in-out;
+}*/
+
+/* [https://www.pexels.com/blog/css-only-loaders/]
+[https://codepen.io/brunjo/pen/XJmbNz]
+ */
+
+.loader-top {
+	position: fixed;
+	z-index: 3;
+	left: 0;
+	height: 0;
+	width: 100%;
+	overflow: hidden;
+	opacity: 0;
+	/*background-color: #9b9b9b20;*/
+	background-color: #2578f8;
+	transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
+	pointer-events: none;
+	animation: loading 0.8s linear infinite;
+}
+
+/*.loader-top:before {
+	display: block;
+	position: absolute;
+	content: "";
+	left: -200px;
+	width: 200px;
+	height: 4px;
+	background-color: #2578f8;
+	animation: loading 2s linear infinite;
+}*/
+
+@keyframes loading {
+	/*	0% {
+		height: 0px;
+		opacity: 0;
+		background-color: transparent;
+	}*/
+
+	25% {
+		height: 2px;
+		opacity: 0.5;
+	}
+
+	75% {
+		height: 0;
+		opacity: 0;
+		background-color: transparent;
+	}/*	75% {
+		height: 2px;
+		opacity: 1;
+	}*/
 }
 
 .main-overlay {
@@ -1291,8 +1395,8 @@ a.social-link:hover {
 	border-right: 1px solid #c8c8c87a;
 	/*padding: 10px 5px 10px 10px;*//*padding: 16px 10px 16px 16px;*//*padding: 16px 0;*/
 	padding: 16px 3px 16px 10px;
-	/*background: #fbfbfb;*/
-	background: #f8f8f8;
+	background: #fbfbfb;
+	/*background: #f8f8f8;*/
 	border-radius: 5px 0 0 5px;
 }
 
@@ -1560,6 +1664,31 @@ details, summary {
 
 .padtop-26 {
 	padding-top: 26px !important;
+}
+
+/*
+.dd-wireframe {
+    border-radius: 4px;
+    color: transparent !important;
+    background: #aeaeae60 !important;
+}
+
+.dd-wireframe * {
+    visibility: hidden;
+}*/
+
+.loading-content {
+	opacity: 0.6;
+	/*filter: grayscale(1);*/
+	background: #ffffff !important;
+	pointer-events: none;
+}
+
+.emoji {
+	height: 1em;
+	width: 1em;
+	margin: 0 0.05em 0 0.1em;
+	vertical-align: -0.1em;
 }
 
 @media (max-width: 366px) {

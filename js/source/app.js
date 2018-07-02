@@ -15,6 +15,7 @@ document.onreadystatechange = function() {
 
 		// Get needed elements.
 		// var $loader = document.getElementById("loader");
+		var $loadertop = document.getElementById("loader-top");
 		// var $loader_cont = document.getElementById("loader-cont");
 		// var $html = document.getElementsByTagName("html")[0];
 		var $topbar = document.getElementById("topbar");
@@ -819,6 +820,10 @@ document.onreadystatechange = function() {
 				}
 
 				function show_tb_loader() {
+					// Show the topbar loader.
+					$loadertop.classList.remove("none");
+					// $loadertop.classList.remove("opa0");
+
 					// Show the main overlay.
 					$moverlay.classList.remove("none");
 
@@ -829,6 +834,10 @@ document.onreadystatechange = function() {
 				}
 
 				function hide_tb_loader() {
+					// Show the topbar loader.
+					$loadertop.classList.add("none");
+					// $loadertop.classList.add("opa0");
+
 					// Show the main overlay.
 					$moverlay.classList.add("none");
 
@@ -1340,6 +1349,9 @@ document.onreadystatechange = function() {
 
 					show_loader($new_current);
 
+					// Add the loading content class.
+					$markdown.classList.add("loading-content");
+
 					// Default to the first file when one does not exist.
 					if (!current_file) {
 						current_file = data.first_file;
@@ -1775,6 +1787,26 @@ document.onreadystatechange = function() {
 					// duration = Math.max(duration, 150);
 
 					// return duration;
+				}
+
+				function is_l2_menu_el($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("l-2")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
 				}
 
 				/**
@@ -2411,20 +2443,14 @@ document.onreadystatechange = function() {
 					// The clicked element is an li element since it has the
 					// l-2 (level-2) class. Since this is the case get the
 					// child element's (anchor element) data-attribute.
-					if (classes.contains("l-2")) {
+					if (is_l2_menu_el($target)) {
+						// Reset the target.
+						$target = is_l2_menu_el($target);
+
 						// Get the data-attribute.
 						filename = $target.children[0].getAttribute(
 							"data-file"
 						);
-
-						// If this is the case then the anchor element itself was
-						// clicked. Simply get the data-attribute.
-					} else if ($target.parentNode.classList.contains("l-2")) {
-						// Get the data-attribute.
-						filename = $target.getAttribute("data-file");
-
-						// Reset the target element.
-						$target = $target.parentNode;
 					} else if (classes.contains("link-doc")) {
 						// Get the data-attribute.
 						filename = $target.getAttribute("data-file");
@@ -2433,7 +2459,7 @@ document.onreadystatechange = function() {
 						// $target = $target.parentNode;
 						$target = document.querySelector(
 							`a.link[data-file='${filename}']`
-						).parentNode;
+						).parentNode.parentNode;
 					} else if (
 						classes.contains("link-heading") ||
 						classes.contains("l-3")
@@ -2911,6 +2937,9 @@ document.onreadystatechange = function() {
 								// Reset code block width/highlight.
 								reset_cblock_width_highlight();
 							}, 300);
+
+							// Add the loading content class.
+							$markdown.classList.remove("loading-content");
 
 							// // Set the line numbers element.
 
@@ -3541,3 +3570,41 @@ document.onreadystatechange = function() {
 			});
 	}
 };
+
+// // [https://stackoverflow.com/a/10730777]
+// function textNodesUnder(el) {
+// 	var n,
+// 		a = [],
+// 		walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+// 	while ((n = walk.nextNode())) a.push(n);
+// 	return a;
+// }
+
+// var $els = document.querySelectorAll(".header-content-ddwrap");
+// for (var i = 0, l = $els.length; i < l; i++) {
+// 	test($els[i]);
+// }
+
+// function test($el) {
+// 	var $texts = textNodesUnder($el);
+
+// 	// Loop over all text nodes and styly the parents.
+// 	for (var i = 0, l = $texts.length; i < l; i++) {
+// 		var $text = $texts[i];
+
+// 		// 	Skip empty text nodes.
+// 		if ($text.textContent.trim() === "") continue;
+
+// 		var $parent = $text.parentNode;
+// 		if (!$parent.classList.contains("dd-wireframe")) {
+// 			// Exclude...
+// 			var tagname = $parent.tagName.toLowerCase();
+// 			// 		if (!["span", "code", "div"].includes(tagname)) {
+// 			// 			continue;
+// 			// 		}
+
+// 			// Add the class.
+// 			$parent.classList.add("dd-wireframe");
+// 		}
+// 	}
+// }

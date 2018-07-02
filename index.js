@@ -27,6 +27,10 @@ let sequence = require("run-sequence");
 let cheerio = require("cheerio");
 let Entities = require("html-entities").XmlEntities;
 let entities = new Entities();
+let emoji = require("node-emoji");
+let eunicode = require("emoji-unicode");
+let twemoji = require("twemoji");
+let edict = require("emoji-dictionary");
 
 let now = require("performance-now");
 let tstart = now();
@@ -67,6 +71,25 @@ let globall = utils.globall;
 // let expand_paths = utils.expand_paths;
 // let opts_sort = utils.opts_sort;
 // let escape = utils.escape;
+
+/**
+ * Slugify description.
+ *
+ * @param  {string} text - The text to slugify.
+ * @return {string} - The slugified string.
+ *
+ * @resource [https://gist.github.com/mathewbyrne/1280286]
+ */
+function slugify(text) {
+	return text
+		.toString()
+		.toLowerCase()
+		.replace(/\s+/g, "-") // Replace spaces with "-".
+		.replace(/[^\w\-]+/g, "") // Remove all non-word chars.
+		.replace(/\-\-+/g, "-") // Replace multiple "-" with single "-".
+		.replace(/^-+/, "") // Trim "-" from start of text.
+		.replace(/-+$/, ""); // Trim "-" from end of text.
+}
 
 /**
  * Create an array based off a number range. For example,
@@ -638,7 +661,11 @@ renderer.code = function(code, lang, escaped) {
 // Add GitHub like anchors to headings.
 // [https://github.com/markedjs/marked/blob/master/lib/marked.js#L822]
 renderer.heading = function(text, level) {
-	let escaped_text = text.toLowerCase().replace(/[^\w]+/g, "-");
+	// Remove any HTML tags/HTML entities from the text.
+	text = text.replace(/\<\/?.*?\>|\&.*?\;/gm, "");
+
+	// Slugify the text.
+	let escaped_text = slugify(text);
 
 	// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
 	return `
@@ -785,7 +812,18 @@ toc.forEach(function(directory) {
 		__file.dirname = fpath;
 		__file.name = file;
 		__file.alias = alias_file;
-		__file.html = `<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}"><i class="fas fa-angle-right menu-arrow" data-file="${fpath}"></i><a class="link" href="#" data-file="${fpath}">${alias_file}</a></li>`;
+		// <li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
+		// 	<i class="fas fa-angle-right menu-arrow" data-file="${fpath}"></i>
+		// 	<a class="link" href="#" data-file="${fpath}">${alias_file}</a>
+		// </li>
+		__file.html = `
+		<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
+			<i class="fas fa-angle-right menu-arrow" data-file="${fpath}"></i>
+			<div class="flex l-2-main-cont">
+				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
+				<span class="link-headings-count">$0</span>
+			</div>
+		</li>`;
 		// All processed file headings will be contained here.
 		__file.headings = [];
 
@@ -822,6 +860,44 @@ toc.forEach(function(directory) {
 					return reject([`${__path} could not be opened.`, err]);
 				}
 
+				// Emojify.
+				contents = emoji.emojify(
+					contents,
+					// When an emoji is not found default to a question mark.
+					// [https://emojipedia.org/static/img/lazy.svg]
+					function(name) {
+						return `<svg class="emoji" draggable="false" alt="[?]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<g fill="#ccc" stroke="#ccc" stroke-width="0">
+<circle cx="50%" cy="50%" r="40%" fill="none" stroke-width="4"/>
+<rect x="21%" y="44%" width="12%" height="12%">
+  <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0s"/>
+</rect>
+<rect x="44%" y="44%" width="12%" height="12%">
+  <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.2s"/>
+</rect>
+<rect x="67%" y="44%" width="12%" height="12%">
+  <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.4s"/>
+</rect>
+</g></svg>`;
+					},
+					function(code, name) {
+						// Get the emoticon.
+						var emoticon = edict.getUnicode(name);
+
+						// Get the unicode of the emoticon.
+						var unicode = eunicode(emoticon);
+
+						// Use unicode to convert to code point.
+						var cc = twemoji.convert.fromCodePoint(unicode);
+
+						// Use code point to finally convert to twitter emoji.
+						var html = twemoji.parse(cc);
+
+						// Return the HTML.
+						return html;
+					}
+				);
+
 				// Fix extra space before code blocks.
 				contents = extra_codeblock_space_placeholder(contents);
 
@@ -843,54 +919,65 @@ toc.forEach(function(directory) {
 					});
 
 					// Grab all anchor elements to
-					$("a").each(function(i, elem) {
+					$("a[href]").each(function(i, elem) {
 						// Cache the element.
 						let $el = $(this);
 						// Get the attributes.
-						let href = $el.attr("href");
+						let attrs = $el.attr();
+						let href = attrs.href;
 						let href_untouched = href; // The original href.
 						let href_lower = href.toLowerCase();
 
-						// Only when the anchor has an href attribute.
-						if (href) {
-							// If an href exists, and it is not an http(s) link or
-							// scheme-less URLs, and it ends with .md then we have
-							// a link that is another documentation file that needs
-							// to be linked to.
-							if (
-								!(
-									href_lower.startsWith("htt") ||
-									href_lower.startsWith("//")
-								) &&
-								href_lower.endsWith(".md")
-							) {
-								// Set the new href.
-								$el.attr("href", "#");
+						// Clean the href.
+						href = href.replace(/^[-]+|[-]+$/g, "");
 
-								// Reset the href by removing any starting dot,
-								// forward-slashes, and the .md extension.
-								href = href.replace(/^[\.\/]+|\.md$/gi, "");
+						// Reset the name and ID attributes.
+						let name = attrs.name;
+						if (name && name.includes(href.replace(/^#/g, ""))) {
+							$el.attr("name", name.replace(/^[-]+|[-]+$/g, ""));
+						}
+						let id = attrs.id;
+						if (id && id.includes(href.replace(/^#/g, ""))) {
+							$el.attr("id", id.replace(/^[-]+|[-]+$/g, ""));
+						}
 
-								// Remove the root from the href.
-								if (href.startsWith(root)) {
-									href = href.replace(root, "");
-								}
+						// If an href exists, and it is not an http(s) link or
+						// scheme-less URLs, and it ends with .md then we have
+						// a link that is another documentation file that needs
+						// to be linked to.
+						if (
+							!(
+								href_lower.startsWith("htt") ||
+								href_lower.startsWith("//")
+							) &&
+							href_lower.endsWith(".md")
+						) {
+							// Set the new href.
+							$el.attr("href", "#");
 
-								// Add the dot slash to the href.
-								href = `./${href}`;
+							// Reset the href by removing any starting dot,
+							// forward-slashes, and the .md extension.
+							href = href.replace(/^[\.\/]+|\.md$/gi, "");
 
-								// Set the final href.
-								$el.attr("data-file", href);
-								// Set the untouched original href.
-								$el.attr("data-file-untouched", href_untouched);
-								// Set class to denote its a documentation link.
-								$el.addClass("link-doc");
-							} else {
-								// Open all http links in their own tabs by
-								// adding the _blank value. Skip hashes.
-								if (!href.startsWith("#")) {
-									$el.attr("target", "_blank");
-								}
+							// Remove the root from the href.
+							if (href.startsWith(root)) {
+								href = href.replace(root, "");
+							}
+
+							// Add the dot slash to the href.
+							href = `./${href}`;
+
+							// Set the final href.
+							$el.attr("data-file", href);
+							// Set the untouched original href.
+							$el.attr("data-file-untouched", href_untouched);
+							// Set class to denote its a documentation link.
+							$el.addClass("link-doc");
+						} else {
+							// Open all http links in their own tabs by
+							// adding the _blank value. Skip hashes.
+							if (!href.startsWith("#")) {
+								$el.attr("target", "_blank");
 							}
 						}
 					});
@@ -958,6 +1045,12 @@ toc.forEach(function(directory) {
 					// Combine all the headings HTML and add to them to the
 					// file object.
 					__file.headings.push(headings.join(""));
+
+					// Reset the headings count.
+					__file.html = __file.html.replace(
+						/\$0/,
+						headings.length - 2
+					);
 
 					// Add the header spacer.
 					$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
@@ -1215,6 +1308,31 @@ toc.forEach(function(directory) {
 									1}</span></div>`
 							);
 						}
+
+						// // Add the block code name.
+						// var blockname_html = "";
+						// var top_pad_fix = "";
+						// // Check for line highlight numbers/ranges.
+						// var blockname = $el.attr()["data-block-name"] || "";
+						// blockname = blockname ? blockname + " &mdash; " : "";
+						// // if (blockname) {
+
+						// // Get the language.
+						// var classes = $el.attr()["class"];
+						// var language = "md";
+						// if (classes) {
+						// 	var langmatch = (` ${classes} `.match(
+						// 		/ (lang-.+) /i
+						// 	) || "")[1];
+						// 	if (langmatch) {
+						// 		language = langmatch.replace(/lang-/i, "");
+						// 	}
+						// }
+
+						// blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}${language}</span></div>`;
+						// top_pad_fix = "padtop-26";
+						// $el.addClass(top_pad_fix);
+						// // }
 
 						// Add the block code name.
 						var blockname_html = "";
@@ -1823,7 +1941,7 @@ Promise.all(promises)
 				"json-data:app",
 				function() {
 					print.gulp.success(
-						"Documentation generated",
+						"Documentation generated.",
 						chalk.green(((now() - tstart) / 1000).toFixed(2) + "s")
 					);
 				}
