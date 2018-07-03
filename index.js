@@ -680,6 +680,16 @@ renderer.heading = function(text, level) {
           </h${level}>\n`;
 };
 
+// Add a new line before the start of the inner UL list.
+// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L932]
+renderer.list = function(body, ordered, start) {
+	var type = ordered ? "ol" : "ul";
+
+	var startatt = ordered && start !== 1 ? ' start="' + start + '"' : "";
+	// Add a new line before the start of the open tag.
+	return "\n<" + type + startatt + ">\n" + body + "</" + type + ">\n";
+};
+
 // Make checkboxes render like GitHub's.
 // [https://github.com/markedjs/marked/blob/master/lib/marked.js#L844]
 renderer.listitem = function(text, ordered) {
@@ -689,13 +699,18 @@ renderer.listitem = function(text, ordered) {
 	// Determine whether it's checked or not.
 	if (checkmark_item_pattern.test(text)) {
 		// Pattern captures the checkbox and its text.
-		let checkbox_pattern = /^\[(.*)\](.*)$/;
+		let checkbox_pattern = /^\[(.*)\](.*)(\n[\s\S]+)?/m;
 
 		// Run pattern to get matches.
 		let matches = text.match(checkbox_pattern);
 
 		// Get the checkbox text content.
 		let text_content = matches[2].trim();
+		let inner_list = (matches[3] || "").trim();
+		// Add a new line to the inner list if it exists.
+		if (inner_list) {
+			inner_list = `\n${inner_list}`;
+		}
 
 		// Determine whether the checkbox is checked.
 		let checkbox_content = matches[1].trim();
@@ -704,7 +719,7 @@ renderer.listitem = function(text, ordered) {
 
 		return `
 			<li class="task-list-item">
-				<input ${is_checked}class="task-list-item-checkbox" disabled="" id="" type="checkbox"> ${text_content}
+				<input ${is_checked}class="task-list-item-checkbox" disabled="" id="" type="checkbox"> ${text_content}${inner_list}
 			</li>\n`;
 	} else {
 		// Return the original text if not a checkbox item.
@@ -813,12 +828,12 @@ toc.forEach(function(directory) {
 		__file.name = file;
 		__file.alias = alias_file;
 		// <li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
-		// 	<i class="fas fa-angle-right menu-arrow" data-file="${fpath}"></i>
+		// 	<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 		// 	<a class="link" href="#" data-file="${fpath}">${alias_file}</a>
 		// </li>
 		__file.html = `
-		<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
-			<i class="fas fa-angle-right menu-arrow" data-file="${fpath}"></i>
+		<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
+			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 			<div class="flex l-2-main-cont">
 				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
 				<span class="link-headings-count">$0</span>
@@ -984,7 +999,7 @@ toc.forEach(function(directory) {
 
 					// Get all headings in the HTML.
 					$(
-						"h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
+						"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
 					).each(function(i, elem) {
 						// Cache the element.
 						let $el = $(this);
@@ -999,16 +1014,18 @@ toc.forEach(function(directory) {
 						// // Normalize the id by removing all hyphens.
 						// let normalized_id = id.replace(/-/g, " ").trim();
 
+						var value = $el
+							.parent()
+							.text()
+							.trim();
+
 						// Add the second level menu template string.
 						headings.push(
 							// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
-							`<li class="l-3"><a class="link link-heading" href="#${id.replace(
+							`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
 								/^[-]+|[-]+$/g,
 								""
-							)}" data-file="${fpath}">${$el
-								.parent()
-								.text()
-								.trim()}</a></li>`
+							)}" data-file="${fpath}">${value}</a></li>`
 						);
 					});
 					// Add the closing tag to the headings HTML.
