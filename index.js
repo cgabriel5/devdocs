@@ -30,7 +30,6 @@ let entities = new Entities();
 let emoji = require("node-emoji");
 let eunicode = require("emoji-unicode");
 let twemoji = require("twemoji");
-let edict = require("emoji-dictionary");
 
 let now = require("performance-now");
 let tstart = now();
@@ -612,6 +611,15 @@ let renderer = new marked.Renderer();
 // Take into account custom line-numbers, block-name
 // [https://github.com/markedjs/marked/blob/master/lib/marked.js#L880]
 renderer.code = function(code, lang, escaped) {
+	// // Remove emoji HTML from code.
+	// code = code.replace(
+	// 	/\<img class="emoji" draggable="false" alt="[^<].*?\>/gm,
+	// 	function(match) {
+	// 		// Get and return the alt attribute.
+	// 		return (match.match(/ alt="(.*?)" /) || [, "[?]"])[1];
+	// 	}
+	// );
+
 	// Flag.
 	var clear_space = "";
 	// Check for [::dd-clear-space].
@@ -662,14 +670,14 @@ renderer.code = function(code, lang, escaped) {
 // [https://github.com/markedjs/marked/blob/master/lib/marked.js#L822]
 renderer.heading = function(text, level) {
 	// Remove any HTML tags/HTML entities from the text.
-	text = text.replace(/\<\/?.*?\>|\&.*?\;/gm, "");
+	// text = text.replace(/\<\/?.*?\>|\&.*?\;/gm, "");
 
 	// Slugify the text.
-	let escaped_text = slugify(text);
+	let escaped_text = slugify(text.replace(/\<\/?.*?\>|\&.*?\;/gm, ""));
 
 	// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
 	return `
-		<h${level}>
+		<h${level} data-orig-text="${entities.encode(text)}">
 			${text}
             <a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
 				<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
@@ -875,32 +883,47 @@ toc.forEach(function(directory) {
 					return reject([`${__path} could not be opened.`, err]);
 				}
 
+				// Placehold any code blocks.
+				var lookup_codeblocks = [];
+				var lookup_codeblocks_count = -0;
+				contents = contents.replace(
+					/<pre>\s*<code>([\s\S]*?)<\/code>\s*<\/pre>|<code>([\s\S]*?)<\/code>|<pre>([\s\S]*?)<\/pre>|```([\s\S]*?)```|`([\s\S]*?)`/gim,
+					function(match) {
+						lookup_codeblocks.push(match);
+						return `[dd:--codeblock-placeholder-${++lookup_codeblocks_count}]`;
+					}
+				);
+
+				// Un-emojify.
+				contents = emoji.unemojify(contents);
+
 				// Emojify.
 				contents = emoji.emojify(
 					contents,
 					// When an emoji is not found default to a question mark.
 					// [https://emojipedia.org/static/img/lazy.svg]
 					function(name) {
-						return `<svg class="emoji" draggable="false" alt="[?]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-<g fill="#ccc" stroke="#ccc" stroke-width="0">
-<circle cx="50%" cy="50%" r="40%" fill="none" stroke-width="4"/>
-<rect x="21%" y="44%" width="12%" height="12%">
-  <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0s"/>
-</rect>
-<rect x="44%" y="44%" width="12%" height="12%">
-  <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.2s"/>
-</rect>
-<rect x="67%" y="44%" width="12%" height="12%">
-  <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.4s"/>
-</rect>
-</g></svg>`;
+						return `<img class="emoji" draggable="false" alt=":${name}:" src="${outputpath.replace(
+							/^[\.\/]+|\/$/g,
+							""
+						)}/img/missing-emoji.png">`;
+						// 		return `<svg class="emoji" draggable="false" alt="[?]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+						// <g fill="#ccc" stroke="#ccc" stroke-width="0">
+						// <circle cx="50%" cy="50%" r="40%" fill="none" stroke-width="4"/>
+						// <rect x="21%" y="44%" width="12%" height="12%">
+						//   <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0s"/>
+						// </rect>
+						// <rect x="44%" y="44%" width="12%" height="12%">
+						//   <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.2s"/>
+						// </rect>
+						// <rect x="67%" y="44%" width="12%" height="12%">
+						//   <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.4s"/>
+						// </rect>
+						// </g></svg>`;
 					},
 					function(code, name) {
-						// Get the emoticon.
-						var emoticon = edict.getUnicode(name);
-
 						// Get the unicode of the emoticon.
-						var unicode = eunicode(emoticon);
+						var unicode = eunicode(code);
 
 						// Use unicode to convert to code point.
 						var cc = twemoji.convert.fromCodePoint(unicode);
@@ -913,11 +936,51 @@ toc.forEach(function(directory) {
 					}
 				);
 
+				// Add back the code blocks.
+				contents = contents.replace(
+					/\[dd\:--codeblock-placeholder-\d+\]/g,
+					function(match) {
+						return lookup_codeblocks[
+							match.replace(/[^\d]/g, "") * 1 - 1
+						];
+					}
+				);
+
 				// Fix extra space before code blocks.
 				contents = extra_codeblock_space_placeholder(contents);
 
 				// Expand any custom tags.
 				contents = expand_custom_tags(contents);
+
+				// Blockquoet fix (encode HTML entities/backticks).
+				contents = contents.replace(
+					/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/gim,
+					function(match) {
+						var matches = match.match(
+							/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/i
+						);
+
+						// Parts.
+						var meta = matches[1] || "";
+						var content = matches[2];
+
+						// Now sanitize the content.
+						// Replace all br tags to new lines.
+						// [https://stackoverflow.com/a/5959455]
+						content = content.replace(
+							/<br\s*[\/]?>/gi,
+							"[dd::space]"
+						);
+						// Encode HTML entities.
+						content = entities.encode(content);
+						// Encode backticks.
+						content = content.replace(/`/gm, "&grave;");
+						// Add back br tags.
+						content = content.replace(/\[dd\:\:space\]/g, "<br>");
+
+						return `<blockquote${meta}>${content}</blockquote>`;
+					}
+				);
 
 				marked(contents, { renderer: renderer }, function(err, data) {
 					if (err) {
@@ -1014,10 +1077,32 @@ toc.forEach(function(directory) {
 						// // Normalize the id by removing all hyphens.
 						// let normalized_id = id.replace(/-/g, " ").trim();
 
+						// Get the text (no HTML).
 						var value = $el
 							.parent()
 							.text()
 							.trim();
+						// Get the original text with HTML.
+						var otext = $el
+							.parent()
+							.attr("data-orig-text")
+							.trim();
+
+						// Remove any HTML tags from the text.
+						otext = otext.replace(/\<\/?.*?\>|\&.*?\;/gm, function(
+							match
+						) {
+							// Only allow emojis to pass.
+							if (!match.startsWith('<img class="emoji"')) {
+								// Remove tags.
+								return match.replace(
+									/\<\/?.*?\>|\&.*?\;/gm,
+									""
+								);
+							}
+
+							return match;
+						});
 
 						// Add the second level menu template string.
 						headings.push(
@@ -1025,7 +1110,7 @@ toc.forEach(function(directory) {
 							`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
 								/^[-]+|[-]+$/g,
 								""
-							)}" data-file="${fpath}">${value}</a></li>`
+							)}" data-file="${fpath}">${otext}</a></li>`
 						);
 					});
 					// Add the closing tag to the headings HTML.
@@ -1390,8 +1475,54 @@ toc.forEach(function(directory) {
 							entities.decode($el.text().trim())
 						);
 
+						var comment_counter = -1;
+						var lookup = [];
+
 						function make_code_lines(text) {
-							text = text.trim();
+							var r = /(?!>\n*)\s*<span class="(token comment|hljs-comment)">[\s\S]*?<\/span>/gm;
+							// Wrap multi-line comments.
+							text = text.replace(r, function(match) {
+								// Get any starting space.
+								var starting_space = match.match(
+									/(^[^ ]*)( *)<span class="/m
+								) || [, "", ""];
+								var first_spaces = starting_space[1];
+								var second_spaces = starting_space[2];
+
+								// Trim string.
+								var comment = match
+									.trim()
+									// Remove HTML from the comment.
+									.replace(
+										/<span class="(token comment|hljs-comment)">|<\/span>/g,
+										""
+									);
+
+								// Only work on the string if its a milti-comment.
+								var lines = comment.split("\n");
+
+								if (lines.length > 1) {
+									// Add the spacing to the first lines.
+									var first = lines[0];
+									lines[0] = `${second_spaces}${first}`;
+
+									comment = lines.join("\n");
+
+									lookup.push(
+										`[dd::--remove]<span class="token comment hljs-comment">${make_code_lines(
+											comment
+										)}</span>[dd::--remove]`
+									);
+
+									return `${first_spaces}dd::comment-counter-${++comment_counter}`;
+								}
+
+								return match;
+							});
+
+							// Right trim the string.
+							text = text.replace(/\s*$/g, "");
+							// text = text.trim();
 							text = `<div class="lang-code-line">${text}`;
 							// [https://stackoverflow.com/a/784547]
 							text = text.replace(/(?:\r\n|\r|\n)/g, function(
@@ -1402,10 +1533,27 @@ toc.forEach(function(directory) {
 
 							text = `${text}</div>`;
 
-							// Final change...add empty lines.
+							// Final replaces...
+							// Change...add empty lines.
 							text = text.replace(
 								/lang\-code\-line"\><\/div/g,
 								'lang-code-line">\n</div'
+							);
+
+							// Replace comment placeholders.
+							text = text.replace(
+								/dd::comment-counter-\d+/g,
+								function(match) {
+									return lookup[
+										match.replace(/[^\d]/g, "") * 1
+									];
+								}
+							);
+
+							// Remove comment pointers.
+							text = text.replace(
+								/(<div class="lang-code-line">\s*\[dd::--remove\]|\[dd::--remove\]\s*<\/div>)/gm,
+								""
 							);
 
 							return text;
