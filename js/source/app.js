@@ -1809,6 +1809,46 @@ document.onreadystatechange = function() {
 					return false;
 				}
 
+				function is_l3_menu_el($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("l-3")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
+				function is_menu_linkheading($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("link-heading")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
 				/**
 				 * Determine whether the provided element is or is part of
 				 *     of a code expander element.
@@ -2461,11 +2501,16 @@ document.onreadystatechange = function() {
 							`a.link[data-file='${filename}']`
 						).parentNode.parentNode;
 					} else if (
-						classes.contains("link-heading") ||
-						classes.contains("l-3")
+						is_menu_linkheading($target) ||
+						is_l3_menu_el($target)
 					) {
 						e.preventDefault();
 						e.stopPropagation();
+
+						// Reset the target element.
+						$target =
+							is_menu_linkheading($target) ||
+							is_l3_menu_el($target);
 
 						if ($target.tagName !== "A") {
 							// Get the anchor child element.
@@ -2513,7 +2558,7 @@ document.onreadystatechange = function() {
 
 						// Don't store the same hash. Only store if the hash
 						// is different than the current hash.
-						if (location.hash !== href) {
+						if (href && location.hash !== href) {
 							history.pushState({}, null, `${href}`);
 						}
 
@@ -2698,11 +2743,13 @@ document.onreadystatechange = function() {
 							});
 
 							// Get the anchor href.
-							var href = $header.children[0].getAttribute("href");
+							var href = $header
+								.getElementsByClassName("anchor")[0]
+								.getAttribute("href");
 
 							// Don't store the same hash. Only store if the hash
 							// is different than the current hash.
-							if (location.hash !== href) {
+							if (href && location.hash !== href) {
 								history.pushState({}, null, `${href}`);
 							}
 
