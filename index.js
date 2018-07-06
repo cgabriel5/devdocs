@@ -886,13 +886,19 @@ toc.forEach(function(directory) {
 				// Placehold any code blocks.
 				var lookup_codeblocks = [];
 				var lookup_codeblocks_count = -0;
+				// <pre><code></code></pre>, <code></code>, <pre></pre>, ```code``` replacements.
 				contents = contents.replace(
-					/<pre>\s*<code>([\s\S]*?)<\/code>\s*<\/pre>|<code>([\s\S]*?)<\/code>|<pre>([\s\S]*?)<\/pre>|```([\s\S]*?)```|`([\s\S]*?)`/gim,
+					/<pre>\s*<code>([\s\S]*?)<\/code>\s*<\/pre>|<code>([\s\S]*?)<\/code>|<pre>([\s\S]*?)<\/pre>|```([\s\S]*?)```/gim,
 					function(match) {
 						lookup_codeblocks.push(match);
 						return `[dd:--codeblock-placeholder-${++lookup_codeblocks_count}]`;
 					}
 				);
+				// Single backtick (i.e. `code`) replacements.
+				contents = contents.replace(/`([\s\S]*?)`/gim, function(match) {
+					lookup_codeblocks.push(match);
+					return `[dd:--codeblock-placeholder-${++lookup_codeblocks_count}]`;
+				});
 
 				// Un-emojify.
 				contents = emoji.unemojify(contents);
@@ -936,15 +942,18 @@ toc.forEach(function(directory) {
 					}
 				);
 
-				// Add back the code blocks.
-				contents = contents.replace(
-					/\[dd\:--codeblock-placeholder-\d+\]/g,
-					function(match) {
-						return lookup_codeblocks[
-							match.replace(/[^\d]/g, "") * 1 - 1
-						];
-					}
-				);
+				// Loop contents until all codeblocks have been filled back in.
+				while (/\[dd\:--codeblock-placeholder-\d+\]/.test(contents)) {
+					// Add back the code blocks.
+					contents = contents.replace(
+						/\[dd\:--codeblock-placeholder-\d+\]/g,
+						function(match) {
+							return lookup_codeblocks[
+								match.replace(/[^\d]/g, "") * 1 - 1
+							];
+						}
+					);
+				}
 
 				// Fix extra space before code blocks.
 				contents = extra_codeblock_space_placeholder(contents);
@@ -1159,12 +1168,16 @@ toc.forEach(function(directory) {
 						// Cache the element.
 						let $el = $(this);
 
-						// Don't add the spacer class if the header group
-						// is empty. (no siblings.)
-						var spacer_class = !/h[1-6]/i.test($el.next()[0].name)
-							? " class='header-spacer'"
-							: "";
-						$el.after(`<div${spacer_class}></div>`);
+						// Get the next element.
+						var $next = $el.next()[0];
+						if ($next) {
+							// Don't add the spacer class if the header group
+							// is empty. (no siblings.)
+							var spacer_class = !/h[1-6]/i.test($next.name)
+								? " class='header-spacer'"
+								: "";
+							$el.after(`<div${spacer_class}></div>`);
+						}
 					});
 
 					// Convert HTML pre tags.
@@ -1744,14 +1757,16 @@ toc.forEach(function(directory) {
 								}
 							}
 
-							// Don't add the spacer class if the header group
-							// is empty. (no siblings.)
-							var spacer_class = !/h[1-6]/i.test(
-								$el.next()[0].name
-							)
-								? " class='header-spacer'"
-								: "";
-							$el.after(`<div${spacer_class}></div>`);
+							// Get the next element.
+							var $next = $el.next()[0];
+							if ($next) {
+								// Don't add the spacer class if the header group
+								// is empty. (no siblings.)
+								var spacer_class = !/h[1-6]/i.test($next.name)
+									? " class='header-spacer'"
+									: "";
+								$el.after(`<div${spacer_class}></div>`);
+							}
 						});
 
 						result = _$.html();
