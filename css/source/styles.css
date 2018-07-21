@@ -352,6 +352,10 @@ to become invisible when header scrolling. This seems to solve the issue.
 	transform: translate3D(0, 0, 0) !important;
 }
 
+.sidebar-menu {
+	flex-grow: 1;
+}
+
 .menu {
 	margin-top: 50px;
 	width: 100%;
@@ -389,8 +393,8 @@ to become invisible when header scrolling. This seems to solve the issue.
 
 .l-1 {
 	font-weight: bold;
-	/* background: rgba(0, 0, 0, 0.03); */
-	padding: 10px 0 10px 20px;
+	/* background: rgba(0, 0, 0, 0.03); *//*padding: 10px 0 10px 20px;*/
+	padding: 10px 0 10px 5px;
 	/* border-radius: 5px; *//* border-bottom: 1px dashed #dddddd; *//*text-transform: capitalize;*/
 }
 
@@ -1400,6 +1404,14 @@ a.social-link:hover {
 	border-radius: 5px 0 0 5px;
 }
 
+.line-num-third {
+	position: absolute;
+	width: 100%;
+	/*width: 932px;*//*background: #ff00001a;*/
+	background: transparent;
+	border-right: none;
+}
+
 .line-num-line-highlight-cont {
 	position: absolute;
 	width: 100%;
@@ -1411,6 +1423,13 @@ a.social-link:hover {
 .line-num-line-highlight {
 	background: #698cfe20;
 	/* box-shadow: inset -1px -1px 0px 0px #698cfe20, inset 32px 1px 0px 0px #698cfe20; *//*border-radius: 3px;*/
+}
+
+.lang-code-line-highlight {
+	background: #698cfe20;
+	background: linear-gradient(to right, #698cfe20 85%, #698cfe00);
+	border-radius: 4px;
+	margin-right: 10px;
 }
 
 .line-num-cont {
@@ -1474,6 +1493,8 @@ a.social-link:hover {
 	/*border-radius: 100px;*/
 	pointer: cursor;
 	/* font-size: 14px; */
+	margin-top: 10px;
+	margin-bottom: 10px;
 	transition: all 0.2s ease-in-out;
 }
 
@@ -1660,6 +1681,7 @@ details, summary {
 .lang-code-line {
 	padding: 0 10px;
 	border-radius: 3px;
+	background: #ff000036;
 }
 
 .padtop-26 {
@@ -1694,6 +1716,113 @@ details, summary {
 	max-width: none;
 	vertical-align: middle;
 	background-color: transparent;
+}
+
+.diff-deletion {
+	color: #b31d28;
+	background-color: #ffeef0;
+}
+
+.diff-addition {
+	color: #22863a;
+	background-color: #f0fff4;
+}
+
+.diff-coordinate {
+	font-weight: bold;
+	color: #6f42c1;
+}
+
+.diff-diffline {
+	color: #005cc5;
+}
+
+.search-cont {
+	/*margin-left: 20px;*//*margin-left: 0px;*/
+	position: sticky !important;
+	top: 0;
+	background: #f4f4f4;
+	z-index: 1;
+	padding: 5px 6px;
+	border: 1px solid rgba(0, 0, 0, 0.04);
+	border-right: none;
+	border-radius: 0 0 0 4px;
+}
+
+.search-cont-inner {
+	display: flex;
+	width: 100%;
+	flex-flow: row nowrap;
+	justify-content: space-around;
+	align-items: center;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 100px;
+	padding: 0 10px;
+	font-size: 12px;
+	top: 0;
+	background: white;
+	/* border-color: #2188ff; *//* border-color: #2578f8; *//* box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); *//* box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3); *//*transition: border-color 0.05s ease-in-out, box-shadow 0.05s ease-in-out;*/
+}
+
+.search-icon, .search-clear {
+	color: #656565;
+}
+
+.search-clear {
+	cursor: pointer;
+}
+
+.search-clear:hover {
+	color: #2578f8 !important;
+}
+
+.search-clear:active {
+	opacity: 0.5;
+}
+
+.sinput {
+	border: none;
+	padding: 4px 6px;
+	outline: none;
+	width: 100%;
+	display: flex;
+	font-size: 14px;
+}
+
+.sinput::placeholder {
+	font-size: 14px;
+	color: #999999;
+}
+
+.sinput:focus::placeholder {
+	font-size: 14px;
+	color: transparent;
+}
+
+.sinput-focused {
+	/*border-color: #2188ff; */
+	border-color: #2578f8;
+	/*box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); */
+	box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3);
+}
+
+.no-matches-cont {
+	/*padding: 5px;*/
+	margin: 0 3px 0;
+}
+
+.no-matches-cont-inner {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	background: #ffc10770;
+	/*padding: 5px;*//*padding-left: 10px;*/
+	padding: 8px 10px 8px 20px;
+	/*font-size: 14px;*/
+	font-weight: bold;
+	border-radius: 5px;
+	/*margin-top: 10px;*/
 }
 
 @media (max-width: 366px) {
@@ -1866,6 +1995,15 @@ details, summary {
 
 	.line-block-highlight {
 		box-shadow: none;
+	}
+
+	.l-1 {
+		padding: 10px 0 10px 15px;
+	}
+
+	.search-cont {
+		margin-left: 0;
+		border-radius: 0;
 	}
 }
 
