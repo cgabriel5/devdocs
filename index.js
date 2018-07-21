@@ -9,6 +9,151 @@ let path = require("path");
 // Universal modules.
 let chalk = require("chalk");
 let marked = require("marked");
+let mdzero = require("markdown-it")({
+	html: true, // Enable HTML tags in source
+	xhtmlOut: false, // Use '/' to close single tags (<br />).
+	// This is only for full CommonMark compatibility.
+	breaks: false, // Convert '\n' in paragraphs into <br>
+	langPrefix: "lang-", // CSS language prefix for fenced blocks. Can be
+	// useful for external highlighters.
+	linkify: true, // Autoconvert URL-like text to links
+
+	// Enable some language-neutral replacement + quotes beautification
+	typographer: false,
+
+	// Double + single quotes replacement pairs, when typographer enabled,
+	// and smartquotes on. Could be either a String or an Array.
+	//
+	// For example, you can use '«»„“' for Russian, '„“‚‘' for German,
+	// and ['«\xA0', '\xA0»', '‹\xA0', '\xA0›'] for French (including nbsp).
+	quotes: "“”‘’",
+
+	// Highlighter function. Should return escaped HTML,
+	// or '' if the source string is not changed and should be escaped externally.
+	// If result starts with <pre... internal wrapper is skipped.
+	highlight: function(code, language) {
+		return "[[ERROR: Failed to parse code block. Code block indentation needs to properly align.]]";
+	}
+}).use(require("markdown-it-task-lists"));
+// [https://github.com/markdown-it/markdown-it/issues/330]
+// [https://github.com/markdown-it/markdown-it/issues/283]
+// [https://github.com/markdown-it/markdown-it/issues/361]
+// [https://github.com/markdown-it/markdown-it/issues/263]
+// [https://github.com/markdown-it/markdown-it/issues/289]
+// [http://www.broculos.net/2015/12/build-your-own-markdown-flavour-with.html]
+// .enable("code")
+// .enable("fence")
+// .enable("table")
+// .enable("paragraph")
+// .enable("link")
+// .enable("linkify")
+// .enable("image");
+
+var clear_indentation = function() {
+	// match = match.trim();
+	// // Remove the first and last lines.
+	// var lines = match.split("\n");
+	// var fline = lines.shift();
+	// var lang = fline.replace(/^[\s`]+/g, "") || "";
+	// lines.pop();
+	// // Detect whether to remove indentation or not.
+	// var count = lines.length;
+	// var nlines = [];
+	// var indentation = lines[0].match(/^(\s*)/g)[0] || "";
+	// for (var i = 0, l = lines.length; i < l; i++) {
+	// 	var line = lines[i];
+	// 	if (
+	// 		line.trim() === "" ||
+	// 		line.startsWith(indentation)
+	// 	) {
+	// 		// Remove the indentation and store in new array.
+	// 		nlines.push(
+	// 			line.substring(
+	// 				indentation.length,
+	// 				line.length
+	// 			)
+	// 		);
+	// 		// Decrease the counter.
+	// 		count--;
+	// 	} else {
+	// 		// Stop the loop as a line does not share the
+	// 		// same indentation. Meaning indentation is not
+	// 		// uniform.
+	// 		break;
+	// 	}
+	// }
+	// if (!count) {
+	// 	// Reset the var.
+	// 	lines = nlines;
+	// }
+	// match = lines.join("\n");
+};
+
+// Placehold any code blocks.
+var lookup_codeblocks = [];
+var lookup_codeblocks_count = -1;
+
+// [https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js#L30]
+mdzero.renderer.rules.code_inline = function(tokens, idx, options, env, slf) {
+	lookup_codeblocks.push([
+		`<code>${mdzero.utils.escapeHtml(tokens[idx].content)}</code>`
+	]);
+	return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]`;
+};
+
+// [https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js#L30]
+mdzero.renderer.rules.code_block = function(tokens, idx, options, env, slf) {
+	// Generate a special ID for the pre element.
+	var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(20)}`;
+
+	lookup_codeblocks.push([
+		`<pre data-skip-markdownit="true"><code data-skip-markdownit="true" id="${uid}" class="lang-" data-skip="true" data-orig-text="">${mdzero.utils.escapeHtml(
+			tokens[idx].content
+		)}</code></pre>`
+	]);
+	return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+};
+
+// [https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js#L39]
+mdzero.renderer.rules.fence = function(tokens, idx, options, env, slf) {
+	var token = tokens[idx],
+		info = token.info ? mdzero.utils.unescapeAll(token.info).trim() : "",
+		langName = "",
+		highlighted,
+		i,
+		tmpAttrs,
+		tmpToken;
+
+	// CUSTOM LOGIC ---------- NOT MarkdownIt ---------- |
+	// Custom vars.
+	var lines = "";
+	var name = "";
+	var lang = "";
+
+	// Check for line highlight numbers/code block name.
+	if (info) {
+		// Regexp: language[1]?, line numbers[2]?, block name[3]?.
+		var matches = info.match(/([\w]+)?({.*?})?({.*?})?/i);
+
+		// Reset the info to only contain the language.
+		lang = matches[1] || "";
+		lines = (matches[2] || "").replace(/^\{|\}$/g, "");
+		name = (matches[3] || "").replace(/^\{|\}$/g, "");
+	}
+	// CUSTOM LOGIC ---------- NOT MarkdownIt ---------- |
+
+	// Generate a special ID for the pre element.
+	var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(20)}`;
+
+	// Highlight the code.
+	var highlighted = highlight(token.content, lang);
+
+	lookup_codeblocks.push([
+		`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="${lines}" data-block-name="${name}">${highlighted}</code></pre>`
+	]);
+	return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+};
+
 let prism = require("prismjs");
 // Extend the default prismjs languages.
 require("prism-languages");
@@ -30,6 +175,7 @@ let entities = new Entities();
 let emoji = require("node-emoji");
 let eunicode = require("emoji-unicode");
 let twemoji = require("twemoji");
+let removeHtmlComments = require("remove-html-comments");
 
 let now = require("performance-now");
 let tstart = now();
@@ -197,58 +343,97 @@ function id(length) {
 		.substr(2, length);
 }
 
-function extra_codeblock_space_placeholder(text) {
-	var r = /^[ \t]+```([\s\S]+?)```/gm;
-	text = text.replace(r, function(match) {
-		// Split the string into lines.
-		// [https://stackoverflow.com/a/45709854]
-		var lines = match.split(/\r?\n/);
+var ctags_attrs = [];
+var ctags_attrs_count = -1;
 
-		// Append the placeholder after the first line.
-		// [https://stackoverflow.com/a/586189]
-		lines.splice(1, 0, "[::dd-clear-space]");
+function convert_ctags(text) {
+	return text.replace(
+		/<(\/?)dd-(note|codegroup|expand)\b(.*?)?>/gim,
+		// "[$1:::$2$3]"
+		function(match) {
+			var matches = match.match(
+				/<(\/?)dd-(note|codegroup|expand)\b(.*?)?>/
+			);
 
-		return lines.join("\n");
-	});
-	// Return the text.
-	return text;
+			if (/^<\//.test(match)) {
+				return `[${matches[1]}:::${matches[2]}]`;
+			} else {
+				ctags_attrs.push((matches[3] || "").trim());
+				return `[${matches[1]}:::${
+					matches[2]
+				} dd::-ctags-${++ctags_attrs_count}]`;
+			}
+		}
+	);
 }
 
-/**
- * Expand custom tags.
- *
- * @param  {string} text - The file text contents.
- * @return {string} string - The file contents with the custom smg tags
- *     expanded.
- */
-function expand_custom_tags(text) {
-	// Replace all custom tags until they have all been replaced.
-	while (/\[(note|expand|codegroup)[\s\S]*?\/\1\]/gim.test(text)) {
-		// 1. Expand custom [note] tags.
-		var icon_lookup = {
-			check: "check-circle",
-			info: "info-circle",
-			question: "question-circle",
-			error: "times-circle",
-			warning: "exclamation-circle",
-			update: "plus-circle",
-			code: "code",
-			file: "file-code",
-			link: "external-link-square-alt",
-			default: ""
-		};
-		text = text.replace(/\[note[\s\S]*?\/note\]/gim, function(match) {
+function unwrap_ctags(text) {
+	var r = /(<p>\s*)?(\[\/?:::(note|codegroup|expand)\b(.*?)\])(\s*<\/p>)?/gim;
+	return text.replace(r, function(match) {
+		var matches = match.match(
+			/(<p>\s*)?(\[\/?:::(note|codegroup|expand)\b(.*?)\])(\s*<\/p>)?/
+		);
+
+		// Get the custom tag.
+		var tag = matches[2];
+
+		// Get the tag and attrs.
+		matches = tag.match(/\[(\/)?\:\:\:(.*?)( dd\:\:\-ctags-(\d+))?\]/);
+		var is_closing = matches[1] ? "/" : "";
+		var tagtype = matches[2];
+		var count = matches[4];
+
+		var attrs = !is_closing ? " " + ctags_attrs[count * 1] : "";
+
+		return `<${is_closing}dd-${tagtype}${attrs}>`;
+	});
+}
+
+function expand_ctags(text) {
+	text = text
+		.replace(/<dd-expand(.*?)>/gim, function(match) {
 			// Dynamically generate the regexp.
 			var r = function(attr) {
 				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
 			};
 
-			// Get the open tag information.
-			var opentag_info =
-				match.match(/\[note[\s\S]*?\]/im)[0] || "default";
+			// Get the title.
+			var title = match.match(r("title"));
+			title = title ? title[2] : "";
+			title = title ? title : "Expand";
+
+			// Build and return the HTML.
+			return `\n\n<div class="dd-expandable-base">
+	<div class="dd-expandable-message noselect">
+		<i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i>
+		<span>${title}</span>
+	</div>
+	<div class="dd-expandable-content none animate-fadein">`;
+		})
+		.replace(/<\/dd-expand>/gim, "</div></div>");
+
+	var icon_lookup = {
+		check: "check-circle",
+		info: "info-circle",
+		question: "question-circle",
+		error: "times-circle",
+		warning: "exclamation-circle",
+		update: "plus-circle",
+		code: "code",
+		file: "file-code",
+		link: "external-link-square-alt",
+		default: ""
+	};
+
+	text = text
+		.replace(/<dd-note(.*?)>/gim, function(match) {
+			// Dynamically generate the regexp.
+			var r = function(attr) {
+				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
+			};
 
 			// Get the icon.
-			var icon = opentag_info.match(r("icon"));
+			var icon = match.match(r("icon"));
 			if (icon && icon[2]) {
 				icon = `<i class="fas fa-${icon_lookup[icon[2]]}"></i> `;
 			} else {
@@ -256,72 +441,33 @@ function expand_custom_tags(text) {
 			}
 
 			// Get the color.
-			var color = opentag_info.match(r("color"));
+			var color = match.match(r("color"));
 			color = color ? color[2] : "";
 			color = color ? color : "";
 
 			// Get the title.
-			var title = opentag_info.match(r("title"));
+			var title = match.match(r("title"));
 			title = title ? title[2] : "";
 			title = title ? title : "";
 			if (title) {
+				title = mdzero.renderInline(title);
 				title = `<div class="dd-message-title">${icon}<span>${title}</span></div>`;
 			}
 
-			// Get the message.
-			var message = match.match(/\[note.*?\]([\s\S]*?)\[\/note\]/im);
-			message = message ? message[1] : "";
-			message = message.trim();
-
 			// Build and return the HTML.
-			return `<div class="dd-message-wrapper"><div class="dd-message-base dd-message--${color}">${title}<div>${message}</div></div></div>`;
-		});
+			return `\n\n<div class="dd-message-wrapper"><div class="dd-message-base dd-message--${color}">${title}<div>\n\n`;
+		})
+		.replace(/<\/dd-note>/gim, "\n\n</div></div></div>");
 
-		// 2. Expand custom [expand] tags.
-		text = text.replace(/\[expand[\s\S]*?\/expand\]/gim, function(match) {
+	text = text
+		.replace(/<dd-codegroup(.*?)>/gim, function(match) {
 			// Dynamically generate the regexp.
 			var r = function(attr) {
 				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
 			};
-
-			// Get the open tag information.
-			var opentag_info =
-				match.match(/\[expand[\s\S]*?\]/im)[0] || "default";
-
-			// Get the title.
-			var title = opentag_info.match(r("title"));
-			title = title ? title[2] : "";
-			title = title ? title : "Expand";
-
-			// Get the message.
-			var message = match.match(/\[expand.*?\]([\s\S]*?)\[\/expand\]/im);
-			message = message ? message[1] : "";
-			message = message.trim();
-
-			// Build and return the HTML.
-			return `<details><summary>${title}</summary>${message}</details>`;
-			// 			return `
-			// <div class="dd-expandable-base" style="border: 1px solid red;">
-			// 	<div class="dd-expandable-message"><i class="fas fa-chevron-circle-right mr5"></i><span>${title}</span></div>
-			// 	<div class="dd-expandable-content none" style="background: coral;">${message}</div>
-			// </div>`;
-		});
-
-		// 3. Expand custom [codegroup] tags.
-		text = text.replace(/\[codegroup[\s\S]*?\/codegroup\]/gim, function(
-			match
-		) {
-			// Dynamically generate the regexp.
-			var r = function(attr) {
-				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
-			};
-
-			// Get the open tag information.
-			var opentag_info =
-				match.match(/\[codegroup[\s\S]*?\]/im)[0] || "default";
 
 			// Get the tabs.
-			var tabs_string = opentag_info.match(r("tabs"));
+			var tabs_string = match.match(r("tabs"));
 			tabs_string = tabs_string ? tabs_string[2] : "";
 			tabs_string = tabs_string ? tabs_string : "";
 
@@ -335,33 +481,18 @@ function expand_custom_tags(text) {
 				);
 			});
 
-			// Get the message.
-			var message = match.match(
-				/\[codegroup.*?\]([\s\S]*?)\[\/codegroup\]/im
-			);
-			message = message ? message[1] : "";
-			message = message.trim();
-
-			// Run the html through marked.
-			var result = marked(message, { renderer: renderer });
-
 			// Generate a special ID for the pre element.
 			var uid = `exp-${id(20)}${id(20)}`;
 
-			// Build and return the HTML.
-			return `
-<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
-	<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
-	<div class="flex flex-center mr5">
-		<span class="btn btn-white noselect code-block-action btn-cba-copy">copy</span>
-	</div>
-</div>
-<div class="code-block-grouped" data-cgroup-id="${uid}">${result}</div>
-`;
-		});
-	}
-
-	// print.gulp.warn(text);
+			return `\n\n<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
+			<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
+			<div class="flex flex-center mr5">
+				<span class="btn btn-white noselect code-block-action btn-cba-copy">copy</span>
+			</div>
+		</div>
+		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
+		})
+		.replace(/<\/dd-codegroup>/gim, "\n\n</div>");
 
 	return text;
 }
@@ -555,6 +686,71 @@ config.styles_macos_sb = [
 	border-left: 1px solid #dddddd;
 }`
 ];
+// "Floating Scrollbars"
+// config.styles_macos_sb = [
+// 	`::-webkit-scrollbar {
+// 	width: 16px;
+// 	height: 16px;
+// }`,
+// 	`::-webkit-scrollbar:hover {
+// 	width: 16px;
+// 	height: 16px;
+// 	background: #f8f8f8;
+// }`,
+// 	`::-webkit-scrollbar:window-inactive {
+// 	background: #f8f8f850;
+// }`,
+// 	`::-webkit-scrollbar-button {
+// 	width: 0;
+// 	height: 0;
+// }`,
+// 	`::-webkit-scrollbar-thumb {
+// 	background: #c1c1c1;
+// 	border-radius: 1000px;
+// 	border: 4px solid transparent;
+// 	background-clip: content-box;
+// }`,
+// 	`::-webkit-scrollbar-thumb:window-inactive {
+// 	background: #c1c1c150;
+// 	border-radius: 1000px;
+// 	border: 4px solid transparent;
+// 	background-clip: content-box;
+// }`,
+// 	`::-webkit-scrollbar-thumb:hover {
+// 	background: #7d7d7d;
+// 	border: 4px solid transparent;
+// 	background-clip: content-box;
+// }`,
+// 	`::-webkit-scrollbar-thumb:window-inactive:hover {
+// 	background: #c1c1c150;
+// 	border: 4px solid transparent;
+// 	background-clip: content-box;
+// }`,
+// 	`::-webkit-scrollbar-track {
+// 	background: 0 0;
+// 	border-radius: 0;
+// }`,
+// 	`::-webkit-scrollbar-track:vertical {
+// 	background: 0 0;
+// 	border-radius: 0;
+// 	border-left: 1px solid transparent;
+// }`,
+// 	`::-webkit-scrollbar-track:vertical:hover {
+// 	background: 0 0;
+// 	border-radius: 0;
+// 	border-left: 1px solid #eaeaea;
+// }`,
+// 	`::-webkit-scrollbar-track:horizontal {
+// 	background: 0 0;
+// 	border-radius: 0;
+// 	border-top: 1px solid #eaeaea;
+// }`,
+// 	`::-webkit-scrollbar-corner {
+// 	background: #ffffff;
+// 	border-top: 1px solid #dddddd;
+// 	border-left: 1px solid #dddddd;
+// }`
+// ];
 
 // Honor the CLI outputpath parameter but if nothing is provided reset the
 // value to the config given value. If nothing is found in the config file
@@ -569,36 +765,84 @@ if (!outputpath_filename) {
 // Make the output folder structure.
 mkdirp.sync(outputpath);
 
+function highlight(code, language) {
+	// If the language not provided return original code.
+	// Default to a language when none is provided.
+	if (!language) {
+		return entities.encode(code);
+	}
+
+	language = language.toLowerCase();
+
+	// When the lang is "diff" markup the code via a custom way.
+	if (language === "diff") {
+		code = code.trim();
+		code = entities.encode(code);
+
+		// Get code lines.
+		var lines = code.split("\n");
+		var result = [];
+		for (var i = 0, l = lines.length; i < l; i++) {
+			var line = lines[i];
+			var fchar = line.charAt(0);
+
+			// Skip empty lines.
+			if (line.trim() !== "") {
+				// Special lines start with: -, +, @@, diff
+				if (fchar === "-") {
+					line = `<span class="code-diff diff-deletion">${line}</span>`;
+				} else if (fchar === "+") {
+					line = `<span class="code-diff diff-addition">${line}</span>`;
+				} else if (fchar === "@" && line.startsWith("@@")) {
+					line = line.replace(
+						/^(\@\@(.*?)\@\@)(.*?)$/,
+						`<span class="code-diff diff-coordinate">$1</span>$3`
+					);
+				} else if (fchar === "d" && line.startsWith("diff")) {
+					line = `<span class="code-diff diff-diffline">${line}</span>`;
+				}
+			}
+
+			// Add the line to the results array.
+			result.push(line);
+		}
+
+		return result.join("\n");
+	}
+
+	// Reset languages.
+	if (language) {
+		// Reset "md" to "markup".
+		if (language.toLowerCase() === "md") {
+			language = "markup";
+		}
+	}
+
+	// Determine what highlighter to use. Either prismjs or highlightjs.
+	if (highlighter[0] === "h") {
+		// Use highlightjs.
+		return highlightjs.highlightAuto(code).value;
+	} else {
+		// Use prismjs.
+		// Default to markup when language is undefined or get an error.
+
+		try {
+			// If the language does not exist return original code.
+			if (!Object.keys(prism.languages).includes(language)) {
+				return entities.encode(code);
+			}
+
+			return prism.highlight(code, prism.languages[language]);
+		} catch (err) {
+			return entities.encode(code);
+		}
+	}
+}
+
 // Determine whether to highlight code blocks.
 if (highlighter && ["p", "h"].includes(highlighter.charAt(0))) {
 	marked.setOptions({
-		highlight: function(code, language) {
-			// Reset languages.
-			if (language) {
-				// Reset "md" to "markup".
-				if (language.toLowerCase() === "md") {
-					language = "markup";
-				}
-			}
-
-			// Determine what highlighter to use. Either prismjs or highlightjs.
-			if (highlighter[0] === "h") {
-				// Use highlightjs.
-				return highlightjs.highlightAuto(code).value;
-			} else {
-				// Use prismjs.
-				// Default to markup when language is undefined or get an error.
-
-				try {
-					return prism.highlight(
-						code,
-						prism.languages[language || "markup"]
-					);
-				} catch (err) {
-					return code;
-				}
-			}
-		}
+		highlight: highlight
 	});
 }
 
@@ -608,131 +852,61 @@ if (highlighter && ["p", "h"].includes(highlighter.charAt(0))) {
 // Make a reference to the marked Renderer.
 let renderer = new marked.Renderer();
 
-// Take into account custom line-numbers, block-name
-// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L880]
-renderer.code = function(code, lang, escaped) {
-	// // Remove emoji HTML from code.
-	// code = code.replace(
-	// 	/\<img class="emoji" draggable="false" alt="[^<].*?\>/gm,
-	// 	function(match) {
-	// 		// Get and return the alt attribute.
-	// 		return (match.match(/ alt="(.*?)" /) || [, "[?]"])[1];
-	// 	}
-	// );
+var renderer_def_override = function(text) {
+	return text;
+};
 
-	// Flag.
-	var clear_space = "";
-	// Check for [::dd-clear-space].
-	if (code.includes("[::dd-clear-space]")) {
-		// Reset the flag.
-		clear_space = " data-clear-space='true' ";
-		// Remove the placeholder from the text.
-		code = code.replace(/\[\:\:dd-clear-space\]/, "");
-	}
+// [https://github.com/markedjs/marked/issues/1302]
+renderer.code = renderer_def_override;
+renderer.blockquote = renderer_def_override;
+renderer.html = renderer_def_override;
+renderer.heading = renderer_def_override;
+renderer.hr = renderer_def_override;
+renderer.list = renderer_def_override;
+renderer.listitem = renderer_def_override;
+renderer.checkbox = renderer_def_override;
+renderer.paragraph = renderer_def_override;
+renderer.table = renderer_def_override;
+renderer.tablerow = renderer_def_override;
+renderer.tablecell = renderer_def_override;
+renderer.codespan = renderer_def_override;
+renderer.br = renderer_def_override;
+renderer.del = renderer_def_override;
+renderer.image = renderer_def_override;
 
-	// Get the language, line numbers?, and block name?.
-	var r = /([\w]+)?({.*?})?({.*?})?/i;
+// Emojify marked text.
+// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L1043]
+renderer.text = function(text) {
+	// Un-emojify.
+	text = emoji.unemojify(text);
 
-	// Default to "markup".
-	lang = lang || "markup";
+	// Emojify.
+	text = emoji.emojify(
+		text,
+		// When an emoji is not found default to a question mark.
+		// [https://emojipedia.org/static/img/lazy.svg]
+		function(name) {
+			return `<img class="emoji" draggable="false" alt=":${name}:" src="${outputpath.replace(
+				/^[\.\/]+|\/$/g,
+				""
+			)}/img/missing-emoji.png">`;
+		},
+		function(code, name) {
+			// Get the unicode of the emoticon.
+			var unicode = eunicode(code);
 
-	var parts = lang.match(r);
-	lang = parts[1] || "markup";
-	var lines = (parts[2] || "").replace(/^\{|\}$/g, "");
-	var name = (parts[3] || "").replace(/^\{|\}$/g, "");
+			// Use unicode to convert to code point.
+			var cc = twemoji.convert.fromCodePoint(unicode);
 
-	if (this.options.highlight) {
-		var out = this.options.highlight(code, lang);
-		if (out != null && out !== code) {
-			escaped = true;
-			code = out;
+			// Use code point to finally convert to twitter emoji.
+			var html = twemoji.parse(cc);
+
+			// Return the HTML.
+			return html;
 		}
-	}
-
-	// if (!lang) {
-	// 	return (
-	// 		"<pre><code>" +
-	// 		(escaped ? code : escape(code, true)) +
-	// 		"</code></pre>"
-	// 	);
-	// }
-
-	return (
-		// (escaped ? code : escape(code, true)) +
-		`<pre><code${clear_space} class="${this.options.langPrefix}${escape(
-			lang,
-			true
-		)}" data-highlight-lines="${lines}" data-block-name="${name}">${code}</code></pre>\n`
 	);
-};
 
-// Add GitHub like anchors to headings.
-// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L822]
-renderer.heading = function(text, level) {
-	// Remove any HTML tags/HTML entities from the text.
-	// text = text.replace(/\<\/?.*?\>|\&.*?\;/gm, "");
-
-	// Slugify the text.
-	let escaped_text = slugify(text.replace(/\<\/?.*?\>|\&.*?\;/gm, ""));
-
-	// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
-	return `
-		<h${level} data-orig-text="${entities.encode(text)}">
-			${text}
-            <a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
-				<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
-					<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
-					</path>
-				</svg>
-            </a>
-          </h${level}>\n`;
-};
-
-// Add a new line before the start of the inner UL list.
-// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L932]
-renderer.list = function(body, ordered, start) {
-	var type = ordered ? "ol" : "ul";
-
-	var startatt = ordered && start !== 1 ? ' start="' + start + '"' : "";
-	// Add a new line before the start of the open tag.
-	return "\n<" + type + startatt + ">\n" + body + "</" + type + ">\n";
-};
-
-// Make checkboxes render like GitHub's.
-// [https://github.com/markedjs/marked/blob/master/lib/marked.js#L844]
-renderer.listitem = function(text, ordered) {
-	// Only change items that start with the following regexp.
-	let checkmark_item_pattern = /^\[(.*)\]/;
-
-	// Determine whether it's checked or not.
-	if (checkmark_item_pattern.test(text)) {
-		// Pattern captures the checkbox and its text.
-		let checkbox_pattern = /^\[(.*)\](.*)(\n[\s\S]+)?/m;
-
-		// Run pattern to get matches.
-		let matches = text.match(checkbox_pattern);
-
-		// Get the checkbox text content.
-		let text_content = matches[2].trim();
-		let inner_list = (matches[3] || "").trim();
-		// Add a new line to the inner list if it exists.
-		if (inner_list) {
-			inner_list = `\n${inner_list}`;
-		}
-
-		// Determine whether the checkbox is checked.
-		let checkbox_content = matches[1].trim();
-		// If the checkbox content is not empty it is checked.
-		let is_checked = checkbox_content ? 'checked="true"' : "";
-
-		return `
-			<li class="task-list-item">
-				<input ${is_checked}class="task-list-item-checkbox" disabled="" id="" type="checkbox"> ${text_content}${inner_list}
-			</li>\n`;
-	} else {
-		// Return the original text if not a checkbox item.
-		return `<li>${text}</li>\n`;
-	}
+	return text;
 };
 
 // Setup a counter to use as the id for the directories.
@@ -883,85 +1057,23 @@ toc.forEach(function(directory) {
 					return reject([`${__path} could not be opened.`, err]);
 				}
 
-				// Placehold any code blocks.
-				var lookup_codeblocks = [];
-				var lookup_codeblocks_count = -0;
-				// <pre><code></code></pre>, <code></code>, <pre></pre>, ```code``` replacements.
-				contents = contents.replace(
-					/<pre>\s*<code>([\s\S]*?)<\/code>\s*<\/pre>|<code>([\s\S]*?)<\/code>|<pre>([\s\S]*?)<\/pre>|```([\s\S]*?)```/gim,
-					function(match) {
-						lookup_codeblocks.push(match);
-						return `[dd:--codeblock-placeholder-${++lookup_codeblocks_count}]`;
-					}
-				);
-				// Single backtick (i.e. `code`) replacements.
-				contents = contents.replace(/`([\s\S]*?)`/gim, function(match) {
-					lookup_codeblocks.push(match);
-					return `[dd:--codeblock-placeholder-${++lookup_codeblocks_count}]`;
-				});
+				// var error = print.gulp.error;
+				// var info = print.gulp.info;
+				// var warn = print.gulp.warn;
+				// var success = print.gulp.success;
+				// var ln = print.ln;
 
-				// Un-emojify.
-				contents = emoji.unemojify(contents);
+				// Remove any HTML comments as having comments close to markup
+				// causes marked to parse it :/.
+				contents = removeHtmlComments(contents).data;
 
-				// Emojify.
-				contents = emoji.emojify(
-					contents,
-					// When an emoji is not found default to a question mark.
-					// [https://emojipedia.org/static/img/lazy.svg]
-					function(name) {
-						return `<img class="emoji" draggable="false" alt=":${name}:" src="${outputpath.replace(
-							/^[\.\/]+|\/$/g,
-							""
-						)}/img/missing-emoji.png">`;
-						// 		return `<svg class="emoji" draggable="false" alt="[?]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-						// <g fill="#ccc" stroke="#ccc" stroke-width="0">
-						// <circle cx="50%" cy="50%" r="40%" fill="none" stroke-width="4"/>
-						// <rect x="21%" y="44%" width="12%" height="12%">
-						//   <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0s"/>
-						// </rect>
-						// <rect x="44%" y="44%" width="12%" height="12%">
-						//   <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.2s"/>
-						// </rect>
-						// <rect x="67%" y="44%" width="12%" height="12%">
-						//   <animate attributeName="fill" repeatDur="indefinite" dur="1s" values="#ccc;#aaa" begin="0.4s"/>
-						// </rect>
-						// </g></svg>`;
-					},
-					function(code, name) {
-						// Get the unicode of the emoticon.
-						var unicode = eunicode(code);
+				// Convert the custom tags.
+				contents = convert_ctags(contents);
 
-						// Use unicode to convert to code point.
-						var cc = twemoji.convert.fromCodePoint(unicode);
+				// Render markdown.
+				contents = mdzero.render(contents);
 
-						// Use code point to finally convert to twitter emoji.
-						var html = twemoji.parse(cc);
-
-						// Return the HTML.
-						return html;
-					}
-				);
-
-				// Loop contents until all codeblocks have been filled back in.
-				while (/\[dd\:--codeblock-placeholder-\d+\]/.test(contents)) {
-					// Add back the code blocks.
-					contents = contents.replace(
-						/\[dd\:--codeblock-placeholder-\d+\]/g,
-						function(match) {
-							return lookup_codeblocks[
-								match.replace(/[^\d]/g, "") * 1 - 1
-							];
-						}
-					);
-				}
-
-				// Fix extra space before code blocks.
-				contents = extra_codeblock_space_placeholder(contents);
-
-				// Expand any custom tags.
-				contents = expand_custom_tags(contents);
-
-				// Blockquoet fix (encode HTML entities/backticks).
+				// Block-quote fix (encode HTML entities/backticks).
 				contents = contents.replace(
 					/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/gim,
 					function(match) {
@@ -981,9 +1093,9 @@ toc.forEach(function(directory) {
 							"[dd::space]"
 						);
 						// Encode HTML entities.
-						content = entities.encode(content);
+						// content = entities.encode(content);
 						// Encode backticks.
-						content = content.replace(/`/gm, "&grave;");
+						content = content.replace(/`/gm, "&#96;");
 						// Add back br tags.
 						content = content.replace(/\[dd\:\:space\]/g, "<br>");
 
@@ -991,12 +1103,136 @@ toc.forEach(function(directory) {
 					}
 				);
 
+				// Get any HTML Code blocks (i.e. <pre><code></code></pre>, <code></code>).
+				contents = contents.replace(
+					/<(pre|code)\b(.*?)>([\s\S]*?)<\/\1>/gim,
+					function(match) {
+						// Determine whether match is <pre><code>, <pre>, or
+						// a <code> block.
+						if (/^<code/.test(match)) {
+							// A code block does not need its contents
+							// highlighted so leave it alone.
+
+							lookup_codeblocks.push(match);
+							return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+						} else {
+							if (/<pre\b(.*?)>\s*<code/.test(match)) {
+								// A <pre><code>... block.
+
+								// Look for a lang attr in either the
+								// code or pre element.
+								var lang = (match.match(
+									/<code\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+								) ||
+									match.match(
+										/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+									) || [, , , ""])[3];
+
+								// Get the content between the code tags.
+								var content = (match.match(
+									/<code\b(.*?)>([\s\S]*?)<\/code>/im
+								) || [, , ""])[2];
+
+								// [https://stackoverflow.com/a/6234804]
+								// [https://github.com/cheeriojs/cheerio#loading]
+
+								// Get the text/code.
+								content = entities.decode(content);
+
+								match = match
+									.replace(
+										/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
+										"$1$4"
+									)
+									.replace(
+										/(<code\b.*?)(lang=("|').*?\3)(.*?>)/im,
+										`$1 lang="${lang}" $4`
+									);
+
+								var highlighted = highlight(content, lang);
+
+								// Generate a special ID for the pre element.
+								var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(
+									20
+								)}`;
+
+								lookup_codeblocks.push([
+									`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+								]);
+								return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+							} else {
+								// A <pre> only block.
+
+								// Look for a lang attr.
+								var lang = (match.match(
+									/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+								) || [, , , ""])[3];
+
+								// Get the content between the pre tags.
+								var content = (match.match(
+									/<pre\b(.*?)>([\s\S]*?)<\/pre>/im
+								) || [, , ""])[2];
+
+								// [https://stackoverflow.com/a/6234804]
+								// [https://github.com/cheeriojs/cheerio#loading]
+
+								// Get the text/code.
+								content = entities.decode(content);
+
+								// Note: markdown-it litters the code with
+								// paragraph tags when the code contains line
+								// breaks :/.
+								if (/^<p>|<\/p>$/gm.test(content)) {
+									content = content.replace(
+										/^<p>|<\/p>$/gm,
+										""
+									);
+								}
+
+								match = match.replace(
+									/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
+									"$1$4"
+								);
+
+								var highlighted = highlight(content, lang);
+
+								// Generate a special ID for the pre element.
+								var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(
+									20
+								)}`;
+
+								lookup_codeblocks.push([
+									`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+								]);
+								return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+							}
+						}
+					}
+				);
+
+				// Convert the custom tags.
+				contents = unwrap_ctags(contents);
+
 				marked(contents, { renderer: renderer }, function(err, data) {
 					if (err) {
 						return reject([
 							`Marked rendering failed for ${__path}.`,
 							err
 						]);
+					}
+
+					// Expand the custom tags.
+					data = expand_ctags(data, fpath);
+
+					var r = /\[dd\:\:\-codeblock-placeholder-\d+\]/g;
+					// Loop contents until all codeblocks have been filled back in.
+					while (r.test(data)) {
+						// Add back the code blocks.
+						data = data.replace(r, function(match) {
+							return lookup_codeblocks[
+								match.replace(/[^\d]/g, "") * 1
+							];
+						});
 					}
 
 					// Use cheerio to parse the HTML data.
@@ -1069,59 +1305,129 @@ toc.forEach(function(directory) {
 						}
 					});
 
-					// Get all headings in the HTML.
-					$(
-						"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
-					).each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
+					// Add the GitHub octicon link/anchor.
+					$("h1, h2, h3, h4, h5, h6")
+						.filter(function(i, el) {
+							return !$(this)
+								.parents()
+								.filter(".dd-expandable-base").length;
+						})
+						.each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
 
-						// Get the element id.
-						let id = $el.attr().id;
+							// Get the text.
+							let text = $el.text();
 
-						// If an ID does not exist just skip it.
-						if (!id) {
-							return;
-						}
-						// // Normalize the id by removing all hyphens.
-						// let normalized_id = id.replace(/-/g, " ").trim();
-
-						// Get the text (no HTML).
-						var value = $el
-							.parent()
-							.text()
-							.trim();
-						// Get the original text with HTML.
-						var otext = $el
-							.parent()
-							.attr("data-orig-text")
-							.trim();
-
-						// Remove any HTML tags from the text.
-						otext = otext.replace(/\<\/?.*?\>|\&.*?\;/gm, function(
-							match
-						) {
-							// Only allow emojis to pass.
-							if (!match.startsWith('<img class="emoji"')) {
-								// Remove tags.
-								return match.replace(
-									/\<\/?.*?\>|\&.*?\;/gm,
-									""
-								);
+							// Skip if the text is empty.
+							if (text.trim() === "") {
+								return;
 							}
 
-							return match;
+							// Slugify the text.
+							let escaped_text = slugify(
+								text.replace(/\<\/?.*?\>|\&.*?\;/gm, "")
+							);
+
+							$el.attr("data-orig-text", entities.encode(text));
+							// $el.text(text);
+							// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
+							$el.append(`
+<a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
+	<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+		<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
+		</path>
+	</svg>
+</a>`);
 						});
 
-						// Add the second level menu template string.
-						headings.push(
-							// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
-							`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
-								/^[-]+|[-]+$/g,
-								""
-							)}" data-file="${fpath}">${otext}</a></li>`
-						);
-					});
+					// Get all headings in the HTML.
+					var __headings = {};
+					$(
+						"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
+					)
+						.filter(function(i, el) {
+							return !$(this)
+								.parents()
+								.filter(".dd-expandable-base").length;
+						})
+						.each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
+
+							// Get the element id.
+							let id = $el.attr().id;
+
+							// If an ID does not exist just skip it.
+							if (!id) {
+								return;
+							}
+							// // Normalize the id by removing all hyphens.
+							// let normalized_id = id.replace(/-/g, " ").trim();
+
+							// Get the text (no HTML).
+							var value = $el
+								.parent()
+								.text()
+								.trim();
+							// Get the original text with HTML.
+							var otext = $el
+								.parent()
+								.attr("data-orig-text")
+								.trim();
+
+							// Remove any HTML tags from the text.
+							otext = otext.replace(
+								/\<\/?.*?\>|\&.*?\;/gm,
+								function(match) {
+									// Only allow emojis to pass.
+									if (
+										!match.startsWith('<img class="emoji"')
+									) {
+										// Remove tags.
+										return match.replace(
+											/\<\/?.*?\>|\&.*?\;/gm,
+											""
+										);
+									}
+
+									return match;
+								}
+							);
+
+							// Take into account same name headers. Append the
+							// suffix "-NUMBER" to the header href/id to make
+							// it unique.
+							if (!__headings[id]) {
+								var heading_count = "";
+								// Add it to the object.
+								__headings[id] = 1;
+							} else {
+								var heading_count = __headings[id];
+
+								// Reset  the element id.
+								$el.attr("id", `${id}-${heading_count}`);
+								$el.attr(
+									"href",
+									`${$el.attr().href}-${heading_count}`
+								);
+
+								// Increment the count.
+								__headings[id] = heading_count + 1;
+
+								// Add the hyphen.
+								heading_count = `-${heading_count}`;
+							}
+
+							// Add the second level menu template string.
+							headings.push(
+								// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
+								`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
+									/^[-]+|[-]+$/g,
+									""
+								)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
+							);
+						});
 					// Add the closing tag to the headings HTML.
 					headings.push("</ul>");
 
@@ -1142,7 +1448,10 @@ toc.forEach(function(directory) {
 
 							$el.attr(
 								"href",
-								"#" + href.replace(/^[-]+|[-]+$/g, "")
+								"#" +
+									href
+										.replace(/_/g, "-")
+										.replace(/^[-]+|[-]+$/g, "")
 							);
 						}
 
@@ -1180,107 +1489,6 @@ toc.forEach(function(directory) {
 						}
 					});
 
-					// Convert HTML pre tags.
-					$("pre > code").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Get the classes.
-						var classes = $el.attr()["class"];
-
-						// Element cannot contain any lang-* class.
-						if (/\slang-.*\s/.test(` ${classes || ""} `)) {
-							return;
-						}
-
-						var $parent = $el.parent();
-						var sibling_count = $parent.children().length;
-						// The code element must be the only child element.
-						if (sibling_count !== 1) {
-							return;
-						}
-
-						// Get the text/code.
-						let text = entities.decode($el.html());
-
-						// Check for the lang attribute.
-						var lang = $el.attr().lang;
-
-						// Look at the parent for the lang.
-						if (!lang) {
-							lang = $parent.attr().lang;
-						}
-
-						// Set a lang default.
-						lang = lang || "markup";
-
-						// Remove the lang attribute.
-						$el.removeAttr("lang");
-						$parent.removeAttr("lang");
-
-						// Add attribute to the code element only.
-						$el.attr("lang", lang);
-
-						// Used marked to add highlighting.
-						var highlighted = marked(
-							`\`\`\`${lang}\n${text.trim()}\n\`\`\``,
-							{ renderer: renderer }
-						)
-							.trim()
-							.replace(/^\<(pre|code)\>|\<\/(pre|code)\>$/g, "");
-
-						// Reset the element HTML.
-						$parent.html(highlighted);
-					});
-
-					$("pre").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Get the classes.
-						var classes = $el.attr()["class"];
-
-						// Element cannot contain any lang-* class.
-						if (/\slang-.*\s/.test(` ${classes || ""} `)) {
-							return;
-						}
-
-						// var $parent = $el.parent();
-						var sibling_count = $el.children().length;
-						var $fchild = $el.children().first();
-
-						// If the element contains child elements the
-						// first element cannot be a tag element.
-						if ($fchild[0] && $fchild[0].name === "code") {
-							return;
-						}
-
-						// Get the text/code.
-						// [https://stackoverflow.com/a/6234804]
-						// [https://github.com/cheeriojs/cheerio#loading]
-						let text = entities.decode($el.html());
-
-						// Check for the lang attribute.
-						var lang = $el.attr().lang;
-
-						// Set a lang default.
-						lang = lang || "markup";
-
-						// Remove the lang attribute.
-						$el.removeAttr("lang");
-
-						// Used marked to add highlighting.
-						var highlighted = marked(
-							`\`\`\`${lang}\n${text.trim()}\n\`\`\``,
-							{ renderer: renderer }
-						)
-							.trim()
-							.replace(/^\<(pre|code)\>|\<\/(pre|code)\>$/g, "");
-
-						// Reset the element HTML.
-						$el.html(highlighted);
-					});
-
 					// Hide all but the first code block.
 					$(".code-block-grouped").each(function(i, elem) {
 						// Cache the element.
@@ -1314,7 +1522,8 @@ toc.forEach(function(directory) {
 
 						// Get text (code) and file stats.
 						let text = $el.text().trim();
-						let lines = add_commas_to_num(text.split("\n").length);
+						let line_count = text.split("\n").length;
+						let lines = add_commas_to_num(line_count);
 						let chars = add_commas_to_num(text.split("").length);
 
 						// Get the parent element.
@@ -1330,7 +1539,7 @@ toc.forEach(function(directory) {
 						var uid = `exp-${id(20)}${id(20)}`;
 
 						// If the code is > 40 lines show an expander.
-						if (lines >= 40) {
+						if (line_count >= 40) {
 							// Get the language.
 							var classes = $el.attr()["class"];
 							var lang = " ";
@@ -1424,30 +1633,17 @@ toc.forEach(function(directory) {
 							);
 						}
 
-						// // Add the block code name.
-						// var blockname_html = "";
-						// var top_pad_fix = "";
-						// // Check for line highlight numbers/ranges.
-						// var blockname = $el.attr()["data-block-name"] || "";
-						// blockname = blockname ? blockname + " &mdash; " : "";
-						// // if (blockname) {
-
-						// // Get the language.
-						// var classes = $el.attr()["class"];
-						// var language = "md";
-						// if (classes) {
-						// 	var langmatch = (` ${classes} `.match(
-						// 		/ (lang-.+) /i
-						// 	) || "")[1];
-						// 	if (langmatch) {
-						// 		language = langmatch.replace(/lang-/i, "");
-						// 	}
-						// }
-
-						// blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}${language}</span></div>`;
-						// top_pad_fix = "padtop-26";
-						// $el.addClass(top_pad_fix);
-						// // }
+						// Make the "line" highlight HTML.
+						var line_nums2 = [];
+						for (var i = 0, l = lines; i < l; i++) {
+							// Check whether the line needs to be highlighted.
+							var needs_highlight = _lines.includes(i + 1)
+								? " lang-code-line-highlight"
+								: "";
+							line_nums2.push(
+								`<div class="line-num-cont${needs_highlight}"> </div>`
+							);
+						}
 
 						// Add the block code name.
 						var blockname_html = "";
@@ -1468,6 +1664,8 @@ toc.forEach(function(directory) {
 							// to the fixed element.
 							`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
 								""
+							)}</div><div class="line-num line-num-third noselect pnone ${top_pad_fix}">${line_nums2.join(
+								""
 							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
 								""
 							)}</div>`
@@ -1485,143 +1683,7 @@ toc.forEach(function(directory) {
 						// Store the original text.
 						$el.attr(
 							"data-orig-text",
-							entities.decode($el.text().trim())
-						);
-
-						var comment_counter = -1;
-						var lookup = [];
-
-						function make_code_lines(text) {
-							var r = /(?!>\n*)\s*<span class="(token comment|hljs-comment)">[\s\S]*?<\/span>/gm;
-							// Wrap multi-line comments.
-							text = text.replace(r, function(match) {
-								// Get any starting space.
-								var starting_space = match.match(
-									/(^[^ ]*)( *)<span class="/m
-								) || [, "", ""];
-								var first_spaces = starting_space[1];
-								var second_spaces = starting_space[2];
-
-								// Trim string.
-								var comment = match
-									.trim()
-									// Remove HTML from the comment.
-									.replace(
-										/<span class="(token comment|hljs-comment)">|<\/span>/g,
-										""
-									);
-
-								// Only work on the string if its a milti-comment.
-								var lines = comment.split("\n");
-
-								if (lines.length > 1) {
-									// Add the spacing to the first lines.
-									var first = lines[0];
-									lines[0] = `${second_spaces}${first}`;
-
-									comment = lines.join("\n");
-
-									lookup.push(
-										`[dd::--remove]<span class="token comment hljs-comment">${make_code_lines(
-											comment
-										)}</span>[dd::--remove]`
-									);
-
-									return `${first_spaces}dd::comment-counter-${++comment_counter}`;
-								}
-
-								return match;
-							});
-
-							// Right trim the string.
-							text = text.replace(/\s*$/g, "");
-							// text = text.trim();
-							text = `<div class="lang-code-line">${text}`;
-							// [https://stackoverflow.com/a/784547]
-							text = text.replace(/(?:\r\n|\r|\n)/g, function(
-								match
-							) {
-								return `</div><div class="lang-code-line">`;
-							});
-
-							text = `${text}</div>`;
-
-							// Final replaces...
-							// Change...add empty lines.
-							text = text.replace(
-								/lang\-code\-line"\><\/div/g,
-								'lang-code-line">\n</div'
-							);
-
-							// Replace comment placeholders.
-							text = text.replace(
-								/dd::comment-counter-\d+/g,
-								function(match) {
-									return lookup[
-										match.replace(/[^\d]/g, "") * 1
-									];
-								}
-							);
-
-							// Remove comment pointers.
-							text = text.replace(
-								/(<div class="lang-code-line">\s*\[dd::--remove\]|\[dd::--remove\]\s*<\/div>)/gm,
-								""
-							);
-
-							return text;
-						}
-
-						// Reset the HTML.
-						$el.html(make_code_lines(text));
-
-						// Get the lines to highlight.
-						var _lines = lines_to_highlight($el);
-						$el.find(".lang-code-line").each(function(i, elem) {
-							// Check whether the line needs to be highlighted.
-							if (_lines.includes(i + 1)) {
-								$(this).addClass("line-num-line-highlight");
-							}
-						});
-					});
-
-					// Note: If code blocks are indented lines will then have
-					// some indentation. Messing up the lines. This removed it.
-					$("code[data-clear-space]").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Remove the attribute.
-						$el.removeAttr("data-clear-space");
-
-						// Get the lang-code-line elements.
-						let $lines = $el.find(".lang-code-line");
-
-						// Now loop over the remaining lines and remove
-						// the first space.
-						$lines.each(function(i, elem) {
-							let $el = $(this);
-							let text = $el.html();
-							if (/^\s/.test(text)) {
-								// Remove the first space.
-								text = text.replace(/^\s/, "");
-								// Reset the text.
-								$el.html(text);
-							}
-						});
-
-						// Reset the orig-text attribute.
-						let otext = $el.attr("data-orig-text").split(/\r?\n/);
-						for (var i = 0, l = otext.length; i < l; i++) {
-							let text = otext[i];
-							if (/^\s/.test(text)) {
-								// Remove the first space.
-								otext[i] = text.replace(/^\s/, "");
-							}
-						}
-						$el.attr(
-							"data-orig-text",
-							entities.decode(otext.join("\n"))
+							entities.decode($el.text().replace(/\s*$/, ""))
 						);
 					});
 
@@ -1629,9 +1691,6 @@ toc.forEach(function(directory) {
 					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
 					// data = $.html().replace(/<\/?(html|body|head)>/gi, "");
 					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
-
-					// print.gulp.error(data.substring(0, 100));
-					// return;
 
 					// Wrap the headers with their "contents".
 					// [https://stackoverflow.com/a/21420210]
@@ -1694,108 +1753,9 @@ toc.forEach(function(directory) {
 					// Reset the data.
 					data = data.insertTextAtIndices(inserts);
 
-					// ---------------------------------------------------------
-					// ---------------------------------------------------------
-
-					// Use cheerio to parse the HTML data.
-					var $ = cheerio.load(data, {});
-
-					// Work on the details element.
-					var test = $("details");
-					var b = [];
-					test.each(function(i, elem) {
-						b.push($(this));
-					});
-					b.reverse();
-					for (var i = 0, l = test.length; i < l; i++) {
-						// Cache the element.
-						var $el = b[i];
-
-						// Check that the first child is a summary element.
-						let $fchild = $el.children().first();
-
-						// If the element contains child elements the
-						// first element cannot be a tag element.
-						if (!$fchild[0] || $fchild[0].name !== "summary") {
-							// print.gulp.warn("skipped", i);
-							return;
-						}
-
-						// Get the summary tag text.
-						var title = $fchild.html();
-						// Then remove the element from the DOM.
-						$fchild.remove();
-						// Now get the HTML from the details element.
-						var html = $el.html();
-
-						// Run the html through marked.
-						var result = marked(html, { renderer: renderer });
-
-						//
-						var _$ = cheerio.load(result, {});
-
-						// Add the header spacer.
-						_$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
-							// Cache the element.
-							let $el = $(this);
-
-							$el.attr("style", "position: unset !important;");
-
-							// Check the next sibling element.
-							var $next = $el.next();
-							if ($next && $next.attr()["class"]) {
-								// Get the classes.
-								var classes = $next.attr()["class"];
-
-								// Element cannot contain any lang-* class.
-								if (
-									/\sheader-spacer.*\s/.test(
-										` ${classes || ""} `
-									)
-								) {
-									return;
-								}
-							}
-
-							// Get the next element.
-							var $next = $el.next()[0];
-							if ($next) {
-								// Don't add the spacer class if the header group
-								// is empty. (no siblings.)
-								var spacer_class = !/h[1-6]/i.test($next.name)
-									? " class='header-spacer'"
-									: "";
-								$el.after(`<div${spacer_class}></div>`);
-							}
-						});
-
-						result = _$.html();
-
-						// print.gulp.error(result);
-
-						// Insert the new HTML before the details element.
-						$el.before(`<div class="dd-expandable-base">
-						<div class="dd-expandable-message noselect"><i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i><span>${title}</span></div>
-						<div class="dd-expandable-content none animate-fadein">${result}</div>
-					</div>`);
-						// Remove the details element.
-						$el.remove();
-
-						// Finally, reset the element HTML.
-						// $el.html(`<summary>${title}</summary>${result}`);
-					}
-
-					// ---------------------------------------------------------
-					// ---------------------------------------------------------
-
 					// Finally reset the data to the newly parsed/modified HTML.
 					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
 					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
-
-					// // Reset the data.
-					// data = data
-					// 	.insertTextAtIndices(inserts)
-					// 	.replace(/<\/?(html|body|head)>/gi, "");
 
 					// Finally reset the data to the newly parsed/modified HTML.
 					data = `<div class="markdown-body animate-fadein">${data}</div>`;
@@ -2100,6 +2060,11 @@ Promise.all(promises)
 					${directory.html}
 					<li>
 						<div class="menu-section-cont">
+							<div id="no-matches-cont" class="no-matches-cont none">
+								<div class="no-matches-cont-inner">
+									<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>
+								</div>
+							</div>
 							<ul>
 								${html.join("")}
 							</ul>
