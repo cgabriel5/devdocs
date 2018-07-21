@@ -9,7 +9,7 @@ module.exports = {
     // (optional, default: false)
     // This flag indicates whether the website should use animations or not. By default animations
     // are not used.
-	animations: true,
+    animations: true,
 
     // (optional, default: "devdocs")
     // The document title, i.e. <title></title>, to use (should be the app/project name).
@@ -17,7 +17,7 @@ module.exports = {
 
     // (optional, default: "docs/")
     // The supplied path should lead to the project's Markdown files.
-	root: "docs/",
+    root: "docs/",
 
     // (optional, default: object as shown below)
     // Object containing the devdocs out information.
@@ -65,7 +65,6 @@ module.exports = {
     ]
 };
 ```
-
 
 ### Important Notes
 
