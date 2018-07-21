@@ -1856,6 +1856,15 @@ details, summary {
 	.app {
 		width: auto;
 	}
+
+	.l-1 {
+		padding: 10px 0 10px 15px;
+	}
+
+	.search-cont {
+		margin-left: 0;
+		border-radius: 0;
+	}
 }
 
 @media (min-width: 768px) {
@@ -1995,16 +2004,14 @@ details, summary {
 
 	.line-block-highlight {
 		box-shadow: none;
-	}
-
-	.l-1 {
+	}/*	.l-1 {
 		padding: 10px 0 10px 15px;
 	}
 
 	.search-cont {
 		margin-left: 0;
 		border-radius: 0;
-	}
+	}*/
 }
 
 @media (max-width: 324px) {
