@@ -1689,7 +1689,6 @@ toc.forEach(function(directory) {
 
 					// Finally reset the data to the newly parsed/modified HTML.
 					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
-					// data = $.html().replace(/<\/?(html|body|head)>/gi, "");
 					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
 
 					// Wrap the headers with their "contents".
@@ -1752,10 +1751,11 @@ toc.forEach(function(directory) {
 
 					// Reset the data.
 					data = data.insertTextAtIndices(inserts);
-
-					// Finally reset the data to the newly parsed/modified HTML.
-					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
-					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
+					// If a single insert exists the entire thing things to
+					// be wrapped.
+					if (Object.keys(inserts).length === 1) {
+						data = `${data}</div>`;
+					}
 
 					// Finally reset the data to the newly parsed/modified HTML.
 					data = `<div class="markdown-body animate-fadein">${data}</div>`;
