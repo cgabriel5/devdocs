@@ -3214,6 +3214,18 @@ document.onreadystatechange = function() {
 										// Also check for a possible UL.
 										var $next = item.nextElementSibling;
 
+										// Highlight the search needle.
+										var $anchor = item.getElementsByTagName(
+											"a"
+										)[0];
+										var title = item.getAttribute("title");
+										var highlight_title = title.replace(
+											new RegExp(`(${text}+)`, "gi"),
+											"<span class='searched-highlight'>$1</span>"
+										);
+										// Insert the highlighted needle(s).
+										$anchor.innerHTML = highlight_title;
+
 										// Show the UL
 										if (
 											$next &&
@@ -3285,6 +3297,15 @@ document.onreadystatechange = function() {
 									item.style.display = null;
 									// Also check for a possible UL.
 									var $next = item.nextElementSibling;
+
+									// Un-highlight the search needle.
+									var $anchor = item.getElementsByTagName(
+										"a"
+									)[0];
+									// Insert original title.
+									$anchor.innerHTML = item.getAttribute(
+										"title"
+									);
 
 									// Show the UL
 									if (
