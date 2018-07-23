@@ -418,7 +418,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .l-2-link {
-	max-width: 130px;
+	max-width: 125px;
 }
 
 .truncate {
@@ -1164,6 +1164,17 @@ a {
 	position: relative;
 }
 
+.searched-highlight {
+	/*     background: #ffcc0050;
+    border-bottom: 1px dashed #ffcc00; *//*	background: #ffc10780;
+	border-bottom: 1px dashed #ffc107;
+	color: #000000;
+	border-radius: 3px;*/
+	background: #ffe300;
+	color: #000000;
+	border-radius: 3px;
+}
+
 @keyframes animate-spin {
 	0% {
 		transform: rotate(0deg);
@@ -1743,7 +1754,7 @@ details, summary {
 	top: 0;
 	background: #f4f4f4;
 	z-index: 1;
-	padding: 5px 6px;
+	padding: 5px;
 	border: 1px solid rgba(0, 0, 0, 0.04);
 	border-right: none;
 	border-radius: 0 0 0 4px;
@@ -1782,7 +1793,7 @@ details, summary {
 
 .sinput {
 	border: none;
-	padding: 6.5px 6px;
+	padding: 4px 6px;
 	outline: none;
 	width: 100%;
 	display: flex;
@@ -1794,10 +1805,11 @@ details, summary {
 	color: #999999;
 }
 
-.sinput:focus::placeholder {
+/*.sinput:focus::placeholder {
 	font-size: 14px;
 	color: transparent;
 }
+*/
 
 .sinput-focused {
 	/*border-color: #2188ff; */
@@ -1867,7 +1879,7 @@ details, summary {
 	}
 
 	.sinput {
-		padding: 5px 6px;
+		/*padding: 5px 6px;*/
 		font-size: 16px;
 	}
 }
