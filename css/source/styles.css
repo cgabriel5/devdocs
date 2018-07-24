@@ -2029,6 +2029,10 @@ details, summary {
 		margin-left: 0;
 		border-radius: 0;
 	}*/
+
+	.l-2-link {
+		max-width: 160px;
+	}
 }
 
 @media (max-width: 324px) {
