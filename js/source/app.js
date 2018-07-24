@@ -1009,6 +1009,11 @@ document.onreadystatechange = function() {
 				 * @return {undefined} - Nothing.
 				 */
 				var scroll = function($el, callback) {
+					// Remove any expanders.
+					remove_expanders();
+					// Set flag to prevent any mousemove.
+					prevent_mousemove_expanders = true;
+
 					// Calculate the to y scroll offset position.
 					var to = scroll.offset($el);
 					var from = window.pageYOffset;
@@ -1110,6 +1115,9 @@ document.onreadystatechange = function() {
 							$sroot.scrollTop = val;
 						},
 						onComplete: function() {
+							// Reset the expander flag.
+							prevent_mousemove_expanders = null;
+
 							// Remove event listeners.
 							scroll.remove_handlers();
 
@@ -3073,6 +3081,294 @@ document.onreadystatechange = function() {
 						e.preventDefault();
 					}
 				});
+
+				function remove_expanders($el) {
+					if ($el) {
+						$moused_el2 = $el;
+					}
+
+					// Remove all expanded menu items.
+					if (moused_el2_inserts.length) {
+						// Reset everything.
+						$moused_el2 = null;
+						// Remove the elements.
+						for (
+							var i = 0, l = moused_el2_inserts.length;
+							i < l;
+							i++
+						) {
+							var $el = moused_el2_inserts[i];
+							$el.parentNode.removeChild($el);
+						}
+						// Clear the array.
+						moused_el2_inserts.length = 0;
+					}
+				}
+
+				var $moused_el2;
+				var prevent_mousemove_expanders;
+				// var $moused_el3;
+				var moused_el2_inserts = [];
+				// var moused_el3_inserts = [];
+				document.addEventListener("mousemove", function(e) {
+					// Prevent expanders when flag is set.
+					if (prevent_mousemove_expanders) {
+						return;
+					}
+
+					var $target = e.target;
+
+					var $l2 = is_l2_menu_el($target);
+					var $l3 = is_l3_menu_el($target);
+					if ($l2) {
+						// Skip of the cloned element is hovered.
+						if ($l2.classList.contains("clone-true-l2")) {
+							// console.log("hovered the cloned elemenr");
+							return;
+						}
+
+						// Skip if its the same element as before.
+						if ($l2 === $moused_el2) {
+							// console.log(">>>>>>>>>>>>>>>>SAME", [$l2]);
+							return;
+						} else {
+							// Reset the target.
+							$target = $l2;
+							// $moused_el2 = $target;
+
+							remove_expanders($target);
+
+							// // Remove the elements.
+							// for (
+							// 	var i = 0, l = moused_el2_inserts.length;
+							// 	i < l;
+							// 	i++
+							// ) {
+							// 	var $el = moused_el2_inserts[i];
+							// 	$el.parentNode.removeChild($el);
+							// }
+
+							// // Clear the array.
+							// moused_el2_inserts.length = 0;
+
+							// Clone the element.
+							var $clone = $target.cloneNode(true);
+							var $anchor = $clone.getElementsByClassName(
+								"truncate"
+							)[0];
+
+							// Add clone identifier class.
+							$clone.classList.add("clone-true-l2");
+							$clone.classList.add("pnone");
+
+							// Remove the classes.
+							$anchor.classList.remove("l-2-link");
+							$anchor.classList.remove("truncate");
+							// Add right padding to anchor.
+							$anchor.classList.add("mr5");
+
+							// Check if active.
+							var is_active = $target.classList.contains(
+								"active-page"
+							);
+
+							// Get the position of the element on the page.
+							var coors = $target.getBoundingClientRect();
+							var yoffset = window.pageYOffset;
+							var xoffset = window.pageXOffset;
+							var _top =
+								coors.top + yoffset + (is_active ? -5 : 0);
+							var _left =
+								coors.left + xoffset + (is_active ? -3 : 0);
+
+							var radius = !is_active
+								? "border-radius: 0 4px 4px 0;"
+								: "";
+
+							// Add the coordinates to the clone.
+							$clone.setAttribute(
+								"style",
+								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute;${radius}background: #f4f4f4;`
+							);
+
+							// Add clone to page.
+							document.body.insertAdjacentElement(
+								"beforeend",
+								$clone
+							);
+
+							// Get the clone width.
+							var cwidth = $clone.getBoundingClientRect().width;
+							// Hide the element.
+							$clone.classList.add("none");
+
+							// If the clone is longer than the original target
+							// inject the clone.
+							if (cwidth > coors.width) {
+								moused_el2_inserts.push($clone);
+
+								// Hide the element.
+								$clone.classList.remove("none");
+							} else {
+								// Remove the element.
+								$clone.parentNode.removeChild($clone);
+							}
+						}
+					} else if ($l3) {
+						// Skip of the cloned element is hovered.
+						if ($l3.classList.contains("clone-true-l3")) {
+							// console.log("hovered the cloned elemenr");
+							return;
+						}
+
+						// Skip if its the same element as before.
+						// if ($l3 === $moused_el3) {
+						if ($l3 === $moused_el2) {
+							// console.log(">>>>>>>>>>>>>>>>SAME", [$l3]);
+							return;
+						} else {
+							// Reset the target.
+							$target = $l3;
+							// $moused_el2 = $target;
+
+							remove_expanders($target);
+
+							// // Remove the elements.
+							// for (
+							// 	var i = 0, l = moused_el2_inserts.length;
+							// 	i < l;
+							// 	i++
+							// ) {
+							// 	var $el = moused_el2_inserts[i];
+							// 	$el.parentNode.removeChild($el);
+							// }
+
+							// // Clear the array.
+							// moused_el2_inserts.length = 0;
+
+							// // Reset the target.
+							// $target = $l3;
+							// $moused_el3 = $target;
+
+							// // Remove the elements.
+							// for (
+							// 	var i = 0, l = moused_el3_inserts.length;
+							// 	i < l;
+							// 	i++
+							// ) {
+							// 	var $el = moused_el3_inserts[i];
+							// 	$el.parentNode.removeChild($el);
+							// }
+
+							// // Clear the array.
+							// moused_el3_inserts.length = 0;
+
+							// Clone the element.
+							var $clone = $target.cloneNode(true);
+
+							// Add clone identifier class.
+							// $clone.classList.add("clone-true-l3");
+							$clone.classList.add("pnone");
+
+							// Get the position of the element on the page.
+							var coors = $target.getBoundingClientRect();
+							var yoffset = window.pageYOffset;
+							var xoffset = window.pageXOffset;
+							var _top = coors.top + yoffset;
+							var _left = coors.left + xoffset;
+
+							// Add the coordinates to the clone.
+							$clone.setAttribute(
+								"style",
+								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute;border-right: 2px solid #2578f8;background: #f4f4f4;overflow: unset;`
+							);
+
+							// Add clone to page.
+							document.body.insertAdjacentElement(
+								"beforeend",
+								$clone
+							);
+
+							// [https://plainjs.com/javascript/manipulation/wrap-an-html-structure-around-an-element-28/]
+							// Create wrapper container.
+							var $wrapper = document.createElement("ul");
+							$wrapper.setAttribute(
+								"style",
+								"margin: 0;padding: 0;list-style: none;"
+							);
+
+							$wrapper.classList.add("clone-true-l3");
+							$wrapper.classList.add("pnone");
+
+							// insert wrapper before el in the DOM tree
+							$clone.parentNode.insertBefore($wrapper, $clone);
+
+							// move el into wrapper
+							$wrapper.appendChild($clone);
+
+							////////////////////////////////////////////////////
+
+							// Get the clone width.
+							var cwidth = $clone.getBoundingClientRect().width;
+							// Hide the element.
+							// $clone.classList.add("none");
+							$wrapper.classList.add("none");
+
+							// If the clone is longer than the original target
+							// inject the clone.
+							if (cwidth > coors.width) {
+								// moused_el3_inserts.push($wrapper);
+								moused_el2_inserts.push($wrapper);
+
+								// Hide the element.
+								// $clone.classList.remove("none");
+								$wrapper.classList.remove("none");
+							} else {
+								// Remove the element.
+								// $clone.parentNode.removeChild($clone);
+								$wrapper.parentNode.removeChild($wrapper);
+							}
+						}
+					} else {
+						remove_expanders();
+
+						// // Reset everything.
+						// $moused_el2 = null;
+						// // Remove the elements.
+						// for (
+						// 	var i = 0, l = moused_el2_inserts.length;
+						// 	i < l;
+						// 	i++
+						// ) {
+						// 	var $el = moused_el2_inserts[i];
+						// 	$el.parentNode.removeChild($el);
+						// }
+						// // Clear the array.
+						// moused_el2_inserts.length = 0;
+
+						// // Reset everything.
+						// $moused_el3 = null;
+						// // Remove the elements.
+						// for (
+						// 	var i = 0, l = moused_el3_inserts.length;
+						// 	i < l;
+						// 	i++
+						// ) {
+						// 	var $el = moused_el3_inserts[i];
+						// 	$el.parentNode.removeChild($el);
+						// }
+						// // Clear the array.
+						// moused_el3_inserts.length = 0;
+					}
+				});
+
+				$sidebar.addEventListener(
+					"scroll",
+					function(e) {
+						remove_expanders();
+					},
+					false
+				);
 
 				// When the search input (un)focuses, add/remove classes.
 				// document.addEventListener(
