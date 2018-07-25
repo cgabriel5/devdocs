@@ -1784,6 +1784,8 @@ details, summary {
 
 .search-clear {
 	cursor: pointer;
+	padding: 6px;
+	margin-right: -6px;
 }
 
 .search-clear:hover {
@@ -1801,6 +1803,7 @@ details, summary {
 	width: 100%;
 	display: flex;
 	font-size: 14px;
+	padding-left: 10px;
 }
 
 .sinput::placeholder {
