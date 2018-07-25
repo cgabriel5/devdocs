@@ -2729,7 +2729,7 @@ document.onreadystatechange = function() {
 					var classes = $target.classList;
 
 					// Unfocus the search input.
-					$search_cont_inner.classList.remove("sinput-focused");
+					$search_cont.classList.remove("sinput-focused");
 
 					// Since using event delegation, check that the clicked
 					// element is either the anchor element containing the
@@ -2740,6 +2740,9 @@ document.onreadystatechange = function() {
 					// l-2 (level-2) class. Since this is the case get the
 					// child element's (anchor element) data-attribute.
 					if (is_l2_menu_el($target)) {
+						// Remove any expanders.
+						remove_expanders();
+
 						// Reset the target.
 						$target = is_l2_menu_el($target);
 
@@ -2760,6 +2763,9 @@ document.onreadystatechange = function() {
 						is_menu_linkheading($target) ||
 						is_l3_menu_el($target)
 					) {
+						// Remove any expanders.
+						remove_expanders();
+
 						e.preventDefault();
 						e.stopPropagation();
 
@@ -2958,7 +2964,7 @@ document.onreadystatechange = function() {
 						}, 300);
 					} else if (is_search_element($target)) {
 						// search-cont-inner
-						$search_cont_inner.classList.add("sinput-focused");
+						$search_cont.classList.add("sinput-focused");
 						$sinput.focus();
 
 						if (is_search_clear($target)) {
@@ -3402,7 +3408,7 @@ document.onreadystatechange = function() {
 					"blur",
 					function(e) {
 						// Remove the active class.
-						$search_cont_inner.classList.remove("sinput-focused");
+						$search_cont.classList.remove("sinput-focused");
 					},
 					false
 				);
@@ -3414,9 +3420,7 @@ document.onreadystatechange = function() {
 						// Skip when the element already has focus.
 						var $active = document.activeElement;
 						if ($active && $active.id && $active.id === "sinput") {
-							$search_cont_inner.classList.remove(
-								"sinput-focused"
-							);
+							$search_cont.classList.remove("sinput-focused");
 							$sinput.blur();
 							e.preventDefault();
 						} else {
@@ -3435,7 +3439,7 @@ document.onreadystatechange = function() {
 							return;
 						}
 
-						$search_cont_inner.classList.add("sinput-focused");
+						$search_cont.classList.add("sinput-focused");
 						$sinput.focus();
 						e.preventDefault();
 					}
