@@ -1752,12 +1752,14 @@ details, summary {
 	/*margin-left: 20px;*//*margin-left: 0px;*/
 	position: sticky !important;
 	top: 0;
-	background: #f4f4f4;
+	/*background: #f4f4f4;*/
+	background: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	z-index: 1;
-	padding: 5px;
-	border: 1px solid rgba(0, 0, 0, 0.04);
+	padding: 10px;
+	/*border: 1px solid rgba(0, 0, 0, 0.04);*//*border: 1px solid transparent;*/
 	border-right: none;
 	border-radius: 0 0 0 4px;
+	margin-right: 1px;
 }
 
 .search-cont-inner {
@@ -1766,12 +1768,13 @@ details, summary {
 	flex-flow: row nowrap;
 	justify-content: space-around;
 	align-items: center;
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	border-radius: 100px;
+	/*border: 1px solid rgba(0, 0, 0, 0.1);*//*border: 1px solid transparent;*//*border-radius: 100px;*/
+	border-radius: 5px;
 	padding: 0 10px;
 	font-size: 12px;
 	top: 0;
-	background: white;
+	/*background: white;*/
+	background: #f7f7f7;
 	/* border-color: #2188ff; *//* border-color: #2578f8; *//* box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); *//* box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3); *//*transition: border-color 0.05s ease-in-out, box-shadow 0.05s ease-in-out;*/
 }
 
@@ -1793,7 +1796,7 @@ details, summary {
 
 .sinput {
 	border: none;
-	padding: 4px 6px;
+	padding: 6px;
 	outline: none;
 	width: 100%;
 	display: flex;
@@ -1812,10 +1815,7 @@ details, summary {
 */
 
 .sinput-focused {
-	/*border-color: #2188ff; */
-	border-color: #2578f8;
-	/*box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); */
-	box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3);
+	/*border-color: #2188ff; *//*border-color: #2578f8;*//*box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); *//*box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3);*//*background: #ffffff;*/
 }
 
 .no-matches-cont {
@@ -1876,6 +1876,14 @@ details, summary {
 	.search-cont {
 		margin-left: 0;
 		border-radius: 0;
+		background: #fafafa;
+		padding: 5px;
+		border-bottom: 1px solid #ededed;
+		/*margin-right: 0;*/
+	}
+
+	.search-cont-inner {
+		background: transparent;
 	}
 
 	.sinput {
@@ -2029,6 +2037,10 @@ details, summary {
 		margin-left: 0;
 		border-radius: 0;
 	}*/
+
+	.search-cont {
+		margin-right: 0;
+	}
 
 	.l-2-link {
 		max-width: 160px;
