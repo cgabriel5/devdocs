@@ -2963,13 +2963,20 @@ document.onreadystatechange = function() {
 							reset_cblock_width_highlight();
 						}, 300);
 					} else if (is_search_element($target)) {
-						// search-cont-inner
-						$search_cont.classList.add("sinput-focused");
-						$sinput.focus();
-
 						if (is_search_clear($target)) {
 							trigger_sinput();
 						}
+
+						$search_cont.classList.add("sinput-focused");
+						$sinput.focus();
+
+						// // Skip when the element already has focus.
+						// var $active = document.activeElement;
+						// if ($active && $active.id && $active.id === "sinput") {
+						// 	$search_cont.classList.add("sinput-focused");
+						// 	$sinput.focus();
+						// 	e.preventDefault();
+						// }
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
