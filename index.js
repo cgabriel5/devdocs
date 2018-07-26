@@ -1029,6 +1029,18 @@ toc.forEach(function(directory) {
 		// Get the absolute path for the file.
 		__path = findup.sync(__path);
 
+		// If the file was not found give a warning and skip it.
+		if (!__path) {
+			print.gulp.warn(
+				"Skipping ",
+				chalk.magenta(`${fpath}`),
+				"(file not found)"
+			);
+			// Remove the item from the __dir.files array.
+			__dir.files.pop();
+			return;
+		}
+
 		// Store the first file.
 		if (!first_file) {
 			// Attach the first file to the config object.
