@@ -36,6 +36,9 @@ document.onreadystatechange = function() {
 		var $clear_search = document.getElementById("search-clear");
 		var $sinput = document.getElementById("sinput");
 		var $no_matches_cont; // = document.getElementById("no-matches-cont");
+		var $versions_cont = document.getElementById("versions-list-cont");
+		var $version_cont = document.getElementById("version-cont");
+		var $current_version = document.getElementById("current-version");
 
 		// Variables //
 
@@ -775,6 +778,8 @@ document.onreadystatechange = function() {
 
 		// ------------------------------------------------------------
 
+		var __data;
+
 		// Create a new HTTP request.
 		var req = new http(REQUEST_PATH);
 		// Parse the data as JSON.
@@ -801,6 +806,72 @@ document.onreadystatechange = function() {
 				}
 			})
 			.then(function(data) {
+				__data = data;
+
+				// // Note: Pre-load logo to prevent "blinking in".
+				// return new Promise(function(resolve, reject) {
+				// Get the version.
+				var params = parameters();
+
+				// Get the version.
+				var version = params.v;
+				if (!version) {
+					// Get the latest version.
+					version = data.latest;
+
+					if (!version) {
+						// Reject if no version supplied.
+						return Promise.reject("No version was supplied.");
+					}
+				}
+
+				// Create a new HTTP request.
+				var req = new http(
+					REQUEST_PATH.replace(
+						/^(.*)\/data\.json/,
+						`$1/data-${version}.json`
+					)
+				);
+				// Parse the data as JSON.
+				req.parseJSON(true);
+				// Run the request.
+
+				return req.run();
+				// }).then(null, function() {
+				// 	return "Failed to load version data file.";
+				// });
+			})
+			.then(function(xhr) {
+				if (
+					xhr.status >= 200 &&
+					xhr.status < 300 &&
+					xhr.readyState === 4
+				) {
+					// Return the JSON response.
+					return xhr.responseJSON;
+				} else {
+					return Promise.reject("Failed to load version data file.");
+				}
+			})
+			.then(function(data) {
+				// Combine the data sets.
+				__data.dirs = data.dirs;
+				__data.html.menu = data.menu;
+				__data.outputpath = data.outputpath;
+
+				// Get the file contents.
+				var contents = {};
+				__data.dirs.forEach(function(dir) {
+					contents = Object.assign(contents, dir.contents);
+				});
+				__data.files.user = contents;
+
+				// Get the first file.
+				__data.first_file = __data.dirs[0].first_file;
+
+				// Reset the var.
+				data = __data;
+
 				/**
 				 * Add MacOS scrollbars style sheet.
 				 *
@@ -836,7 +907,7 @@ document.onreadystatechange = function() {
 					}
 
 					// Add the styles.
-					data.styles_macos_sb.forEach(function(rule, index) {
+					data.html.styles_macos_sb.forEach(function(rule, index) {
 						sheet.insertRule(rule, sheet.cssRules.length);
 					});
 				})();
@@ -930,7 +1001,7 @@ document.onreadystatechange = function() {
 					$moverlay.classList.remove("none");
 
 					// Show the topbar loader.
-					// $tb_loader.innerHTML = data.loader;
+					// $tb_loader.innerHTML = data.html.loader;
 					$tb_loader.innerHTML = cssloader("dark", 16);
 					$tb_loader.classList.remove("none");
 				}
@@ -964,8 +1035,8 @@ document.onreadystatechange = function() {
 					// Hide the arrow element.
 					$el.children[0].classList.add("none");
 					// Add the loader.
-					// $el.insertAdjacentHTML("afterbegin", data.loader);
-					// $el.children[0].insertAdjacentHTML("afterend", data.loader);
+					// $el.insertAdjacentHTML("afterbegin", data.html.loader);
+					// $el.children[0].insertAdjacentHTML("afterend", data.html.loader);
 					$el.children[0].insertAdjacentHTML(
 						"afterend",
 						cssloader("dark", 10)
@@ -1491,12 +1562,12 @@ document.onreadystatechange = function() {
 					}
 
 					// Get the file content.
-					var file = data.files[filename];
+					var file = data.files.user[filename];
 
 					// Show 404 file when selected file does not exist.
 					if (!file) {
 						var error_404 = "_404";
-						file = data.files[error_404];
+						file = data.files.internal[error_404];
 						filename = error_404;
 					}
 
@@ -1542,7 +1613,11 @@ document.onreadystatechange = function() {
 									averageFps
 								) {
 									var $ulp = document.querySelector(
-										".menu-section-cont"
+										`.menu-section-cont[data-dir='${id.split(
+											"."
+										)[0] *
+											1 -
+											1}']`
 									).children[1];
 
 									// Remove the UL if it exists.
@@ -1597,7 +1672,8 @@ document.onreadystatechange = function() {
 
 							if (!$ul) {
 								// Embed the current sub-menu list.
-								var dirs = data.dirs[0].files;
+								var dirs =
+									data.dirs[id.split(".")[0] * 1 - 1].files;
 								for (var i = 0, l = dirs.length; i < l; i++) {
 									var dir = dirs[i];
 									if (dir.dirname === filename) {
@@ -2085,6 +2161,26 @@ document.onreadystatechange = function() {
 					return false;
 				}
 
+				function is_version_option($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("version-option")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
 				function is_search_element($el) {
 					// Get the target element parents.
 					var parents = build_path({ target: $el });
@@ -2222,13 +2318,52 @@ document.onreadystatechange = function() {
 						document.getElementById(
 							"menu-dynamic-cont-logo"
 						).innerHTML =
-							data.logoHTML;
+							data.html.logo;
 					}
+
+					// Get the version.
+					var params = parameters();
+					// Get the version.
+					var version = params.v || data.latest;
+
+					// Show the versions container.
+					$version_cont.classList.remove("none");
+					// Add the versions.
+					var versions = data.versions;
+					var latest = data.latest;
+					var versions_html = [];
+					versions.forEach(function(v) {
+						var html; //<i class="fa-check fas mr5"></i>
+						versions_html.push(
+							`<div class="version-option" data-v="${v}">` +
+								(v === version
+									? '<i class="fa-check fas mr5"></i>'
+									: "") +
+								v +
+								(v === latest
+									? '<span class="version-latest">latest</span>'
+									: "") +
+								`</div>`
+						);
+					});
+					// Inject the versions list.
+					$version_cont.getElementsByClassName(
+						"versions-list-cont"
+					)[0].innerHTML = versions_html.join("");
+					// Set the current version.
+					$current_version.innerHTML = `Version: ${version}`; // +
+					$current_version.insertAdjacentHTML(
+						"afterend",
+						version === latest
+							? '<span class="version-latest">latest</span>'
+							: '<span class="version-latest version-latest-not">not latest</span>'
+					);
+					$current_version.setAttribute("data-v", version);
 
 					// Add the sidebar HTML.
 					document.getElementById(
 						"menu-dynamic-cont"
-					).innerHTML = data.menu.join("");
+					).innerHTML = data.html.menu.join("");
 
 					// [https://davidwalsh.name/nodelist-array]
 					$l_2 = Array.prototype.slice.call(
@@ -2252,12 +2387,12 @@ document.onreadystatechange = function() {
 					// }
 
 					// Add the social links.
-					if (data.socials) {
+					if (data.html.socials) {
 						document
 							.getElementById("sidebar")
 							.children[1].insertAdjacentHTML(
 								"beforeend",
-								data.socials
+								data.html.socials
 							);
 					}
 
@@ -2278,7 +2413,7 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					show_tb_loader();
-					inject(params.page ? params.page : data.first_file);
+					inject(params.p ? params.p : data.first_file);
 
 					// // Inject CSS to page.
 					// var stylesheets = document.styleSheets;
@@ -2470,7 +2605,7 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					show_tb_loader();
-					inject(params.page ? params.page : data.first_file);
+					inject(params.p ? params.p : data.first_file);
 				});
 
 				// When the URL changes (history) update the HTML content.
@@ -2731,6 +2866,14 @@ document.onreadystatechange = function() {
 					// Unfocus the search input.
 					$search_cont.classList.remove("sinput-focused");
 
+					// Hide the versions container.
+					if (
+						!$versions_cont.classList.contains("none") &&
+						!$versions_cont.contains($target)
+					) {
+						$versions_cont.classList.add("none");
+					}
+
 					// Since using event delegation, check that the clicked
 					// element is either the anchor element containing the
 					// needed data-attribute or the anchor's parent li
@@ -2832,7 +2975,7 @@ document.onreadystatechange = function() {
 						// Reset the target element.
 						$target = document.querySelector(
 							`a.link[data-file='${filename}']`
-						).parentNode;
+						).parentNode.parentNode;
 					} else if (
 						classes.contains("mobile-menu-ham") &&
 						$overlay.style.display !== "block"
@@ -2977,6 +3120,45 @@ document.onreadystatechange = function() {
 						// 	$sinput.focus();
 						// 	e.preventDefault();
 						// }
+					} else if (classes.contains("current-version")) {
+						// Show the versions container.
+						$versions_cont.classList.remove("none");
+						// } else if (classes.contains("version-option")) {
+					} else if (is_version_option($target)) {
+						// Reset the target.
+						$target = is_version_option($target);
+
+						// Get the version.
+						var version = $target.getAttribute("data-v");
+
+						// Get the parameters.
+						var params = parameters();
+
+						// Get the current version.
+						var current_version = $current_version.getAttribute(
+							"data-v"
+						);
+
+						// Return if the version is the current version.
+						if (version === current_version) {
+							// Hide the versions container.
+							$versions_cont.classList.add("none");
+
+							e.preventDefault();
+							return;
+						}
+
+						// Set the new version.
+						params.v = version;
+
+						// Add the version to the URL.
+						history.pushState({}, null, parameters.build(params));
+
+						// Reload the page.
+						location.reload();
+
+						e.preventDefault();
+						return;
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -3059,7 +3241,7 @@ document.onreadystatechange = function() {
 							history.pushState(
 								{},
 								null,
-								`?page=${encodeURIComponent(`${dir}/${file}`)}`
+								`?p=${encodeURIComponent(`${dir}/${file}`)}`
 							);
 						}
 
