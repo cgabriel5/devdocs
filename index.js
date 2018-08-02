@@ -542,7 +542,6 @@ let outputpath_filename = argv.name || argv.n;
 // App variables.
 let menu = [];
 let promises = [];
-let first_file = false;
 
 // 1. Look for a config file in the cwd.
 // 2. Look for a file in the cwd inside the sub folder configs/FILE or config/FILE.
@@ -588,7 +587,7 @@ if (!configpath) {
 // Load the configuration file.
 let config = require(configpath);
 let root = get(config, "root", "docs/");
-let toc = get(config, "toc", []);
+let versions = get(config, "versions", []);
 let links = get(config, "links", {});
 let logo = config.logo;
 let title = config.title;
@@ -596,9 +595,12 @@ let debug = get(config, "debug", true);
 let animations = config.animations;
 let modifier = config.modifier;
 // Add an object to store the converted Markdown to HTML content.
-config.files = {};
+config.files = {
+	internal: {},
+	user: {}
+};
 // Add the default 404 HTML file markup.
-config.files._404 = remove_space(
+config.files.internal._404 = remove_space(
 	'<div class="markdown-body animate-fadein"> \
 	<div class="error-cont"> \
 		<div class="error-logo-cont"><img alt="logo-leaf" class="error-logo" src="${dir_path}/img/leaf-216.png" width="30%"></div> \
@@ -610,7 +612,7 @@ config.files._404 = remove_space(
 	</div> \
 </div>'
 );
-// config.files._001 = remove_space(
+// config.files.internal._001 = remove_space(
 // 	`<div class="markdown-body animate-fadein">
 // 		<div class="dd-message-wrapper">
 // 			<div class="dd-message-base">
@@ -622,10 +624,13 @@ config.files._404 = remove_space(
 // 		</div>
 // 	</div>`
 // );
+
+// Add an object to store HTML structures.
+config.html = {};
 // Add the svg loader.
-config.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
+config.html.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
 // Add the MacOS scrollbar styles.
-config.styles_macos_sb = [
+config.html.styles_macos_sb = [
 	`::-webkit-scrollbar {
 	width: 16px;
 	height: 16px;
@@ -687,7 +692,7 @@ config.styles_macos_sb = [
 }`
 ];
 // "Floating Scrollbars"
-// config.styles_macos_sb = [
+// config.html.styles_macos_sb = [
 // 	`::-webkit-scrollbar {
 // 	width: 16px;
 // 	height: 16px;
@@ -909,10 +914,8 @@ renderer.text = function(text) {
 	return text;
 };
 
-// Setup a counter to use as the id for the directories.
-let counter_dir = 1;
 // All processed directory data will be contained in this array.
-config.dirs = [];
+var dirs = [];
 
 // Supported social platforms for social links.
 let socials = {
@@ -959,601 +962,657 @@ if (links) {
 // Close the HTML.
 links_html.push("</div>");
 
+// Store the versions.
+config.versions = [];
+
 // Loop over Table-Of-Contents key to generate the HTML files from Markdown.
-toc.forEach(function(directory) {
-	// Create an object to store all directory information.
-	let __dir = {};
-	// Add object to the config object.
-	config.dirs.push(__dir);
+versions.forEach(function(vdata) {
+	// Get the directories.
+	var version = Object.keys(vdata)[0];
+	var directories = vdata[version];
 
-	// Get the directory name
-	let dirname = Object.keys(directory)[0];
+	// Store the version.
+	config.versions.push(version);
 
-	// Apply the modifier to the file name if provided.
-	let alias_dir = dirname;
-	if (modifier) {
-		alias_dir = modifier(dirname, "directory");
-	}
+	var gdir = [];
+	gdir.version = version;
+	dirs.push(gdir);
 
-	// Setup a counter to use as the id for the files.
-	let counter_file = 1;
+	directories.forEach(function(directory, index) {
+		// Create an object to store all directory information.
+		let __dir = {};
+		// Add object to the config object.
+		gdir.push(__dir);
 
-	// Store the directory information.
-	__dir.name = dirname;
-	__dir.alias = alias_dir;
-	__dir.odata = directory; // Original data.
-	__dir.html = `<li class="l-1" id="menu-dir-${counter_dir}">${alias_dir}</li>`;
-	// All processed files' information will be contained here.
-	__dir.files = [];
-
-	// Loop over every file in the directory.
-	directory[dirname].forEach(function(file) {
-		// Create an object to store all file information.
-		let __file = {};
-		// Add object to its respective parent directory object.
-		__dir.files.push(__file);
-
-		// Remove the .md from the file name if provided.
-		file = file.replace(/\.md$/i, "");
+		// Get the directory name
+		let dirname = Object.keys(directory)[0];
 
 		// Apply the modifier to the file name if provided.
-		let alias_file = file;
+		let alias_dir = dirname;
 		if (modifier) {
-			alias_file = modifier(file, "file");
+			alias_dir = modifier(dirname, "directory");
 		}
 
-		// Build the file path.
-		let fpath = `${dirname}/${file}`;
+		// Setup a counter to use as the id for the files.
+		let counter_dir = index + 1;
 
-		// Store the file information.
-		__file.dirname = fpath;
-		__file.name = file;
-		__file.alias = alias_file;
-		// <li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
-		// 	<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
-		// 	<a class="link" href="#" data-file="${fpath}">${alias_file}</a>
-		// </li>
-		__file.html = `
-		<li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
+		// Store the directory information.
+		__dir.name = dirname;
+		__dir.alias = alias_dir;
+		__dir.odata = directory; // Original data.
+		__dir.html = `<li class="l-1" id="menu-dir-${counter_dir}">${alias_dir}</li>`;
+		// All processed files' information will be contained here.
+		__dir.files = [];
+		__dir.first_file = false;
+		__dir.version = version;
+		__dir.contents = {};
+
+		// Loop over every file in the directory.
+		directory[dirname].forEach(function(file, index) {
+			// Setup a counter to use as the id for the files.
+			let counter_file = index + 1;
+
+			// Create an object to store all file information.
+			let __file = {};
+			// Add object to its respective parent directory object.
+			__dir.files.push(__file);
+
+			// Remove the .md from the file name if provided.
+			file = file.replace(/\.md$/i, "");
+
+			// Apply the modifier to the file name if provided.
+			let alias_file = file;
+			if (modifier) {
+				alias_file = modifier(file, "file");
+			}
+
+			// Build the file path.
+			let fpath = `${dirname}/${file}`;
+
+			// Store the file information.
+			__file.dirname = fpath;
+			__file.name = file;
+			__file.alias = alias_file;
+			// <li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
+			// 	<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
+			// 	<a class="link" href="#" data-file="${fpath}">${alias_file}</a>
+			// </li>
+			__file.html = `
+		<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 			<div class="flex l-2-main-cont">
 				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
 				<span class="link-headings-count">$0</span>
 			</div>
 		</li>`;
-		// All processed file headings will be contained here.
-		__file.headings = [];
+			// All processed file headings will be contained here.
+			__file.headings = [];
 
-		// Build the file path.
-		let __path = path.join("./", root, `${dirname}/`, `${file}.md`);
-		// Get the absolute path for the file.
-		__path = findup.sync(__path);
+			// Build the file path.
+			let __path = path.join("./", root, `${dirname}/`, `${file}.md`);
+			// Get the absolute path for the file.
+			__path = findup.sync(__path);
 
-		// Store the first file.
-		if (!first_file) {
-			// Attach the first file to the config object.
-			config.first_file = `${fpath}`;
-			// Set the flag to true.
-			first_file = true;
-		}
-
-		// Placehold the eventual file before parsed/modified/worked on contents. Once the
-		// promise is resolved the -1 will be replaced with the actual worked on file contents.
-		// This is done do maintain the file's array order. As promises end once they are
-		// resolved, smaller files end quicker. This sometimes causes for the files to be added
-		// in the wrong order.
-		config.files[`${fpath}`] = -1;
-
-		// Create a Promise for each file.
-		let promise = new Promise(function(resolve, reject) {
-			// Found headings in the file will be stored in this array.
-			let headings = [
-				`<ul class="file-headers headings-cont" id="menu-headers-${counter_file}" data-dir="${counter_dir}">`
-			];
-
-			// Get the file contents.
-			let contents = fs.readFile(__path, "utf8", function(err, contents) {
-				if (err) {
-					return reject([`${__path} could not be opened.`, err]);
-				}
-
-				// var error = print.gulp.error;
-				// var info = print.gulp.info;
-				// var warn = print.gulp.warn;
-				// var success = print.gulp.success;
-				// var ln = print.ln;
-
-				// Remove any HTML comments as having comments close to markup
-				// causes marked to parse it :/.
-				contents = removeHtmlComments(contents).data;
-
-				// Convert the custom tags.
-				contents = convert_ctags(contents);
-
-				// Render markdown.
-				contents = mdzero.render(contents);
-
-				// Block-quote fix (encode HTML entities/backticks).
-				contents = contents.replace(
-					/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/gim,
-					function(match) {
-						var matches = match.match(
-							/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/i
-						);
-
-						// Parts.
-						var meta = matches[1] || "";
-						var content = matches[2];
-
-						// Now sanitize the content.
-						// Replace all br tags to new lines.
-						// [https://stackoverflow.com/a/5959455]
-						content = content.replace(
-							/<br\s*[\/]?>/gi,
-							"[dd::space]"
-						);
-						// Encode HTML entities.
-						// content = entities.encode(content);
-						// Encode backticks.
-						content = content.replace(/`/gm, "&#96;");
-						// Add back br tags.
-						content = content.replace(/\[dd\:\:space\]/g, "<br>");
-
-						return `<blockquote${meta}>${content}</blockquote>`;
-					}
+			// If the file was not found give a warning and skip it.
+			if (!__path) {
+				print.gulp.warn(
+					"Skipping",
+					chalk.magenta(`${fpath}`),
+					"(file not found)"
 				);
+				// Remove the item from the __dir.files array.
+				__dir.files.pop();
+				return;
+			}
 
-				// Get any HTML Code blocks (i.e. <pre><code></code></pre>, <code></code>).
-				contents = contents.replace(
-					/<(pre|code)\b(.*?)>([\s\S]*?)<\/\1>/gim,
-					function(match) {
-						// Determine whether match is <pre><code>, <pre>, or
-						// a <code> block.
-						if (/^<code/.test(match)) {
-							// A code block does not need its contents
-							// highlighted so leave it alone.
+			// Store the first file.
+			if (!__dir.first_file) {
+				__dir.first_file = `${fpath}`;
+			}
 
-							lookup_codeblocks.push(match);
-							return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
-						} else {
-							if (/<pre\b(.*?)>\s*<code/.test(match)) {
-								// A <pre><code>... block.
+			// Placehold the eventual file before parsed/modified/worked on contents. Once the
+			// promise is resolved the -1 will be replaced with the actual worked on file contents.
+			// This is done do maintain the file's array order. As promises end once they are
+			// resolved, smaller files end quicker. This sometimes causes for the files to be added
+			// in the wrong order.
+			// config.files.user[`${fpath}`] = -1;
+			__dir.contents[`${fpath}`] = -1;
 
-								// Look for a lang attr in either the
-								// code or pre element.
-								var lang = (match.match(
-									/<code\b(.*?)lang=("|')(.*?)\2(.*?)>/im
-								) ||
-									match.match(
+			// Create a Promise for each file.
+			let promise = new Promise(function(resolve, reject) {
+				// Found headings in the file will be stored in this array.
+				let headings = [
+					`<ul class="file-headers headings-cont" id="menu-headers-${counter_dir}.${counter_file}" data-dir="${counter_dir}">`
+				];
+
+				// Get the file contents.
+				let contents = fs.readFile(__path, "utf8", function(
+					err,
+					contents
+				) {
+					if (err) {
+						return reject([`${__path} could not be opened.`, err]);
+					}
+
+					// var error = print.gulp.error;
+					// var info = print.gulp.info;
+					// var warn = print.gulp.warn;
+					// var success = print.gulp.success;
+					// var ln = print.ln;
+
+					// Remove any HTML comments as having comments close to markup
+					// causes marked to parse it :/.
+					contents = removeHtmlComments(contents).data;
+
+					// Convert the custom tags.
+					contents = convert_ctags(contents);
+
+					// Render markdown.
+					contents = mdzero.render(contents);
+
+					// Block-quote fix (encode HTML entities/backticks).
+					contents = contents.replace(
+						/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/gim,
+						function(match) {
+							var matches = match.match(
+								/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/i
+							);
+
+							// Parts.
+							var meta = matches[1] || "";
+							var content = matches[2];
+
+							// Now sanitize the content.
+							// Replace all br tags to new lines.
+							// [https://stackoverflow.com/a/5959455]
+							content = content.replace(
+								/<br\s*[\/]?>/gi,
+								"[dd::space]"
+							);
+							// Encode HTML entities.
+							// content = entities.encode(content);
+							// Encode backticks.
+							content = content.replace(/`/gm, "&#96;");
+							// Add back br tags.
+							content = content.replace(
+								/\[dd\:\:space\]/g,
+								"<br>"
+							);
+
+							return `<blockquote${meta}>${content}</blockquote>`;
+						}
+					);
+
+					// Get any HTML Code blocks (i.e. <pre><code></code></pre>, <code></code>).
+					contents = contents.replace(
+						/<(pre|code)\b(.*?)>([\s\S]*?)<\/\1>/gim,
+						function(match) {
+							// Determine whether match is <pre><code>, <pre>, or
+							// a <code> block.
+							if (/^<code/.test(match)) {
+								// A code block does not need its contents
+								// highlighted so leave it alone.
+
+								lookup_codeblocks.push(match);
+								return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+							} else {
+								if (/<pre\b(.*?)>\s*<code/.test(match)) {
+									// A <pre><code>... block.
+
+									// Look for a lang attr in either the
+									// code or pre element.
+									var lang = (match.match(
+										/<code\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+									) ||
+										match.match(
+											/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+										) || [, , , ""])[3];
+
+									// Get the content between the code tags.
+									var content = (match.match(
+										/<code\b(.*?)>([\s\S]*?)<\/code>/im
+									) || [, , ""])[2];
+
+									// [https://stackoverflow.com/a/6234804]
+									// [https://github.com/cheeriojs/cheerio#loading]
+
+									// Get the text/code.
+									content = entities.decode(content);
+
+									match = match
+										.replace(
+											/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
+											"$1$4"
+										)
+										.replace(
+											/(<code\b.*?)(lang=("|').*?\3)(.*?>)/im,
+											`$1 lang="${lang}" $4`
+										);
+
+									var highlighted = highlight(content, lang);
+
+									// Generate a special ID for the pre element.
+									var uid = `tmp-${id(20)}${id(20)}${id(
+										20
+									)}${id(20)}`;
+
+									lookup_codeblocks.push([
+										`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+									]);
+									return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+								} else {
+									// A <pre> only block.
+
+									// Look for a lang attr.
+									var lang = (match.match(
 										/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
 									) || [, , , ""])[3];
 
-								// Get the content between the code tags.
-								var content = (match.match(
-									/<code\b(.*?)>([\s\S]*?)<\/code>/im
-								) || [, , ""])[2];
+									// Get the content between the pre tags.
+									var content = (match.match(
+										/<pre\b(.*?)>([\s\S]*?)<\/pre>/im
+									) || [, , ""])[2];
 
-								// [https://stackoverflow.com/a/6234804]
-								// [https://github.com/cheeriojs/cheerio#loading]
+									// [https://stackoverflow.com/a/6234804]
+									// [https://github.com/cheeriojs/cheerio#loading]
 
-								// Get the text/code.
-								content = entities.decode(content);
+									// Get the text/code.
+									content = entities.decode(content);
 
-								match = match
-									.replace(
+									// Note: markdown-it litters the code with
+									// paragraph tags when the code contains line
+									// breaks :/.
+									if (/^<p>|<\/p>$/gm.test(content)) {
+										content = content.replace(
+											/^<p>|<\/p>$/gm,
+											""
+										);
+									}
+
+									match = match.replace(
 										/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
 										"$1$4"
-									)
-									.replace(
-										/(<code\b.*?)(lang=("|').*?\3)(.*?>)/im,
-										`$1 lang="${lang}" $4`
 									);
 
-								var highlighted = highlight(content, lang);
+									var highlighted = highlight(content, lang);
 
-								// Generate a special ID for the pre element.
-								var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(
-									20
-								)}`;
+									// Generate a special ID for the pre element.
+									var uid = `tmp-${id(20)}${id(20)}${id(
+										20
+									)}${id(20)}`;
 
-								lookup_codeblocks.push([
-									`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
-								]);
-								return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
-							} else {
-								// A <pre> only block.
-
-								// Look for a lang attr.
-								var lang = (match.match(
-									/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
-								) || [, , , ""])[3];
-
-								// Get the content between the pre tags.
-								var content = (match.match(
-									/<pre\b(.*?)>([\s\S]*?)<\/pre>/im
-								) || [, , ""])[2];
-
-								// [https://stackoverflow.com/a/6234804]
-								// [https://github.com/cheeriojs/cheerio#loading]
-
-								// Get the text/code.
-								content = entities.decode(content);
-
-								// Note: markdown-it litters the code with
-								// paragraph tags when the code contains line
-								// breaks :/.
-								if (/^<p>|<\/p>$/gm.test(content)) {
-									content = content.replace(
-										/^<p>|<\/p>$/gm,
-										""
-									);
+									lookup_codeblocks.push([
+										`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+									]);
+									return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 								}
-
-								match = match.replace(
-									/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
-									"$1$4"
-								);
-
-								var highlighted = highlight(content, lang);
-
-								// Generate a special ID for the pre element.
-								var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(
-									20
-								)}`;
-
-								lookup_codeblocks.push([
-									`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
-								]);
-								return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 							}
 						}
-					}
-				);
+					);
 
-				// Convert the custom tags.
-				contents = unwrap_ctags(contents);
+					// Convert the custom tags.
+					contents = unwrap_ctags(contents);
 
-				marked(contents, { renderer: renderer }, function(err, data) {
-					if (err) {
-						return reject([
-							`Marked rendering failed for ${__path}.`,
-							err
-						]);
-					}
+					marked(contents, { renderer: renderer }, function(
+						err,
+						data
+					) {
+						if (err) {
+							return reject([
+								`Marked rendering failed for ${__path}.`,
+								err
+							]);
+						}
 
-					// Expand the custom tags.
-					data = expand_ctags(data, fpath);
+						// Expand the custom tags.
+						data = expand_ctags(data, fpath);
 
-					var r = /\[dd\:\:\-codeblock-placeholder-\d+\]/g;
-					// Loop contents until all codeblocks have been filled back in.
-					while (r.test(data)) {
-						// Add back the code blocks.
-						data = data.replace(r, function(match) {
-							return lookup_codeblocks[
-								match.replace(/[^\d]/g, "") * 1
-							];
+						var r = /\[dd\:\:\-codeblock-placeholder-\d+\]/g;
+						// Loop contents until all codeblocks have been filled back in.
+						while (r.test(data)) {
+							// Add back the code blocks.
+							data = data.replace(r, function(match) {
+								return lookup_codeblocks[
+									match.replace(/[^\d]/g, "") * 1
+								];
+							});
+						}
+
+						// Use cheerio to parse the HTML data.
+						// [https://github.com/cheeriojs/cheerio/issues/957]
+						var $ = cheerio.load(data, {
+							// decodeEntities: false
 						});
-					}
 
-					// Use cheerio to parse the HTML data.
-					// [https://github.com/cheeriojs/cheerio/issues/957]
-					var $ = cheerio.load(data, {
-						// decodeEntities: false
-					});
-
-					// Grab all anchor elements to
-					$("a[href]").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-						// Get the attributes.
-						let attrs = $el.attr();
-						let href = attrs.href;
-						let href_untouched = href; // The original href.
-						let href_lower = href.toLowerCase();
-
-						// Clean the href.
-						href = href.replace(/^[-]+|[-]+$/g, "");
-
-						// Reset the name and ID attributes.
-						let name = attrs.name;
-						if (name && name.includes(href.replace(/^#/g, ""))) {
-							$el.attr("name", name.replace(/^[-]+|[-]+$/g, ""));
-						}
-						let id = attrs.id;
-						if (id && id.includes(href.replace(/^#/g, ""))) {
-							$el.attr("id", id.replace(/^[-]+|[-]+$/g, ""));
-						}
-
-						// If an href exists, and it is not an http(s) link or
-						// scheme-less URLs, and it ends with .md then we have
-						// a link that is another documentation file that needs
-						// to be linked to.
-						if (
-							!(
-								href_lower.startsWith("htt") ||
-								href_lower.startsWith("//")
-							) &&
-							href_lower.endsWith(".md")
-						) {
-							// Set the new href.
-							$el.attr("href", "#");
-
-							// Reset the href by removing any starting dot,
-							// forward-slashes, and the .md extension.
-							href = href.replace(/^[\.\/]+|\.md$/gi, "");
-
-							// Remove the root from the href.
-							if (href.startsWith(root)) {
-								href = href.replace(root, "");
-							}
-
-							// Add the dot slash to the href.
-							href = `./${href}`;
-
-							// Set the final href.
-							$el.attr("data-file", href);
-							// Set the untouched original href.
-							$el.attr("data-file-untouched", href_untouched);
-							// Set class to denote its a documentation link.
-							$el.addClass("link-doc");
-						} else {
-							// Open all http links in their own tabs by
-							// adding the _blank value. Skip hashes.
-							if (!href.startsWith("#")) {
-								$el.attr("target", "_blank");
-							}
-						}
-					});
-
-					// Add the GitHub octicon link/anchor.
-					$("h1, h2, h3, h4, h5, h6")
-						.filter(function(i, el) {
-							return !$(this)
-								.parents()
-								.filter(".dd-expandable-base").length;
-						})
-						.each(function(i, elem) {
+						// Grab all anchor elements to
+						$("a[href]").each(function(i, elem) {
 							// Cache the element.
 							let $el = $(this);
+							// Get the attributes.
+							let attrs = $el.attr();
+							let href = attrs.href;
+							let href_untouched = href; // The original href.
+							let href_lower = href.toLowerCase();
 
-							// Get the text.
-							let text = $el.text();
+							// Clean the href.
+							href = href.replace(/^[-]+|[-]+$/g, "");
 
-							// Skip if the text is empty.
-							if (text.trim() === "") {
-								return;
+							// Reset the name and ID attributes.
+							let name = attrs.name;
+							if (
+								name &&
+								name.includes(href.replace(/^#/g, ""))
+							) {
+								$el.attr(
+									"name",
+									name.replace(/^[-]+|[-]+$/g, "")
+								);
+							}
+							let id = attrs.id;
+							if (id && id.includes(href.replace(/^#/g, ""))) {
+								$el.attr("id", id.replace(/^[-]+|[-]+$/g, ""));
 							}
 
-							// Slugify the text.
-							let escaped_text = slugify(
-								text.replace(/\<\/?.*?\>|\&.*?\;/gm, "")
-							);
+							// If an href exists, and it is not an http(s) link or
+							// scheme-less URLs, and it ends with .md then we have
+							// a link that is another documentation file that needs
+							// to be linked to.
+							if (
+								!(
+									href_lower.startsWith("htt") ||
+									href_lower.startsWith("//")
+								) &&
+								href_lower.endsWith(".md")
+							) {
+								// Set the new href.
+								$el.attr("href", "#");
 
-							$el.attr("data-orig-text", entities.encode(text));
-							// $el.text(text);
-							// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
-							$el.append(`
+								// Reset the href by removing any starting dot,
+								// forward-slashes, and the .md extension.
+								href = href.replace(/^[\.\/]+|\.md$/gi, "");
+
+								// Remove the root from the href.
+								if (href.startsWith(root)) {
+									href = href.replace(root, "");
+								}
+
+								// Add the dot slash to the href.
+								href = `./${href}`;
+
+								// Set the final href.
+								$el.attr("data-file", href);
+								// Set the untouched original href.
+								$el.attr("data-file-untouched", href_untouched);
+								// Set class to denote its a documentation link.
+								$el.addClass("link-doc");
+							} else {
+								// Open all http links in their own tabs by
+								// adding the _blank value. Skip hashes.
+								if (!href.startsWith("#")) {
+									$el.attr("target", "_blank");
+								}
+							}
+						});
+
+						// Add the GitHub octicon link/anchor.
+						$("h1, h2, h3, h4, h5, h6")
+							.filter(function(i, el) {
+								return !$(this)
+									.parents()
+									.filter(".dd-expandable-base").length;
+							})
+							.each(function(i, elem) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Get the text.
+								let text = $el.text();
+
+								// Skip if the text is empty.
+								if (text.trim() === "") {
+									return;
+								}
+
+								// Slugify the text.
+								let escaped_text = slugify(
+									text.replace(/\<\/?.*?\>|\&.*?\;/gm, "")
+								);
+
+								$el.attr(
+									"data-orig-text",
+									entities.encode(text)
+								);
+								// $el.text(text);
+								// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
+								$el.append(`
 <a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
 	<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
 		<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
 		</path>
 	</svg>
 </a>`);
-						});
+							});
 
-					// Get all headings in the HTML.
-					var __headings = {};
-					$(
-						"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
-					)
-						.filter(function(i, el) {
-							return !$(this)
-								.parents()
-								.filter(".dd-expandable-base").length;
-						})
-						.each(function(i, elem) {
+						// Get all headings in the HTML.
+						var __headings = {};
+						$(
+							"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
+						)
+							.filter(function(i, el) {
+								return !$(this)
+									.parents()
+									.filter(".dd-expandable-base").length;
+							})
+							.each(function(i, elem) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Get the element id.
+								let id = $el.attr().id;
+
+								// If an ID does not exist just skip it.
+								if (!id) {
+									return;
+								}
+								// // Normalize the id by removing all hyphens.
+								// let normalized_id = id.replace(/-/g, " ").trim();
+
+								// Get the text (no HTML).
+								var value = $el
+									.parent()
+									.text()
+									.trim();
+								// Get the original text with HTML.
+								var otext = $el
+									.parent()
+									.attr("data-orig-text")
+									.trim();
+
+								// Remove any HTML tags from the text.
+								otext = otext.replace(
+									/\<\/?.*?\>|\&.*?\;/gm,
+									function(match) {
+										// Only allow emojis to pass.
+										if (
+											!match.startsWith(
+												'<img class="emoji"'
+											)
+										) {
+											// Remove tags.
+											return match.replace(
+												/\<\/?.*?\>|\&.*?\;/gm,
+												""
+											);
+										}
+
+										return match;
+									}
+								);
+
+								// Take into account same name headers. Append the
+								// suffix "-NUMBER" to the header href/id to make
+								// it unique.
+								if (!__headings[id]) {
+									var heading_count = "";
+									// Add it to the object.
+									__headings[id] = 1;
+								} else {
+									var heading_count = __headings[id];
+
+									// Reset  the element id.
+									$el.attr("id", `${id}-${heading_count}`);
+									$el.attr(
+										"href",
+										`${$el.attr().href}-${heading_count}`
+									);
+
+									// Increment the count.
+									__headings[id] = heading_count + 1;
+
+									// Add the hyphen.
+									heading_count = `-${heading_count}`;
+								}
+
+								// Add the second level menu template string.
+								headings.push(
+									// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
+									`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
+										/^[-]+|[-]+$/g,
+										""
+									)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
+								);
+							});
+						// Add the closing tag to the headings HTML.
+						headings.push("</ul>");
+
+						// Reset all the anchor href.
+						$("a[href]").each(function(i, elem) {
 							// Cache the element.
 							let $el = $(this);
 
+							// Get the attributes.
+							let attrs = $el.attr();
+
 							// Get the element id.
-							let id = $el.attr().id;
+							let href = attrs.href;
 
-							// If an ID does not exist just skip it.
-							if (!id) {
-								return;
-							}
-							// // Normalize the id by removing all hyphens.
-							// let normalized_id = id.replace(/-/g, " ").trim();
+							// Only work on hrefs starting with "#".
+							if (href.startsWith("#")) {
+								href = href.replace(/\#/g, "");
 
-							// Get the text (no HTML).
-							var value = $el
-								.parent()
-								.text()
-								.trim();
-							// Get the original text with HTML.
-							var otext = $el
-								.parent()
-								.attr("data-orig-text")
-								.trim();
-
-							// Remove any HTML tags from the text.
-							otext = otext.replace(
-								/\<\/?.*?\>|\&.*?\;/gm,
-								function(match) {
-									// Only allow emojis to pass.
-									if (
-										!match.startsWith('<img class="emoji"')
-									) {
-										// Remove tags.
-										return match.replace(
-											/\<\/?.*?\>|\&.*?\;/gm,
-											""
-										);
-									}
-
-									return match;
-								}
-							);
-
-							// Take into account same name headers. Append the
-							// suffix "-NUMBER" to the header href/id to make
-							// it unique.
-							if (!__headings[id]) {
-								var heading_count = "";
-								// Add it to the object.
-								__headings[id] = 1;
-							} else {
-								var heading_count = __headings[id];
-
-								// Reset  the element id.
-								$el.attr("id", `${id}-${heading_count}`);
 								$el.attr(
 									"href",
-									`${$el.attr().href}-${heading_count}`
+									"#" +
+										href
+											.replace(/_/g, "-")
+											.replace(/^[-]+|[-]+$/g, "")
 								);
-
-								// Increment the count.
-								__headings[id] = heading_count + 1;
-
-								// Add the hyphen.
-								heading_count = `-${heading_count}`;
 							}
 
-							// Add the second level menu template string.
-							headings.push(
-								// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
-								`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
-									/^[-]+|[-]+$/g,
-									""
-								)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
-							);
+							// Add the "link-heading" class only when the href
+							// attribute is the only attribute.
+							if (Object.keys(attrs).length === 1 && href) {
+								$el.addClass("link-heading");
+							}
 						});
-					// Add the closing tag to the headings HTML.
-					headings.push("</ul>");
 
-					// Reset all the anchor href.
-					$("a[href]").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
+						// Combine all the headings HTML and add to them to the
+						// file object.
+						__file.headings.push(headings.join(""));
 
-						// Get the attributes.
-						let attrs = $el.attr();
+						// Reset the headings count.
+						__file.html = __file.html.replace(
+							/\$0/,
+							headings.length - 2
+						);
 
-						// Get the element id.
-						let href = attrs.href;
+						// Add the header spacer.
+						$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
 
-						// Only work on hrefs starting with "#".
-						if (href.startsWith("#")) {
-							href = href.replace(/\#/g, "");
-
-							$el.attr(
-								"href",
-								"#" +
-									href
-										.replace(/_/g, "-")
-										.replace(/^[-]+|[-]+$/g, "")
-							);
-						}
-
-						// Add the "link-heading" class only when the href
-						// attribute is the only attribute.
-						if (Object.keys(attrs).length === 1 && href) {
-							$el.addClass("link-heading");
-						}
-					});
-
-					// Combine all the headings HTML and add to them to the
-					// file object.
-					__file.headings.push(headings.join(""));
-
-					// Reset the headings count.
-					__file.html = __file.html.replace(
-						/\$0/,
-						headings.length - 2
-					);
-
-					// Add the header spacer.
-					$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Get the next element.
-						var $next = $el.next()[0];
-						if ($next) {
-							// Don't add the spacer class if the header group
-							// is empty. (no siblings.)
-							var spacer_class = !/h[1-6]/i.test($next.name)
-								? " class='header-spacer'"
-								: "";
-							$el.after(`<div${spacer_class}></div>`);
-						}
-					});
-
-					// Hide all but the first code block.
-					$(".code-block-grouped").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Get the code blocks.
-						let $blocks = $el.find("pre");
-
-						// Hide all the blocks except the first.
-						if ($blocks.length) {
-							// // The first code block.
-							// $blocks
-							// 	.filter(function(i, el) {
-							// 		return i === 0;
-							// 	})
-							// 	.attr("class", "animate-fadein");
-							// The remaining code blocks.
-							$blocks = $blocks
-								.filter(function(i, el) {
-									return i !== 0;
-								})
-								// .attr("class", "none animate-fadein");
-								.attr("class", "none");
-						}
-					});
-
-					// Hide code blocks that are too big.
-					$("pre code[class^='lang']").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Get text (code) and file stats.
-						let text = $el.text().trim();
-						let line_count = text.split("\n").length;
-						let lines = add_commas_to_num(line_count);
-						let chars = add_commas_to_num(text.split("").length);
-
-						// Get the parent element.
-						let $parent = $el.parent();
-
-						// Note: Skip this entirely for codegroups.
-						// Check whether it's part of a codegroup.
-						var is_partof_codegroup = $el
-							.parents()
-							.filter(".code-block-grouped").length;
-
-						// Generate a special ID for the pre element.
-						var uid = `exp-${id(20)}${id(20)}`;
-
-						// If the code is > 40 lines show an expander.
-						if (line_count >= 40) {
-							// Get the language.
-							var classes = $el.attr()["class"];
-							var lang = " ";
-							if (classes) {
-								var langmatch = (` ${classes} `.match(
-									/ (lang-.+) /i
-								) || "")[1];
-								if (langmatch) {
-									langmatch = langmatch.replace(/lang-/i, "");
-									lang = ` <span class="show-code-lang">${langmatch}</span>`;
-								}
+							// Get the next element.
+							var $next = $el.next()[0];
+							if ($next) {
+								// Don't add the spacer class if the header group
+								// is empty. (no siblings.)
+								var spacer_class = !/h[1-6]/i.test($next.name)
+									? " class='header-spacer'"
+									: "";
+								$el.after(`<div${spacer_class}></div>`);
 							}
+						});
 
-							$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
+						// Hide all but the first code block.
+						$(".code-block-grouped").each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
+
+							// Get the code blocks.
+							let $blocks = $el.find("pre");
+
+							// Hide all the blocks except the first.
+							if ($blocks.length) {
+								// // The first code block.
+								// $blocks
+								// 	.filter(function(i, el) {
+								// 		return i === 0;
+								// 	})
+								// 	.attr("class", "animate-fadein");
+								// The remaining code blocks.
+								$blocks = $blocks
+									.filter(function(i, el) {
+										return i !== 0;
+									})
+									// .attr("class", "none animate-fadein");
+									.attr("class", "none");
+							}
+						});
+
+						// Hide code blocks that are too big.
+						$("pre code[class^='lang']").each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
+
+							// Get text (code) and file stats.
+							let text = $el.text().trim();
+							let line_count = text.split("\n").length;
+							let lines = add_commas_to_num(line_count);
+							let chars = add_commas_to_num(
+								text.split("").length
+							);
+
+							// Get the parent element.
+							let $parent = $el.parent();
+
+							// Note: Skip this entirely for codegroups.
+							// Check whether it's part of a codegroup.
+							var is_partof_codegroup = $el
+								.parents()
+								.filter(".code-block-grouped").length;
+
+							// Generate a special ID for the pre element.
+							var uid = `exp-${id(20)}${id(20)}`;
+
+							// If the code is > 40 lines show an expander.
+							if (line_count >= 40) {
+								// Get the language.
+								var classes = $el.attr()["class"];
+								var lang = " ";
+								if (classes) {
+									var langmatch = (` ${classes} `.match(
+										/ (lang-.+) /i
+									) || "")[1];
+									if (langmatch) {
+										langmatch = langmatch.replace(
+											/lang-/i,
+											""
+										);
+										lang = ` <span class="show-code-lang">${langmatch}</span>`;
+									}
+								}
+
+								$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
 											<div class="code-template code-template-len40"></div>
@@ -1585,204 +1644,214 @@ toc.forEach(function(directory) {
 									</div>
 								</div>`);
 
-							// Dont't add the buttons when the block is part of a group.
-							if (!is_partof_codegroup) {
-								// Add the action buttons
-								$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
+								// Dont't add the buttons when the block is part of a group.
+								if (!is_partof_codegroup) {
+									// Add the action buttons
+									$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
 												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span>
 												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}">collapse</span>
 							</div>`);
-							}
+								}
 
-							// Finally hide the element.
-							$parent.addClass("none");
-							$parent.addClass("animate-fadein");
-						} else {
-							// Dont't add the buttons when the block is part of a group.
-							if (!is_partof_codegroup) {
-								$parent.before(
-									`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
+								// Finally hide the element.
+								$parent.addClass("none");
+								$parent.addClass("animate-fadein");
+							} else {
+								// Dont't add the buttons when the block is part of a group.
+								if (!is_partof_codegroup) {
+									$parent.before(
+										`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
+									);
+								}
+							}
+							$parent.attr("id", uid);
+
+							// Set the line numbers element.
+
+							// Trim the HTML.
+							let html = $el.html().trim();
+							// Reset the HTML.
+							$el.html(html);
+							// Get the text.
+							text = $el.text();
+							// Get the number of lines.
+							lines = text.split("\n").length;
+
+							// Get the lines to highlight.
+							var _lines = lines_to_highlight($el);
+
+							var line_nums = [];
+							for (var i = 0, l = lines; i < l; i++) {
+								// Check whether the line needs to be highlighted.
+								var needs_highlight = _lines.includes(i + 1)
+									? " class='line-block-highlight'"
+									: "";
+								line_nums.push(
+									`<div class="line-num-cont"><span${needs_highlight}>${i +
+										1}</span></div>`
 								);
 							}
-						}
-						$parent.attr("id", uid);
 
-						// Set the line numbers element.
+							// Make the "line" highlight HTML.
+							var line_nums2 = [];
+							for (var i = 0, l = lines; i < l; i++) {
+								// Check whether the line needs to be highlighted.
+								var needs_highlight = _lines.includes(i + 1)
+									? " lang-code-line-highlight"
+									: "";
+								line_nums2.push(
+									`<div class="line-num-cont${needs_highlight}"> </div>`
+								);
+							}
 
-						// Trim the HTML.
-						let html = $el.html().trim();
-						// Reset the HTML.
-						$el.html(html);
-						// Get the text.
-						text = $el.text();
-						// Get the number of lines.
-						lines = text.split("\n").length;
+							// Add the block code name.
+							var blockname_html = "";
+							var top_pad_fix = "";
+							// Check for line highlight numbers/ranges.
+							var blockname = $el.attr()["data-block-name"] || "";
+							if (blockname) {
+								blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
+								top_pad_fix = "padtop-26";
+								$el.addClass(top_pad_fix);
+							}
 
-						// Get the lines to highlight.
-						var _lines = lines_to_highlight($el);
-
-						var line_nums = [];
-						for (var i = 0, l = lines; i < l; i++) {
-							// Check whether the line needs to be highlighted.
-							var needs_highlight = _lines.includes(i + 1)
-								? " class='line-block-highlight'"
-								: "";
-							line_nums.push(
-								`<div class="line-num-cont"><span${needs_highlight}>${i +
-									1}</span></div>`
+							// Add the line numbers HTML.
+							$parent.prepend(
+								// Note: Insert a duplicate element to allow the
+								// second element to be able to be "fixed". This
+								// allows the code element to be properly adjacent
+								// to the fixed element.
+								`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
+									""
+								)}</div><div class="line-num line-num-third noselect pnone ${top_pad_fix}">${line_nums2.join(
+									""
+								)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
+									""
+								)}</div>`
 							);
-						}
-
-						// Make the "line" highlight HTML.
-						var line_nums2 = [];
-						for (var i = 0, l = lines; i < l; i++) {
-							// Check whether the line needs to be highlighted.
-							var needs_highlight = _lines.includes(i + 1)
-								? " lang-code-line-highlight"
-								: "";
-							line_nums2.push(
-								`<div class="line-num-cont${needs_highlight}"> </div>`
-							);
-						}
-
-						// Add the block code name.
-						var blockname_html = "";
-						var top_pad_fix = "";
-						// Check for line highlight numbers/ranges.
-						var blockname = $el.attr()["data-block-name"] || "";
-						if (blockname) {
-							blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
-							top_pad_fix = "padtop-26";
-							$el.addClass(top_pad_fix);
-						}
-
-						// Add the line numbers HTML.
-						$parent.prepend(
-							// Note: Insert a duplicate element to allow the
-							// second element to be able to be "fixed". This
-							// allows the code element to be properly adjacent
-							// to the fixed element.
-							`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
-								""
-							)}</div><div class="line-num line-num-third noselect pnone ${top_pad_fix}">${line_nums2.join(
-								""
-							)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
-								""
-							)}</div>`
-						);
-					});
-
-					// Hide code blocks that are too big.
-					$("pre code[class^='lang']").each(function(i, elem) {
-						// Cache the element.
-						let $el = $(this);
-
-						// Get text (code) and file stats.
-						let text = $el.html().trim();
-
-						// Store the original text.
-						$el.attr(
-							"data-orig-text",
-							entities.decode($el.text().replace(/\s*$/, ""))
-						);
-					});
-
-					// Finally reset the data to the newly parsed/modified HTML.
-					// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
-					data = $.html().replace(/<\/?(html|body|head)>/gi, "");
-
-					// Wrap the headers with their "contents".
-					// [https://stackoverflow.com/a/21420210]
-					var index_of_regexp = function(string, regex, fromIndex) {
-						var str = fromIndex
-							? string.substring(fromIndex)
-							: string;
-						var match = str.match(regex);
-						return match ? str.indexOf(match[0]) + fromIndex : -1;
-					};
-
-					var indices = [];
-					var index = index_of_regexp(data, /<h[1-6].*?>/i, 0);
-					while (index !== -1) {
-						indices.push(index);
-
-						index = index_of_regexp(
-							data,
-							/<h[1-6].*?>/i,
-							index + 1
-						);
-					}
-
-					// [https://stackoverflow.com/a/25329247]
-					// [https://stackoverflow.com/a/21420210]
-					// [https://stackoverflow.com/a/3410557]
-					// [https://stackoverflow.com/a/274094]
-					String.prototype.insertTextAtIndices = function(text) {
-						return this.replace(/./g, function(character, index) {
-							return text[index]
-								? text[index] + character
-								: character;
 						});
-					};
 
-					// Create the HTML inserts.
-					var inserts = {};
-					indices.forEach(function(index, i) {
-						// <h1st --> Start.
-						// <h2nd --> End+Start.
-						// <h3rd --> End+Start.
-						// <h4th --> End+Start, Find ending tag.
+						// Hide code blocks that are too big.
+						$("pre code[class^='lang']").each(function(i, elem) {
+							// Cache the element.
+							let $el = $(this);
 
-						// Start.
-						if (i === 0) {
-							inserts[index] =
-								'<div class="header-content-ddwrap">';
-							// End+Start.
-						} else if (i === indices.length - 1) {
-							inserts[index] =
-								'</div><div class="header-content-ddwrap">';
-							inserts[data.length] = "</div>";
-						} else {
-							// End+Start, Find ending tag.
-							inserts[index] =
-								'</div><div class="header-content-ddwrap">';
+							// Get text (code) and file stats.
+							let text = $el.html().trim();
+
+							// Store the original text.
+							$el.attr(
+								"data-orig-text",
+								entities.decode($el.text().replace(/\s*$/, ""))
+							);
+						});
+
+						// Finally reset the data to the newly parsed/modified HTML.
+						// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
+						data = $.html().replace(/<\/?(html|body|head)>/gi, "");
+
+						// Wrap the headers with their "contents".
+						// [https://stackoverflow.com/a/21420210]
+						var index_of_regexp = function(
+							string,
+							regex,
+							fromIndex
+						) {
+							var str = fromIndex
+								? string.substring(fromIndex)
+								: string;
+							var match = str.match(regex);
+							return match
+								? str.indexOf(match[0]) + fromIndex
+								: -1;
+						};
+
+						var indices = [];
+						var index = index_of_regexp(data, /<h[1-6].*?>/i, 0);
+						while (index !== -1) {
+							indices.push(index);
+
+							index = index_of_regexp(
+								data,
+								/<h[1-6].*?>/i,
+								index + 1
+							);
 						}
+
+						// [https://stackoverflow.com/a/25329247]
+						// [https://stackoverflow.com/a/21420210]
+						// [https://stackoverflow.com/a/3410557]
+						// [https://stackoverflow.com/a/274094]
+						String.prototype.insertTextAtIndices = function(text) {
+							return this.replace(/./g, function(
+								character,
+								index
+							) {
+								return text[index]
+									? text[index] + character
+									: character;
+							});
+						};
+
+						// Create the HTML inserts.
+						var inserts = {};
+						indices.forEach(function(index, i) {
+							// <h1st --> Start.
+							// <h2nd --> End+Start.
+							// <h3rd --> End+Start.
+							// <h4th --> End+Start, Find ending tag.
+
+							// Start.
+							if (i === 0) {
+								inserts[index] =
+									'<div class="header-content-ddwrap">';
+								// End+Start.
+							} else if (i === indices.length - 1) {
+								inserts[index] =
+									'</div><div class="header-content-ddwrap">';
+								inserts[data.length] = "</div>";
+							} else {
+								// End+Start, Find ending tag.
+								inserts[index] =
+									'</div><div class="header-content-ddwrap">';
+							}
+						});
+
+						// Reset the data.
+						data = data.insertTextAtIndices(inserts);
+						// If a single insert exists the entire thing things to
+						// be wrapped.
+						if (Object.keys(inserts).length === 1) {
+							data = `${data}</div>`;
+						}
+
+						// Finally reset the data to the newly parsed/modified HTML.
+						data = `<div class="markdown-body animate-fadein">${data}</div>`;
+
+						// Add to the object.
+						var _placeholder = __dir.contents[`${fpath}`];
+						if (_placeholder && _placeholder === -1) {
+							// Set the actual contents to the data object.
+							__dir.contents[`${fpath}`] = data;
+						}
+
+						if (debug) {
+							print.gulp.info(
+								"Processed",
+								chalk.magenta(`${fpath}`)
+							);
+						}
+
+						// Finally, resolve the Promise and return the file path,
+						// data, and headings as the data.
+						resolve([__path, data, headings]);
 					});
-
-					// Reset the data.
-					data = data.insertTextAtIndices(inserts);
-					// If a single insert exists the entire thing things to
-					// be wrapped.
-					if (Object.keys(inserts).length === 1) {
-						data = `${data}</div>`;
-					}
-
-					// Finally reset the data to the newly parsed/modified HTML.
-					data = `<div class="markdown-body animate-fadein">${data}</div>`;
-
-					// Add to the object.
-					var _placeholder = config.files[`${fpath}`];
-					if (_placeholder && _placeholder === -1) {
-						// Set the actual contents to the data object.
-						config.files[`${fpath}`] = data;
-					}
-
-					if (debug) {
-						print.gulp.info("Processed", chalk.magenta(`${fpath}`));
-					}
-
-					// Finally, resolve the Promise and return the file path,
-					// data, and headings as the data.
-					resolve([__path, data, headings]);
 				});
 			});
+
+			// Push the Promise to the promises array.
+			promises.push(promise);
 		});
-
-		// Push the Promise to the promises array.
-		promises.push(promise);
-
-		// Increment the file counter.
-		counter_file++;
 	});
 });
 
@@ -1900,9 +1969,9 @@ gulp.task("js:app", function(done) {
 			]),
 			// Replace the default output path with the provided one.
 			$.replace(
-				/var\s*request_path\s+=\s*("|')(.*)\1;/,
-				`var request_path = $1${path
-					.join(outputpath, outputpath_filename)
+				/var\s*REQUEST_PATH\s+=\s*("|')(.*)\1;/i,
+				`var REQUEST_PATH = $1${path
+					.join(outputpath, "zdata", outputpath_filename)
 					.replace(process.cwd() + "/", "")}$1;`
 			),
 			// $.debug(),
@@ -1930,7 +1999,10 @@ gulp.task("html:app", function(done) {
 	let __path = outputpath.replace(/^[\.\/]+|\/$/g, "");
 
 	// Replace the paths in the error template.
-	config.files._404 = config.files._404.replace(/\$\{dir_path\}/g, __path);
+	config.files.internal._404 = config.files.internal._404.replace(
+		/\$\{dir_path\}/g,
+		__path
+	);
 
 	pump(
 		[
@@ -2013,25 +2085,135 @@ gulp.task("favicon:app", function(done) {
 // Save the configuration data in its own file to access it in the front-end.
 gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
-	config.logoHTML = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
-	config.menu = menu;
-	config.socials = links_html.join("");
+	config.html.logo = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
+	// config.menu = menu;
+	config.html.socials = links_html.join("");
+
+	var __path = path.join(outputpath, "/zdata");
 
 	pump(
 		[
 			// Create the file via gulp-file and use is at the Gulp.src.
-			$.file(outputpath_filename, JSON.stringify(config), {
+			$.file(outputpath_filename, JSON.stringify(config, null, 4), {
 				src: true
 			}),
 			// $.debug.edit(),
-			gulp.dest(path.join(outputpath))
+			gulp.dest(__path)
 		],
 		function() {
 			if (debug) {
-				print.gulp.info("Saved devdocs JSON configuration data file.");
+				print.gulp.info(
+					"Saved",
+					chalk.magenta(`${path.join(__path, outputpath_filename)}`),
+					"(main data file)"
+				);
 			}
 
-			done();
+			var fpromises = [];
+
+			// Loop over the dirs array and save each object into its own file.
+			dirs.forEach(function(dir) {
+				var menu = [];
+
+				// Loop over the directories to make the menu HTML.
+				dir.forEach(function(directory, index) {
+					let html = [];
+
+					// Loop over all files  to get the HTML and headings.
+					directory.files.forEach(function(file) {
+						// html.push(file.html, file.headings);
+						html.push(file.html);
+					});
+
+					// Create the submenu for the current directory.
+					menu.push(
+						remove_space(`<ul class="submenu">
+						${directory.html}
+						<li>
+							<div class="menu-section-cont" data-dir="${index}">
+								<div id="no-matches-cont" class="no-matches-cont none">
+									<div class="no-matches-cont-inner">
+										<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>
+									</div>
+								</div>
+								<ul>
+									${html.join("")}
+								</ul>
+							</div>
+						</li>
+						</ul>`)
+					);
+				});
+
+				dir.menu = menu;
+
+				fpromises.push(
+					new Promise(function(resolve, reject) {
+						var outputpath = path.join(
+							__path,
+							outputpath_filename.replace(
+								/(\.json)$/,
+								`-${dir.version}$1`
+							)
+						);
+
+						var jstring = JSON.stringify(
+							{ dirs: dir, menu: menu, outputpath: outputpath },
+							null,
+							4
+						);
+						fs.writeFile(outputpath, jstring, function(err) {
+							if (err) {
+								return reject([
+									`${outputpath} could not be opened.`,
+									err
+								]);
+							}
+
+							// // Add the output path.
+							// dir.outputpath = outputpath;
+
+							if (debug) {
+								print.gulp.info(
+									"Saved",
+									chalk.magenta(`${outputpath}`),
+									"(version data file)"
+								);
+							}
+
+							resolve([dir]);
+						});
+					})
+				);
+			});
+
+			// Run all the promises.
+			return Promise.all(fpromises)
+				.then(
+					function(values) {
+						if (debug) {
+							print.gulp.info(
+								"All data/version promises completed."
+							);
+						}
+
+						done();
+					},
+					function(err) {
+						print.gulp.error(
+							"Failed to save data/versions JSON files."
+						);
+						print(err);
+					}
+				)
+				.catch(function(err) {
+					if (typeof err[0] === "string") {
+						print.gulp.error(err[0]);
+						print(err[1]);
+					} else {
+						print(err);
+					}
+				});
 		}
 	);
 });
@@ -2043,36 +2225,6 @@ Promise.all(promises)
 			if (debug) {
 				print.gulp.info("All promises completed.");
 			}
-
-			// Loop over the directories to make the menu HTML.
-			config.dirs.forEach(function(directory) {
-				let html = [];
-
-				// Loop over all files  to get the HTML and headings.
-				directory.files.forEach(function(file) {
-					// html.push(file.html, file.headings);
-					html.push(file.html);
-				});
-
-				// Create the submenu for the current directory.
-				menu.push(
-					remove_space(`<ul class="submenu">
-					${directory.html}
-					<li>
-						<div class="menu-section-cont">
-							<div id="no-matches-cont" class="no-matches-cont none">
-								<div class="no-matches-cont-inner">
-									<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>
-								</div>
-							</div>
-							<ul>
-								${html.join("")}
-							</ul>
-						</div>
-					</li>
-					</ul>`)
-				);
-			});
 
 			// Run the tasks.
 			sequence.apply(null, [

@@ -33,9 +33,14 @@ document.onreadystatechange = function() {
 		var $copied_message = document.getElementById("copied-message");
 		var $search_cont = document.getElementById("search-cont");
 		var $search_cont_inner = document.getElementById("search-cont-inner");
-		var $clear_search = document.getElementById("search-clear");
+		// var $clear_search = document.getElementById("search-clear");
 		var $sinput = document.getElementById("sinput");
 		var $no_matches_cont; // = document.getElementById("no-matches-cont");
+		var $versions_cont = document.getElementById("versions-list-cont");
+		var $version_cont = document.getElementById("version-cont");
+		var $vlist = document.getElementById("v-list-wrapper");
+		var $current_version = document.getElementById("current-version");
+		var $no_matches_cont_v = document.getElementById("no-matches-cont-v");
 
 		// Variables //
 
@@ -773,7 +778,54 @@ document.onreadystatechange = function() {
 			return typeof Event === "function";
 		};
 
+		/**
+		 * @description [Escapes string to use it as a regexp.]
+		 * @param  {String} string [The literal string to escape.]
+		 * @return {String}                [The escaped string.]
+		 * @source [https://stackoverflow.com/questions/3561493/is-there-a-regexp-escape-function-in-javascript]
+		 * @source [https://stackoverflow.com/a/30851002]
+		 *
+		 */
+		var regexp_escape = function(string) {
+			return string.replace(/[-[\]{}()*+!<=:?.\/\\^$|#\s,]/g, "\\$&");
+		};
+
+		/**
+		 * Check whether the child element is in "view" or hidden
+		 * in the parent's overflow.
+		 *
+		 * @param  {htmlelement} container - The parent element.
+		 * @param  {htmlelement} element - The child element.
+		 * @param  {boolean} partial - Whether the child's visibility
+		 *     can be partial. By default the function looks to whether
+		 *     the element is completely hidden.
+		 * @return {boolean} - Wheter the child element is visible.
+		 *
+		 * @resource [https://stackoverflow.com/a/37285344]
+		 */
+		var is_in_view = function(container, element, partial) {
+			//Get container properties
+			let cTop = container.scrollTop;
+			let cBottom = cTop + container.clientHeight;
+
+			//Get element properties
+			let eTop = element.offsetTop;
+			let eBottom = eTop + element.clientHeight;
+
+			//Check if in view
+			let isTotal = eTop >= cTop && eBottom <= cBottom;
+			let isPartial =
+				partial &&
+				((eTop < cTop && eBottom > cTop) ||
+					(eBottom > cBottom && eTop < cBottom));
+
+			//Return outcome
+			return isTotal || isPartial;
+		};
+
 		// ------------------------------------------------------------
+
+		var __data;
 
 		// Create a new HTTP request.
 		var req = new http(REQUEST_PATH);
@@ -801,6 +853,72 @@ document.onreadystatechange = function() {
 				}
 			})
 			.then(function(data) {
+				__data = data;
+
+				// // Note: Pre-load logo to prevent "blinking in".
+				// return new Promise(function(resolve, reject) {
+				// Get the version.
+				var params = parameters();
+
+				// Get the version.
+				var version = params.v;
+				if (!version) {
+					// Get the latest version.
+					version = data.latest;
+
+					if (!version) {
+						// Reject if no version supplied.
+						return Promise.reject("No version was supplied.");
+					}
+				}
+
+				// Create a new HTTP request.
+				var req = new http(
+					REQUEST_PATH.replace(
+						/^(.*)\/data\.json/,
+						`$1/data-${version}.json`
+					)
+				);
+				// Parse the data as JSON.
+				req.parseJSON(true);
+				// Run the request.
+
+				return req.run();
+				// }).then(null, function() {
+				// 	return "Failed to load version data file.";
+				// });
+			})
+			.then(function(xhr) {
+				if (
+					xhr.status >= 200 &&
+					xhr.status < 300 &&
+					xhr.readyState === 4
+				) {
+					// Return the JSON response.
+					return xhr.responseJSON;
+				} else {
+					return Promise.reject("Failed to load version data file.");
+				}
+			})
+			.then(function(data) {
+				// Combine the data sets.
+				__data.dirs = data.dirs;
+				__data.html.menu = data.menu;
+				__data.outputpath = data.outputpath;
+
+				// Get the file contents.
+				var contents = {};
+				__data.dirs.forEach(function(dir) {
+					contents = Object.assign(contents, dir.contents);
+				});
+				__data.files.user = contents;
+
+				// Get the first file.
+				__data.first_file = __data.dirs[0].first_file;
+
+				// Reset the var.
+				data = __data;
+
 				/**
 				 * Add MacOS scrollbars style sheet.
 				 *
@@ -836,7 +954,7 @@ document.onreadystatechange = function() {
 					}
 
 					// Add the styles.
-					data.styles_macos_sb.forEach(function(rule, index) {
+					data.html.styles_macos_sb.forEach(function(rule, index) {
 						sheet.insertRule(rule, sheet.cssRules.length);
 					});
 				})();
@@ -930,7 +1048,7 @@ document.onreadystatechange = function() {
 					$moverlay.classList.remove("none");
 
 					// Show the topbar loader.
-					// $tb_loader.innerHTML = data.loader;
+					// $tb_loader.innerHTML = data.html.loader;
 					$tb_loader.innerHTML = cssloader("dark", 16);
 					$tb_loader.classList.remove("none");
 				}
@@ -964,8 +1082,8 @@ document.onreadystatechange = function() {
 					// Hide the arrow element.
 					$el.children[0].classList.add("none");
 					// Add the loader.
-					// $el.insertAdjacentHTML("afterbegin", data.loader);
-					// $el.children[0].insertAdjacentHTML("afterend", data.loader);
+					// $el.insertAdjacentHTML("afterbegin", data.html.loader);
+					// $el.children[0].insertAdjacentHTML("afterend", data.html.loader);
 					$el.children[0].insertAdjacentHTML(
 						"afterend",
 						cssloader("dark", 10)
@@ -1491,12 +1609,12 @@ document.onreadystatechange = function() {
 					}
 
 					// Get the file content.
-					var file = data.files[filename];
+					var file = data.files.user[filename];
 
 					// Show 404 file when selected file does not exist.
 					if (!file) {
 						var error_404 = "_404";
-						file = data.files[error_404];
+						file = data.files.internal[error_404];
 						filename = error_404;
 					}
 
@@ -1542,7 +1660,11 @@ document.onreadystatechange = function() {
 									averageFps
 								) {
 									var $ulp = document.querySelector(
-										".menu-section-cont"
+										`.menu-section-cont[data-dir='${id.split(
+											"."
+										)[0] *
+											1 -
+											1}']`
 									).children[1];
 
 									// Remove the UL if it exists.
@@ -1597,7 +1719,8 @@ document.onreadystatechange = function() {
 
 							if (!$ul) {
 								// Embed the current sub-menu list.
-								var dirs = data.dirs[0].files;
+								var dirs =
+									data.dirs[id.split(".")[0] * 1 - 1].files;
 								for (var i = 0, l = dirs.length; i < l; i++) {
 									var dir = dirs[i];
 									if (dir.dirname === filename) {
@@ -2085,6 +2208,26 @@ document.onreadystatechange = function() {
 					return false;
 				}
 
+				function is_version_option($el) {
+					// Get the target element parents.
+					var parents = build_path({ target: $el });
+
+					// Loop over the parents and check if any is a header
+					// element.
+					for (var i = 0, l = parents.length; i < l; i++) {
+						var parent = parents[i];
+						if (
+							parent.classList &&
+							parent.classList.contains("version-option")
+						) {
+							return parent;
+						}
+					}
+
+					// Not the element needed.
+					return false;
+				}
+
 				function is_search_element($el) {
 					// Get the target element parents.
 					var parents = build_path({ target: $el });
@@ -2187,7 +2330,7 @@ document.onreadystatechange = function() {
 					return false;
 				}
 
-				function trigger_sinput(value) {
+				function trigger_sinput(value, $el) {
 					var event;
 
 					// [https://stackoverflow.com/a/35659572]
@@ -2205,8 +2348,8 @@ document.onreadystatechange = function() {
 					}
 
 					// Clear the search and trigger the input event.
-					$sinput.value = decodeURIComponent(value || "");
-					$sinput.dispatchEvent(event);
+					$el.value = decodeURIComponent(value || "");
+					$el.dispatchEvent(event);
 				}
 
 				// AppCode:Scoped:Inner //
@@ -2222,13 +2365,50 @@ document.onreadystatechange = function() {
 						document.getElementById(
 							"menu-dynamic-cont-logo"
 						).innerHTML =
-							data.logoHTML;
+							data.html.logo;
 					}
+
+					// Get the version.
+					var params = parameters();
+					// Get the version.
+					var version = params.v || data.latest;
+
+					// Show the versions container.
+					$version_cont.classList.remove("none");
+					// Add the versions.
+					var versions = data.versions;
+					var latest = data.latest;
+					var versions_html = [];
+					versions.forEach(function(v) {
+						var html; //<i class="fa-check fas mr5"></i>
+						versions_html.push(
+							`<div class="version-option" data-v="${v}">` +
+								(v === version
+									? '<i class="fa-check fas mr5"></i>'
+									: "") +
+								`<span class="v-text">${v}</span>` +
+								(v === latest
+									? '<span class="version-latest">latest</span>'
+									: "") +
+								`</div>`
+						);
+					});
+					// Inject the versions list.
+					$vlist.innerHTML = versions_html.join("");
+					// Set the current version.
+					$current_version.innerHTML = `Version: ${version}`; // +
+					$current_version.insertAdjacentHTML(
+						"afterend",
+						version === latest
+							? '<span class="version-latest">latest</span>'
+							: '<span class="version-latest version-latest-not">not latest</span>'
+					);
+					$current_version.setAttribute("data-v", version);
 
 					// Add the sidebar HTML.
 					document.getElementById(
 						"menu-dynamic-cont"
-					).innerHTML = data.menu.join("");
+					).innerHTML = data.html.menu.join("");
 
 					// [https://davidwalsh.name/nodelist-array]
 					$l_2 = Array.prototype.slice.call(
@@ -2252,12 +2432,12 @@ document.onreadystatechange = function() {
 					// }
 
 					// Add the social links.
-					if (data.socials) {
+					if (data.html.socials) {
 						document
 							.getElementById("sidebar")
 							.children[1].insertAdjacentHTML(
 								"beforeend",
-								data.socials
+								data.html.socials
 							);
 					}
 
@@ -2278,7 +2458,7 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					show_tb_loader();
-					inject(params.page ? params.page : data.first_file);
+					inject(params.p ? params.p : data.first_file);
 
 					// // Inject CSS to page.
 					// var stylesheets = document.styleSheets;
@@ -2461,7 +2641,7 @@ document.onreadystatechange = function() {
 				// When the URL changes (history) update the HTML content.
 				window.addEventListener("popstate", function(event) {
 					// Clear/reset the sinput.
-					trigger_sinput();
+					trigger_sinput(null, $sinput);
 
 					// Parse the URL query parameters.
 					var params = parameters();
@@ -2470,7 +2650,7 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					show_tb_loader();
-					inject(params.page ? params.page : data.first_file);
+					inject(params.p ? params.p : data.first_file);
 				});
 
 				// When the URL changes (history) update the HTML content.
@@ -2731,6 +2911,14 @@ document.onreadystatechange = function() {
 					// Unfocus the search input.
 					$search_cont.classList.remove("sinput-focused");
 
+					// Hide the versions container.
+					if (
+						!$versions_cont.classList.contains("none") &&
+						!$versions_cont.contains($target)
+					) {
+						$versions_cont.classList.add("none");
+					}
+
 					// Since using event delegation, check that the clicked
 					// element is either the anchor element containing the
 					// needed data-attribute or the anchor's parent li
@@ -2832,7 +3020,7 @@ document.onreadystatechange = function() {
 						// Reset the target element.
 						$target = document.querySelector(
 							`a.link[data-file='${filename}']`
-						).parentNode;
+						).parentNode.parentNode;
 					} else if (
 						classes.contains("mobile-menu-ham") &&
 						$overlay.style.display !== "block"
@@ -2963,12 +3151,21 @@ document.onreadystatechange = function() {
 							reset_cblock_width_highlight();
 						}, 300);
 					} else if (is_search_element($target)) {
-						if (is_search_clear($target)) {
-							trigger_sinput();
+						// Save a reference to the old target before reset.
+						var $tar = $target;
+						// Reset the target.
+						$target = is_search_element($target);
+
+						var $input = $target.parentNode.getElementsByClassName(
+							"sinput"
+						)[0];
+
+						if (is_search_clear($tar)) {
+							trigger_sinput(null, $input);
 						}
 
 						$search_cont.classList.add("sinput-focused");
-						$sinput.focus();
+						$input.focus();
 
 						// // Skip when the element already has focus.
 						// var $active = document.activeElement;
@@ -2977,6 +3174,70 @@ document.onreadystatechange = function() {
 						// 	$sinput.focus();
 						// 	e.preventDefault();
 						// }
+					} else if (classes.contains("current-version")) {
+						// Show the versions container.
+						$versions_cont.classList.remove("none");
+
+						// Un-highlight current last highlighted version.
+						var $last = document.querySelector(`.active-version`);
+						if ($last) {
+							$last.classList.remove("active-version");
+						}
+						// Highlight the current
+						var $cur = document.querySelector(
+							`.version-option[data-v='${$current_version.getAttribute(
+								"data-v"
+							)}']`
+						);
+						if ($cur) {
+							$cur.classList.add("active-version");
+
+							// Update the scroll-y position.
+							$vlist.scrollTop = $cur.offsetTop;
+						}
+
+						// Only focus when there is no active version.
+						// if (!document.querySelector(".active-version")) {
+						// Focus on the input.
+						$versions_cont.getElementsByTagName("input")[0].focus();
+						// }
+
+						// } else if (classes.contains("version-option")) {
+					} else if (is_version_option($target)) {
+						// Reset the target.
+						$target = is_version_option($target);
+
+						// Get the version.
+						var version = $target.getAttribute("data-v");
+
+						// Get the parameters.
+						var params = parameters();
+
+						// Get the current version.
+						var current_version = $current_version.getAttribute(
+							"data-v"
+						);
+
+						// Return if the version is the current version.
+						if (version === current_version) {
+							// Hide the versions container.
+							$versions_cont.classList.add("none");
+
+							e.preventDefault();
+							return;
+						}
+
+						// Set the new version.
+						params.v = version;
+
+						// Add the version to the URL.
+						history.pushState({}, null, parameters.build(params));
+
+						// Reload the page.
+						location.reload();
+
+						e.preventDefault();
+						return;
 					} else {
 						// Check if clicking the header anchor octicon element.
 						var $header = false;
@@ -3059,7 +3320,7 @@ document.onreadystatechange = function() {
 							history.pushState(
 								{},
 								null,
-								`?page=${encodeURIComponent(`${dir}/${file}`)}`
+								`?p=${encodeURIComponent(`${dir}/${file}`)}`
 							);
 						}
 
@@ -3131,18 +3392,34 @@ document.onreadystatechange = function() {
 
 					var $target = e.target;
 
+					// Version container active...
+					if (is_version_option($target)) {
+						$target = is_version_option($target);
+
+						// Remove the highlight class from the
+						// currently active container.
+						document
+							.querySelector(".active-version")
+							.classList.remove("active-version");
+
+						$target.classList.add("active-version");
+
+						// // Update the scroll-y position.
+						// $vlist.scrollTop = $target.offsetTop;
+
+						return;
+					}
+
 					var $l2 = is_l2_menu_el($target);
 					var $l3 = is_l3_menu_el($target);
 					if ($l2) {
 						// Skip of the cloned element is hovered.
 						if ($l2.classList.contains("clone-true-l2")) {
-							// console.log("hovered the cloned elemenr");
 							return;
 						}
 
 						// Skip if its the same element as before.
 						if ($l2 === $moused_el2) {
-							// console.log(">>>>>>>>>>>>>>>>SAME", [$l2]);
 							return;
 						} else {
 							// Reset the target.
@@ -3230,14 +3507,12 @@ document.onreadystatechange = function() {
 					} else if ($l3) {
 						// Skip of the cloned element is hovered.
 						if ($l3.classList.contains("clone-true-l3")) {
-							// console.log("hovered the cloned elemenr");
 							return;
 						}
 
 						// Skip if its the same element as before.
 						// if ($l3 === $moused_el3) {
 						if ($l3 === $moused_el2) {
-							// console.log(">>>>>>>>>>>>>>>>SAME", [$l3]);
 							return;
 						} else {
 							// Reset the target.
@@ -3424,13 +3699,35 @@ document.onreadystatechange = function() {
 				document.addEventListener("keydown", function(e) {
 					// Focus on the search input.
 					if (e.keyCode === 27) {
+						// Hide the versions container.
+						if (!$versions_cont.classList.contains("none")) {
+							$versions_cont.classList.add("none");
+							e.preventDefault();
+							return;
+						}
+
 						// Skip when the element already has focus.
 						var $active = document.activeElement;
-						if ($active && $active.id && $active.id === "sinput") {
-							$search_cont.classList.remove("sinput-focused");
+						if ($active && $active.classList.contains("sinput")) {
+							// $search_cont.classList.remove("sinput-focused");
 							$sinput.blur();
 							e.preventDefault();
-						} else {
+							return;
+						}
+					} else if (e.keyCode === 86) {
+						// If an input is focused return.
+						// Skip when the element already has focus.
+						var $active = document.activeElement;
+						if ($active && $active.classList.contains("sinput")) {
+							// e.preventDefault();
+							return;
+						}
+
+						// Hide the versions container.
+						if ($versions_cont.classList.contains("none")) {
+							// Show version container by triggering the element.
+							$current_version.click();
+							e.preventDefault();
 							return;
 						}
 					}
@@ -3442,13 +3739,116 @@ document.onreadystatechange = function() {
 					if (e.keyCode === 47) {
 						// Skip when the element already has focus.
 						var $active = document.activeElement;
-						if ($active && $active.id && $active.id === "sinput") {
+						if ($active && $active.classList.contains("sinput")) {
 							return;
 						}
 
-						$search_cont.classList.add("sinput-focused");
+						// $search_cont.classList.add("sinput-focused");
 						$sinput.focus();
 						e.preventDefault();
+					}
+				});
+
+				// Focus on the search input when the forward slash key it hit.
+				document.addEventListener("keydown", function(e) {
+					// Go up.
+					if (e.keyCode === 38) {
+						// Only when the popup is visible.
+						if (!$versions_cont.classList.contains("none")) {
+							// Check what is being focused on.
+							// - either a version container
+							// - or the input itself
+
+							// Check for an active container.
+							var $cur = document.querySelector(
+								".active-version"
+							);
+
+							// If a container exists...
+							if ($cur) {
+								// Highlight the prev sibling if it exists.
+								// var $prev = $cur.previousElementSibling;
+
+								var $e = $cur.previousElementSibling;
+								var $prev;
+								while ($e) {
+									if ($e.style.display !== "none") {
+										$prev = $e;
+										break;
+									}
+									$e = $e.previousElementSibling;
+								}
+
+								if ($prev) {
+									// Remove the highlight class from the
+									// currently active container.
+									$cur.classList.remove("active-version");
+
+									$prev.classList.add("active-version");
+
+									// Update the scroll-y position.
+									if (!is_in_view($vlist, $prev)) {
+										$vlist.scrollTop = $prev.offsetTop;
+									}
+								}
+							}
+
+							e.preventDefault();
+							return;
+						}
+					} else if (e.keyCode === 40) {
+						// Only when the popup is visible.
+						if (!$versions_cont.classList.contains("none")) {
+							// Check what is being focused on.
+							// - either a version container
+							// - or the input itself
+
+							// Check for an active container.
+							var $cur = document.querySelector(
+								".active-version"
+							);
+
+							// If a container exists...
+							if ($cur) {
+								// Highlight the prev sibling if it exists.
+								// var $next = $cur.nextElementSibling;
+
+								var $e = $cur.nextElementSibling;
+								var $next;
+								while ($e) {
+									if ($e.style.display !== "none") {
+										$next = $e;
+										break;
+									}
+									$e = $e.nextElementSibling;
+								}
+
+								if ($next) {
+									// Remove the highlight class from the
+									// currently active container.
+									$cur.classList.remove("active-version");
+
+									$next.classList.add("active-version");
+
+									// Update the scroll-y position.
+									if (!is_in_view($vlist, $next)) {
+										$vlist.scrollTop = $next.offsetTop;
+									}
+								}
+							}
+
+							e.preventDefault();
+							return;
+						}
+					} else if (e.keyCode === 13) {
+						// Get the current active option.
+						// Check for an active container.
+						var $cur = document.querySelector(".active-version");
+
+						// Trigger the click event.
+						if ($cur) {
+							$cur.click();
+						}
 					}
 				});
 
@@ -3459,79 +3859,187 @@ document.onreadystatechange = function() {
 						var $target = e.target;
 
 						if ($target.classList.contains("sinput")) {
-							// Get the text.
-							var text = $target.value.trim();
+							if ($target.classList.contains("sinput-main")) {
+								// Get the text.
+								var text = $target.value.trim();
 
-							// Store the scrollTop position of the sidebar
-							// to reset back to when there is no input.
-							if (text.length === 1) {
-								// Store...
-								$sidebar.setAttribute(
-									"data-ypos",
-									$sidebar.scrollTop
-								);
-							}
+								// Get the clear element.
+								var $clear_search = $target.parentNode.getElementsByClassName(
+									"search-clear"
+								)[0];
 
-							// // [https://stackoverflow.com/a/13451971]
-							// if (window.history.replaceState) {
-							// 	// Get the parameters.
-							// 	var params = parameters();
-							// 	// Add the value.
-							// 	params.s = text;
-							// 	// Remove the search key if empty.
-							// 	if (text.trim() === "") {
-							// 		delete params["s"];
-							// 	}
+								// Store the scrollTop position of the sidebar
+								// to reset back to when there is no input.
+								if (text.length === 1) {
+									if (!$vlist.getAttribute("data-ypos")) {
+										// Store...
+										$sidebar.setAttribute(
+											"data-ypos",
+											$sidebar.scrollTop
+										);
+									}
+								}
 
-							// 	var url = parameters.build(params);
+								// // [https://stackoverflow.com/a/13451971]
+								// if (window.history.replaceState) {
+								// 	// Get the parameters.
+								// 	var params = parameters();
+								// 	// Add the value.
+								// 	params.s = text;
+								// 	// Remove the search key if empty.
+								// 	if (text.trim() === "") {
+								// 		delete params["s"];
+								// 	}
 
-							// 	// Prevent browser from storing history, so
-							// 	// only modify the changes (don't store).
-							// 	history.replaceState(
-							// 		{},
-							// 		null,
-							// 		// [https://stackoverflow.com/a/41061471]
-							// 		// [https://stackoverflow.com/a/13451971]
-							// 		url.trim() === "" ? location.pathname : url
-							// 	);
-							// }
+								// 	var url = parameters.build(params);
 
-							if (text !== "") {
-								// Show the clear button.
-								$clear_search.classList.remove("none");
+								// 	// Prevent browser from storing history, so
+								// 	// only modify the changes (don't store).
+								// 	history.replaceState(
+								// 		{},
+								// 		null,
+								// 		// [https://stackoverflow.com/a/41061471]
+								// 		// [https://stackoverflow.com/a/13451971]
+								// 		url.trim() === "" ? location.pathname : url
+								// 	);
+								// }
 
-								var at_least_one = false;
+								if (text !== "") {
+									// Show the clear button.
+									$clear_search.classList.remove("none");
 
-								// Start filtering elements.
-								for (var i = 0, l = $l_2.length; i < l; i++) {
-									var item = $l_2[i];
-									var title = item.getAttribute("title");
+									var at_least_one = false;
 
-									if (
-										title
-											.toLowerCase()
-											.includes(text.toLowerCase())
+									// Start filtering elements.
+									for (
+										var i = 0, l = $l_2.length;
+										i < l;
+										i++
 									) {
-										// Switch the flag since there was a
-										// a match.
-										at_least_one = true;
+										var item = $l_2[i];
+										var title = item.getAttribute("title");
+
+										if (
+											title
+												.toLowerCase()
+												.includes(text.toLowerCase())
+										) {
+											// Switch the flag since there was a
+											// a match.
+											at_least_one = true;
+
+											// Show it.
+											item.style.display = null;
+											// Also check for a possible UL.
+											var $next = item.nextElementSibling;
+
+											// Highlight the search needle.
+											var $anchor = item.getElementsByTagName(
+												"a"
+											)[0];
+											var title = item.getAttribute(
+												"title"
+											);
+											var highlight_title = title.replace(
+												new RegExp(
+													"(" +
+														regexp_escape(text) +
+														")",
+													"gi"
+												),
+												"<span class='searched-highlight'>$1</span>"
+											);
+											// Insert the highlighted needle(s).
+											$anchor.innerHTML = highlight_title;
+
+											// Show the UL
+											if (
+												$next &&
+												$next.tagName === "UL" &&
+												$next.getAttribute(
+													"data-og-height"
+												)
+											) {
+												// Must also match the current file.
+												if (
+													current_file ===
+													item
+														.getElementsByTagName(
+															"i"
+														)[0]
+														.getAttribute(
+															"data-file"
+														)
+												) {
+													// Add back the height.
+													$next.style.height = $next.getAttribute(
+														"data-og-height"
+													);
+													// Remove the attr.
+													$next.removeAttribute(
+														"data-og-height"
+													);
+												}
+											}
+										} else {
+											// Hide it.
+											item.style.display = "none";
+											// Also check for a possible UL.
+											var $next = item.nextElementSibling;
+											if (
+												$next &&
+												$next.tagName === "UL" &&
+												!$next.getAttribute(
+													"data-og-height"
+												)
+											) {
+												// Hide it as well.
+												// Store the height as an attr.
+												$next.setAttribute(
+													"data-og-height",
+													$next.style.height
+												);
+
+												$next.style.height = "0px";
+											}
+										}
+									}
+
+									// Show no results message when nothing no
+									// matches were returned.
+									$no_matches_cont.classList[
+										at_least_one ? "add" : "remove"
+									]("none");
+								} else {
+									// Hide the clear button.
+									$clear_search.classList.add("none");
+
+									// Hide the no matches container.
+									$no_matches_cont.classList.add("none");
+
+									// Unhide them all.
+
+									// Start filtering elements.
+									for (
+										var i = 0, l = $l_2.length;
+										i < l;
+										i++
+									) {
+										var item = $l_2[i];
 
 										// Show it.
 										item.style.display = null;
 										// Also check for a possible UL.
 										var $next = item.nextElementSibling;
 
-										// Highlight the search needle.
+										// Un-highlight the search needle.
 										var $anchor = item.getElementsByTagName(
 											"a"
 										)[0];
-										var title = item.getAttribute("title");
-										var highlight_title = title.replace(
-											new RegExp(`(${text}+)`, "gi"),
-											"<span class='searched-highlight'>$1</span>"
+										// Insert original title.
+										$anchor.innerHTML = item.getAttribute(
+											"title"
 										);
-										// Insert the highlighted needle(s).
-										$anchor.innerHTML = highlight_title;
 
 										// Show the UL
 										if (
@@ -3558,93 +4066,157 @@ document.onreadystatechange = function() {
 												);
 											}
 										}
-									} else {
-										// Hide it.
-										item.style.display = "none";
-										// Also check for a possible UL.
-										var $next = item.nextElementSibling;
-										if (
-											$next &&
-											$next.tagName === "UL" &&
-											!$next.getAttribute(
-												"data-og-height"
-											)
-										) {
-											// Hide it as well.
-											// Store the height as an attr.
-											$next.setAttribute(
-												"data-og-height",
-												$next.style.height
-											);
-
-											$next.style.height = "0px";
-										}
 									}
-								}
 
-								// Show no results message when nothing no
-								// matches were returned.
-								$no_matches_cont.classList[
-									at_least_one ? "add" : "remove"
-								]("none");
-							} else {
-								// Hide the clear button.
-								$clear_search.classList.add("none");
-
-								// Hide the no matches container.
-								$no_matches_cont.classList.add("none");
-
-								// Unhide them all.
-
-								// Start filtering elements.
-								for (var i = 0, l = $l_2.length; i < l; i++) {
-									var item = $l_2[i];
-
-									// Show it.
-									item.style.display = null;
-									// Also check for a possible UL.
-									var $next = item.nextElementSibling;
-
-									// Un-highlight the search needle.
-									var $anchor = item.getElementsByTagName(
-										"a"
-									)[0];
-									// Insert original title.
-									$anchor.innerHTML = item.getAttribute(
-										"title"
+									// Set scrollbar back to original scroll
+									// position and remove attribute.
+									$sidebar.scrollTop = $sidebar.getAttribute(
+										"data-ypos"
 									);
+									$sidebar.removeAttribute("data-ypos");
+								}
+							} else {
+								// Get the text.
+								var text = $target.value.trim();
 
-									// Show the UL
-									if (
-										$next &&
-										$next.tagName === "UL" &&
-										$next.getAttribute("data-og-height")
-									) {
-										// Must also match the current file.
-										if (
-											current_file ===
-											item
-												.getElementsByTagName("i")[0]
-												.getAttribute("data-file")
-										) {
-											// Add back the height.
-											$next.style.height = $next.getAttribute(
-												"data-og-height"
-											);
-											// Remove the attr.
-											$next.removeAttribute(
-												"data-og-height"
-											);
-										}
+								// Get the clear element.
+								var $clear_search = $target.parentNode.getElementsByClassName(
+									"search-clear"
+								)[0];
+
+								// Store the scrollTop position of the vlist
+								// to reset back to when there is no input.
+								if (text.length === 1) {
+									if (!$vlist.getAttribute("data-ypos")) {
+										// Store...
+										$vlist.setAttribute(
+											"data-ypos",
+											$vlist.scrollTop
+										);
 									}
 								}
 
-								// Set scrollbar back to original scroll
-								// position and remove attribute.
-								$sidebar.scrollTop = $sidebar.getAttribute(
-									"data-ypos"
+								// Get the elements.
+								var $els = document.querySelectorAll(
+									".version-option"
 								);
-								$sidebar.removeAttribute("data-ypos");
+
+								var first_v = false;
+								// Check for an active container.
+								var $cur = document.querySelector(
+									".active-version"
+								);
+								if ($cur) {
+									$cur.classList.remove("active-version");
+								}
+
+								if (text !== "") {
+									// Show the clear button.
+									$clear_search.classList.remove("none");
+
+									var at_least_one = false;
+
+									// Start filtering elements.
+									for (
+										var i = 0, l = $els.length;
+										i < l;
+										i++
+									) {
+										var item = $els[i];
+										var title = item.getAttribute("data-v");
+
+										if (
+											title
+												.toLowerCase()
+												.includes(text.toLowerCase())
+										) {
+											// Highlight the first element.
+											if (!first_v) {
+												first_v = true;
+
+												item.classList.add(
+													"active-version"
+												);
+											}
+
+											// Switch the flag since there was a
+											// a match.
+											at_least_one = true;
+
+											// Show it.
+											item.style.display = null;
+
+											// Highlight the search needle.
+											var highlight_title = title.replace(
+												new RegExp(
+													"(" +
+														regexp_escape(text) +
+														")",
+													"gi"
+												),
+												"<span class='searched-highlight'>$1</span>"
+											);
+											// Insert the highlighted needle(s).
+											item.getElementsByClassName(
+												"v-text"
+											)[0].innerHTML = highlight_title;
+										} else {
+											// Hide it.
+											item.style.display = "none";
+										}
+									}
+
+									// Show no results message when nothing no
+									// matches were returned.
+									$no_matches_cont_v.classList[
+										at_least_one ? "add" : "remove"
+									]("none");
+								} else {
+									// Hide the clear button.
+									$clear_search.classList.add("none");
+
+									// Hide the no matches container.
+									$no_matches_cont_v.classList.add("none");
+
+									// Unhide them all.
+
+									// Start filtering elements.
+									for (
+										var i = 0, l = $els.length;
+										i < l;
+										i++
+									) {
+										var item = $els[i];
+
+										// Show it.
+										item.style.display = null;
+
+										// Insert original title.
+										item.getElementsByClassName(
+											"v-text"
+										)[0].innerHTML = item.getAttribute(
+											"data-v"
+										);
+									}
+
+									// Set scrollbar back to original scroll
+									// position and remove attribute.
+									$vlist.scrollTop = $vlist.getAttribute(
+										"data-ypos"
+									);
+									$vlist.removeAttribute("data-ypos");
+
+									// Check for an active container.
+									var $cur = document.querySelector(
+										".active-version"
+									);
+									if ($cur) {
+										$cur.classList.remove("active-version");
+									}
+									$vlist.firstChild.classList.add(
+										"active-version"
+									);
+								}
 							}
 						}
 					},
