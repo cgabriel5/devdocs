@@ -13,10 +13,15 @@ module.exports = {
 			return fchar + string.toLowerCase().slice(1);
 		}
 	},
-	toc: [
-		{
-			".": ["main", "configuration", "cli", "extendables", "diff"]
-		}
+	latest: "0.0.2",
+	versions: [
+			{
+			"0.0.1": [
+				{
+					".": ["main", "configuration", "cli", "extendables", "diff"]
+				}
+			]
+		},
 	],
 	links: [["github", "https://github.com/cgabriel5/devdocs"]]
 };

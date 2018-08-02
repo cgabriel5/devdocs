@@ -1,0 +1,40 @@
+{
+    "title": "devdocs",
+    "animations": true,
+    "latest": "0.0.2",
+    "versions": [
+        "0.0.1"
+    ],
+    "links": [
+        [
+            "github",
+            "https://github.com/cgabriel5/devdocs"
+        ]
+    ],
+    "files": {
+        "internal": {
+            "_404": "<div class=\"markdown-body animate-fadein\"> <div class=\"error-cont\"> <div class=\"error-logo-cont\"><img alt=\"logo-leaf\" class=\"error-logo\" src=\"devdocs/img/leaf-216.png\" width=\"30%\"></div> <div class=\"error-msg-1\"><i class=\"fas fa-exclamation-circle\"></i></div> <div class=\"error-msg-2\">The page trying to be viewed does not exist.</div> <div class=\"error-btn-cont\"> <span class=\"btn btn-white btn-home noselect\" id=\"btn-home\">Take me home</span> </div> </div> </div>"
+        },
+        "user": {}
+    },
+    "html": {
+        "loader": "<img class=\"loader-img\" src=\"devdocs/img/loader-dark.svg\">",
+        "styles_macos_sb": [
+            "::-webkit-scrollbar {\n\twidth: 16px;\n\theight: 16px;\n\tbackground: #f8f8f8;\n}",
+            "::-webkit-scrollbar:window-inactive {\n\tbackground: #f8f8f850;\n}",
+            "::-webkit-scrollbar-button {\n\twidth: 0;\n\theight: 0;\n}",
+            "::-webkit-scrollbar-thumb {\n\tbackground: #c1c1c1;\n\tborder-radius: 1000px;\n\tborder: 4px solid transparent;\n\tbackground-clip: content-box;\n}",
+            "::-webkit-scrollbar-thumb:window-inactive {\n\tbackground: #c1c1c150;\n\tborder-radius: 1000px;\n\tborder: 4px solid transparent;\n\tbackground-clip: content-box;\n}",
+            "::-webkit-scrollbar-thumb:hover {\n\tbackground: #7d7d7d;\n\tborder: 4px solid transparent;\n\tbackground-clip: content-box;\n}",
+            "::-webkit-scrollbar-thumb:window-inactive:hover {\n\tbackground: #c1c1c150;\n\tborder: 4px solid transparent;\n\tbackground-clip: content-box;\n}",
+            "::-webkit-scrollbar-track {\n\tbackground: 0 0;\n\tborder-radius: 0;\n}",
+            "::-webkit-scrollbar-track:vertical {\n\tbackground: 0 0;\n\tborder-radius: 0;\n\tborder-left: 1px solid #eaeaea;\n}",
+            "::-webkit-scrollbar-track:horizontal {\n\tbackground: 0 0;\n\tborder-radius: 0;\n\tborder-top: 1px solid #eaeaea;\n}",
+            "::-webkit-scrollbar-track:vertical:window-inactive {\n\tborder-left: 1px solid #eaeaea50;\n}",
+            "::-webkit-scrollbar-track:horizontal:window-inactive {\n\tborder-top: 1px solid #eaeaea50;\n}",
+            "::-webkit-scrollbar-corner {\n\tbackground: #ffffff;\n\tborder-top: 1px solid #dddddd;\n\tborder-left: 1px solid #dddddd;\n}"
+        ],
+        "logo": "<div class=\"menu-logo\"><div class=\"menu-logo-wrapper\"><img src=\"undefined\"></div></div>",
+        "socials": "<div id=\"link-socials\" class=\"link-socials\"><div class=\"social-link\"><a href=\"https://github.com/cgabriel5/devdocs\" target=\"_blank\" class=\"social-link\"><i class=\"fab fa-github-square\"></i></a></div></div>"
+    }
+}
