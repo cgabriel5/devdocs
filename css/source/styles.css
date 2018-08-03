@@ -1875,7 +1875,7 @@ details, summary {
 }
 
 .v-list-wrapper {
-	max-height: 150px;
+	max-height: 175px;
 	overflow-y: auto;
 	position: relative;
 }
@@ -1907,13 +1907,15 @@ details, summary {
 .version-option {
 	background: white;
 	font-size: 13px;
-	padding: 5px 20px;
+	padding: 10px 20px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
 	display: flex;
 	align-items: center;
+	border-radius: 3px;
+	margin-right: 6px;
 }
 
 .version-option:hover, .active-version {
