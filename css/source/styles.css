@@ -1915,7 +1915,6 @@ details, summary {
 	display: flex;
 	align-items: center;
 	border-radius: 3px;
-	margin-right: 6px;
 }
 
 .version-option:hover, .active-version {
