@@ -1,5 +1,14 @@
 #! /usr/bin/env node
 
+/*jshint bitwise: false*/
+/*jshint browser: false*/
+/*jshint esversion: 6 */
+/*jshint node: true*/
+/*jshint -W014 */
+/*jshint -W018 */
+/*jshint maxerr: 10000 */
+/*jshint elision: true*/
+
 "use strict";
 
 // Node modules.
@@ -31,7 +40,7 @@ let mdzero = require("markdown-it")({
 	// Highlighter function. Should return escaped HTML,
 	// or '' if the source string is not changed and should be escaped externally.
 	// If result starts with <pre... internal wrapper is skipped.
-	highlight: function(code, language) {
+	highlight: function(/*code, language*/) {
 		return "[[ERROR: Failed to parse code block. Code block indentation needs to properly align.]]";
 	}
 }).use(require("markdown-it-task-lists"));
@@ -49,52 +58,15 @@ let mdzero = require("markdown-it")({
 // .enable("linkify")
 // .enable("image");
 
-var clear_indentation = function() {
-	// match = match.trim();
-	// // Remove the first and last lines.
-	// var lines = match.split("\n");
-	// var fline = lines.shift();
-	// var lang = fline.replace(/^[\s`]+/g, "") || "";
-	// lines.pop();
-	// // Detect whether to remove indentation or not.
-	// var count = lines.length;
-	// var nlines = [];
-	// var indentation = lines[0].match(/^(\s*)/g)[0] || "";
-	// for (var i = 0, l = lines.length; i < l; i++) {
-	// 	var line = lines[i];
-	// 	if (
-	// 		line.trim() === "" ||
-	// 		line.startsWith(indentation)
-	// 	) {
-	// 		// Remove the indentation and store in new array.
-	// 		nlines.push(
-	// 			line.substring(
-	// 				indentation.length,
-	// 				line.length
-	// 			)
-	// 		);
-	// 		// Decrease the counter.
-	// 		count--;
-	// 	} else {
-	// 		// Stop the loop as a line does not share the
-	// 		// same indentation. Meaning indentation is not
-	// 		// uniform.
-	// 		break;
-	// 	}
-	// }
-	// if (!count) {
-	// 	// Reset the var.
-	// 	lines = nlines;
-	// }
-	// match = lines.join("\n");
-};
-
 // Placehold any code blocks.
 var lookup_codeblocks = [];
 var lookup_codeblocks_count = -1;
 
 // [https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js#L30]
-mdzero.renderer.rules.code_inline = function(tokens, idx, options, env, slf) {
+mdzero.renderer.rules.code_inline = function(
+	tokens,
+	idx /*, options, env, slf*/
+) {
 	lookup_codeblocks.push([
 		`<code>${mdzero.utils.escapeHtml(tokens[idx].content)}</code>`
 	]);
@@ -102,9 +74,12 @@ mdzero.renderer.rules.code_inline = function(tokens, idx, options, env, slf) {
 };
 
 // [https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js#L30]
-mdzero.renderer.rules.code_block = function(tokens, idx, options, env, slf) {
+mdzero.renderer.rules.code_block = function(
+	tokens,
+	idx /*, options, env, slf*/
+) {
 	// Generate a special ID for the pre element.
-	var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(20)}`;
+	var uid = `tmp-${id(25)}`;
 
 	lookup_codeblocks.push([
 		`<pre data-skip-markdownit="true"><code data-skip-markdownit="true" id="${uid}" class="lang-" data-skip="true" data-orig-text="">${mdzero.utils.escapeHtml(
@@ -115,14 +90,10 @@ mdzero.renderer.rules.code_block = function(tokens, idx, options, env, slf) {
 };
 
 // [https://github.com/markdown-it/markdown-it/blob/master/lib/renderer.js#L39]
-mdzero.renderer.rules.fence = function(tokens, idx, options, env, slf) {
+mdzero.renderer.rules.fence = function(tokens, idx /*, options, env, slf*/) {
 	var token = tokens[idx],
 		info = token.info ? mdzero.utils.unescapeAll(token.info).trim() : "",
-		langName = "",
-		highlighted,
-		i,
-		tmpAttrs,
-		tmpToken;
+		highlighted;
 
 	// CUSTOM LOGIC ---------- NOT MarkdownIt ---------- |
 	// Custom vars.
@@ -143,10 +114,10 @@ mdzero.renderer.rules.fence = function(tokens, idx, options, env, slf) {
 	// CUSTOM LOGIC ---------- NOT MarkdownIt ---------- |
 
 	// Generate a special ID for the pre element.
-	var uid = `tmp-${id(20)}${id(20)}${id(20)}${id(20)}`;
+	var uid = `tmp-${id(25)}`;
 
 	// Highlight the code.
-	var highlighted = highlight(token.content, lang);
+	highlighted = highlight(token.content, lang);
 
 	lookup_codeblocks.push([
 		`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="${lines}" data-block-name="${name}">${highlighted}</code></pre>`
@@ -183,6 +154,7 @@ let tstart = now();
 // Lazy load gulp plugins.
 let $ = require("gulp-load-plugins")({
 	rename: {
+		"gulp-if": "gulpif",
 		"gulp-clean-css": "clean_css",
 		// "gulp-json-sort": "json_sort",
 		"gulp-prettier-plugin": "prettier"
@@ -206,9 +178,9 @@ let $ = require("gulp-load-plugins")({
 // Project utils.
 let utils = require(apath("./gulp/assets/utils/utils.js"));
 let print = utils.print;
-let notify = utils.notify;
+// let notify = utils.notify;
 let gulp = utils.gulp;
-let uri = utils.uri;
+// let uri = utils.uri;
 // let browser = utils.browser;
 // let bangify = utils.bangify;
 let globall = utils.globall;
@@ -218,6 +190,25 @@ let globall = utils.globall;
 // let escape = utils.escape;
 
 /**
+ * Insert text at indices.
+ *
+ * @param  {string} string - The string.
+ * @param  {object} inserts - Object containing inserts
+ *     in the form of {index:string}.
+ * @return {string} - The string with inserts.
+ *
+ * @resource [https://stackoverflow.com/a/25329247]
+ * @resource [https://stackoverflow.com/a/21420210]
+ * @resource [https://stackoverflow.com/a/3410557]
+ * @resource [https://stackoverflow.com/a/274094]
+ */
+var string_index_insert = function(string, inserts) {
+	return string.replace(/./g, function(character, index) {
+		return inserts[index] ? inserts[index] + character : character;
+	});
+};
+
+/**
  * Slugify description.
  *
  * @param  {string} text - The text to slugify.
@@ -225,7 +216,7 @@ let globall = utils.globall;
  *
  * @resource [https://gist.github.com/mathewbyrne/1280286]
  */
-function slugify(text) {
+var slugify = function(text) {
 	return text
 		.toString()
 		.toLowerCase()
@@ -234,27 +225,28 @@ function slugify(text) {
 		.replace(/\-\-+/g, "-") // Replace multiple "-" with single "-".
 		.replace(/^-+/, "") // Trim "-" from start of text.
 		.replace(/-+$/, ""); // Trim "-" from end of text.
-}
+};
 
 /**
  * Create an array based off a number range. For example,
  * given the range 1-3 an array [1, 2, 3] will be returned.
  *
- * @param  {number|string} start - The range start.
- * @param  {number|string} stop - The range stop.
- * @param  {number|string} step - The range step.
+ * @param  {number} start - The range start.
+ * @param  {number} stop - The range stop.
+ * @param  {number} step - The range step.
  * @return {array} - The range array.
  *
  * @resource [https://stackoverflow.com/a/44957114]
  */
-function range(start, stop, step) {
+var range = function(start, stop, step) {
+	start = start || 1;
+	stop = (stop || -1) + 1;
 	step = step || 1;
-	stop = stop + 1;
 
-	return Array((stop - start) / step)
+	return Array(Math.floor(Math.abs((stop - start) / step)))
 		.fill(start)
 		.map((x, y) => x + y * step);
-}
+};
 
 /**
  * Make the provided array unique.
@@ -266,13 +258,14 @@ function range(start, stop, step) {
  * @resource [http://stackoverflow.com/questions/1960473/unique-values-in-an-array/39272981#39272981]
  * @ersource [http://stackoverflow.com/questions/1063007/how-to-sort-an-array-of-integers-correctly/21595293#21595293]
  */
-function make_unique(array, flag_sort) {
-	// make array unique
+var make_unique = function(array, flag_sort) {
+	// Make array unique.
 	array = array.filter(function(x, i, a_) {
 		return a_.indexOf(x) === i;
 	});
-	// sort the array if flag set
-	// **Note: does not sort numbers
+
+	// Sort the array if flag set.
+	// **Note: does not sort numbers.
 	if (flag_sort) {
 		if (flag_sort === "alpha") {
 			array = array.sort(function(a, b) {
@@ -284,9 +277,10 @@ function make_unique(array, flag_sort) {
 			});
 		}
 	}
-	// return the array
+
+	// Return the array.
 	return array;
-}
+};
 
 /**
  * Remove line breaks and tab characters from a string.
@@ -294,22 +288,23 @@ function make_unique(array, flag_sort) {
  * @param  {string} string - The string to use.
  * @return {string} - The cleaned string.
  */
-function remove_space(string) {
+var remove_space = function(string) {
 	return string.replace(/(\r\n|\n|\r|\t)/g, "");
-}
+};
 
 /**
  * Add commas to a number every thousand.
  *
- * @param {number} x - The number to adds commas to.
+ * @param {number} num - The number to adds commas to.
+ * @return {string} - The string with added commas.
  *
  * @resource [https://stackoverflow.com/a/2901298]
  */
-function add_commas_to_num(x) {
-	var parts = x.toString().split(".");
+var add_commas_to_num = function(num) {
+	var parts = num.toString().split(".");
 	parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 	return parts.join(".");
-}
+};
 
 /**
  * Create the absolute path while taking into account the app/module directory.
@@ -327,25 +322,81 @@ function apath(__path) {
  * @param  {string} __path - The path to resolve.
  * @return {string} - The resolved path.
  */
-function upath(__path, recursive) {
-	return path.resolve(process.cwd(), __path);
-}
+// function upath(__path) {
+// 	return path.resolve(process.cwd(), __path);
+// }
 
 /**
- * @description [Generates a simple ID containing letters and numbers.]
- * @param  {Number} length [The length the ID should be. Max length is 22 characters]
- * @return {String}        [The newly generated ID.]
- * @source {http://stackoverflow.com/a/38622545}
+ * Generates a simple ID containing letters and numbers.
+ *
+ * @param  {number} length - The length the ID should be.
+ * @return {string} - The newly generated ID.
+ *
+ * @resource [http://stackoverflow.com/a/38622545]
  */
-function id(length) {
-	return Math.random()
-		.toString(36)
-		.substr(2, length);
-}
+var id = function(length) {
+	// Default to 10.
+	length = length || 10;
 
+	// Calculate the numbers of loops needed.
+	var iterations = Math.floor(length / 10);
+	if (length % 10) {
+		// Increment the loop by 1.
+		iterations++;
+	}
+
+	// Store the generated strings here.
+	var strings = [];
+
+	// Generate the strings.
+	for (let i = 0, l = iterations; i < l; i++) {
+		strings.push(
+			Math.random()
+				.toString(36)
+				.substr(2, 10)
+		);
+	}
+
+	// Combine the strings.
+	var string = strings.join("");
+
+	// Finally, cut the string to desired length.
+	return string.substring(0, length);
+};
+
+/**
+ * Return index of RegExp match in a string.
+ *
+ * @param  {string} string - The string.
+ * @param  {regexp} regexp - The RegExp to use.
+ * @param  {number} startindex - The optional index to start string from.
+ * @return {number} - The index of RegExp match.
+ *
+ * @resource [https://stackoverflow.com/a/21420210]
+ */
+var regexp_index = function(string, regexp, startindex) {
+	// Default start index to zero.
+	startindex = startindex || 0;
+
+	// If a start index is provided, clip the string to start
+	// the string at the start index.
+	string = startindex ? string.substring(startindex) : string;
+
+	// Get the match information.
+	var match = string.match(regexp);
+
+	// If a match exists then get the index of match.
+	return match ? string.indexOf(match[0]) + startindex : -1;
+};
+
+/**
+ * Convert dd-expandable tags, i.e. (<dd-note>) to dd::-ctags placeholders.
+ *
+ * @param  {string} text - The text to placeholder.
+ * @return {string} - The placeholded text.
+ */
 var ctags_attrs = [];
 var ctags_attrs_count = -1;
-
 function convert_ctags(text) {
 	return text.replace(
 		/<(\/?)dd-(note|codegroup|expand)\b(.*?)?>/gim,
@@ -367,6 +418,12 @@ function convert_ctags(text) {
 	);
 }
 
+/**
+ * Remove wrapped p tags from placeholders.
+ *
+ * @param  {string} text - The text.
+ * @return {string} - The unwrapped text.
+ */
 function unwrap_ctags(text) {
 	var r = /(<p>\s*)?(\[\/?:::(note|codegroup|expand)\b(.*?)\])(\s*<\/p>)?/gim;
 	return text.replace(r, function(match) {
@@ -389,6 +446,12 @@ function unwrap_ctags(text) {
 	});
 }
 
+/**
+ * Expand dd-expandable tags, i.e. (<dd-note>) to their custom HTML.
+ *
+ * @param  {string} text - The text to expand.
+ * @return {string} - The expanded text.
+ */
 function expand_ctags(text) {
 	text = text
 		.replace(/<dd-expand(.*?)>/gim, function(match) {
@@ -482,7 +545,7 @@ function expand_ctags(text) {
 			});
 
 			// Generate a special ID for the pre element.
-			var uid = `exp-${id(20)}${id(20)}`;
+			var uid = `exp-${id(25)}`;
 
 			return `\n\n<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
 			<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
@@ -497,15 +560,30 @@ function expand_ctags(text) {
 	return text;
 }
 
+/**
+ * Expand the custom line highlight range. For example, {1,2-7,!5} will get
+ *     turned into [1, 2, 3, 4, 6, 7] or {2,7} to [2, 7].
+ *
+ * @param  {htmlelement} $el - The element to grab line numbers from.
+ * @return {array} - The array containing the lines to highlight.
+ */
 function lines_to_highlight($el) {
 	// Check for line highlight numbers/ranges.
 	var hlines = $el.attr()["data-highlight-lines"];
+
+	// Store line numbers here.
 	var hlines_array = [];
+
+	// If the attr exists then parse it.
 	if (hlines) {
 		// Turn into an array.
 		var parts = hlines.split(",");
+
+		// Store the excluded numbers.
 		var excludes = [];
-		parts.forEach(function(item, i) {
+
+		// Loop over each component: ["1", "2-7", "!5"].
+		parts.forEach(function(item) {
 			item = item.trim();
 			if (item.includes("-")) {
 				var _parts = item.split("-");
@@ -530,17 +608,18 @@ function lines_to_highlight($el) {
 		});
 	}
 
+	// The lines to highlight.
 	return hlines_array;
 }
 
 // Get the CLI parameters.
 let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
+var debug = argv.debug || argv.d;
 let configpath = argv.config || argv.c;
 let outputpath = argv.output || argv.o;
 let outputpath_filename = argv.name || argv.n;
 
 // App variables.
-let menu = [];
 let promises = [];
 
 // 1. Look for a config file in the cwd.
@@ -590,8 +669,9 @@ let root = get(config, "root", "docs/");
 let versions = get(config, "versions", []);
 let links = get(config, "links", {});
 let logo = config.logo;
-let title = config.title;
-let debug = get(config, "debug", true);
+// let title = config.title;
+// If debug flag was not supplied via the CL, look for it in the config file.
+debug = typeof debug === "boolean" ? debug : get(config, "debug", false);
 let animations = config.animations;
 let modifier = config.modifier;
 // Add an object to store the converted Markdown to HTML content.
@@ -601,16 +681,16 @@ config.files = {
 };
 // Add the default 404 HTML file markup.
 config.files.internal._404 = remove_space(
-	'<div class="markdown-body animate-fadein"> \
-	<div class="error-cont"> \
-		<div class="error-logo-cont"><img alt="logo-leaf" class="error-logo" src="${dir_path}/img/leaf-216.png" width="30%"></div> \
-		<div class="error-msg-1"><i class="fas fa-exclamation-circle"></i></div> \
-		<div class="error-msg-2">The page trying to be viewed does not exist.</div> \
-		<div class="error-btn-cont"> \
-			<span class="btn btn-white btn-home noselect" id="btn-home">Take me home</span> \
-		</div> \
-	</div> \
-</div>'
+	`<div class="markdown-body animate-fadein">
+	<div class="error-cont">
+		<div class="error-logo-cont"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png" width="30%"></div>
+		<div class="error-msg-1"><i class="fas fa-exclamation-circle"></i></div>
+		<div class="error-msg-2">The page trying to be viewed does not exist.</div>
+		<div class="error-btn-cont">
+			<span class="btn btn-white btn-home noselect" id="btn-home">Take me home</span>
+		</div>
+	</div>
+</div>`
 );
 // config.files.internal._001 = remove_space(
 // 	`<div class="markdown-body animate-fadein">
@@ -896,7 +976,7 @@ renderer.text = function(text) {
 				""
 			)}/img/missing-emoji.png">`;
 		},
-		function(code, name) {
+		function(code /*, name*/) {
 			// Get the unicode of the emoticon.
 			var unicode = eunicode(code);
 
@@ -953,9 +1033,11 @@ if (links) {
 				`<div class="social-link"><a href="${url}" target="_blank" class="social-link"><i class="${fa_classes}"></i></a></div>`
 			);
 		} else {
-			print.gulp.warn(
-				`'${platform}' was ignored as it's not a supported social link.`
-			);
+			if (debug) {
+				print.gulp.warn(
+					`'${platform}' was ignored as it's not a supported social link.`
+				);
+			}
 		}
 	});
 }
@@ -1033,10 +1115,6 @@ versions.forEach(function(vdata) {
 			__file.dirname = fpath;
 			__file.name = file;
 			__file.alias = alias_file;
-			// <li class="l-2" id="menu-file-${counter_file}" data-dir="${counter_dir}">
-			// 	<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
-			// 	<a class="link" href="#" data-file="${fpath}">${alias_file}</a>
-			// </li>
 			__file.html = `
 		<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
@@ -1055,11 +1133,13 @@ versions.forEach(function(vdata) {
 
 			// If the file was not found give a warning and skip it.
 			if (!__path) {
-				print.gulp.warn(
-					"Skipping",
-					chalk.magenta(`${fpath}`),
-					"(file not found)"
-				);
+				if (debug) {
+					print.gulp.warn(
+						"Skipping",
+						chalk.magenta(`${fpath}`),
+						"(file not found)"
+					);
+				}
 				// Remove the item from the __dir.files array.
 				__dir.files.pop();
 				return;
@@ -1075,7 +1155,6 @@ versions.forEach(function(vdata) {
 			// This is done do maintain the file's array order. As promises end once they are
 			// resolved, smaller files end quicker. This sometimes causes for the files to be added
 			// in the wrong order.
-			// config.files.user[`${fpath}`] = -1;
 			__dir.contents[`${fpath}`] = -1;
 
 			// Create a Promise for each file.
@@ -1086,19 +1165,10 @@ versions.forEach(function(vdata) {
 				];
 
 				// Get the file contents.
-				let contents = fs.readFile(__path, "utf8", function(
-					err,
-					contents
-				) {
+				fs.readFile(__path, "utf8", function(err, contents) {
 					if (err) {
 						return reject([`${__path} could not be opened.`, err]);
 					}
-
-					// var error = print.gulp.error;
-					// var info = print.gulp.info;
-					// var warn = print.gulp.warn;
-					// var success = print.gulp.success;
-					// var ln = print.ln;
 
 					// Remove any HTML comments as having comments close to markup
 					// causes marked to parse it :/.
@@ -1161,7 +1231,7 @@ versions.forEach(function(vdata) {
 
 									// Look for a lang attr in either the
 									// code or pre element.
-									var lang = (match.match(
+									let lang = (match.match(
 										/<code\b(.*?)lang=("|')(.*?)\2(.*?)>/im
 									) ||
 										match.match(
@@ -1169,7 +1239,7 @@ versions.forEach(function(vdata) {
 										) || [, , , ""])[3];
 
 									// Get the content between the code tags.
-									var content = (match.match(
+									let content = (match.match(
 										/<code\b(.*?)>([\s\S]*?)<\/code>/im
 									) || [, , ""])[2];
 
@@ -1189,12 +1259,10 @@ versions.forEach(function(vdata) {
 											`$1 lang="${lang}" $4`
 										);
 
-									var highlighted = highlight(content, lang);
+									let highlighted = highlight(content, lang);
 
 									// Generate a special ID for the pre element.
-									var uid = `tmp-${id(20)}${id(20)}${id(
-										20
-									)}${id(20)}`;
+									let uid = `tmp-${id(25)}`;
 
 									lookup_codeblocks.push([
 										`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
@@ -1204,12 +1272,12 @@ versions.forEach(function(vdata) {
 									// A <pre> only block.
 
 									// Look for a lang attr.
-									var lang = (match.match(
+									let lang = (match.match(
 										/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
 									) || [, , , ""])[3];
 
 									// Get the content between the pre tags.
-									var content = (match.match(
+									let content = (match.match(
 										/<pre\b(.*?)>([\s\S]*?)<\/pre>/im
 									) || [, , ""])[2];
 
@@ -1234,12 +1302,10 @@ versions.forEach(function(vdata) {
 										"$1$4"
 									);
 
-									var highlighted = highlight(content, lang);
+									let highlighted = highlight(content, lang);
 
 									// Generate a special ID for the pre element.
-									var uid = `tmp-${id(20)}${id(20)}${id(
-										20
-									)}${id(20)}`;
+									let uid = `tmp-${id(25)}`;
 
 									lookup_codeblocks.push([
 										`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
@@ -1268,14 +1334,15 @@ versions.forEach(function(vdata) {
 						data = expand_ctags(data, fpath);
 
 						var r = /\[dd\:\:\-codeblock-placeholder-\d+\]/g;
+						var rfn = function(match) {
+							return lookup_codeblocks[
+								match.replace(/[^\d]/g, "") * 1
+							];
+						};
 						// Loop contents until all codeblocks have been filled back in.
 						while (r.test(data)) {
 							// Add back the code blocks.
-							data = data.replace(r, function(match) {
-								return lookup_codeblocks[
-									match.replace(/[^\d]/g, "") * 1
-								];
-							});
+							data = data.replace(r, rfn);
 						}
 
 						// Use cheerio to parse the HTML data.
@@ -1285,7 +1352,7 @@ versions.forEach(function(vdata) {
 						});
 
 						// Grab all anchor elements to
-						$("a[href]").each(function(i, elem) {
+						$("a[href]").each(function(/*i, elem*/) {
 							// Cache the element.
 							let $el = $(this);
 							// Get the attributes.
@@ -1356,12 +1423,12 @@ versions.forEach(function(vdata) {
 
 						// Add the GitHub octicon link/anchor.
 						$("h1, h2, h3, h4, h5, h6")
-							.filter(function(i, el) {
+							.filter(function(/*i, el*/) {
 								return !$(this)
 									.parents()
 									.filter(".dd-expandable-base").length;
 							})
-							.each(function(i, elem) {
+							.each(function(/*i, el*/) {
 								// Cache the element.
 								let $el = $(this);
 
@@ -1375,14 +1442,13 @@ versions.forEach(function(vdata) {
 
 								// Slugify the text.
 								let escaped_text = slugify(
-									text.replace(/\<\/?.*?\>|\&.*?\;/gm, "")
+									text.replace(/<\/?.*?\>|\&.*?\;/gm, "")
 								);
 
 								$el.attr(
 									"data-orig-text",
 									entities.encode(text)
 								);
-								// $el.text(text);
 								// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
 								$el.append(`
 <a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
@@ -1398,12 +1464,12 @@ versions.forEach(function(vdata) {
 						$(
 							"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
 						)
-							.filter(function(i, el) {
+							.filter(function(/*i, el*/) {
 								return !$(this)
 									.parents()
 									.filter(".dd-expandable-base").length;
 							})
-							.each(function(i, elem) {
+							.each(function(/*i, el*/) {
 								// Cache the element.
 								let $el = $(this);
 
@@ -1414,8 +1480,6 @@ versions.forEach(function(vdata) {
 								if (!id) {
 									return;
 								}
-								// // Normalize the id by removing all hyphens.
-								// let normalized_id = id.replace(/-/g, " ").trim();
 
 								// Get the text (no HTML).
 								var value = $el
@@ -1430,7 +1494,7 @@ versions.forEach(function(vdata) {
 
 								// Remove any HTML tags from the text.
 								otext = otext.replace(
-									/\<\/?.*?\>|\&.*?\;/gm,
+									/<\/?.*?\>|\&.*?\;/gm,
 									function(match) {
 										// Only allow emojis to pass.
 										if (
@@ -1440,7 +1504,7 @@ versions.forEach(function(vdata) {
 										) {
 											// Remove tags.
 											return match.replace(
-												/\<\/?.*?\>|\&.*?\;/gm,
+												/<\/?.*?\>|\&.*?\;/gm,
 												""
 											);
 										}
@@ -1452,12 +1516,12 @@ versions.forEach(function(vdata) {
 								// Take into account same name headers. Append the
 								// suffix "-NUMBER" to the header href/id to make
 								// it unique.
+								var heading_count = "";
 								if (!__headings[id]) {
-									var heading_count = "";
 									// Add it to the object.
 									__headings[id] = 1;
 								} else {
-									var heading_count = __headings[id];
+									heading_count = __headings[id];
 
 									// Reset  the element id.
 									$el.attr("id", `${id}-${heading_count}`);
@@ -1475,7 +1539,6 @@ versions.forEach(function(vdata) {
 
 								// Add the second level menu template string.
 								headings.push(
-									// `<li class="l-3"><a class="link link-heading" href="#${id}" data-file="${fpath}">${normalized_id}</a></li>`
 									`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
 										/^[-]+|[-]+$/g,
 										""
@@ -1486,7 +1549,7 @@ versions.forEach(function(vdata) {
 						headings.push("</ul>");
 
 						// Reset all the anchor href.
-						$("a[href]").each(function(i, elem) {
+						$("a[href]").each(function(/*i, el*/) {
 							// Cache the element.
 							let $el = $(this);
 
@@ -1527,7 +1590,7 @@ versions.forEach(function(vdata) {
 						);
 
 						// Add the header spacer.
-						$("h1, h2, h3, h4, h5, h6").each(function(i, elem) {
+						$("h1, h2, h3, h4, h5, h6").each(function(/*i, el*/) {
 							// Cache the element.
 							let $el = $(this);
 
@@ -1544,7 +1607,7 @@ versions.forEach(function(vdata) {
 						});
 
 						// Hide all but the first code block.
-						$(".code-block-grouped").each(function(i, elem) {
+						$(".code-block-grouped").each(function(/*i, el*/) {
 							// Cache the element.
 							let $el = $(this);
 
@@ -1553,24 +1616,17 @@ versions.forEach(function(vdata) {
 
 							// Hide all the blocks except the first.
 							if ($blocks.length) {
-								// // The first code block.
-								// $blocks
-								// 	.filter(function(i, el) {
-								// 		return i === 0;
-								// 	})
-								// 	.attr("class", "animate-fadein");
 								// The remaining code blocks.
 								$blocks = $blocks
-									.filter(function(i, el) {
+									.filter(function(i /*, el*/) {
 										return i !== 0;
 									})
-									// .attr("class", "none animate-fadein");
 									.attr("class", "none");
 							}
 						});
 
 						// Hide code blocks that are too big.
-						$("pre code[class^='lang']").each(function(i, elem) {
+						$("pre code[class^='lang']").each(function(/*i, el*/) {
 							// Cache the element.
 							let $el = $(this);
 
@@ -1592,7 +1648,7 @@ versions.forEach(function(vdata) {
 								.filter(".code-block-grouped").length;
 
 							// Generate a special ID for the pre element.
-							var uid = `exp-${id(20)}${id(20)}`;
+							var uid = `exp-${id(25)}`;
 
 							// If the code is > 40 lines show an expander.
 							if (line_count >= 40) {
@@ -1681,9 +1737,9 @@ versions.forEach(function(vdata) {
 							var _lines = lines_to_highlight($el);
 
 							var line_nums = [];
-							for (var i = 0, l = lines; i < l; i++) {
+							for (let i = 0, l = lines; i < l; i++) {
 								// Check whether the line needs to be highlighted.
-								var needs_highlight = _lines.includes(i + 1)
+								let needs_highlight = _lines.includes(i + 1)
 									? " class='line-block-highlight'"
 									: "";
 								line_nums.push(
@@ -1694,9 +1750,9 @@ versions.forEach(function(vdata) {
 
 							// Make the "line" highlight HTML.
 							var line_nums2 = [];
-							for (var i = 0, l = lines; i < l; i++) {
+							for (let i = 0, l = lines; i < l; i++) {
 								// Check whether the line needs to be highlighted.
-								var needs_highlight = _lines.includes(i + 1)
+								let needs_highlight = _lines.includes(i + 1)
 									? " lang-code-line-highlight"
 									: "";
 								line_nums2.push(
@@ -1732,12 +1788,9 @@ versions.forEach(function(vdata) {
 						});
 
 						// Hide code blocks that are too big.
-						$("pre code[class^='lang']").each(function(i, elem) {
+						$("pre code[class^='lang']").each(function(/*i, el*/) {
 							// Cache the element.
 							let $el = $(this);
-
-							// Get text (code) and file stats.
-							let text = $el.html().trim();
 
 							// Store the original text.
 							$el.attr(
@@ -1747,51 +1800,20 @@ versions.forEach(function(vdata) {
 						});
 
 						// Finally reset the data to the newly parsed/modified HTML.
-						// data = `<div class="markdown-body animate-fadein">${$.html()}</div>`;
 						data = $.html().replace(/<\/?(html|body|head)>/gi, "");
 
 						// Wrap the headers with their "contents".
-						// [https://stackoverflow.com/a/21420210]
-						var index_of_regexp = function(
-							string,
-							regex,
-							fromIndex
-						) {
-							var str = fromIndex
-								? string.substring(fromIndex)
-								: string;
-							var match = str.match(regex);
-							return match
-								? str.indexOf(match[0]) + fromIndex
-								: -1;
-						};
-
 						var indices = [];
-						var index = index_of_regexp(data, /<h[1-6].*?>/i, 0);
+						var index = regexp_index(data, /<h[1-6].*?>/i);
 						while (index !== -1) {
 							indices.push(index);
 
-							index = index_of_regexp(
+							index = regexp_index(
 								data,
 								/<h[1-6].*?>/i,
 								index + 1
 							);
 						}
-
-						// [https://stackoverflow.com/a/25329247]
-						// [https://stackoverflow.com/a/21420210]
-						// [https://stackoverflow.com/a/3410557]
-						// [https://stackoverflow.com/a/274094]
-						String.prototype.insertTextAtIndices = function(text) {
-							return this.replace(/./g, function(
-								character,
-								index
-							) {
-								return text[index]
-									? text[index] + character
-									: character;
-							});
-						};
 
 						// Create the HTML inserts.
 						var inserts = {};
@@ -1818,7 +1840,7 @@ versions.forEach(function(vdata) {
 						});
 
 						// Reset the data.
-						data = data.insertTextAtIndices(inserts);
+						data = string_index_insert(data, inserts);
 						// If a single insert exists the entire thing things to
 						// be wrapped.
 						if (Object.keys(inserts).length === 1) {
@@ -1860,9 +1882,9 @@ gulp.task("clean:app", function(done) {
 	pump(
 		[
 			gulp.src([path.join("./", outputpath), path.join("./index.html")]),
-			// $.debug(),
-			$.clean()
-			// $.debug.edit()
+			$.gulpif(debug, $.debug({ loader: false })),
+			$.clean(),
+			$.gulpif(debug, $.debug.edit({ loader: false }))
 		],
 		function() {
 			if (debug) {
@@ -1924,7 +1946,7 @@ gulp.task("css:app", function(done) {
 	pump(
 		[
 			gulp.src(css_source_files),
-			// $.debug(),
+			$.gulpif(debug, $.debug({ loader: false })),
 			$.concat("bundle.min.css"),
 			// Replace the default output path with the provided one.
 			$.replace(
@@ -1941,8 +1963,8 @@ gulp.task("css:app", function(done) {
 			// CSS style must be prefixed for it to work at the moment.
 			$.replace(/overflow\-scrolling/g, "-webkit-overflow-scrolling"),
 			$.clean_css(),
-			gulp.dest(path.join(outputpath, "/css"))
-			// $.debug.edit()
+			gulp.dest(path.join(outputpath, "/css")),
+			$.gulpif(debug, $.debug.edit({ loader: false }))
 		],
 		function() {
 			if (debug) {
@@ -1974,11 +1996,11 @@ gulp.task("js:app", function(done) {
 					.join(outputpath, "zdata", outputpath_filename)
 					.replace(process.cwd() + "/", "")}$1;`
 			),
-			// $.debug(),
+			$.gulpif(debug, $.debug({ loader: false })),
 			$.concat("app.min.js"),
-			// $.uglify(),
-			gulp.dest(path.join(outputpath, "/js"))
-			// $.debug.edit()
+			$.uglify(),
+			gulp.dest(path.join(outputpath, "/js")),
+			$.gulpif(debug, $.debug.edit({ loader: false }))
 		],
 		function() {
 			if (debug) {
@@ -2009,11 +2031,11 @@ gulp.task("html:app", function(done) {
 			gulp.src(apath("./index-src.html")),
 			// Set the path to the favicons...
 			$.replace(/\$\{dir_path\}/g, __path),
-			// $.debug(),
+			$.gulpif(debug, $.debug({ loader: false })),
 			$.htmlmin(HTMLMIN),
 			$.rename("index.html"),
-			gulp.dest(cwd)
-			// $.debug.edit()
+			gulp.dest(cwd),
+			$.gulpif(debug, $.debug.edit({ loader: false }))
 		],
 		function() {
 			if (debug) {
@@ -2030,9 +2052,9 @@ gulp.task("img:app", function(done) {
 	pump(
 		[
 			gulp.src(apath(globall("./img/"))),
-			// $.debug(),
-			gulp.dest(path.join(outputpath, "/img"))
-			// $.debug.edit()
+			$.gulpif(debug, $.debug({ loader: false })),
+			gulp.dest(path.join(outputpath, "/img")),
+			$.gulpif(debug, $.debug.edit({ loader: false }))
 		],
 		function() {
 			if (debug) {
@@ -2049,9 +2071,9 @@ gulp.task("favicon:app", function(done) {
 	pump(
 		[
 			gulp.src(apath(globall("./favicon/"))),
-			// $.debug(),
-			gulp.dest(path.join(outputpath, "/favicon"))
-			// $.debug.edit()
+			$.gulpif(debug, $.debug({ loader: false })),
+			gulp.dest(path.join(outputpath, "/favicon")),
+			$.gulpif(debug, $.debug.edit({ loader: false }))
 		],
 		function() {
 			if (debug) {
@@ -2068,9 +2090,9 @@ gulp.task("favicon:app", function(done) {
 // 	pump(
 // 		[
 // 			gulp.src(apath(globall("./css/assets/fonts/"))),
-// 			// $.debug(),
-// 			gulp.dest(path.join(outputpath, "/fonts"))
-// 			// $.debug.edit()
+// 			$.gulpif(debug, $.debug({ loader: false })),
+// 			gulp.dest(path.join(outputpath, "/fonts")),
+// 			$.gulpif(debug, $.debug.edit({ loader: false }))
 // 		],
 // 		function() {
 // 			if (debug) {
@@ -2086,7 +2108,6 @@ gulp.task("favicon:app", function(done) {
 gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
 	config.html.logo = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
-	// config.menu = menu;
 	config.html.socials = links_html.join("");
 
 	var __path = path.join(outputpath, "/zdata");
@@ -2097,7 +2118,7 @@ gulp.task("json-data:app", function(done) {
 			$.file(outputpath_filename, JSON.stringify(config, null, 4), {
 				src: true
 			}),
-			// $.debug.edit(),
+			$.gulpif(debug, $.debug.edit({ loader: false })),
 			gulp.dest(__path)
 		],
 		function() {
@@ -2170,9 +2191,6 @@ gulp.task("json-data:app", function(done) {
 								]);
 							}
 
-							// // Add the output path.
-							// dir.outputpath = outputpath;
-
 							if (debug) {
 								print.gulp.info(
 									"Saved",
@@ -2190,7 +2208,7 @@ gulp.task("json-data:app", function(done) {
 			// Run all the promises.
 			return Promise.all(fpromises)
 				.then(
-					function(values) {
+					function(/*values*/) {
 						if (debug) {
 							print.gulp.info(
 								"All data/version promises completed."
@@ -2221,7 +2239,7 @@ gulp.task("json-data:app", function(done) {
 // Run all the promises.
 Promise.all(promises)
 	.then(
-		function(values) {
+		function(/*values*/) {
 			if (debug) {
 				print.gulp.info("All promises completed.");
 			}
