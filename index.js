@@ -178,7 +178,7 @@ let $ = require("gulp-load-plugins")({
 // Project utils.
 let utils = require(apath("./gulp/assets/utils/utils.js"));
 let print = utils.print;
-// let notify = utils.notify;
+let notify = utils.notify;
 let gulp = utils.gulp;
 // let uri = utils.uri;
 // let browser = utils.browser;
@@ -2258,6 +2258,12 @@ Promise.all(promises)
 					print.gulp.success(
 						"Documentation generated.",
 						chalk.green(((now() - tstart) / 1000).toFixed(2) + "s")
+					);
+
+					notify(
+						"Documentation generated.",
+						"devdocs",
+						apath("./img/leaf-216.png")
 					);
 				}
 			]);
