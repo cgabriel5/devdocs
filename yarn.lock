@@ -2369,7 +2369,7 @@ gulp-csslint@^1.0.1:
 
 "gulp-debug@https://github.com/cgabriel5/gulp-debug/tarball/master":
   version "3.1.0"
-  resolved "https://github.com/cgabriel5/gulp-debug/tarball/master#972f5563edca8b3c96037d5eb5b66c489501a2db"
+  resolved "https://github.com/cgabriel5/gulp-debug/tarball/master#6714f08f89718899b5ba97d597915975ae19cb2e"
   dependencies:
     chalk "^1.0.0"
     gulp-util "^3.0.0"
