@@ -131,7 +131,7 @@ require("prism-languages");
 let highlightjs = require("highlight.js");
 let argv = require("minimist")(process.argv.slice(2));
 
-// let del = require("del");
+let del = require("del");
 let pump = require("pump");
 let mkdirp = require("mkdirp");
 let fe = require("file-exists");
@@ -140,6 +140,7 @@ let findup = require("find-up");
 // let jsonc = require("comment-json");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
+let vfsfake = require("vinyl-fs-fake");
 let cheerio = require("cheerio");
 let Entities = require("html-entities").XmlEntities;
 let entities = new Entities();
@@ -615,6 +616,14 @@ function lines_to_highlight($el) {
 // Get the CLI parameters.
 let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
 var debug = argv.debug || argv.d;
+var debug_flist = argv.debugfiles || argv.l || false;
+var filter = argv.filter || argv.f;
+// Prepare the version filter.
+filter = filter
+	? filter.split(",").map(function(item) {
+			return item.trim();
+		})
+	: null;
 let configpath = argv.config || argv.c;
 let outputpath = argv.output || argv.o;
 let outputpath_filename = argv.name || argv.n;
@@ -1052,6 +1061,20 @@ versions.forEach(function(vdata) {
 	// Get the directories.
 	var version = Object.keys(vdata)[0];
 	var directories = vdata[version];
+
+	// If the filter flag is provided only generate documentation if the
+	// version is in the filters provided. Else skip it and print a
+	// warning for debugging purposes.
+	if (filter && !filter.includes(version)) {
+		if (debug) {
+			print.gulp.warn(
+				"Skipping version",
+				chalk.magenta(version),
+				"(filter)"
+			);
+		}
+		return;
+	}
 
 	// Store the version.
 	config.versions.push(version);
@@ -1878,26 +1901,58 @@ versions.forEach(function(vdata) {
 });
 
 // Remove files upon every build.
-gulp.task("clean:app", function(done) {
-	pump(
-		[
-			gulp.src([path.join("./", outputpath), path.join("./index.html")]),
-			$.gulpif(debug, $.debug({ loader: false })),
-			$.clean(),
-			$.gulpif(debug, $.debug.edit({ loader: false }))
-		],
-		function() {
-			if (debug) {
-				print.gulp.info("Removed old devdocs files.");
-			}
+gulp.task("clean:app", function(/*done*/) {
+	// Get the devdocs path.
+	var dd_path = path.join("./", outputpath);
 
-			done();
-		}
-	);
+	return del(
+		[
+			// [https://github.com/gulpjs/gulp/issues/165#issuecomment-32611271]
+			// [https://medium.com/@jack.yin/exclude-directory-pattern-in-gulp-with-glob-in-gulp-src-9cc981f32116]
+			`${dd_path}**/**.*`,
+			`!${dd_path}zdata/`,
+			`!${dd_path}zdata/**`,
+			`!${dd_path}zdata/**.*`,
+			// `${dd_path}zdata/data-VERSION.json`,
+			path.join("./index.html")
+		]
+		// { dryRun: false }
+	).then(function(paths) {
+		// Contain fake gulp files here.
+		var ffiles = [];
+
+		// Modify the paths.
+		paths = paths.map(function(item) {
+			// Push the fake file vinyl object.
+			ffiles.push({
+				path: path.relative(cwd, item),
+				contents: new Buffer("")
+			});
+
+			// Reset path to relative path.
+			return path.relative(cwd, item);
+		});
+
+		// The following is only needed to log the files.
+		pump(
+			[
+				vfsfake.src(ffiles),
+				$.gulpif(
+					debug_flist,
+					$.debug.edit({ loader: false, title: "removed files..." })
+				)
+			],
+			function() {
+				if (debug) {
+					print.gulp.info("Removed old devdocs files.");
+				}
+			}
+		);
+	});
 });
 
 // Create the CSS bundle.
-gulp.task("css:app", function(done) {
+gulp.task("css:app", function(/*done*/) {
 	let unprefix = require("postcss-unprefix");
 	let autoprefixer = require("autoprefixer");
 	let perfectionist = require("perfectionist");
@@ -1943,10 +1998,13 @@ gulp.task("css:app", function(done) {
 	let AUTOPREFIXER = require("./configs/autoprefixer.json");
 	let PERFECTIONIST = require("./configs/perfectionist.json");
 
-	pump(
+	return pump(
 		[
 			gulp.src(css_source_files),
-			$.gulpif(debug, $.debug({ loader: false })),
+			$.gulpif(
+				debug_flist,
+				$.debug({ loader: false, title: "files for bundle.min.css..." })
+			),
 			$.concat("bundle.min.css"),
 			// Replace the default output path with the provided one.
 			$.replace(
@@ -1964,21 +2022,25 @@ gulp.task("css:app", function(done) {
 			$.replace(/overflow\-scrolling/g, "-webkit-overflow-scrolling"),
 			$.clean_css(),
 			gulp.dest(path.join(outputpath, "/css")),
-			$.gulpif(debug, $.debug.edit({ loader: false }))
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({
+					loader: false,
+					title: "bundled bundle.min.css..."
+				})
+			)
 		],
 		function() {
 			if (debug) {
 				print.gulp.info("Bundled CSS file.");
 			}
-
-			done();
 		}
 	);
 });
 
 // Create the JS bundle.
-gulp.task("js:app", function(done) {
-	pump(
+gulp.task("js:app", function(/*done*/) {
+	return pump(
 		[
 			gulp.src([
 				apath("./js/vendor/httpjs/http.js"),
@@ -1996,24 +2058,28 @@ gulp.task("js:app", function(done) {
 					.join(outputpath, "zdata", outputpath_filename)
 					.replace(process.cwd() + "/", "")}$1;`
 			),
-			$.gulpif(debug, $.debug({ loader: false })),
+			$.gulpif(
+				debug_flist,
+				$.debug({ loader: false, title: "files for app.min.js..." })
+			),
 			$.concat("app.min.js"),
 			$.uglify(),
 			gulp.dest(path.join(outputpath, "/js")),
-			$.gulpif(debug, $.debug.edit({ loader: false }))
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({ loader: false, title: "bundled app.min.js..." })
+			)
 		],
 		function() {
 			if (debug) {
 				print.gulp.info("Bundled JS file.");
 			}
-
-			done();
 		}
 	);
 });
 
 // Create the index.html file.
-gulp.task("html:app", function(done) {
+gulp.task("html:app", function(/*done*/) {
 	// Get htmlmin configuration.
 	let HTMLMIN = require(apath("./configs/htmlmin.json"));
 
@@ -2026,61 +2092,76 @@ gulp.task("html:app", function(done) {
 		__path
 	);
 
-	pump(
+	return pump(
 		[
 			gulp.src(apath("./index-src.html")),
 			// Set the path to the favicons...
 			$.replace(/\$\{dir_path\}/g, __path),
-			$.gulpif(debug, $.debug({ loader: false })),
+			$.gulpif(
+				debug_flist,
+				$.debug({ loader: false, title: "files for index.html..." })
+			),
 			$.htmlmin(HTMLMIN),
 			$.rename("index.html"),
 			gulp.dest(cwd),
-			$.gulpif(debug, $.debug.edit({ loader: false }))
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({ loader: false, title: "bundles index.html..." })
+			)
 		],
 		function() {
 			if (debug) {
 				print.gulp.info("Created index.html file.");
 			}
-
-			done();
 		}
 	);
 });
 
 // Copy the needed images.
-gulp.task("img:app", function(done) {
-	pump(
+gulp.task("img:app", function(/*done*/) {
+	return pump(
 		[
 			gulp.src(apath(globall("./img/"))),
-			$.gulpif(debug, $.debug({ loader: false })),
+			$.gulpif(
+				debug_flist,
+				$.debug({ loader: false, title: "copying image files..." })
+			),
 			gulp.dest(path.join(outputpath, "/img")),
-			$.gulpif(debug, $.debug.edit({ loader: false }))
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({ loader: false, title: "copied image files..." })
+			)
 		],
 		function() {
 			if (debug) {
 				print.gulp.info("Copied needed image files.");
 			}
-
-			done();
 		}
 	);
 });
 
 // Copy the app favicons.
-gulp.task("favicon:app", function(done) {
-	pump(
+gulp.task("favicon:app", function(/*done*/) {
+	return pump(
 		[
 			gulp.src(apath(globall("./favicon/"))),
-			$.gulpif(debug, $.debug({ loader: false })),
+			$.gulpif(
+				debug_flist,
+				$.debug({ loader: false, title: "copying favicon files..." })
+			),
 			gulp.dest(path.join(outputpath, "/favicon")),
-			$.gulpif(debug, $.debug.edit({ loader: false }))
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({
+					loader: false,
+					title: "copied favicon files..."
+				})
+			)
 		],
 		function() {
 			if (debug) {
 				print.gulp.info("Copied needed favicon files.");
 			}
-
-			done();
 		}
 	);
 });
@@ -2090,9 +2171,9 @@ gulp.task("favicon:app", function(done) {
 // 	pump(
 // 		[
 // 			gulp.src(apath(globall("./css/assets/fonts/"))),
-// 			$.gulpif(debug, $.debug({ loader: false })),
+// 			$.gulpif(debug_flist, $.debug({ loader: false })),
 // 			gulp.dest(path.join(outputpath, "/fonts")),
-// 			$.gulpif(debug, $.debug.edit({ loader: false }))
+// 			$.gulpif(debug_flist, $.debug.edit({ loader: false }));
 // 		],
 // 		function() {
 // 			if (debug) {
@@ -2118,7 +2199,13 @@ gulp.task("json-data:app", function(done) {
 			$.file(outputpath_filename, JSON.stringify(config, null, 4), {
 				src: true
 			}),
-			$.gulpif(debug, $.debug.edit({ loader: false })),
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({
+					loader: false,
+					title: "saved data file..."
+				})
+			),
 			gulp.dest(__path)
 		],
 		function() {
@@ -2255,10 +2342,14 @@ Promise.all(promises)
 				// "fonts:app",
 				"json-data:app",
 				function() {
-					print.gulp.success(
-						"Documentation generated.",
-						chalk.green(((now() - tstart) / 1000).toFixed(2) + "s")
-					);
+					if (debug) {
+						print.gulp.success(
+							"Documentation generated.",
+							chalk.green(
+								((now() - tstart) / 1000).toFixed(2) + "s"
+							)
+						);
+					}
 
 					notify(
 						"Documentation generated.",

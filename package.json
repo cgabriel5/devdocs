@@ -111,6 +111,7 @@
 		"twemoji": "^11.0.0",
 		"uglify-es": "^3.3.10",
 		"url-parse": "^1.1.9",
+		"vinyl-fs-fake": "^1.1.0",
 		"yargs": "^8.0.2"
 	},
 	"homepage": "https://github.com/cgabriel5/devdocs#readme",
