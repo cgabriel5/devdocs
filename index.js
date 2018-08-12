@@ -147,6 +147,7 @@ let entities = new Entities();
 let emoji = require("node-emoji");
 let eunicode = require("emoji-unicode");
 let twemoji = require("twemoji");
+let timeago = require("epoch-timeago").default;
 let removeHtmlComments = require("remove-html-comments");
 
 let now = require("performance-now");
@@ -617,6 +618,7 @@ function lines_to_highlight($el) {
 let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
 var debug = argv.debug || argv.d;
 var debug_flist = argv.debugfiles || argv.l || false;
+var initial = argv.initial || argv.i || false;
 var filter = argv.filter || argv.f;
 // Prepare the version filter.
 filter = filter
@@ -1068,7 +1070,7 @@ versions.forEach(function(vdata) {
 	if (filter && !filter.includes(version)) {
 		if (debug) {
 			print.gulp.warn(
-				"Skipping version",
+				"Skipped version",
 				chalk.magenta(version),
 				"(filter)"
 			);
@@ -1158,7 +1160,7 @@ versions.forEach(function(vdata) {
 			if (!__path) {
 				if (debug) {
 					print.gulp.warn(
-						"Skipping",
+						"Skipped",
 						chalk.magenta(`${fpath}`),
 						"(file not found)"
 					);
@@ -1673,24 +1675,22 @@ versions.forEach(function(vdata) {
 							// Generate a special ID for the pre element.
 							var uid = `exp-${id(25)}`;
 
+							// Get the language.
+							var classes = $el.attr()["class"];
+							var lang = " ";
+							var langmatch = "";
+							if (classes) {
+								langmatch =
+									(` ${classes} `.match(/ (lang-.+) /i) ||
+										"")[1] || "";
+								if (langmatch) {
+									langmatch = langmatch.replace(/lang-/i, "");
+									lang = ` <span class="show-code-lang">${langmatch}</span>`;
+								}
+							}
+
 							// If the code is > 40 lines show an expander.
 							if (line_count >= 40) {
-								// Get the language.
-								var classes = $el.attr()["class"];
-								var lang = " ";
-								if (classes) {
-									var langmatch = (` ${classes} `.match(
-										/ (lang-.+) /i
-									) || "")[1];
-									if (langmatch) {
-										langmatch = langmatch.replace(
-											/lang-/i,
-											""
-										);
-										lang = ` <span class="show-code-lang">${langmatch}</span>`;
-									}
-								}
-
 								$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
@@ -1788,11 +1788,17 @@ versions.forEach(function(vdata) {
 							var top_pad_fix = "";
 							// Check for line highlight numbers/ranges.
 							var blockname = $el.attr()["data-block-name"] || "";
-							if (blockname) {
-								blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
-								top_pad_fix = "padtop-26";
-								$el.addClass(top_pad_fix);
+							if (!blockname) {
+								var __lang = langmatch.replace("lang-", "");
+
+								blockname =
+									"untitled" +
+									(__lang !== "" ? "." + __lang : "");
 							}
+
+							blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
+							top_pad_fix = "padtop-26";
+							$el.addClass(top_pad_fix);
 
 							// Add the line numbers HTML.
 							$parent.prepend(
@@ -1900,8 +1906,69 @@ versions.forEach(function(vdata) {
 	});
 });
 
+// Create first run file. Sub-sequent runs skip tasks for faster performance.
+// If files are needed to be re-created/copied/transfered, the initial flag
+// can be explicitly provided via the CLI.
+gulp.task("first-file:app", function(done) {
+	var __outputpath = path.join(outputpath, "._rants.text");
+
+	// Check whether the file exists.
+	var file_exists = fe.sync(__outputpath);
+
+	// If the file does not exist, create it.
+	if (!file_exists) {
+		// Reset initial flag to create/copy/transfer needed files for first run.
+		initial = true;
+	}
+
+	// Get the time stamp.
+	var ts = Date.now();
+
+	if (debug) {
+		print.gulp.info(
+			"devdocs last run",
+			chalk.magenta(
+				timeago(
+					file_exists
+						? fs.readFileSync(__outputpath, "utf8") * 1
+						: ts * 1000
+				)
+			) + ".",
+			file_exists ? "" : "(first run)"
+		);
+	}
+
+	// Create the file and store the time-stamp.
+	fs.writeFile(__outputpath, ts.toString(), function(err) {
+		if (err) {
+			print.gulp.error(`${__outputpath} could not be made.`);
+
+			return done();
+		}
+
+		if (debug) {
+			print.gulp.info(
+				file_exists ? "Updated" : "Saved",
+				chalk.magenta(__outputpath),
+				"(first-time file)"
+			);
+		}
+
+		return done();
+	});
+});
+
 // Remove files upon every build.
-gulp.task("clean:app", function(/*done*/) {
+gulp.task("clean:app", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped cleanup task.");
+		}
+
+		return done();
+	}
+
 	// Get the devdocs path.
 	var dd_path = path.join("./", outputpath);
 
@@ -1952,7 +2019,16 @@ gulp.task("clean:app", function(/*done*/) {
 });
 
 // Create the CSS bundle.
-gulp.task("css:app", function(/*done*/) {
+gulp.task("css:app", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped CSS bundling.");
+		}
+
+		return done();
+	}
+
 	let unprefix = require("postcss-unprefix");
 	let autoprefixer = require("autoprefixer");
 	let perfectionist = require("perfectionist");
@@ -2039,7 +2115,16 @@ gulp.task("css:app", function(/*done*/) {
 });
 
 // Create the JS bundle.
-gulp.task("js:app", function(/*done*/) {
+gulp.task("js:app", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped JS bundling.");
+		}
+
+		return done();
+	}
+
 	return pump(
 		[
 			gulp.src([
@@ -2079,7 +2164,16 @@ gulp.task("js:app", function(/*done*/) {
 });
 
 // Create the index.html file.
-gulp.task("html:app", function(/*done*/) {
+gulp.task("html:app", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped HTML bundling.");
+		}
+
+		return done();
+	}
+
 	// Get htmlmin configuration.
 	let HTMLMIN = require(apath("./configs/htmlmin.json"));
 
@@ -2118,7 +2212,16 @@ gulp.task("html:app", function(/*done*/) {
 });
 
 // Copy the needed images.
-gulp.task("img:app", function(/*done*/) {
+gulp.task("img:app", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped img transfer.");
+		}
+
+		return done();
+	}
+
 	return pump(
 		[
 			gulp.src(apath(globall("./img/"))),
@@ -2141,7 +2244,16 @@ gulp.task("img:app", function(/*done*/) {
 });
 
 // Copy the app favicons.
-gulp.task("favicon:app", function(/*done*/) {
+gulp.task("favicon:app", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped favicon transfer.");
+		}
+
+		return done();
+	}
+
 	return pump(
 		[
 			gulp.src(apath(globall("./favicon/"))),
@@ -2333,6 +2445,7 @@ Promise.all(promises)
 
 			// Run the tasks.
 			sequence.apply(null, [
+				"first-file:app",
 				"clean:app",
 				"css:app",
 				"js:app",
