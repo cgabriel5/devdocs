@@ -1675,24 +1675,22 @@ versions.forEach(function(vdata) {
 							// Generate a special ID for the pre element.
 							var uid = `exp-${id(25)}`;
 
+							// Get the language.
+							var classes = $el.attr()["class"];
+							var lang = " ";
+							var langmatch = "";
+							if (classes) {
+								langmatch =
+									(` ${classes} `.match(/ (lang-.+) /i) ||
+										"")[1] || "";
+								if (langmatch) {
+									langmatch = langmatch.replace(/lang-/i, "");
+									lang = ` <span class="show-code-lang">${langmatch}</span>`;
+								}
+							}
+
 							// If the code is > 40 lines show an expander.
 							if (line_count >= 40) {
-								// Get the language.
-								var classes = $el.attr()["class"];
-								var lang = " ";
-								if (classes) {
-									var langmatch = (` ${classes} `.match(
-										/ (lang-.+) /i
-									) || "")[1];
-									if (langmatch) {
-										langmatch = langmatch.replace(
-											/lang-/i,
-											""
-										);
-										lang = ` <span class="show-code-lang">${langmatch}</span>`;
-									}
-								}
-
 								$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
@@ -1790,11 +1788,17 @@ versions.forEach(function(vdata) {
 							var top_pad_fix = "";
 							// Check for line highlight numbers/ranges.
 							var blockname = $el.attr()["data-block-name"] || "";
-							if (blockname) {
-								blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
-								top_pad_fix = "padtop-26";
-								$el.addClass(top_pad_fix);
+							if (!blockname) {
+								var __lang = langmatch.replace("lang-", "");
+
+								blockname =
+									"untitled" +
+									(__lang !== "" ? "." + __lang : "");
 							}
+
+							blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
+							top_pad_fix = "padtop-26";
+							$el.addClass(top_pad_fix);
 
 							// Add the line numbers HTML.
 							$parent.prepend(
