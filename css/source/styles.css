@@ -49,7 +49,7 @@ body {
 	/* Make scrolling smooth in iOS */
 	overflow-scrolling: touch;
 	/* Width of the sizebar. */
-	width: 240px;
+	width: 300px;
 }
 
 /* Scrollbar-START:MacOS Style */
@@ -340,7 +340,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 
 .markdown {
 	/*overflow: auto;*//* Width of the sizebar. */
-	margin-left: 240px;
+	margin-left: 300px;
 	width: 100%;
 	transition: opacity 0.2s ease-in-out;
 	opacity: 1;
@@ -1018,9 +1018,9 @@ a {
 
 .mobile-slide {
 	/* Width of the sizebar. */
-	transform: translate3D(240px, 0, 0);
+	transform: translate3D(300px, 0, 0);
 	/* Width of the sizebar. */
-	transform: translate3D(calc(240px), 0, 0);
+	transform: translate3D(calc(300px), 0, 0);
 }
 
 .tdelay05 {
@@ -1969,7 +1969,7 @@ details, summary {
 
 	.sidebar {
 		/* Width of the sizebar. */
-		flex: 1 0 240px;
+		flex: 1 0 300px;
 	}
 }
 
