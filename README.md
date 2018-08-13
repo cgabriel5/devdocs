@@ -27,7 +27,8 @@ See how to contribute [here](https://github.com/cgabriel5/devdocs/blob/master/CO
 
 ### TODO
 
-- [ ] Add doc versions (i.e. switch between different doc versions).
+- [x] ~~Add doc versions (i.e. switch between different doc versions).~~ `added`
+- [ ] Cleanup project/code base.
 
 ### License
 
