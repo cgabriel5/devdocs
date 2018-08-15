@@ -925,6 +925,7 @@ document.onreadystatechange = function() {
 				var sb_active_el_loader;
 				var clipboardjs_instance;
 				var codeblock_scroll;
+				var sidebar_menu_scroll;
 
 				// Functions:Scoped:Inner //
 
@@ -1488,6 +1489,26 @@ document.onreadystatechange = function() {
 
 						hide_tb_loader();
 						// show_loader($new_current);
+
+						// Cancel any current sidebar menu scroll.
+						if (sidebar_menu_scroll) {
+							sidebar_menu_scroll.cancel();
+						}
+
+						// Scroll to the menu item.
+						sidebar_menu_scroll = animate({
+							from: $sidebar.scrollTop,
+							to: $new_current.offsetTop,
+							duration: 300,
+							onProgress: function(val) {
+								$sidebar.scrollTop = val;
+							},
+							onComplete: function() {
+								// Reset the var.
+								sidebar_menu_scroll = null;
+							}
+						});
+
 						return;
 					}
 
@@ -1656,53 +1677,77 @@ document.onreadystatechange = function() {
 									// 	);
 									// }
 
-									$ul.style.opacity = 1;
+									// Cancel any current sidebar menu scroll.
+									if (sidebar_menu_scroll) {
+										sidebar_menu_scroll.cancel();
+									}
 
-									// Inject the html.
-									replace_html(file);
+									// Scroll to the menu item.
+									sidebar_menu_scroll = animate({
+										from: $sidebar.scrollTop,
+										to: $new_current.offsetTop,
+										duration: 300,
+										onProgress: function(val) {
+											$sidebar.scrollTop = val;
+										},
+										onComplete: function() {
+											// Reset the var.
+											sidebar_menu_scroll = null;
 
-									// Show the current filename.
-									inject_filename(current_file, data);
+											$ul.style.opacity = 1;
 
-									// Get the hash.
-									let hash = location.hash;
+											// Inject the html.
+											replace_html(file);
 
-									// Scroll to hash.
-									if (hash) {
-										// Get the header element.
-										var $parent = get_header(hash);
+											// Show the current filename.
+											inject_filename(current_file, data);
 
-										if ($parent) {
-											// Remove the class to make sure the highlight
-											// works.
-											$parent.classList.remove(
-												"animate-header-highlight"
-											);
+											// Get the hash.
+											let hash = location.hash;
 
-											// Let browser know to optimize scrolling.
-											perf_hint(
-												$sroot,
-												"scroll-position"
-											);
+											// Scroll to hash.
+											if (hash) {
+												// Get the header element.
+												var $parent = get_header(hash);
 
-											// Use a timeout to let the injected HTML load
-											// and parse properly. Otherwise, getBoundingClientRect
-											// will return incorrect values.
-											setTimeout(function() {
-												// Scroll to the header.
-												scroll($parent, function() {
-													// console.log("C");
-
-													$parent.classList.add(
+												if ($parent) {
+													// Remove the class to make sure the highlight
+													// works.
+													$parent.classList.remove(
 														"animate-header-highlight"
 													);
 
-													// Remove optimization.
-													perf_unhint($sroot);
-												});
-											}, 300);
+													// Let browser know to optimize scrolling.
+													perf_hint(
+														$sroot,
+														"scroll-position"
+													);
+
+													// Use a timeout to let the injected HTML load
+													// and parse properly. Otherwise, getBoundingClientRect
+													// will return incorrect values.
+													setTimeout(function() {
+														// Scroll to the header.
+														scroll(
+															$parent,
+															function() {
+																// console.log("C");
+
+																$parent.classList.add(
+																	"animate-header-highlight"
+																);
+
+																// Remove optimization.
+																perf_unhint(
+																	$sroot
+																);
+															}
+														);
+													}, 300);
+												}
+											}
 										}
-									}
+									});
 								}
 							});
 						}, 225);
