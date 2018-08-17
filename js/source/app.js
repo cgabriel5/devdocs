@@ -717,31 +717,129 @@ document.onreadystatechange = function() {
 		 *
 		 * @param  {htmlelement} container - The parent element.
 		 * @param  {htmlelement} element - The child element.
-		 * @param  {boolean} partial - Whether the child's visibility
-		 *     can be partial. By default the function looks to whether
-		 *     the element is completely hidden.
-		 * @return {boolean} - Wheter the child element is visible.
+		 * @param  {modifier} modifier - An optional modifier function to
+		 *     modify the dimensions if needed. For example, if the parent's
+		 *     top value needs an offset applied this can be done.
+		 * @return {object} - Object containing visibility information.
 		 *
 		 * @resource [https://stackoverflow.com/a/37285344]
 		 */
-		var is_in_view = function(container, element, partial) {
-			// Get container properties.
-			let ctop = container.scrollTop;
-			let cbottom = ctop + container.clientHeight;
+		var is_in_view = function($cont, $el, modifier) {
+			// Get the container dimensions (top, bottom, height).
+			var ccoors = coors($cont);
+			var ctop = ccoors.top;
+			var cbottom = ccoors.bottom;
+			var cheight = ccoors.height;
 
-			// Get element properties.
-			let etop = element.offsetTop;
-			let ebottom = etop + element.clientHeight;
+			// Get the element dimensions (top, bottom, height).
+			var ecoors = coors($el);
+			var etop = ecoors.top;
+			var ebottom = ecoors.bottom;
+			var eheight = ecoors.height;
 
-			// Check if in view.
-			let istotal = etop >= ctop && ebottom <= cbottom;
-			let ispartial =
-				partial &&
-				((etop < ctop && ebottom > ctop) ||
-					(ebottom > cbottom && etop < cbottom));
+			// Apply modifier if provided.
+			if (modifier) {
+				var mods = modifier({
+					ctop: ctop,
+					cbottom: cbottom,
+					cheight: cheight,
+					ccoors: ccoors,
+					etop: etop,
+					ebottom: ebottom,
+					eheight: eheight,
+					ecoors: ecoors
+				});
 
-			// Return outcome.
-			return istotal || ispartial;
+				// Reset values.
+				ctop = mods.ctop;
+				cbottom = mods.cbottom;
+				cheight = mods.cheight;
+
+				etop = mods.etop;
+				ebottom = mods.ebottom;
+				eheight = mods.eheight;
+			}
+
+			// Visibility vars.
+			var complete = false;
+			var level = null;
+			var partial = false;
+			var percent = 0;
+
+			// Check for complete visibility: The element's dimensions.
+			// must fall within the container's.
+			if (etop >= ctop && ebottom <= cbottom) {
+				complete = true;
+
+				// Calculate the visibility percentage.
+				percent = 100;
+
+				// Calculate the level (1-5).
+				// Break down view into 5 sections.
+				var levels = [];
+				var breakdown_percentage = cheight / 4;
+				var brdn_prctg = 0;
+				while (brdn_prctg <= cheight) {
+					levels.push(brdn_prctg);
+					brdn_prctg = brdn_prctg + breakdown_percentage;
+				}
+
+				/**
+				 * Find the closest number in an array.
+				 *
+				 * @param  {array} array - The array or numbers to check against.
+				 * @param  {number} num - The number.
+				 * @return {number} - The closest number in array with respect to
+				 *    provided number.
+				 *
+				 * @resources [https://stackoverflow.com/a/19277804]
+				 */
+				var closest = function(array, num) {
+					return array.reduce(function(prev, curr) {
+						return Math.abs(curr - num) < Math.abs(prev - num)
+							? curr
+							: prev;
+					});
+				};
+
+				// Get the level.
+				var nearest = closest(levels, etop);
+				levels.filter(function(lvl, index) {
+					if (lvl === nearest) {
+						level = index + 1;
+						return level;
+					}
+				});
+			} else {
+				// Check for partial visibility (top or bottom).
+				if (etop < ctop && ebottom > ctop) {
+					// Top-partial visibility.
+					partial = "top";
+
+					// Calculate the visibility percentage.
+					percent = Math.abs(ebottom - ctop) / eheight * 100;
+
+					// It's at the very top (highest level).
+					level = 1;
+				} else if (etop < cbottom && ebottom > cbottom) {
+					// Bottom-partial visibility.
+					partial = "bottom";
+
+					// Calculate the visibility percentage.
+					percent = Math.abs(cbottom - etop) / eheight * 100;
+
+					// It's at the very bottom (lowest level).
+					level = 5;
+				}
+			}
+
+			// Return results.
+			return {
+				complete: complete,
+				level: level,
+				partial: partial,
+				percent: percent
+			};
 		};
 
 		// ------------------------------------------------------------
@@ -1500,6 +1598,28 @@ document.onreadystatechange = function() {
 							from: $sidebar.scrollTop,
 							to: $new_current.offsetTop,
 							duration: 300,
+							onSkip: function() {
+								// Get visibility information.
+								var inview = is_in_view(
+									$sidebar,
+									$new_current,
+									function(vals) {
+										// Reset needed values.
+										vals.ctop =
+											vals.ctop +
+											$search_cont.clientHeight;
+										// Return the modified object.
+										return vals;
+									}
+								);
+
+								// The sidebar menu element must be
+								// completely visible and within
+								// levels 1-3 to skip the animation.
+								if (inview.complete && inview.level <= 3) {
+									return true;
+								}
+							},
 							onProgress: function(val) {
 								$sidebar.scrollTop = val;
 							},
@@ -1687,6 +1807,31 @@ document.onreadystatechange = function() {
 										from: $sidebar.scrollTop,
 										to: $new_current.offsetTop,
 										duration: 300,
+										onSkip: function() {
+											// Get visibility information.
+											var inview = is_in_view(
+												$sidebar,
+												$new_current,
+												function(vals) {
+													// Reset needed values.
+													vals.ctop =
+														vals.ctop +
+														$search_cont.clientHeight;
+													// Return the modified object.
+													return vals;
+												}
+											);
+
+											// The sidebar menu element must be
+											// completely visible and within
+											// levels 1-3 to skip the animation.
+											if (
+												inview.complete &&
+												inview.level <= 3
+											) {
+												return true;
+											}
+										},
 										onProgress: function(val) {
 											$sidebar.scrollTop = val;
 										},
@@ -2938,7 +3083,7 @@ document.onreadystatechange = function() {
 									$prev.classList.add("active-version");
 
 									// Update the scroll-y position.
-									if (!is_in_view($vlist, $prev)) {
+									if (!is_in_view($vlist, $prev).complete) {
 										$vlist.scrollTop = $prev.offsetTop;
 									}
 								}
@@ -2981,7 +3126,7 @@ document.onreadystatechange = function() {
 									$next.classList.add("active-version");
 
 									// Update the scroll-y position.
-									if (!is_in_view($vlist, $next)) {
+									if (!is_in_view($vlist, $next).complete) {
 										$vlist.scrollTop = $next.offsetTop;
 									}
 								}
