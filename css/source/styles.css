@@ -2116,12 +2116,12 @@ details, summary {
 		font-size: 15px;
 	}
 
-	.markdown-body h1,
-	.markdown-body h2,
-	.markdown-body h3,
-	.markdown-body h4,
-	.markdown-body h5,
-	.markdown-body h6 {
+	.markdown-body h1:not(.ignore-header),
+	.markdown-body h2:not(.ignore-header),
+	.markdown-body h3:not(.ignore-header),
+	.markdown-body h4:not(.ignore-header),
+	.markdown-body h5:not(.ignore-header),
+	.markdown-body h6:not(.ignore-header) {
 		position: sticky !important;
 		top: 42px;
 		background: rgba(255, 255, 255, 0.95);
@@ -2129,10 +2129,7 @@ details, summary {
 		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
         margin-left: 0px;
         width: calc(100% + 0px);
-        width: 100%;*/
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
+        width: 100%;*//*display: flex;*//*flex-flow: row nowrap;*//*align-items: center;*/
 		white-space: nowrap;
 		overflow-x: auto;
 		overflow-y: hidden;
@@ -2150,6 +2147,31 @@ details, summary {
 		/*border-radius: 4px;*/
 		border-bottom: 1px solid #eaecef;
 		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	.markdown-body h1.ignore-header,
+	.markdown-body h2.ignore-header,
+	.markdown-body h3.ignore-header,
+	.markdown-body h4.ignore-header,
+	.markdown-body h5.ignore-header,
+	.markdown-body h6.ignore-header {
+		position: relative;
+		background: rgba(255, 255, 255, 0.95);
+		/*display: flex;*//*flex-flow: row nowrap;*//*align-items: center;*/
+		white-space: nowrap;
+		overflow-x: auto;
+		overflow-y: hidden;
+		text-overflow: initial;
+		border-radius: 0 !important;
+		/* 		margin-left: -15px; *//* 		width: calc(100% + 30px); */
+		padding: 10px 15px;
+		/* Make scrolling smooth in iOS */
+		overflow-scrolling: touch;
+		font-size: 18px;
+		font-weight: 600;
+		border-bottom: 1px solid #eaecef;
+		margin-top: 10px;
 		margin-bottom: 0;
 	}/*
 	.markdown h3::after {

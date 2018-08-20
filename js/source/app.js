@@ -286,7 +286,7 @@ document.onreadystatechange = function() {
 				meta.tick++;
 
 				// Calculate the value.
-				value = from + (to - from) * factor;
+				value = meta.from + (meta.to - meta.from) * factor;
 
 				// True or False can be returned to stop animation/prevent
 				// callback function.
@@ -1120,7 +1120,7 @@ document.onreadystatechange = function() {
 				 *
 				 * @return {undefined} - Nothing.
 				 */
-				var scroll = function($el, callback) {
+				var scroll = function($el, callback, check_stickyheader) {
 					// Remove any expanders.
 					remove_expanders();
 					// Set flag to prevent any mousemove.
@@ -1129,6 +1129,9 @@ document.onreadystatechange = function() {
 					// Calculate the to y scroll offset position.
 					var to = scroll.offset($el);
 					var from = window.pageYOffset;
+
+					// Flags.
+					var update_check_stickyheader;
 
 					// // Store the scroll position to allow for the cancellation
 					// // of the animation when any manual scrolling is done.
@@ -1223,6 +1226,30 @@ document.onreadystatechange = function() {
 								return true;
 							}
 
+							// Reset the to var if the check for sticky header is set.
+							if (
+								check_stickyheader &&
+								!update_check_stickyheader
+							) {
+								// Note**: Switch to non hard-coded values later.
+
+								// If there is a current sticky header...
+								if (
+									/h\d/i.test(
+										document.elementFromPoint(0, 44).tagName
+									) &&
+									/h\d/i.test(
+										document.elementFromPoint(0, 85).tagName
+									)
+								) {
+									// Set the flag.
+									update_check_stickyheader = true;
+
+									// Reset the to value.
+									meta.to = meta.to - 40;
+								}
+							}
+
 							// Set the scrolltop value.
 							$sroot.scrollTop = val;
 						},
@@ -1248,7 +1275,8 @@ document.onreadystatechange = function() {
 					// Calculate the to y scroll position.
 					return is_mobile_viewport()
 						? // For "mobile" size.
-							coors($el.nextElementSibling).pageY - 86
+							coors($el.nextElementSibling).pageY -
+								($topbar.clientHeight + $el.clientHeight)
 						: // Desktop size.
 							coors($el).pageY - 10;
 				};
@@ -2705,17 +2733,21 @@ document.onreadystatechange = function() {
 							perf_hint($sroot, "scroll-position");
 
 							// Scroll to the header.
-							scroll($header, function() {
-								// console.log("B");
+							scroll(
+								$header,
+								function() {
+									// console.log("B");
 
-								// Highlight the header.
-								$header.classList.add(
-									"animate-header-highlight"
-								);
+									// Highlight the header.
+									$header.classList.add(
+										"animate-header-highlight"
+									);
 
-								// Remove optimization.
-								perf_unhint($sroot);
-							});
+									// Remove optimization.
+									perf_unhint($sroot);
+								},
+								$header.classList.contains("ignore-header")
+							);
 
 							// Get the anchor href.
 							let href = $header
