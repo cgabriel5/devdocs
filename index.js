@@ -230,6 +230,28 @@ var slugify = function(text) {
 };
 
 /**
+ * Collapses multiple hashes down to one, removes starting/ending hashes,
+ *     and optionally replaces underscores with hashes.
+ *
+ * @param  {string} text - The text to modify.
+ * @param  {boolean} replace_underscores - If provided, converts underscores
+ *     to hashes.
+ * @return {string} - The "dehashed" string.
+ */
+var dehashify = function(text, replace_underscores) {
+	text = text.toString();
+
+	// Replace underscores to hashes.
+	if (replace_underscores) {
+		text = text.replace(/_/g, "-");
+	}
+
+	// Collapse multiple hashes down to one, remove starting/ending hashes,
+	// and return the string.
+	return text.replace(/[-]+/g, "-").replace(/^-|-$/g, "");
+};
+
+/**
  * Create an array based off a number range. For example,
  * given the range 1-3 an array [1, 2, 3] will be returned.
  *
@@ -1140,14 +1162,15 @@ versions.forEach(function(vdata) {
 			__file.dirname = fpath;
 			__file.name = file;
 			__file.alias = alias_file;
-			__file.html = `
-		<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
+			__file.html = `<div id="parent-menu-file-${counter_dir}.${counter_file}" class="l-2-parent">
+			<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 			<div class="flex l-2-main-cont">
 				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
 				<span class="link-headings-count">$0</span>
 			</div>
-		</li>`;
+		</li></div>`;
+
 			// All processed file headings will be contained here.
 			__file.headings = [];
 
@@ -1387,7 +1410,7 @@ versions.forEach(function(vdata) {
 							let href_lower = href.toLowerCase();
 
 							// Clean the href.
-							href = href.replace(/^[-]+|[-]+$/g, "");
+							href = dehashify(href);
 
 							// Reset the name and ID attributes.
 							let name = attrs.name;
@@ -1395,14 +1418,11 @@ versions.forEach(function(vdata) {
 								name &&
 								name.includes(href.replace(/^#/g, ""))
 							) {
-								$el.attr(
-									"name",
-									name.replace(/^[-]+|[-]+$/g, "")
-								);
+								$el.attr("name", dehashify(name));
 							}
 							let id = attrs.id;
 							if (id && id.includes(href.replace(/^#/g, ""))) {
-								$el.attr("id", id.replace(/^[-]+|[-]+$/g, ""));
+								$el.attr("id", dehashify(id));
 							}
 
 							// If an href exists, and it is not an http(s) link or
@@ -1445,6 +1465,22 @@ versions.forEach(function(vdata) {
 								}
 							}
 						});
+
+						// Add the ignore class to headers that are contained
+						// inside a details element.
+						$("h1, h2, h3, h4, h5, h6")
+							.filter(function(/*i, el*/) {
+								return $(this)
+									.parents()
+									.filter("details").length;
+							})
+							.each(function(/*i, el*/) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Add the ignore class.
+								$el.addClass("ignore-header");
+							});
 
 						// Add the GitHub octicon link/anchor.
 						$("h1, h2, h3, h4, h5, h6")
@@ -1564,9 +1600,8 @@ versions.forEach(function(vdata) {
 
 								// Add the second level menu template string.
 								headings.push(
-									`<li class="l-3" title="${value}"><a class="link link-heading" href="#${id.replace(
-										/^[-]+|[-]+$/g,
-										""
+									`<li class="l-3" title="${value}"><a class="link link-heading" href="#${dehashify(
+										id
 									)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
 								);
 							});
@@ -1588,13 +1623,7 @@ versions.forEach(function(vdata) {
 							if (href.startsWith("#")) {
 								href = href.replace(/\#/g, "");
 
-								$el.attr(
-									"href",
-									"#" +
-										href
-											.replace(/_/g, "-")
-											.replace(/^[-]+|[-]+$/g, "")
-								);
+								$el.attr("href", "#" + dehashify(href, true));
 							}
 
 							// Add the "link-heading" class only when the href
@@ -1828,6 +1857,22 @@ versions.forEach(function(vdata) {
 							);
 						});
 
+						// Extract and store the details elements' HTML.
+						var details_lookup = [];
+						var details_counter = -1;
+
+						// Remove and placehold the <details> inner HTML.
+						$("details").each(function(/*i, el*/) {
+							// Cache the element.
+							let $el = $(this);
+
+							// Store the HTML.
+							details_lookup.push($el.html());
+
+							// Reset the HTML.
+							$el.html(`[dd::-details-${++details_counter}]`);
+						});
+
 						// Finally reset the data to the newly parsed/modified HTML.
 						data = $.html().replace(/<\/?(html|body|head)>/gi, "");
 
@@ -1874,6 +1919,19 @@ versions.forEach(function(vdata) {
 						// be wrapped.
 						if (Object.keys(inserts).length === 1) {
 							data = `${data}</div>`;
+						}
+
+						// Fill back in the details placeholders.
+						var r = /\[dd\:\:\-details-\d+\]/g;
+						var rfn = function(match) {
+							return details_lookup[
+								match.replace(/[^\d]/g, "") * 1
+							];
+						};
+						// Loop contents until all details have been filled back in.
+						while (r.test(data)) {
+							// Add back the code blocks.
+							data = data.replace(r, rfn);
 						}
 
 						// Finally reset the data to the newly parsed/modified HTML.

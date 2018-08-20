@@ -286,7 +286,7 @@ document.onreadystatechange = function() {
 				meta.tick++;
 
 				// Calculate the value.
-				value = from + (to - from) * factor;
+				value = meta.from + (meta.to - meta.from) * factor;
 
 				// True or False can be returned to stop animation/prevent
 				// callback function.
@@ -1030,12 +1030,14 @@ document.onreadystatechange = function() {
 				/**
 				 * Generatet the CSS loader HTML.
 				 *
-				 * @param  {string} name - The name of the CSS loader to use.
-				 * @param  {number} size - The dimensions the loader should be.
+				 * @param  {number} size - Loader dimensions.
+				 * @param  {boolean} light - Use light over or dark loader.
 				 * @return {string} - The CSS loader HTML string.
 				 */
-				function cssloader(name, size) {
-					return `<div class="mloader" style="min-width:${size}px;min-height:${size}px;"></div>`;
+				function cssloader(size, light) {
+					return `<div class="mloader${
+						light ? "-white" : ""
+					}" style="min-width:${size}px;min-height:${size}px;"></div>`;
 				}
 
 				function show_tb_loader() {
@@ -1046,7 +1048,7 @@ document.onreadystatechange = function() {
 					$moverlay.classList.remove("none");
 
 					// Show the topbar loader.
-					$tb_loader.innerHTML = cssloader("dark", 16);
+					$tb_loader.innerHTML = cssloader(16);
 					$tb_loader.classList.remove("none");
 				}
 
@@ -1080,7 +1082,7 @@ document.onreadystatechange = function() {
 					// Add the loader.
 					$el.children[0].insertAdjacentHTML(
 						"afterend",
-						cssloader("dark", 10)
+						cssloader(10, true)
 					);
 					$el.children[1].classList.add("mr5");
 
@@ -1120,7 +1122,7 @@ document.onreadystatechange = function() {
 				 *
 				 * @return {undefined} - Nothing.
 				 */
-				var scroll = function($el, callback) {
+				var scroll = function($el, callback, check_stickyheader) {
 					// Remove any expanders.
 					remove_expanders();
 					// Set flag to prevent any mousemove.
@@ -1129,6 +1131,9 @@ document.onreadystatechange = function() {
 					// Calculate the to y scroll offset position.
 					var to = scroll.offset($el);
 					var from = window.pageYOffset;
+
+					// Flags.
+					var update_check_stickyheader;
 
 					// // Store the scroll position to allow for the cancellation
 					// // of the animation when any manual scrolling is done.
@@ -1223,6 +1228,30 @@ document.onreadystatechange = function() {
 								return true;
 							}
 
+							// Reset the to var if the check for sticky header is set.
+							if (
+								check_stickyheader &&
+								!update_check_stickyheader
+							) {
+								// Note**: Switch to non hard-coded values later.
+
+								// If there is a current sticky header...
+								if (
+									/h\d/i.test(
+										document.elementFromPoint(0, 44).tagName
+									) &&
+									/h\d/i.test(
+										document.elementFromPoint(0, 85).tagName
+									)
+								) {
+									// Set the flag.
+									update_check_stickyheader = true;
+
+									// Reset the to value.
+									meta.to = meta.to - 40;
+								}
+							}
+
 							// Set the scrolltop value.
 							$sroot.scrollTop = val;
 						},
@@ -1248,7 +1277,8 @@ document.onreadystatechange = function() {
 					// Calculate the to y scroll position.
 					return is_mobile_viewport()
 						? // For "mobile" size.
-							coors($el.nextElementSibling).pageY - 86
+							coors($el.nextElementSibling).pageY -
+								($topbar.clientHeight + $el.clientHeight)
 						: // Desktop size.
 							coors($el).pageY - 10;
 				};
@@ -1596,7 +1626,7 @@ document.onreadystatechange = function() {
 						// Scroll to the menu item.
 						sidebar_menu_scroll = animate({
 							from: $sidebar.scrollTop,
-							to: $new_current.offsetTop,
+							to: $new_current.nextElementSibling.offsetTop + 15,
 							duration: 300,
 							onSkip: function() {
 								// Get visibility information.
@@ -1700,7 +1730,12 @@ document.onreadystatechange = function() {
 
 									// Remove the UL if it exists.
 									if ($ul && $ulp.contains($ul)) {
-										$ulp.removeChild($ul);
+										// $ulp.removeChild($ul);
+										document
+											.getElementById(
+												`parent-menu-file-${id}`
+											)
+											.removeChild($ul);
 									}
 								}
 							});
@@ -1805,7 +1840,9 @@ document.onreadystatechange = function() {
 									// Scroll to the menu item.
 									sidebar_menu_scroll = animate({
 										from: $sidebar.scrollTop,
-										to: $new_current.offsetTop,
+										to:
+											$new_current.nextElementSibling
+												.offsetTop + 15,
 										duration: 300,
 										onSkip: function() {
 											// Get visibility information.
@@ -2705,17 +2742,21 @@ document.onreadystatechange = function() {
 							perf_hint($sroot, "scroll-position");
 
 							// Scroll to the header.
-							scroll($header, function() {
-								// console.log("B");
+							scroll(
+								$header,
+								function() {
+									// console.log("B");
 
-								// Highlight the header.
-								$header.classList.add(
-									"animate-header-highlight"
-								);
+									// Highlight the header.
+									$header.classList.add(
+										"animate-header-highlight"
+									);
 
-								// Remove optimization.
-								perf_unhint($sroot);
-							});
+									// Remove optimization.
+									perf_unhint($sroot);
+								},
+								$header.classList.contains("ignore-header")
+							);
 
 							// Get the anchor href.
 							let href = $header

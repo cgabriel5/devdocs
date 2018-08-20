@@ -29,7 +29,7 @@ body {
 .sidebar {
 	user-select: none;
 	touch-callout: none;
-	font-size: 16px;
+	font-size: 14px;
 	/*width: 300px;*/
 	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	display: flex;
@@ -399,7 +399,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .l-2 {
-	padding: 8px 10px 8px 20px;
+	padding: 6px 10px 6px 20px;
 	/*text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;*/
@@ -407,8 +407,11 @@ to become invisible when header scrolling. This seems to solve the issue.
 	font-weight: bold;
 	display: flex;
 	align-items: center;
-	/*transition: all 0.2s ease-in-out;*/
-	transition: background 0.2s ease-in-out;
+	/*transition: all 0.2s ease-in-out;*//*transition: background 0.2s ease-in-out;*/
+	position: sticky !important;
+	top: 78px;
+	z-index: 1;
+	/*background: white;*/
 }
 
 .l-2-main-cont {
@@ -441,7 +444,8 @@ to become invisible when header scrolling. This seems to solve the issue.
 .active-page .link-headings-count {
 	color: #666666;
 	background: white;
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	/*border: 1px solid rgba(0, 0, 0, 0.1);*/
+	border: 1px solid transparent;
 }
 
 .l-3 {
@@ -456,7 +460,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
-	font-size: 15px;
+	font-size: 14px;
 	/*text-transform: capitalize;*/
 	border-right: 2px solid transparent;
 }
@@ -509,18 +513,15 @@ ul.file-headers {
 }
 
 .active-page {
-	background-image: linear-gradient(to right, #ffffff, #fdfdfd, #fbfbfb, #f9f9f9, #f7f7f7);
-	/*border-right: 3px solid #6f42c1;*//* border-left: 3px solid #1267e8; *//* padding-bottom: 7px !important; */
-	background: #f4f4f4;
-	margin: 0 3px;
-	border-radius: 4px;
-	margin-bottom: 5px;
-	margin-top: 5px;
+	/*background-image: linear-gradient(to right, #ffffff, #fdfdfd, #fbfbfb, #f9f9f9, #f7f7f7);*//*border-right: 3px solid #6f42c1;*//* border-left: 3px solid #1267e8; *//* padding-bottom: 7px !important; *//*background: #f4f4f4;*/
+	background: #2578f8;
+	/*margin: 0 3px;*//*border-radius: 4px;*//*margin-bottom: 5px;*//*margin-top: 5px;*/
+	margin-left: -1px;
 }
 
 .active-page .link {
-	/*color: #1267e8;*//*color: #0f91ee;*/
-	color: #2578f8;
+	/*color: #1267e8;*//*color: #0f91ee;*//*color: #2578f8;*/
+	color: white;
 	/*color: white;*//*color: #333;*/
 	font-weight: bold;
 }
@@ -528,7 +529,15 @@ ul.file-headers {
 /* Don't add a top margin to the first li element when the active-page class it on. */
 
 .menu-section-cont li:first-child.l-2.active-page {
-	margin: 0 3px 8px 3px;
+	/*margin: 0 3px 8px 3px;*/
+}
+
+.file-headers.headings-cont li:first-child.l-3 {
+	margin-top: 10px;
+}
+
+.file-headers.headings-cont li:last-child.l-3 {
+	margin-bottom: 5px;
 }
 
 .logo-devdocs {
@@ -1077,7 +1086,8 @@ a {
 	border: 1px solid transparent;
 	cursor: pointer;
 	margin-bottom: 15px;
-	border: 1px solid rgba(0, 0, 0, 0.095);
+	/*border: 1px solid rgba(0, 0, 0, 0.095);*/
+	border: 1px solid #eaecee;
 }
 
 .show-code-cont:active span,
@@ -1182,6 +1192,14 @@ a {
 	border-radius: 50%;
 	border: 3px solid;
 	border-color: #555555 #dddddd #dddddd;
+	animation: animate-spin 0.5s linear infinite;
+	position: relative;
+}
+
+.mloader-white {
+	border-radius: 50%;
+	border: 3px solid;
+	border-color: #ffffffa3 #ffffff #ffffff;
 	animation: animate-spin 0.5s linear infinite;
 	position: relative;
 }
@@ -1340,7 +1358,8 @@ a.social-link:hover {
 }
 
 .menu-arrow-active {
-	color: #2578f8;
+	/*color: #2578f8;*/
+	color: white;
 }
 
 .def-font {
@@ -1781,7 +1800,7 @@ details, summary {
 	/*border: 1px solid rgba(0, 0, 0, 0.04);*//*border: 1px solid transparent;*/
 	border-right: none;
 	border-radius: 0 0 0 4px;
-	margin-right: 1px;
+	/*margin-right: 1px;*/
 }
 
 .search-cont-inner {
@@ -2045,6 +2064,10 @@ details, summary {
 		/*padding: 5px 6px;*/
 		font-size: 16px;
 	}
+
+	.l-2 {
+		top: 72px;
+	}
 }
 
 @media (min-width: 768px) {
@@ -2115,12 +2138,12 @@ details, summary {
 		font-size: 15px;
 	}
 
-	.markdown-body h1,
-	.markdown-body h2,
-	.markdown-body h3,
-	.markdown-body h4,
-	.markdown-body h5,
-	.markdown-body h6 {
+	.markdown-body h1:not(.ignore-header),
+	.markdown-body h2:not(.ignore-header),
+	.markdown-body h3:not(.ignore-header),
+	.markdown-body h4:not(.ignore-header),
+	.markdown-body h5:not(.ignore-header),
+	.markdown-body h6:not(.ignore-header) {
 		position: sticky !important;
 		top: 42px;
 		background: rgba(255, 255, 255, 0.95);
@@ -2128,10 +2151,7 @@ details, summary {
 		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
         margin-left: 0px;
         width: calc(100% + 0px);
-        width: 100%;*/
-		display: flex;
-		flex-flow: row nowrap;
-		align-items: center;
+        width: 100%;*//*display: flex;*//*flex-flow: row nowrap;*//*align-items: center;*/
 		white-space: nowrap;
 		overflow-x: auto;
 		overflow-y: hidden;
@@ -2149,6 +2169,31 @@ details, summary {
 		/*border-radius: 4px;*/
 		border-bottom: 1px solid #eaecef;
 		margin-top: 0;
+		margin-bottom: 0;
+	}
+
+	.markdown-body h1.ignore-header,
+	.markdown-body h2.ignore-header,
+	.markdown-body h3.ignore-header,
+	.markdown-body h4.ignore-header,
+	.markdown-body h5.ignore-header,
+	.markdown-body h6.ignore-header {
+		position: relative;
+		background: rgba(255, 255, 255, 0.95);
+		/*display: flex;*//*flex-flow: row nowrap;*//*align-items: center;*/
+		white-space: nowrap;
+		overflow-x: auto;
+		overflow-y: hidden;
+		text-overflow: initial;
+		border-radius: 0 !important;
+		/* 		margin-left: -15px; *//* 		width: calc(100% + 30px); */
+		padding: 10px 15px;
+		/* Make scrolling smooth in iOS */
+		overflow-scrolling: touch;
+		font-size: 18px;
+		font-weight: 600;
+		border-bottom: 1px solid #eaecef;
+		margin-top: 10px;
 		margin-bottom: 0;
 	}/*
 	.markdown h3::after {
