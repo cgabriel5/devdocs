@@ -29,7 +29,7 @@ body {
 .sidebar {
 	user-select: none;
 	touch-callout: none;
-	font-size: 14px;
+	font-size: 15px;
 	/*width: 300px;*/
 	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	display: flex;
@@ -460,7 +460,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
-	font-size: 14px;
+	font-size: 15px;
 	/*text-transform: capitalize;*/
 	border-right: 2px solid transparent;
 }
@@ -537,7 +537,7 @@ ul.file-headers {
 }
 
 .file-headers.headings-cont li:last-child.l-3 {
-	margin-bottom: 5px;
+	margin-bottom: 10px;
 }
 
 .logo-devdocs {
@@ -2066,7 +2066,7 @@ details, summary {
 	}
 
 	.l-2 {
-		top: 72px;
+		top: 71px;
 	}
 }
 
