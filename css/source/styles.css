@@ -409,7 +409,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 	align-items: center;
 	/*transition: all 0.2s ease-in-out;*//*transition: background 0.2s ease-in-out;*/
 	position: sticky !important;
-	top: 78px;
+	/*top: 78px;*/
 	z-index: 1;
 	/*background: white;*/
 }
@@ -2063,11 +2063,9 @@ details, summary {
 	.sinput {
 		/*padding: 5px 6px;*/
 		font-size: 16px;
-	}
-
-	.l-2 {
-		top: 71px;
-	}
+	}/*	.l-2 {
+		top: 72px;
+	}*/
 }
 
 @media (min-width: 768px) {
