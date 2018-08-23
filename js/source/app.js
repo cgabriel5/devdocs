@@ -627,14 +627,15 @@ document.onreadystatechange = function() {
 				style.setAttribute("data-title", title);
 			}
 
+			// Add the title marker to the contents.
+			var contents = `/*title:${title}*/\n` + content;
+
 			// Support for IE.
 			if (style.styleSheet) {
-				style.styleSheet.cssText = `/*title:${title}*/\n` + content;
+				style.styleSheet.cssText = contents;
 			} else {
 				// All other browsers.
-				style.appendChild(
-					document.createTextNode(`/*title:${title}*/\n` + content)
-				);
+				style.appendChild(document.createTextNode(contents));
 			}
 
 			// Append element to head tag.
