@@ -574,11 +574,21 @@ document.onreadystatechange = function() {
 		};
 
 		/**
+		 * Detect whether the device is a "mobile" device. Basically anything
+		 *     other than a desktop device.
+		 *
+		 * @return {boolean} - Boolean indicating whether device is "mobile".
+		 */
+		var is_mobile = function() {
+			return user_agent().device.type;
+		};
+
+		/**
 		 * Determine whether browser Webkit based, running on a desktop device
 		 *     and is not MacOS.
 		 *
 		 * @return {boolean} - Boolean indicating whether the above conditions
-		 *     are true..
+		 *     are true.
 		 */
 		var is_desktop_webkit = function() {
 			// Get the user agent object.
@@ -595,25 +605,132 @@ document.onreadystatechange = function() {
 		};
 
 		/**
-		 * Get the CSS style sheet object that matches the provided title.
+		 * Create and insert a <style> element into the DOM.
 		 *
-		 * @return {object} - The CSS object stylesheet. Undefined when
-		 *     the sheet is not found.
+		 * @param  {string} content - The CSS definitions.
+		 * @param  {string} title - Optional sheet title.
+		 * @return {htmlelement} - The reference to the style element.
+		 *
+		 * @resource [https://stackoverflow.com/a/38063486]
+		 * @resource [https://stackoverflow.com/q/524696]
+		 * @resource [https://stackoverflow.com/q/8209086]
 		 */
-		var stylesheet = function(title) {
+		var stylesheet = function(content, title) {
+			// Create element.
+			var style = document.createElement("style");
+
+			// Set type.
+			style.type = "text/css";
+
+			// Set the title if provided.
+			if (title) {
+				style.setAttribute("data-title", title);
+			}
+
+			// Support for IE.
+			if (style.styleSheet) {
+				style.styleSheet.cssText = `/*title:${title}*/\n` + content;
+			} else {
+				// All other browsers.
+				style.appendChild(
+					document.createTextNode(`/*title:${title}*/\n` + content)
+				);
+			}
+
+			// Append element to head tag.
+			document.getElementsByTagName("head")[0].appendChild(style);
+
+			return style;
+		};
+
+		/**
+		 * Get the CSS style element based on a function logic.
+		 *
+		 * @param  {function} cb - The function logic.
+		 * @return {object} - The style element else undefined.
+		 *
+		 * @resource [https://developer.mozilla.org/en-US/docs/Web/API/DocumentOrShadowRoot/styleSheets#Examples]
+		 */
+		stylesheet.get = function(cb) {
+			// Get the stylesheets.
+			var sheets = document.getElementsByTagName("style");
+
+			// Loop over and return the sheet with the matching title.
+			for (let i = 0, l = sheets.length; i < l; i++) {
+				// Cache the sheet.
+				var sheet = sheets[i];
+
+				cb.apply(sheet, [sheet, sheet.innerHTML, sheets]);
+			}
+
+			return;
+		};
+
+		/**
+		 * Remove <style> element(s) from the DOM.
+		 *
+		 * @param  {function} cb - The remove function logic. Must return
+		 *     true to remove.
+		 * @return {undefined} - Nothing.
+		 */
+		stylesheet.remove = function(cb) {
+			// Get the stylesheets.
+			var sheets = document.getElementsByTagName("style");
+
+			// Loop over and return the sheet with the matching title.
+			for (let i = 0, l = sheets.length; i < l; i++) {
+				// Cache the sheet.
+				var sheet = sheets[i];
+
+				// If callback returns true the sheet gets removed.
+				if (cb.apply(sheet, [sheet, sheet.innerHTML, sheets])) {
+					sheet.parentNode.removeChild(sheet);
+				}
+			}
+		};
+
+		/**
+		 * Add a definition (selector:rule) to a style sheet.
+		 *
+		 * @param {object} sheet - The style sheet object.
+		 * @param {string} selector - The CSS definition selector.
+		 * @param {string} rules - The CSS definition rules.
+		 * @param {number} index - The position of definition insertion.
+		 * @return {undefined} - Nothing.
+		 *
+		 * @resource [https://davidwalsh.name/add-rules-stylesheets]
+		 */
+		stylesheet.definition = function(sheet, selector, rules, index) {
+			// Default to the end of the sheet if index not provided.
+			index = index || sheet.cssRules.length;
+
+			// For browsers that support insertRule.
+			if ("insertRule" in sheet) {
+				sheet.insertRule(`${selector}{${rules}}`, index);
+			} else if ("addRule" in sheet) {
+				// Else default second function.
+				sheet.addRule(selector, rules, index);
+			}
+		};
+
+		/**
+		 * Run a function on the stylesheet objects.
+		 *
+		 * @param  {function} cb - The function logic.
+		 * @return {undefined} - Nothing.
+		 */
+		stylesheet.sheets = function(cb) {
 			// Get the sheets.
 			var sheets = document.styleSheets;
 
 			// Loop over and return the sheet with the matching title.
-			for (var i = 0, l = sheets.length; i < l; i++) {
+			for (let i = 0, l = sheets.length; i < l; i++) {
+				// Cache the sheet.
 				var sheet = sheets[i];
-				if (sheet.title === title) {
-					return sheet;
-				}
-			}
 
-			// A sheet was not found matching the provided title.
-			return undefined;
+				// Run the callback.
+				cb.apply(sheet, [sheet, sheets]);
+			}
 		};
 
 		/**
@@ -935,10 +1052,6 @@ document.onreadystatechange = function() {
 
 				/**
 				 * Add MacOS scrollbars style sheet.
-				 *
-				 * @return {object} - The style sheet object.
-				 *
-				 * @resource [https://davidwalsh.name/add-rules-stylesheets]
 				 */
 				(function() {
 					// Only if engine is webkit.
@@ -946,31 +1059,17 @@ document.onreadystatechange = function() {
 						return;
 					}
 
-					// Create the element.
-					var style = document.createElement("style");
-
-					// "Name" the sheet.
-					style.setAttribute("title", "dd/mac-scrollbars");
-
-					// WebKit hack :(.
-					style.appendChild(document.createTextNode(""));
-
-					// Add the <style> element to the page.
-					document.head.appendChild(style);
-
-					// Get the sheet itself.
-					var sheet = style.sheet;
+					// Create the stylesheet.
+					var sheet = stylesheet(
+						data.html.styles_macos_sb.join(""),
+						"dd/mac-scrollbars"
+					);
 
 					// Only enable MacOS style scrollbars when running Chrome
 					// on a desktop device.
 					if (!is_desktop_webkit()) {
 						sheet.disabled = true;
 					}
-
-					// Add the styles.
-					data.html.styles_macos_sb.forEach(function(rule) {
-						sheet.insertRule(rule, sheet.cssRules.length);
-					});
 				})();
 
 				// Animate the logo.
@@ -1048,7 +1147,7 @@ document.onreadystatechange = function() {
 					$moverlay.classList.remove("none");
 
 					// Show the topbar loader.
-					$tb_loader.innerHTML = cssloader(16);
+					$tb_loader.innerHTML = cssloader(15);
 					$tb_loader.classList.remove("none");
 				}
 
@@ -2177,6 +2276,48 @@ document.onreadystatechange = function() {
 					);
 					$current_version.setAttribute("data-v", version);
 
+					/**
+					 * Set the sticky positions for the sidebar menu items.
+					 *
+					 * @resource [https://davidwalsh.name/add-rules-stylesheets]
+					 */
+					(function() {
+						// CSS definitions.
+						var definitions = [
+							`.l-2 {top: 78px;}`,
+							`@media (max-width: 1024px) {.l-2 {top: 72px;}}`
+						];
+
+						// Create the stylesheet.
+						var sheet = stylesheet(
+							definitions.join(""),
+							"dd/sidebar-sticky-tops-desktop"
+						);
+
+						// Reset the definitions if on a mobile device.
+						if (is_mobile()) {
+							var height =
+								Math.floor(coors($search_cont).height) - 1;
+
+							// Viewport >= 1024px.
+							if (
+								window.matchMedia("(min-width: 1024px)").matches
+							) {
+								// Create the stylesheet.
+								stylesheet(
+									`.l-2 {top: ${height}px;}`,
+									"dd/sidebar-sticky-tops-mobile-n1024"
+								);
+							} else {
+								// Create the stylesheet.
+								stylesheet(
+									`@media (max-width: 1024px) {.l-2 {top: ${height}px;}}`,
+									"dd/sidebar-sticky-tops-mobile-1024"
+								);
+							}
+						}
+					})();
+
 					// Add the sidebar HTML.
 					document.getElementById(
 						"menu-dynamic-cont"
@@ -2242,7 +2383,13 @@ document.onreadystatechange = function() {
 					"resize",
 					debounce(function() {
 						// If the flag is not set then disable the sheet.
-						var sheet = stylesheet("dd/mac-scrollbars");
+						var sheet = stylesheet.get(function(sheet, contents) {
+							// Check if the contents contains the title.
+							return contents.includes(
+								"/*title:dd/mac-scrollbars*/"
+							);
+						});
+
 						if (sheet) {
 							// Disable the sheet based on user agent condition.
 							sheet.disabled = !is_desktop_webkit();
@@ -2270,6 +2417,55 @@ document.onreadystatechange = function() {
 
 						// Reset code block width/highlight.
 						reset_cblock_width_highlight();
+
+						// Reset the definitions if on a mobile device.
+						if (is_mobile()) {
+							// Remove the needed stylesheets.
+							stylesheet.remove(function(sheet, contents) {
+								// Check if the contents contains the title.
+								return contents.includes(
+									`/*title:dd/sidebar-sticky-tops-mobile`
+								);
+							});
+
+							var height =
+								Math.floor(coors($search_cont).height) - 1;
+
+							// Viewport >= 1024px.
+							if (
+								window.matchMedia("(min-width: 1024px)").matches
+							) {
+								if (
+									!stylesheet.get(function(sheet, contents) {
+										// Check if the contents contains the title.
+										return contents.includes(
+											"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
+										);
+									})
+								) {
+									// Create the stylesheet.
+									stylesheet(
+										`.l-2 {top: ${height}px;}`,
+										"dd/sidebar-sticky-tops-mobile-n1024"
+									);
+								}
+							} else {
+								if (
+									!stylesheet.get(function(sheet, contents) {
+										// Check if the contents contains the title.
+										return contents.includes(
+											"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
+										);
+									})
+								) {
+									// Create the stylesheet.
+									stylesheet(
+										`@media (max-width: 1024px) {.l-2 {top: ${height}px;}}`,
+										"dd/sidebar-sticky-tops-mobile-1024"
+									);
+								}
+							}
+						}
 					}),
 					200
 				);
