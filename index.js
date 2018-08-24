@@ -2223,6 +2223,15 @@ gulp.task("js:app", function(done) {
 
 // Create the index.html file.
 gulp.task("html:app", function(done) {
+	// Modify the output path.
+	let __path = outputpath.replace(/^[\.\/]+|\/$/g, "");
+
+	// Replace the paths in the error template.
+	config.files.internal._404 = config.files.internal._404.replace(
+		/\$\{dir_path\}/g,
+		__path
+	);
+
 	// Skip task logic if initial flag is not set.
 	if (!initial) {
 		if (debug) {
@@ -2234,15 +2243,6 @@ gulp.task("html:app", function(done) {
 
 	// Get htmlmin configuration.
 	let HTMLMIN = require(apath("./configs/htmlmin.json"));
-
-	// Modify the output path.
-	let __path = outputpath.replace(/^[\.\/]+|\/$/g, "");
-
-	// Replace the paths in the error template.
-	config.files.internal._404 = config.files.internal._404.replace(
-		/\$\{dir_path\}/g,
-		__path
-	);
 
 	return pump(
 		[
