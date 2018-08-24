@@ -1,6 +1,6 @@
 ### Diff Code Blocks
 
-Diff highlight is possible with code blocks.
+Diff highlighting is possible with code blocks.
 
 <pre lang="md">
 &#96;&#96;&#96;diff

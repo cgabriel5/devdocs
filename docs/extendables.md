@@ -2,11 +2,11 @@
 
 `devdocs` comes with custom Markdown syntax (`extendables`).
 
-### Message Extendable
+### Note Extendable
 
-The `note` extendable can be used to easily include alerts, tips, warnings, etc. Basically, to bring attention to specific areas of your documentation.
+The `note` extendable can be used to easily include alerts, tips, warnings, etc. Basically, use it to bring attention to specific areas of your documentation.
 
-### Message Syntax
+### Note Syntax
 
 <pre lang="html">
 &lt;dd-note title="Note" color="$COLOR" icon="$ICON"&gt;The message/text.&lt;/dd-note&gt;
@@ -18,7 +18,7 @@ The message/text.
 &lt;/dd-note&gt;
 </pre>
 
-### Message Colors
+### Note Colors
 
 Default coloring:
 
@@ -47,7 +47,7 @@ This is an example of the default coloring for the message extendable (no colori
 </dd-expand>
 
 
-### Code groups
+### Code Groups
 
 Code blocks can be grouped together then toggled via tabs.
 

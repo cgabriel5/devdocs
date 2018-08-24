@@ -21,7 +21,7 @@ $ yarn add devdocs-cli --dev
 
 ### Setup
 
-1. First make a `gh-pages` branch by running `$ git checkout -b gh-pages`.
+1. First, make a `gh-pages` branch by running `$ git checkout -b gh-pages`.
 2. Then make a `devdocs.config.js` file in the project's root directory.
 3. Place and customize the [following code](./configuration.md) in your configuration file.
 4. While in the project root, run `$ devdocs` to generate your project's docs.
