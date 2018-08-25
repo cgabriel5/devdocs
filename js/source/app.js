@@ -678,8 +678,8 @@ document.onreadystatechange = function() {
 			// Get the stylesheets.
 			var sheets = document.getElementsByTagName("style");
 
-			// Loop over and return the sheet with the matching title.
-			for (let i = 0, l = sheets.length; i < l; i++) {
+			// Loop backwards and run the remove logic function.
+			for (let i = sheets.length - 1; i > -1; i--) {
 				// Cache the sheet.
 				var sheet = sheets[i];
 
@@ -1569,6 +1569,75 @@ document.onreadystatechange = function() {
 					}
 				};
 
+				/**
+				 * Set the sticky positions for the sidebar menu items.
+				 *
+				 * @resource [https://davidwalsh.name/add-rules-stylesheets]
+				 */
+				var inject_sidebae_tops_css = function() {
+					// Remove the needed stylesheets.
+					stylesheet.remove(function(sheet, contents) {
+						// Check if the contents contains the title.
+						return contents.includes(
+							`/*title:dd/sidebar-sticky-tops-`
+						);
+					});
+
+					// Get the search container height.
+					var height = Math.floor(coors($search_cont).height); // - 1;
+					if (height >= 79) {
+						height = 78;
+					}
+
+					// CSS definitions.
+					var definitions = [
+						`.l-2 {top: ${height}px;}`,
+						`@media (max-width: 1024px) {.l-2 {top: ${height}px;}}`
+					];
+
+					// Create the stylesheet.
+					var sheet = stylesheet(
+						definitions.join(""),
+						"dd/sidebar-sticky-tops-desktop"
+					);
+
+					// Reset the definitions if on a mobile device.
+					if (is_mobile()) {
+						// Viewport >= 1024px.
+						if (window.matchMedia("(min-width: 1024px)").matches) {
+							if (
+								!stylesheet.get(function(sheet, contents) {
+									// Check if the contents contains the title.
+									return contents.includes(
+										"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
+									);
+								})
+							) {
+								// Create the stylesheet.
+								stylesheet(
+									`.l-2 {top: ${height}px;}`,
+									"dd/sidebar-sticky-tops-mobile-n1024"
+								);
+							}
+						} else {
+							if (
+								!stylesheet.get(function(sheet, contents) {
+									// Check if the contents contains the title.
+									return contents.includes(
+										"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
+									);
+								})
+							) {
+								// Create the stylesheet.
+								stylesheet(
+									`@media (max-width: 1024px) {.l-2 {top: ${height}px;}}`,
+									"dd/sidebar-sticky-tops-mobile-1024"
+								);
+							}
+						}
+					}
+				};
+
 				// Contain all the sidebar submenu heights.
 				var heights = {};
 				/**
@@ -2277,47 +2346,8 @@ document.onreadystatechange = function() {
 					);
 					$current_version.setAttribute("data-v", version);
 
-					/**
-					 * Set the sticky positions for the sidebar menu items.
-					 *
-					 * @resource [https://davidwalsh.name/add-rules-stylesheets]
-					 */
-					(function() {
-						// CSS definitions.
-						var definitions = [
-							`.l-2 {top: 78px;}`,
-							`@media (max-width: 1024px) {.l-2 {top: 72px;}}`
-						];
-
-						// Create the stylesheet.
-						var sheet = stylesheet(
-							definitions.join(""),
-							"dd/sidebar-sticky-tops-desktop"
-						);
-
-						// Reset the definitions if on a mobile device.
-						if (is_mobile()) {
-							var height =
-								Math.floor(coors($search_cont).height) - 1;
-
-							// Viewport >= 1024px.
-							if (
-								window.matchMedia("(min-width: 1024px)").matches
-							) {
-								// Create the stylesheet.
-								stylesheet(
-									`.l-2 {top: ${height}px;}`,
-									"dd/sidebar-sticky-tops-mobile-n1024"
-								);
-							} else {
-								// Create the stylesheet.
-								stylesheet(
-									`@media (max-width: 1024px) {.l-2 {top: ${height}px;}}`,
-									"dd/sidebar-sticky-tops-mobile-1024"
-								);
-							}
-						}
-					})();
+					// Inject the needed sidebar menu item tops CSS.
+					inject_sidebae_tops_css();
 
 					// Add the sidebar HTML.
 					document.getElementById(
@@ -2419,54 +2449,8 @@ document.onreadystatechange = function() {
 						// Reset code block width/highlight.
 						reset_cblock_width_highlight();
 
-						// Reset the definitions if on a mobile device.
-						if (is_mobile()) {
-							// Remove the needed stylesheets.
-							stylesheet.remove(function(sheet, contents) {
-								// Check if the contents contains the title.
-								return contents.includes(
-									`/*title:dd/sidebar-sticky-tops-mobile`
-								);
-							});
-
-							var height =
-								Math.floor(coors($search_cont).height) - 1;
-
-							// Viewport >= 1024px.
-							if (
-								window.matchMedia("(min-width: 1024px)").matches
-							) {
-								if (
-									!stylesheet.get(function(sheet, contents) {
-										// Check if the contents contains the title.
-										return contents.includes(
-											"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
-										);
-									})
-								) {
-									// Create the stylesheet.
-									stylesheet(
-										`.l-2 {top: ${height}px;}`,
-										"dd/sidebar-sticky-tops-mobile-n1024"
-									);
-								}
-							} else {
-								if (
-									!stylesheet.get(function(sheet, contents) {
-										// Check if the contents contains the title.
-										return contents.includes(
-											"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
-										);
-									})
-								) {
-									// Create the stylesheet.
-									stylesheet(
-										`@media (max-width: 1024px) {.l-2 {top: ${height}px;}}`,
-										"dd/sidebar-sticky-tops-mobile-1024"
-									);
-								}
-							}
-						}
+						// Inject the needed sidebar menu item tops CSS.
+						inject_sidebae_tops_css();
 					}),
 					200
 				);
