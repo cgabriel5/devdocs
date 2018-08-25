@@ -2154,6 +2154,7 @@ gulp.task("css:app", function(done) {
 			]),
 			// CSS style must be prefixed for it to work at the moment.
 			$.replace(/overflow\-scrolling/g, "-webkit-overflow-scrolling"),
+			$.replace(/font\-smoothing/g, "-webkit-font-smoothing"),
 			$.clean_css(),
 			gulp.dest(path.join(outputpath, "/css")),
 			$.gulpif(
