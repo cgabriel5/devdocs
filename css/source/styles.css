@@ -1607,6 +1607,17 @@ a.social-link:hover {
 
 /* Flat colors: [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS] */
 
+.color-square {
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	display: inline-block;
+	border-radius: 3px;
+	margin-right: 5px;
+	margin-top: 5px;
+	width: 16px;
+	height: 16px;
+	float: left;
+}
+
 .dd-message--grapefruit {
 	border-left: 5px solid #ed5565;
 	/*border-left-color: #ed5565;*//*background: #da445320;*/
