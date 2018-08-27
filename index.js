@@ -501,6 +501,7 @@ function expand_ctags(text) {
 
 	var icon_lookup = {
 		check: "check-circle",
+		"check-double": "check-double",
 		info: "info-circle",
 		question: "question-circle",
 		error: "times-circle",
@@ -509,6 +510,14 @@ function expand_ctags(text) {
 		code: "code",
 		file: "file-code",
 		link: "external-link-square-alt",
+		fire: "fire",
+		db: "database",
+		clock: "clock",
+		bug: "bug",
+		list: "list-ul",
+		"list-num": "list-ol",
+		pen: "pen",
+		lock: "lock",
 		default: ""
 	};
 
