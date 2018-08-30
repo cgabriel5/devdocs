@@ -1128,7 +1128,7 @@ versions.forEach(function(vdata) {
 		// Apply the modifier to the file name if provided.
 		let alias_dir = dirname;
 		if (modifier) {
-			alias_dir = modifier(dirname, "directory");
+			alias_dir = modifier(path.basename(dirname), dirname, "directory");
 		}
 
 		// Setup a counter to use as the id for the files.
@@ -1159,9 +1159,9 @@ versions.forEach(function(vdata) {
 			file = file.replace(/\.md$/i, "");
 
 			// Apply the modifier to the file name if provided.
-			let alias_file = file;
+			let alias_file = path.basename(file);
 			if (modifier) {
-				alias_file = modifier(file, "file");
+				alias_file = modifier(alias_file, file, "file");
 			}
 
 			// Build the file path.
