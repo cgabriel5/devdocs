@@ -1,16 +1,16 @@
 module.exports = {
 	title: "devdocs",
 	animations: true,
-	modifier: function(string, type) {
-		if (string === ".") {
+	modifier: function(basename, string, type) {
+		if (basename === ".") {
 			return "DevDocs";
-		} else if (string === "cli") {
-			return string.toUpperCase();
-		} else if (string === "main") {
+		} else if (basename === "cli") {
+			return basename.toUpperCase();
+		} else if (basename === "main") {
 			return "Home";
 		} else {
-			var fchar = string.charAt(0).toUpperCase();
-			return fchar + string.toLowerCase().slice(1);
+			var fchar = basename.charAt(0).toUpperCase();
+			return fchar + basename.toLowerCase().slice(1);
 		}
 	},
 	latest: "0.0.1",
