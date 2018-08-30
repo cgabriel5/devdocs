@@ -50,6 +50,8 @@ document.onreadystatechange = function() {
 		var $vlist = document.getElementById("v-list-wrapper");
 		var $current_version = document.getElementById("current-version");
 		var $no_matches_cont_v = document.getElementById("no-matches-cont-v");
+		var $sb_menu = document.getElementById("sidebar-menu");
+		var $sb_footer = document.getElementById("sb-footer");
 
 		// Variables //
 
@@ -2576,6 +2578,14 @@ document.onreadystatechange = function() {
 						!$versions_cont.contains($target)
 					) {
 						$versions_cont.classList.add("none");
+
+						// Enable needed sidebar elements.
+						$search_cont.classList.remove("pnone");
+						$sb_menu.classList.remove("pnone");
+						$sb_footer.classList.remove("pnone");
+
+						e.preventDefault();
+						return;
 					}
 
 					// Since using event delegation, check that the clicked
@@ -2841,6 +2851,11 @@ document.onreadystatechange = function() {
 					} else if (classes.contains("current-version")) {
 						// Show the versions container.
 						$versions_cont.classList.remove("none");
+
+						// Disable needed sidebar elements.
+						$search_cont.classList.add("pnone");
+						$sb_menu.classList.add("pnone");
+						$sb_footer.classList.add("pnone");
 
 						// Un-highlight current last highlighted version.
 						var $last = document.querySelector(`.active-version`);
