@@ -1088,28 +1088,51 @@ document.onreadystatechange = function() {
 
 				// Note: Pre-load logo to prevent "blinking in".
 				return new Promise(function(resolve, reject) {
-					// Only load image if provided in the data object.
-					if (data.logo) {
-						// Create new HTMLImageElement instance.
-						var image = new Image();
+					// Get the logo source/SVG data object.
+					var logo = data.logo;
 
-						// Attach event listeners to image instance.
-						image.onload = function() {
+					// Load image if provided in data object.
+					if (logo) {
+						// If an SVG is provided...
+						if (typeof logo === "object") {
 							resolve(data);
-						};
-						image.onerror = function() {
-							reject();
-						};
+						} else {
+							// Create HTMLImageElement instance for non SVG image.
+							var image = new Image();
 
-						// Add the image source file.
-						image.src = data.logo;
+							// Attach event listeners to image instance.
+							image.onload = function() {
+								// Get photo dimensions.
+								var w = this.width;
+								var h = this.height;
+
+								// Reset the logo data.
+								data.logo = {
+									width: w,
+									height: h,
+									src: logo,
+									type:
+										w === h
+											? "square"
+											: w > h ? "landscape" : "portrait"
+								};
+
+								resolve(data);
+							};
+							image.onerror = function() {
+								reject();
+							};
+
+							// Add the image source file.
+							image.src = logo;
+						}
 					} else {
 						// If the data object does not contain an image simply
 						// resolve the promise to continue with the chain.
 						resolve(data);
 					}
 				}).then(null, function() {
-					return Promise.reject("Failed to the load the logo.");
+					return Promise.reject("Failed to load logo.");
 				});
 			})
 			.then(function(data) {
@@ -2304,12 +2327,68 @@ document.onreadystatechange = function() {
 
 				// Enclose in a timeout to give the loader a chance to fade away.
 				setTimeout(function() {
+					// Get the logo source/SVG data object.
+					var logo = data.logo;
+
 					// Embed the logo to the page if it exists.
-					if (data.logo) {
-						document.getElementById(
-							"menu-dynamic-cont-logo"
-						).innerHTML =
-							data.html.logo;
+					if (logo) {
+						// document.getElementById("menu-dynamic-cont-logo")
+						//	.innerHTML = data.html.logo;
+
+						// Get the GitHub account information.
+						var github = Object.assign(
+							{
+								// Defaults.
+								account_username: "",
+								project_name: ""
+							},
+							data.github
+						);
+
+						// Get the GitHub information.
+						var uname = github.account_username;
+						var pname = github.project_name;
+
+						// Vars.
+						var link_start = "",
+							link_end = "";
+
+						// Make the link HTML if the GitHub info exists.
+						if (uname && pname) {
+							link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
+							link_end = "</a>";
+						}
+
+						// Make the needed image HTML.
+						var img_html = !logo.data
+							? `<img src="${logo.src}">`
+							: logo.data;
+						var logo_html = `<div class="logo-base logo-${
+							logo.type
+						} mr5">${link_start}${img_html}${link_end}</div>`;
+
+						// Add the needed sidebar logo HTML.
+						$search_cont.insertAdjacentHTML(
+							"afterbegin",
+							'<div class="flex flex-center"></div>'
+						);
+						// Move around needed child elements.
+						$search_cont.children[0].appendChild(
+							$search_cont.children[1]
+						);
+						// Embed the sidebar image.
+						$search_cont.children[0].insertAdjacentHTML(
+							"afterbegin",
+							logo_html
+							// + '<div class="logo-spacer animate-fadein"></div>'
+						);
+
+						// Embed the topbar logo.
+						$tb_loader.insertAdjacentHTML(
+							"beforebegin",
+							// '<div class="logo-spacer animate-fadein"></div>' +
+							logo_html
+						);
 					}
 
 					// Get the version.
@@ -2383,9 +2462,7 @@ document.onreadystatechange = function() {
 						.classList.add("animate-fadein");
 
 					// Show the sidebar footer.
-					document
-						.getElementById("sb-footer")
-						.classList.remove("none");
+					$sb_footer.classList.remove("none");
 
 					// Inject the file contents to the page. Provide the
 					// inject function the page parameter or default to the
