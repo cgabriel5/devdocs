@@ -2394,6 +2394,14 @@ document.onreadystatechange = function() {
 							"beforebegin",
 							// '<div class="logo-spacer animate-fadein"></div>' +
 							logo_html
+								.replace(
+									"logo-base",
+									"flex flex-center logo-base"
+								)
+								.replace(
+									"_blank",
+									'_blank" class="flex flex-center tb-logo-fix'
+								)
 						);
 					}
 

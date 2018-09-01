@@ -448,6 +448,10 @@ to become invisible when header scrolling. This seems to solve the issue.
 	/*display: block;*/
 }
 
+.tb-logo-fix {
+	vertical-align: unset;
+}
+
 .menu-section-cont {
 	margin-left: 20px;
 	border-left: 1px solid #dddddd;
