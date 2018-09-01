@@ -1011,7 +1011,10 @@ ul.file-headers {
 	height: 100%;
 	border-radius: 100px 250px 0 250px;
 	/*transition: background 0.2s ease-in-out, transform 0.8s ease-in-out;*/
-	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+	transition: transform 0.3s ease-in-out,
+                opacity 0.3s ease-in-out,
+                background 0.2s ease-in-out;
+	background: transparent;
 }
 
 /*.splash-loader-icon:after {
@@ -1026,14 +1029,14 @@ ul.file-headers {
 }*/
 
 .sl-icon-off {
-	/*background: #d8d8d8;*//*background: white;*//*background: #ffffff;*//*background: #d8d8d8;*//*background: #727272;*//*background: #8c8c8c;*//*background: #b8b8b8;*//*background: #699935;*//*background: white;*/
-	background: #699935;
+	/*background: #d8d8d8;*//*background: white;*//*background: #ffffff;*//*background: #d8d8d8;*//*background: #727272;*//*background: #8c8c8c;*//*background: #b8b8b8;*//*background: #699935;*//*background: white;*//*background: #699935;*/
+	background: #d1d1d1;
 }
 
 .sl-icon-on {
 	/*background: #699935;*/
-	background: white;
-	/*background: white;*/
+	background: #699935;
+	/*background: white;*//*background: white;*/
 }
 
 .loader-cont {
