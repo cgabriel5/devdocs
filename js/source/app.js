@@ -964,6 +964,9 @@ document.onreadystatechange = function() {
 
 		// ------------------------------------------------------------
 
+		// Start the logo/splash animations.
+		$splash_icon.classList.add("sl-icon-off");
+
 		var __data;
 
 		// Create a new HTTP request.
@@ -1075,8 +1078,10 @@ document.onreadystatechange = function() {
 					}
 				})();
 
-				// Animate the logo.
-				$splash_icon.classList.add("animate-pulse");
+				setTimeout(function() {
+					// Turn the logo green.
+					$splash_icon.classList.add("sl-icon-on");
+				}, 100);
 
 				// Set the title if provided.
 				if (data.title) {
@@ -1136,7 +1141,8 @@ document.onreadystatechange = function() {
 				});
 			})
 			.then(function(data) {
-				// console.log(data);
+				// Animate the logo.
+				$splash_icon.classList.add("animate-pulse");
 
 				// Variables:Scoped:Inner //
 
