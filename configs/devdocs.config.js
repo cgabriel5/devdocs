@@ -23,5 +23,10 @@ module.exports = {
 			]
 		}
 	],
-	links: [["github", "https://github.com/cgabriel5/devdocs"]]
+	links: [["github", "https://github.com/cgabriel5/devdocs"]],
+	logo: "docs/branding/leaf-216.png",
+	github: {
+		account_username: "cgabriel5",
+		project_name: "devdocs"
+	}
 };
