@@ -33,6 +33,20 @@ module.exports = {
         path: "./devdocs/"
     },
 
+    // A logo can be supplied to show in the sidebar and topbar. Preferably,
+    // a square logo should be used due to space constraints. However a square,
+    // portrait, or landscape PNG/JPG may by supplied. Alternatively, an SVG
+    // object may be supplied in lieu of a PNG/JPG. The following two methods
+    // are shown below: 
+
+    // To supply a PNG/JPG simply provide the image path like so:
+    logo: "path/to/logo.png",
+    // To use a SVG, supply an object containing the following information: 
+    logo: {
+        type: "portrait", // The image type (square, portrait, or landscape).
+        data: `<svg...</svg>` // The SVG contents.
+    },
+
     // (optional, default: function() {})
     // A modifier function can be used to change/modify the directory/file
     // names if/as needed.
