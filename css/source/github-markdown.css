@@ -584,6 +584,9 @@
 	display: table;
 	overflow: auto;
 	width: 100%;
+	/* Make table fit in parent element:
+	[https://stackoverflow.com/a/19282108] */
+	word-break: break-word;
 }
 
 .markdown-body table th {
