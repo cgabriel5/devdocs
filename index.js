@@ -1058,7 +1058,7 @@ let socials = {
 };
 
 // Build the social links if provide.
-let links_html = ['<div id="link-socials" class="link-socials">'];
+let links_html = ['<div class="link-socials">'];
 if (links) {
 	// Loop over the links.
 	links.forEach(function(item) {

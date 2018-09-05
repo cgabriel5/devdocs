@@ -2369,7 +2369,7 @@ document.onreadystatechange = function() {
 						var img_html = !logo.data
 							? `<img src="${logo.src}">`
 							: logo.data;
-						var logo_html = `<div class="logo-base logo-${
+						var logo_html = `<div class="none animate-fadein animate-logo logo-base logo-${
 							logo.type
 						} mr5">${link_start}${img_html}${link_end}</div>`;
 
@@ -2403,6 +2403,16 @@ document.onreadystatechange = function() {
 									'_blank" class="flex flex-center tb-logo-fix'
 								)
 						);
+
+						// Show logos after some time.
+						setTimeout(function() {
+							var $els = document.getElementsByClassName(
+								"logo-base"
+							);
+							for (let i = 0, l = $els.length; i < l; i++) {
+								$els[i].classList.remove("none");
+							}
+						}, 200);
 					}
 
 					// Get the version.
