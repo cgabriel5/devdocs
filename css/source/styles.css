@@ -2078,6 +2078,16 @@ details, summary {
 	white-space: nowrap;
 }
 
+.mtime-cont {
+	font-size: 11px;
+	padding-top: 20px;
+	margin-left: 10px;
+}
+
+.mtime-cont .mtime-ts-long {
+	color: #999999;
+}
+
 @media (max-width: 366px) {
 	.show-code-message-cont {
 		font-size: 13px;
