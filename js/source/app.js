@@ -2277,6 +2277,21 @@ document.onreadystatechange = function() {
 				}
 
 				/**
+				 * Toggle sidebar element mouse events. To be used when toggling
+				 *     the versions container.
+				 *
+				 * @param  {boolean} state - The toggle state.
+				 * @return {undefined} - Nothing.
+				 */
+				function toggle_sb_elements(state) {
+					// Toggle needed sidebar elements.
+					$search_cont.classList[state ? "add" : "remove"]("pnone");
+					$sb_footer.classList[state ? "add" : "remove"]("pnone");
+					$markdown.classList[state ? "add" : "remove"]("pnone");
+					$sb_menu.classList[state ? "add" : "remove"]("pnone");
+				}
+
+				/**
 				 * Determine whether an element has been totally scrolled.
 				 *
 				 * @return {Boolean} - Boolean indicating whether element has been totally scrolled.
@@ -2772,10 +2787,8 @@ document.onreadystatechange = function() {
 					) {
 						$versions_cont.classList.add("none");
 
-						// Enable needed sidebar elements.
-						$search_cont.classList.remove("pnone");
-						$sb_menu.classList.remove("pnone");
-						$sb_footer.classList.remove("pnone");
+						// Toggle sidebar elements mouse events.
+						toggle_sb_elements(false);
 
 						e.preventDefault();
 						return;
@@ -3045,10 +3058,8 @@ document.onreadystatechange = function() {
 						// Show the versions container.
 						$versions_cont.classList.remove("none");
 
-						// Disable needed sidebar elements.
-						$search_cont.classList.add("pnone");
-						$sb_menu.classList.add("pnone");
-						$sb_footer.classList.add("pnone");
+						// Toggle sidebar elements mouse events.
+						toggle_sb_elements(true);
 
 						// Un-highlight current last highlighted version.
 						var $last = document.querySelector(`.active-version`);
@@ -3437,6 +3448,10 @@ document.onreadystatechange = function() {
 						// Hide the versions container.
 						if (!$versions_cont.classList.contains("none")) {
 							$versions_cont.classList.add("none");
+
+							// Toggle sidebar elements mouse events.
+							toggle_sb_elements(false);
+
 							e.preventDefault();
 							return;
 						}
