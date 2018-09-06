@@ -2519,7 +2519,8 @@ gulp.task("json-data:app", function(done) {
 
 					// Create the submenu for the current directory.
 					menu.push(
-						remove_space(`<ul class="submenu">
+						remove_space(`<ul id="submenu-${index +
+							1}" class="submenu">
 						${directory.html}
 						<li>
 							<div class="menu-section-cont" data-dir="${index}">
@@ -2528,7 +2529,7 @@ gulp.task("json-data:app", function(done) {
 										<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>
 									</div>
 								</div>
-								<ul>
+								<ul id="submenu-inner-${index + 1}">
 									${html.join("")}
 								</ul>
 							</div>

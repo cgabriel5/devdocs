@@ -2082,10 +2082,39 @@ details, summary {
 	font-size: 11px;
 	padding-top: 20px;
 	margin-left: 10px;
+	display: flex;
+	justify-content: flex-end;
 }
 
 .mtime-cont .mtime-ts-long {
 	color: #999999;
+}
+
+.arrow-content {
+	font-size: 14px;
+	font-weight: bold;
+	padding: 5px 5px;
+	min-width: 50%;
+	flex-grow: 1;
+	flex-shrink: 1;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	margin: 0 5px;
+}
+
+.arrow-content span {
+	max-width: 50%;
+}
+
+.bottom-arrow-btn-cont {
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: space-evenly;
+	align-items: center;
+	margin-top: 30px;
+	margin-bottom: 10px;
 }
 
 @media (max-width: 366px) {

@@ -1862,6 +1862,9 @@ document.onreadystatechange = function() {
 						return;
 					}
 
+					// Disable mouse events.
+					$markdown.classList.add("pnone");
+
 					show_loader($new_current);
 
 					// Add the loading content class.
@@ -2182,6 +2185,95 @@ document.onreadystatechange = function() {
 
 					// Reset the active element.
 					current_file = filename;
+				}
+
+				/**
+				 * Make and insert the bottom navigation UI elements.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
+				function bottom_nav() {
+					// Get the current active sidebar menu item.
+					var $active = document.getElementsByClassName(
+						"active-page"
+					)[0];
+
+					// If no active page element skip function logic.
+					if (!$active) {
+						return;
+					}
+
+					var id = $active.getAttribute("data-dir") * 1;
+					var $parent = $active.parentNode;
+
+					// Check for the prev sidebar sibling.
+					var $prev_el;
+					var prev_html = "";
+
+					// Get the prev sidebar element.
+					var $prev_par = $parent.previousElementSibling;
+
+					// If the parent element exists get the first child.
+					if ($prev_par) {
+						$prev_el = $parent.previousElementSibling.firstChild;
+					} else {
+						// If the prev element does not exist check for a prev dir element.
+						$prev_par = document.getElementById(
+							"submenu-inner-" + (id - 1)
+						);
+						if ($prev_par) {
+							$prev_el = $prev_par.lastChild.firstChild;
+						}
+					}
+
+					// If a prev element exists, build the HTML.
+					if ($prev_el) {
+						prev_html = `<div class="arrow-content btn btn-white noselect" data-refid="${
+							$prev_el.id
+						}"><i class="fas fa-arrow-alt-circle-left mr5"></i> <span class="truncate">${$prev_el.getAttribute(
+							"title"
+						)}</span></div>`;
+					}
+
+					// Check for the next sidebar sibling.
+					var $next_el;
+					var next_html = "";
+
+					// Get the next sidebar element.
+					var $next_par = $parent.nextElementSibling;
+
+					// If the parent element exists get the first child.
+					if ($next_par) {
+						$next_el = $parent.nextElementSibling.firstChild;
+					} else {
+						// If the next element does not exist check for a next dir element.
+						$next_par = document.getElementById(
+							"submenu-inner-" + (id + 1)
+						);
+						if ($next_par) {
+							$next_el = $next_par.lastChild.firstChild;
+						}
+					}
+
+					// If a next element exists, build the HTML.
+					if ($next_el) {
+						next_html = `<div class="arrow-content btn btn-white noselect" data-refid="${
+							$next_el.id
+						}"><span class="mr5 truncate">${$next_el.getAttribute(
+							"title"
+						)}</span><i class="fas fa-arrow-alt-circle-right"></i></div>`;
+					}
+
+					// Make the HTML and return it.
+					var html =
+						prev_html || next_html
+							? `<div class="bottom-arrow-btn-cont" id="bottom-arrow-btn-cont">${prev_html}${next_html}</div>`
+							: "";
+
+					// Insert the HTML.
+					document
+						.getElementsByClassName("mtime-cont")[0]
+						.insertAdjacentHTML("beforebegin", html);
 				}
 
 				/**
@@ -3013,6 +3105,14 @@ document.onreadystatechange = function() {
 
 						e.preventDefault();
 						return;
+					} else if (is_target_el($target, "arrow-content")) {
+						// Reset the target.
+						$target = is_target_el($target, "arrow-content");
+
+						// Trigger the click on the element.
+						document
+							.getElementById($target.getAttribute("data-refid"))
+							.click();
 					} else {
 						// Check if clicking the header anchor octicon element.
 						let $header = false;
@@ -4031,8 +4131,14 @@ document.onreadystatechange = function() {
 								reset_cblock_width_highlight();
 							}, 300);
 
+							// Add the bottom nav UI elements.
+							bottom_nav();
+
 							// Add the loading content class.
 							$markdown.classList.remove("loading-content");
+
+							// Enable mouse events again.
+							$markdown.classList.remove("pnone");
 						}
 					});
 				});
