@@ -23,7 +23,14 @@ module.exports = {
 			]
 		}
 	],
-	links: [["github", "https://github.com/cgabriel5/devdocs"]],
+	footer: [
+		{
+			title: "Social",
+			links: [
+				["Github", "https://github.com/cgabriel5/devdocs", ":github"]
+			]
+		}
+	],
 	logo: "docs/branding/leaf-216.png",
 	github: {
 		account_username: "cgabriel5",
