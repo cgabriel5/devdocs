@@ -1141,6 +1141,8 @@ document.onreadystatechange = function() {
 				});
 			})
 			.then(function(data) {
+				// console.log(data);
+
 				// Animate the logo.
 				$splash_icon.classList.add("animate-pulse");
 
@@ -1862,6 +1864,9 @@ document.onreadystatechange = function() {
 						return;
 					}
 
+					// Disable mouse events.
+					$markdown.classList.add("pnone");
+
 					show_loader($new_current);
 
 					// Add the loading content class.
@@ -2185,6 +2190,119 @@ document.onreadystatechange = function() {
 				}
 
 				/**
+				 * Make and insert the bottom navigation UI elements.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
+				function bottom_nav() {
+					// Get the current active sidebar menu item.
+					var $active = document.getElementsByClassName(
+						"active-page"
+					)[0];
+
+					// If no active page element skip function logic.
+					if (!$active) {
+						return;
+					}
+
+					var id = $active.getAttribute("data-dir") * 1;
+					var $parent = $active.parentNode;
+
+					// Check for the prev sidebar sibling.
+					var $prev_el;
+					var prev_html = "";
+
+					// Get the prev sidebar element.
+					var $prev_par = $parent.previousElementSibling;
+
+					// If the parent element exists get the first child.
+					if ($prev_par) {
+						$prev_el = $parent.previousElementSibling.firstChild;
+					} else {
+						// If the prev element does not exist check for a prev dir element.
+						$prev_par = document.getElementById(
+							"submenu-inner-" + (id - 1)
+						);
+						if ($prev_par) {
+							$prev_el = $prev_par.lastChild.firstChild;
+						}
+					}
+
+					// If a prev element exists, build the HTML.
+					if ($prev_el) {
+						prev_html = `<div class="arrow-content btn btn-white noselect" data-refid="${
+							$prev_el.id
+						}"><i class="fas fa-arrow-alt-circle-left mr5"></i> <span class="truncate">${$prev_el.getAttribute(
+							"title"
+						)}</span></div>`;
+					}
+
+					// Check for the next sidebar sibling.
+					var $next_el;
+					var next_html = "";
+
+					// Get the next sidebar element.
+					var $next_par = $parent.nextElementSibling;
+
+					// If the parent element exists get the first child.
+					if ($next_par) {
+						$next_el = $parent.nextElementSibling.firstChild;
+					} else {
+						// If the next element does not exist check for a next dir element.
+						$next_par = document.getElementById(
+							"submenu-inner-" + (id + 1)
+						);
+						if ($next_par) {
+							$next_el = $next_par.lastChild.firstChild;
+						}
+					}
+
+					// If a next element exists, build the HTML.
+					if ($next_el) {
+						next_html = `<div class="arrow-content btn btn-white noselect" data-refid="${
+							$next_el.id
+						}"><span class="mr5 truncate">${$next_el.getAttribute(
+							"title"
+						)}</span><i class="fas fa-arrow-alt-circle-right"></i></div>`;
+					}
+
+					// Make the HTML and return it.
+					var html =
+						prev_html || next_html
+							? `<div class="bottom-arrow-btn-cont" id="bottom-arrow-btn-cont">${prev_html}${next_html}</div>`
+							: "";
+
+					// Everything will get inserted after the modified time container.
+					var $mtime = document.getElementsByClassName(
+						"mtime-cont"
+					)[0];
+
+					// Insert the HTML.
+					$mtime.insertAdjacentHTML("beforebegin", html);
+
+					// Add the footer HTML.
+					let footer_html = data.html.footer;
+					if (footer_html) {
+						$mtime.insertAdjacentHTML("afterend", footer_html);
+					}
+				}
+
+				/**
+				 * Toggle sidebar element mouse events. To be used when toggling
+				 *     the versions container.
+				 *
+				 * @param  {boolean} state - The toggle state.
+				 * @return {undefined} - Nothing.
+				 */
+				function toggle_sb_elements(state) {
+					// Toggle needed sidebar elements.
+					$search_cont.classList[state ? "add" : "remove"]("pnone");
+					$sb_footer.classList[state ? "add" : "remove"]("pnone");
+					$markdown.classList[state ? "add" : "remove"]("pnone");
+					$sb_menu.classList[state ? "add" : "remove"]("pnone");
+				}
+
+				/**
 				 * Determine whether an element has been totally scrolled.
 				 *
 				 * @return {Boolean} - Boolean indicating whether element has been totally scrolled.
@@ -2369,7 +2487,7 @@ document.onreadystatechange = function() {
 						var img_html = !logo.data
 							? `<img src="${logo.src}">`
 							: logo.data;
-						var logo_html = `<div class="logo-base logo-${
+						var logo_html = `<div class="none animate-fadein animate-logo logo-base logo-${
 							logo.type
 						} mr5">${link_start}${img_html}${link_end}</div>`;
 
@@ -2403,6 +2521,16 @@ document.onreadystatechange = function() {
 									'_blank" class="flex flex-center tb-logo-fix'
 								)
 						);
+
+						// Show logos after some time.
+						setTimeout(function() {
+							var $els = document.getElementsByClassName(
+								"logo-base"
+							);
+							for (let i = 0, l = $els.length; i < l; i++) {
+								$els[i].classList.remove("none");
+							}
+						}, 200);
 					}
 
 					// Get the version.
@@ -2432,7 +2560,7 @@ document.onreadystatechange = function() {
 					// Inject the versions list.
 					$vlist.innerHTML = versions_html.join("");
 					// Set the current version.
-					$current_version.innerHTML = `Version: ${version}`; // +
+					$current_version.innerHTML = `<i class="fas fa-layer-group"></i> v${version}`; // +
 					$current_version.insertAdjacentHTML(
 						"afterend",
 						version === latest
@@ -2459,16 +2587,6 @@ document.onreadystatechange = function() {
 					$no_matches_cont = document.getElementById(
 						"no-matches-cont"
 					);
-
-					// Add the social links.
-					if (data.html.socials) {
-						document
-							.getElementById("sidebar")
-							.children[1].insertAdjacentHTML(
-								"beforeend",
-								data.html.socials
-							);
-					}
 
 					// Animate the entire menu.
 					document
@@ -2670,10 +2788,8 @@ document.onreadystatechange = function() {
 					) {
 						$versions_cont.classList.add("none");
 
-						// Enable needed sidebar elements.
-						$search_cont.classList.remove("pnone");
-						$sb_menu.classList.remove("pnone");
-						$sb_footer.classList.remove("pnone");
+						// Toggle sidebar elements mouse events.
+						toggle_sb_elements(false);
 
 						e.preventDefault();
 						return;
@@ -2943,10 +3059,8 @@ document.onreadystatechange = function() {
 						// Show the versions container.
 						$versions_cont.classList.remove("none");
 
-						// Disable needed sidebar elements.
-						$search_cont.classList.add("pnone");
-						$sb_menu.classList.add("pnone");
-						$sb_footer.classList.add("pnone");
+						// Toggle sidebar elements mouse events.
+						toggle_sb_elements(true);
 
 						// Un-highlight current last highlighted version.
 						var $last = document.querySelector(`.active-version`);
@@ -3003,6 +3117,14 @@ document.onreadystatechange = function() {
 
 						e.preventDefault();
 						return;
+					} else if (is_target_el($target, "arrow-content")) {
+						// Reset the target.
+						$target = is_target_el($target, "arrow-content");
+
+						// Trigger the click on the element.
+						document
+							.getElementById($target.getAttribute("data-refid"))
+							.click();
 					} else {
 						// Check if clicking the header anchor octicon element.
 						let $header = false;
@@ -3327,6 +3449,10 @@ document.onreadystatechange = function() {
 						// Hide the versions container.
 						if (!$versions_cont.classList.contains("none")) {
 							$versions_cont.classList.add("none");
+
+							// Toggle sidebar elements mouse events.
+							toggle_sb_elements(false);
+
 							e.preventDefault();
 							return;
 						}
@@ -4021,8 +4147,14 @@ document.onreadystatechange = function() {
 								reset_cblock_width_highlight();
 							}, 300);
 
+							// Add the bottom nav UI elements.
+							bottom_nav();
+
 							// Add the loading content class.
 							$markdown.classList.remove("loading-content");
+
+							// Enable mouse events again.
+							$markdown.classList.remove("pnone");
 						}
 					});
 				});

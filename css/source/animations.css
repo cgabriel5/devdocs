@@ -130,3 +130,20 @@
 		transform: translate3d(0, 0, 0) scale(0.5);
 	}
 }
+
+.animate-logo {
+	animation-name: animate-logo;
+	animation-duration: 0.4s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes animate-logo {
+	0% {
+		transform: translate3d(0, 0, 0) scale(0);
+	}
+
+	50% {
+		transform: translate3d(0, 0, 0) scale(1);
+	}
+}

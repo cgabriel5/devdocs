@@ -414,6 +414,45 @@ var regexp_index = function(string, regexp, startindex) {
 };
 
 /**
+ * Create a human readable time format from a timestamp.
+ *
+ * @param  {number} timestamp - The timestamp to format.
+ * @return {string} - The timestamp pretty format.
+ *
+ * @resource [https://stackoverflow.com/a/6078873]
+ * @resource [https://stackoverflow.com/a/45464959]
+ * @resource [https://www.w3schools.com/js/js_date_methods.asp]
+ */
+var timelong = function(timestamp) {
+	// Create the date object using the modified timestamp.
+	var date = new Date(timestamp);
+
+	// Get the needed date information.
+	var year = date.getFullYear();
+	var month = date.getMonth();
+	var day = date.getDate();
+
+	// Get date time information.
+	var hour = date.getHours();
+	var min = date.getMinutes();
+	var sec = date.getSeconds();
+
+	// Reset the hour/min.
+	if (hour > 12) {
+		hour = hour - 12;
+	}
+	if (hour < 10) {
+		hour = `0${hour + ""}`;
+	}
+	if (min < 10) {
+		min = `0${min + ""}`;
+	}
+
+	// Format the time in the following format:
+	return `${year}-${month}-${day} / ${hour}:${min}:${sec}`;
+};
+
+/**
  * Convert dd-expandable tags, i.e. (<dd-note>) to dd::-ctags placeholders.
  *
  * @param  {string} text - The text to placeholder.
@@ -492,7 +531,7 @@ function expand_ctags(text) {
 			// Build and return the HTML.
 			return `\n\n<div class="dd-expandable-base">
 	<div class="dd-expandable-message noselect">
-		<i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i>
+		<i class="fas fa-chevron-circle-right mr5 mb3 dd-expandable-message-icon"></i>
 		<span>${title}</span>
 	</div>
 	<div class="dd-expandable-content none animate-fadein">`;
@@ -583,7 +622,7 @@ function expand_ctags(text) {
 			return `\n\n<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
 			<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
 			<div class="flex flex-center mr5">
-				<span class="btn btn-white noselect code-block-action btn-cba-copy">copy</span>
+				<span class="btn btn-white noselect code-block-action btn-cba-copy"><i class="fas fa-clipboard mr2"></i> copy</span>
 			</div>
 		</div>
 		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
@@ -709,7 +748,8 @@ if (!configpath) {
 let config = require(configpath);
 let root = get(config, "root", "docs/");
 let versions = get(config, "versions", []);
-let links = get(config, "links", {});
+let footer = get(config, "footer", []);
+let titlen = get(config, "title", "devdocs");
 let logo = config.logo;
 // let title = config.title;
 // If debug flag was not supplied via the CL, look for it in the config file.
@@ -1039,52 +1079,135 @@ renderer.text = function(text) {
 // All processed directory data will be contained in this array.
 var dirs = [];
 
-// Supported social platforms for social links.
-let socials = {
-	user: "fas fa-user-circle",
-	facebook: "fab fa-facebook-square",
-	twitter: "fab fa-twitter-square",
-	youtube: "fab fa-youtube-square",
-	vimeo: "fab fa-vimeo-square",
-	google_plus: "fab fa-google-plus-square",
-	reddit: "fab fa-reddit-square",
-	pinterest: "fab fa-pinterest-square",
-	snapchat: "fab fa-snapchat-square",
-	tumblr: "fab fa-tumblr-square",
-	github: "fab fa-github-square",
-	bitbucket: "fab fa-bitbucket",
-	blogger: "fab fa-blogger",
-	stumbleupon: "fab fa-stumbleupon-circle"
-};
+// Build the footer if links are provided.
+let footer_html = ['<div id="md-footer" class="md-footer">'];
+if (footer.length) {
+	// Supported social platforms for footer links.
+	let socials = {
+		personal: "fas fa-globe-americas",
+		facebook: "fab fa-facebook",
+		messenger: "fab fa-facebook-messenger",
+		twitter: "fab fa-twitter",
+		youtube: "fab fa-youtube",
+		vimeo: "fab fa-vimeo-v",
+		google: "fab fa-google",
+		google_plus: "fab fa-google-plus-g",
+		google_drive: "fab fa-google-drive",
+		reddit: "fab fa-reddit-alien",
+		pinterest: "fab fa-pinterest-p",
+		snapchat: "fab fa-snapchat-ghost",
+		tumblr: "fab fa-tumblr",
+		github: "fab fa-github",
+		bitbucket: "fab fa-bitbucket",
+		blogger: "fab fa-blogger-b",
+		stumbleupon: "fab fa-stumbleupon",
+		medium: "fab fa-medium-m",
+		gitter: "fab fa-gitter",
+		gitlab: "fab fa-gitlab",
+		wordpress: "fab fa-wordpress",
+		overflow: "fab fa-stack-overflow",
+		slack: "fab fa-slack",
+		gratipay: "fab fa-gratipay",
+		location: "fas fa-map-marker-alt",
+		email: "fas fa-envelope"
+	};
 
-// Build the social links if provide.
-let links_html = ['<div id="link-socials" class="link-socials">'];
-if (links) {
-	// Loop over the links.
-	links.forEach(function(item) {
-		// Get the needed information.
-		let platform = item[0].toLowerCase();
-		let url = item[1];
+	// Loop over the footer sections.
+	footer.forEach(function(section) {
+		// Get the title and links.
+		let title = section.title;
+		let links = section.links; // ["text", "url", "icon"]
 
-		// Get the font-awesome classes.
-		let fa_classes = socials[platform];
+		// Vars.
+		var title_html = "";
+		var content_html = "";
+		var section_html = "";
+		var link_content = [];
 
-		// Only make the HTML for the platform if the platform is supported.
-		if (fa_classes) {
-			links_html.push(
-				`<div class="social-link"><a href="${url}" target="_blank" class="social-link"><i class="${fa_classes}"></i></a></div>`
-			);
-		} else {
-			if (debug) {
-				print.gulp.warn(
-					`'${platform}' was ignored as it's not a supported social link.`
-				);
-			}
+		// Start building the section HTML.
+
+		// If a title is provided make the title HTML.
+		if (title) {
+			title_html = `<div class="md-footer-section-title">${title}</div>`;
 		}
+
+		// If a links are provided make the content HTML.
+		links.forEach(function(link) {
+			// Get the needed information.
+			let text = link[0];
+			let url = link[1];
+			let link_start = "";
+			let link_end = "";
+			let icon = link[2];
+
+			// Reset the link start/end.
+			if (url) {
+				link_start = `<a href="${url}" target="_blank" class="social-link">`;
+				link_end = "</a>";
+			}
+
+			// Check whether a social icon was provided or an actual image.
+			icon = !/^\:[\w_]+/.test(icon) // :facebook-icon || ./path/to/icon
+				? `<img src="${icon}" class="mr5 md-footer-img">`
+				: socials[icon.replace(/^\:/g, "")]
+					? `<i class="${socials[icon.replace(/^\:/g, "")]} mr5"></i>`
+					: "";
+
+			// Add the HTML to the collection.
+			link_content.push(
+				`${link_start}<div class="truncate">${icon}<span class="mr5">${text}</span></div>${link_end}`
+			);
+		});
+
+		// If the content array is populated make the content HTML.
+		if (link_content.length) {
+			content_html = `<div class="md-footer-section-content">${link_content.join(
+				""
+			)}</div>`;
+		}
+
+		// Finally, make the section HTML and add it to the footer_html array.
+		footer_html.push(
+			`<div class="md-footer-section">${title_html}${content_html}</div>`
+		);
 	});
 }
-// Close the HTML.
-links_html.push("</div>");
+
+// Add the footer copyright information.
+
+// Get the GitHub account information.
+var github = Object.assign(
+	{
+		// Defaults.
+		account_username: "",
+		project_name: ""
+	},
+	config.github
+);
+
+// Get the GitHub information.
+var uname = github.account_username;
+var pname = github.project_name;
+
+// Vars.
+var link_start = "",
+	link_end = "";
+
+// Make the link HTML if the GitHub info exists.
+if (uname && pname) {
+	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
+	link_end = "</a>";
+}
+
+// Close footer HTML.
+footer_html.push(`</div>`);
+
+// Add copyright HTML.
+footer_html.push(
+	`<div class="flex flex-center md-footer-copyright"><div class="truncate">${link_start}<i class="far fa-copyright"></i> ${new Date(
+		Date.now()
+	).getFullYear()} ${titlen}${link_end}</div></div>`
+);
 
 // Store the versions.
 config.versions = [];
@@ -1227,509 +1350,557 @@ versions.forEach(function(vdata) {
 						return reject([`${__path} could not be opened.`, err]);
 					}
 
-					// Remove any HTML comments as having comments close to markup
-					// causes marked to parse it :/.
-					contents = removeHtmlComments(contents).data;
-
-					// Convert the custom tags.
-					contents = convert_ctags(contents);
-
-					// Render markdown.
-					contents = mdzero.render(contents);
-
-					// Block-quote fix (encode HTML entities/backticks).
-					contents = contents.replace(
-						/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/gim,
-						function(match) {
-							var matches = match.match(
-								/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/i
-							);
-
-							// Parts.
-							var meta = matches[1] || "";
-							var content = matches[2];
-
-							// Now sanitize the content.
-							// Replace all br tags to new lines.
-							// [https://stackoverflow.com/a/5959455]
-							content = content.replace(
-								/<br\s*[\/]?>/gi,
-								"[dd::space]"
-							);
-							// Encode HTML entities.
-							// content = entities.encode(content);
-							// Encode backticks.
-							content = content.replace(/`/gm, "&#96;");
-							// Add back br tags.
-							content = content.replace(
-								/\[dd\:\:space\]/g,
-								"<br>"
-							);
-
-							return `<blockquote${meta}>${content}</blockquote>`;
-						}
-					);
-
-					// Get any HTML Code blocks (i.e. <pre><code></code></pre>, <code></code>).
-					contents = contents.replace(
-						/<(pre|code)\b(.*?)>([\s\S]*?)<\/\1>/gim,
-						function(match) {
-							// Determine whether match is <pre><code>, <pre>, or
-							// a <code> block.
-							if (/^<code/.test(match)) {
-								// A code block does not need its contents
-								// highlighted so leave it alone.
-
-								lookup_codeblocks.push(match);
-								return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
-							} else {
-								if (/<pre\b(.*?)>\s*<code/.test(match)) {
-									// A <pre><code>... block.
-
-									// Look for a lang attr in either the
-									// code or pre element.
-									let lang = (match.match(
-										/<code\b(.*?)lang=("|')(.*?)\2(.*?)>/im
-									) ||
-										match.match(
-											/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
-										) || [, , , ""])[3];
-
-									// Get the content between the code tags.
-									let content = (match.match(
-										/<code\b(.*?)>([\s\S]*?)<\/code>/im
-									) || [, , ""])[2];
-
-									// [https://stackoverflow.com/a/6234804]
-									// [https://github.com/cheeriojs/cheerio#loading]
-
-									// Get the text/code.
-									content = entities.decode(content);
-
-									match = match
-										.replace(
-											/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
-											"$1$4"
-										)
-										.replace(
-											/(<code\b.*?)(lang=("|').*?\3)(.*?>)/im,
-											`$1 lang="${lang}" $4`
-										);
-
-									let highlighted = highlight(content, lang);
-
-									// Generate a special ID for the pre element.
-									let uid = `tmp-${id(25)}`;
-
-									lookup_codeblocks.push([
-										`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
-									]);
-									return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
-								} else {
-									// A <pre> only block.
-
-									// Look for a lang attr.
-									let lang = (match.match(
-										/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
-									) || [, , , ""])[3];
-
-									// Get the content between the pre tags.
-									let content = (match.match(
-										/<pre\b(.*?)>([\s\S]*?)<\/pre>/im
-									) || [, , ""])[2];
-
-									// [https://stackoverflow.com/a/6234804]
-									// [https://github.com/cheeriojs/cheerio#loading]
-
-									// Get the text/code.
-									content = entities.decode(content);
-
-									// Note: markdown-it litters the code with
-									// paragraph tags when the code contains line
-									// breaks :/.
-									if (/^<p>|<\/p>$/gm.test(content)) {
-										content = content.replace(
-											/^<p>|<\/p>$/gm,
-											""
-										);
-									}
-
-									match = match.replace(
-										/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
-										"$1$4"
-									);
-
-									let highlighted = highlight(content, lang);
-
-									// Generate a special ID for the pre element.
-									let uid = `tmp-${id(25)}`;
-
-									lookup_codeblocks.push([
-										`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
-									]);
-									return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
-								}
-							}
-						}
-					);
-
-					// Convert the custom tags.
-					contents = unwrap_ctags(contents);
-
-					marked(contents, { renderer: renderer }, function(
-						err,
-						data
-					) {
+					// Get the file stats to get the modification timestamp.
+					fs.stat(__path, function(err, stats) {
 						if (err) {
 							return reject([
-								`Marked rendering failed for ${__path}.`,
+								`${__path} stats could not be retrived.`,
 								err
 							]);
 						}
 
-						// Expand the custom tags.
-						data = expand_ctags(data, fpath);
+						// Get the timeago modification time.
+						var mtime = Math.round(stats.mtimeMs);
 
-						var r = /\[dd\:\:\-codeblock-placeholder-\d+\]/g;
-						var rfn = function(match) {
-							return lookup_codeblocks[
-								match.replace(/[^\d]/g, "") * 1
-							];
-						};
-						// Loop contents until all codeblocks have been filled back in.
-						while (r.test(data)) {
-							// Add back the code blocks.
-							data = data.replace(r, rfn);
-						}
+						// Build the timeago HTML.
+						let timeago_html = `<div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span>${timeago(
+							mtime
+						)}</span> <span class="mtime-ts-long">(${timelong(
+							mtime
+						)})</span></div></div>`;
 
-						// Use cheerio to parse the HTML data.
-						// [https://github.com/cheeriojs/cheerio/issues/957]
-						var $ = cheerio.load(data, {
-							// decodeEntities: false
-						});
+						// Remove any HTML comments as having comments close to markup
+						// causes marked to parse it :/.
+						contents = removeHtmlComments(contents).data;
 
-						// Grab all anchor elements to
-						$("a[href]").each(function(/*i, elem*/) {
-							// Cache the element.
-							let $el = $(this);
-							// Get the attributes.
-							let attrs = $el.attr();
-							let href = attrs.href;
-							let href_untouched = href; // The original href.
-							let href_lower = href.toLowerCase();
+						// Convert the custom tags.
+						contents = convert_ctags(contents);
 
-							// Clean the href.
-							href = dehashify(href);
+						// Render markdown.
+						contents = mdzero.render(contents);
 
-							// Reset the name and ID attributes.
-							let name = attrs.name;
-							if (
-								name &&
-								name.includes(href.replace(/^#/g, ""))
-							) {
-								$el.attr("name", dehashify(name));
-							}
-							let id = attrs.id;
-							if (id && id.includes(href.replace(/^#/g, ""))) {
-								$el.attr("id", dehashify(id));
-							}
-
-							// If an href exists, and it is not an http(s) link or
-							// scheme-less URLs, and it ends with .md then we have
-							// a link that is another documentation file that needs
-							// to be linked to.
-							if (
-								!(
-									href_lower.startsWith("htt") ||
-									href_lower.startsWith("//")
-								) &&
-								href_lower.endsWith(".md")
-							) {
-								// Set the new href.
-								$el.attr("href", "#");
-
-								// Reset the href by removing any starting dot,
-								// forward-slashes, and the .md extension.
-								href = href.replace(/^[\.\/]+|\.md$/gi, "");
-
-								// Remove the root from the href.
-								if (href.startsWith(root)) {
-									href = href.replace(root, "");
-								}
-
-								// Add the dot slash to the href.
-								href = `./${href}`;
-
-								// Set the final href.
-								$el.attr("data-file", href);
-								// Set the untouched original href.
-								$el.attr("data-file-untouched", href_untouched);
-								// Set class to denote its a documentation link.
-								$el.addClass("link-doc");
-							} else {
-								// Open all http links in their own tabs by
-								// adding the _blank value. Skip hashes.
-								if (!href.startsWith("#")) {
-									$el.attr("target", "_blank");
-								}
-							}
-						});
-
-						// Add the ignore class to headers that are contained
-						// inside a details element.
-						$("h1, h2, h3, h4, h5, h6")
-							.filter(function(/*i, el*/) {
-								return $(this)
-									.parents()
-									.filter("details").length;
-							})
-							.each(function(/*i, el*/) {
-								// Cache the element.
-								let $el = $(this);
-
-								// Add the ignore class.
-								$el.addClass("ignore-header");
-							});
-
-						// Add the GitHub octicon link/anchor.
-						$("h1, h2, h3, h4, h5, h6")
-							.filter(function(/*i, el*/) {
-								return !$(this)
-									.parents()
-									.filter(".dd-expandable-base").length;
-							})
-							.each(function(/*i, el*/) {
-								// Cache the element.
-								let $el = $(this);
-
-								// Get the text.
-								let text = $el.text();
-
-								// Skip if the text is empty.
-								if (text.trim() === "") {
-									return;
-								}
-
-								// Slugify the text.
-								let escaped_text = slugify(
-									text.replace(/<\/?.*?\>|\&.*?\;/gm, "")
+						// Block-quote fix (encode HTML entities/backticks).
+						contents = contents.replace(
+							/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/gim,
+							function(match) {
+								var matches = match.match(
+									/<blockquote(.*?)>([\s\S]*?)<\/blockquote>/i
 								);
 
-								$el.attr(
-									"data-orig-text",
-									entities.encode(text)
+								// Parts.
+								var meta = matches[1] || "";
+								var content = matches[2];
+
+								// Now sanitize the content.
+								// Replace all br tags to new lines.
+								// [https://stackoverflow.com/a/5959455]
+								content = content.replace(
+									/<br\s*[\/]?>/gi,
+									"[dd::space]"
 								);
-								// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
-								$el.append(`
-<a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
-	<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
-		<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
-		</path>
-	</svg>
-</a>`);
-							});
+								// Encode HTML entities.
+								// content = entities.encode(content);
+								// Encode backticks.
+								content = content.replace(/`/gm, "&#96;");
+								// Add back br tags.
+								content = content.replace(
+									/\[dd\:\:space\]/g,
+									"<br>"
+								);
 
-						// Get all headings in the HTML.
-						var __headings = {};
-						$(
-							"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
-						)
-							.filter(function(/*i, el*/) {
-								return !$(this)
-									.parents()
-									.filter(".dd-expandable-base").length;
-							})
-							.each(function(/*i, el*/) {
-								// Cache the element.
-								let $el = $(this);
+								return `<blockquote${meta}>${content}</blockquote>`;
+							}
+						);
 
-								// Get the element id.
-								let id = $el.attr().id;
+						// Get any HTML Code blocks (i.e. <pre><code></code></pre>, <code></code>).
+						contents = contents.replace(
+							/<(pre|code)\b(.*?)>([\s\S]*?)<\/\1>/gim,
+							function(match) {
+								// Determine whether match is <pre><code>, <pre>, or
+								// a <code> block.
+								if (/^<code/.test(match)) {
+									// A code block does not need its contents
+									// highlighted so leave it alone.
 
-								// If an ID does not exist just skip it.
-								if (!id) {
-									return;
-								}
+									lookup_codeblocks.push(match);
+									return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+								} else {
+									if (/<pre\b(.*?)>\s*<code/.test(match)) {
+										// A <pre><code>... block.
 
-								// Get the text (no HTML).
-								var value = $el
-									.parent()
-									.text()
-									.trim();
-								// Get the original text with HTML.
-								var otext = $el
-									.parent()
-									.attr("data-orig-text")
-									.trim();
+										// Look for a lang attr in either the
+										// code or pre element.
+										let lang = (match.match(
+											/<code\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+										) ||
+											match.match(
+												/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+											) || [, , , ""])[3];
 
-								// Remove any HTML tags from the text.
-								otext = otext.replace(
-									/<\/?.*?\>|\&.*?\;/gm,
-									function(match) {
-										// Only allow emojis to pass.
-										if (
-											!match.startsWith(
-												'<img class="emoji"'
+										// Get the content between the code tags.
+										let content = (match.match(
+											/<code\b(.*?)>([\s\S]*?)<\/code>/im
+										) || [, , ""])[2];
+
+										// [https://stackoverflow.com/a/6234804]
+										// [https://github.com/cheeriojs/cheerio#loading]
+
+										// Get the text/code.
+										content = entities.decode(content);
+
+										match = match
+											.replace(
+												/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
+												"$1$4"
 											)
-										) {
-											// Remove tags.
-											return match.replace(
-												/<\/?.*?\>|\&.*?\;/gm,
+											.replace(
+												/(<code\b.*?)(lang=("|').*?\3)(.*?>)/im,
+												`$1 lang="${lang}" $4`
+											);
+
+										let highlighted = highlight(
+											content,
+											lang
+										);
+
+										// Generate a special ID for the pre element.
+										let uid = `tmp-${id(25)}`;
+
+										lookup_codeblocks.push([
+											`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+										]);
+										return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
+									} else {
+										// A <pre> only block.
+
+										// Look for a lang attr.
+										let lang = (match.match(
+											/<pre\b(.*?)lang=("|')(.*?)\2(.*?)>/im
+										) || [, , , ""])[3];
+
+										// Get the content between the pre tags.
+										let content = (match.match(
+											/<pre\b(.*?)>([\s\S]*?)<\/pre>/im
+										) || [, , ""])[2];
+
+										// [https://stackoverflow.com/a/6234804]
+										// [https://github.com/cheeriojs/cheerio#loading]
+
+										// Get the text/code.
+										content = entities.decode(content);
+
+										// Note: markdown-it litters the code with
+										// paragraph tags when the code contains line
+										// breaks :/.
+										if (/^<p>|<\/p>$/gm.test(content)) {
+											content = content.replace(
+												/^<p>|<\/p>$/gm,
 												""
 											);
 										}
 
-										return match;
+										match = match.replace(
+											/(<pre\b.*?)(lang=("|').*?\3)(.*?>)/im,
+											"$1$4"
+										);
+
+										let highlighted = highlight(
+											content,
+											lang
+										);
+
+										// Generate a special ID for the pre element.
+										let uid = `tmp-${id(25)}`;
+
+										lookup_codeblocks.push([
+											`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+										]);
+										return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 									}
-								);
-
-								// Take into account same name headers. Append the
-								// suffix "-NUMBER" to the header href/id to make
-								// it unique.
-								var heading_count = "";
-								if (!__headings[id]) {
-									// Add it to the object.
-									__headings[id] = 1;
-								} else {
-									heading_count = __headings[id];
-
-									// Reset  the element id.
-									$el.attr("id", `${id}-${heading_count}`);
-									$el.attr(
-										"href",
-										`${$el.attr().href}-${heading_count}`
-									);
-
-									// Increment the count.
-									__headings[id] = heading_count + 1;
-
-									// Add the hyphen.
-									heading_count = `-${heading_count}`;
 								}
-
-								// Add the second level menu template string.
-								headings.push(
-									`<li class="l-3" title="${value}"><a class="link link-heading" href="#${dehashify(
-										id
-									)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
-								);
-							});
-						// Add the closing tag to the headings HTML.
-						headings.push("</ul>");
-
-						// Reset all the anchor href.
-						$("a[href]").each(function(/*i, el*/) {
-							// Cache the element.
-							let $el = $(this);
-
-							// Get the attributes.
-							let attrs = $el.attr();
-
-							// Get the element id.
-							let href = attrs.href;
-
-							// Only work on hrefs starting with "#".
-							if (href.startsWith("#")) {
-								href = href.replace(/\#/g, "");
-
-								$el.attr("href", "#" + dehashify(href, true));
 							}
-
-							// Add the "link-heading" class only when the href
-							// attribute is the only attribute.
-							if (Object.keys(attrs).length === 1 && href) {
-								$el.addClass("link-heading");
-							}
-						});
-
-						// Combine all the headings HTML and add to them to the
-						// file object.
-						__file.headings.push(headings.join(""));
-
-						// Reset the headings count.
-						__file.html = __file.html.replace(
-							/\$0/,
-							headings.length - 2
 						);
 
-						// Add the header spacer.
-						$("h1, h2, h3, h4, h5, h6").each(function(/*i, el*/) {
-							// Cache the element.
-							let $el = $(this);
+						// Convert the custom tags.
+						contents = unwrap_ctags(contents);
 
-							// Get the next element.
-							var $next = $el.next()[0];
-							if ($next) {
-								// Don't add the spacer class if the header group
-								// is empty. (no siblings.)
-								var spacer_class = !/h[1-6]/i.test($next.name)
-									? " class='header-spacer'"
-									: "";
-								$el.after(`<div${spacer_class}></div>`);
+						marked(contents, { renderer: renderer }, function(
+							err,
+							data
+						) {
+							if (err) {
+								return reject([
+									`Marked rendering failed for ${__path}.`,
+									err
+								]);
 							}
-						});
 
-						// Hide all but the first code block.
-						$(".code-block-grouped").each(function(/*i, el*/) {
-							// Cache the element.
-							let $el = $(this);
+							// Expand the custom tags.
+							data = expand_ctags(data, fpath);
 
-							// Get the code blocks.
-							let $blocks = $el.find("pre");
-
-							// Hide all the blocks except the first.
-							if ($blocks.length) {
-								// The remaining code blocks.
-								$blocks = $blocks
-									.filter(function(i /*, el*/) {
-										return i !== 0;
-									})
-									.attr("class", "none");
+							var r = /\[dd\:\:\-codeblock-placeholder-\d+\]/g;
+							var rfn = function(match) {
+								return lookup_codeblocks[
+									match.replace(/[^\d]/g, "") * 1
+								];
+							};
+							// Loop contents until all codeblocks have been filled back in.
+							while (r.test(data)) {
+								// Add back the code blocks.
+								data = data.replace(r, rfn);
 							}
-						});
 
-						// Hide code blocks that are too big.
-						$("pre code[class^='lang']").each(function(/*i, el*/) {
-							// Cache the element.
-							let $el = $(this);
+							// Use cheerio to parse the HTML data.
+							// [https://github.com/cheeriojs/cheerio/issues/957]
+							var $ = cheerio.load(data, {
+								// decodeEntities: false
+							});
 
-							// Get text (code) and file stats.
-							let text = $el.text().trim();
-							let line_count = text.split("\n").length;
-							let lines = add_commas_to_num(line_count);
-							let chars = add_commas_to_num(
-								text.split("").length
+							// Grab all anchor elements to
+							$("a[href]").each(function(/*i, elem*/) {
+								// Cache the element.
+								let $el = $(this);
+								// Get the attributes.
+								let attrs = $el.attr();
+								let href = attrs.href;
+								let href_untouched = href; // The original href.
+								let href_lower = href.toLowerCase();
+
+								// Clean the href.
+								href = dehashify(href);
+
+								// Reset the name and ID attributes.
+								let name = attrs.name;
+								if (
+									name &&
+									name.includes(href.replace(/^#/g, ""))
+								) {
+									$el.attr("name", dehashify(name));
+								}
+								let id = attrs.id;
+								if (
+									id &&
+									id.includes(href.replace(/^#/g, ""))
+								) {
+									$el.attr("id", dehashify(id));
+								}
+
+								// If an href exists, and it is not an http(s) link or
+								// scheme-less URLs, and it ends with .md then we have
+								// a link that is another documentation file that needs
+								// to be linked to.
+								if (
+									!(
+										href_lower.startsWith("htt") ||
+										href_lower.startsWith("//")
+									) &&
+									href_lower.endsWith(".md")
+								) {
+									// Set the new href.
+									$el.attr("href", "#");
+
+									// Reset the href by removing any starting dot,
+									// forward-slashes, and the .md extension.
+									href = href.replace(/^[\.\/]+|\.md$/gi, "");
+
+									// Remove the root from the href.
+									if (href.startsWith(root)) {
+										href = href.replace(root, "");
+									}
+
+									// Add the dot slash to the href.
+									href = `./${href}`;
+
+									// Set the final href.
+									$el.attr("data-file", href);
+									// Set the untouched original href.
+									$el.attr(
+										"data-file-untouched",
+										href_untouched
+									);
+									// Set class to denote its a documentation link.
+									$el.addClass("link-doc");
+								} else {
+									// Open all http links in their own tabs by
+									// adding the _blank value. Skip hashes.
+									if (!href.startsWith("#")) {
+										$el.attr("target", "_blank");
+									}
+								}
+							});
+
+							// Add the ignore class to headers that are contained
+							// inside a details element.
+							$("h1, h2, h3, h4, h5, h6")
+								.filter(function(/*i, el*/) {
+									return $(this)
+										.parents()
+										.filter("details").length;
+								})
+								.each(function(/*i, el*/) {
+									// Cache the element.
+									let $el = $(this);
+
+									// Add the ignore class.
+									$el.addClass("ignore-header");
+								});
+
+							// Add the GitHub octicon link/anchor.
+							$("h1, h2, h3, h4, h5, h6")
+								.filter(function(/*i, el*/) {
+									return !$(this)
+										.parents()
+										.filter(".dd-expandable-base").length;
+								})
+								.each(function(/*i, el*/) {
+									// Cache the element.
+									let $el = $(this);
+
+									// Get the text.
+									let text = $el.text();
+
+									// Skip if the text is empty.
+									if (text.trim() === "") {
+										return;
+									}
+
+									// Slugify the text.
+									let escaped_text = slugify(
+										text.replace(/<\/?.*?\>|\&.*?\;/gm, "")
+									);
+
+									$el.attr(
+										"data-orig-text",
+										entities.encode(text)
+									);
+									// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
+									$el.append(
+										`<a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}"><i class="fas fa-link"></i></a>`
+									);
+									// <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+									// 	<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
+									// 	</path>
+									// </svg>
+								});
+
+							// Get all headings in the HTML.
+							var __headings = {};
+							$(
+								"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
+							)
+								.filter(function(/*i, el*/) {
+									return !$(this)
+										.parents()
+										.filter(".dd-expandable-base").length;
+								})
+								.each(function(/*i, el*/) {
+									// Cache the element.
+									let $el = $(this);
+
+									// Get the element id.
+									let id = $el.attr().id;
+
+									// If an ID does not exist just skip it.
+									if (!id) {
+										return;
+									}
+
+									// Get the text (no HTML).
+									var value = $el
+										.parent()
+										.text()
+										.trim();
+									// Get the original text with HTML.
+									var otext = $el
+										.parent()
+										.attr("data-orig-text")
+										.trim();
+
+									// Remove any HTML tags from the text.
+									otext = otext.replace(
+										/<\/?.*?\>|\&.*?\;/gm,
+										function(match) {
+											// Only allow emojis to pass.
+											if (
+												!match.startsWith(
+													'<img class="emoji"'
+												)
+											) {
+												// Remove tags.
+												return match.replace(
+													/<\/?.*?\>|\&.*?\;/gm,
+													""
+												);
+											}
+
+											return match;
+										}
+									);
+
+									// Take into account same name headers. Append the
+									// suffix "-NUMBER" to the header href/id to make
+									// it unique.
+									var heading_count = "";
+									if (!__headings[id]) {
+										// Add it to the object.
+										__headings[id] = 1;
+									} else {
+										heading_count = __headings[id];
+
+										// Reset  the element id.
+										$el.attr(
+											"id",
+											`${id}-${heading_count}`
+										);
+										$el.attr(
+											"href",
+											`${
+												$el.attr().href
+											}-${heading_count}`
+										);
+
+										// Increment the count.
+										__headings[id] = heading_count + 1;
+
+										// Add the hyphen.
+										heading_count = `-${heading_count}`;
+									}
+
+									// Add the second level menu template string.
+									headings.push(
+										`<li class="l-3" title="${value}"><a class="link link-heading" href="#${dehashify(
+											id
+										)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
+									);
+								});
+							// Add the closing tag to the headings HTML.
+							headings.push("</ul>");
+
+							// Reset all the anchor href.
+							$("a[href]").each(function(/*i, el*/) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Get the attributes.
+								let attrs = $el.attr();
+
+								// Get the element id.
+								let href = attrs.href;
+
+								// Only work on hrefs starting with "#".
+								if (href.startsWith("#")) {
+									href = href.replace(/\#/g, "");
+
+									$el.attr(
+										"href",
+										"#" + dehashify(href, true)
+									);
+								}
+
+								// Add the "link-heading" class only when the href
+								// attribute is the only attribute.
+								if (Object.keys(attrs).length === 1 && href) {
+									$el.addClass("link-heading");
+								}
+							});
+
+							// Combine all the headings HTML and add to them to the
+							// file object.
+							__file.headings.push(headings.join(""));
+
+							// Reset the headings count.
+							__file.html = __file.html.replace(
+								/\$0/,
+								headings.length - 2
 							);
 
-							// Get the parent element.
-							let $parent = $el.parent();
+							// Add the header spacer.
+							$("h1, h2, h3, h4, h5, h6").each(
+								function(/*i, el*/) {
+									// Cache the element.
+									let $el = $(this);
 
-							// Note: Skip this entirely for codegroups.
-							// Check whether it's part of a codegroup.
-							var is_partof_codegroup = $el
-								.parents()
-								.filter(".code-block-grouped").length;
-
-							// Generate a special ID for the pre element.
-							var uid = `exp-${id(25)}`;
-
-							// Get the language.
-							var classes = $el.attr()["class"];
-							var lang = " ";
-							var langmatch = "";
-							if (classes) {
-								langmatch =
-									(` ${classes} `.match(/ (lang-.+) /i) ||
-										"")[1] || "";
-								if (langmatch) {
-									langmatch = langmatch.replace(/lang-/i, "");
-									lang = ` <span class="show-code-lang">${langmatch}</span>`;
+									// Get the next element.
+									var $next = $el.next()[0];
+									if ($next) {
+										// Don't add the spacer class if the header group
+										// is empty. (no siblings.)
+										var spacer_class = !/h[1-6]/i.test(
+											$next.name
+										)
+											? " class='header-spacer'"
+											: "";
+										$el.after(`<div${spacer_class}></div>`);
+									}
 								}
-							}
+							);
 
-							// If the code is > 40 lines show an expander.
-							if (line_count >= 40) {
-								$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
+							// Hide all but the first code block.
+							$(".code-block-grouped").each(function(/*i, el*/) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Get the code blocks.
+								let $blocks = $el.find("pre");
+
+								// Hide all the blocks except the first.
+								if ($blocks.length) {
+									// The remaining code blocks.
+									$blocks = $blocks
+										.filter(function(i /*, el*/) {
+											return i !== 0;
+										})
+										.attr("class", "none");
+								}
+							});
+
+							// Hide code blocks that are too big.
+							$("pre code[class^='lang']").each(
+								function(/*i, el*/) {
+									// Cache the element.
+									let $el = $(this);
+
+									// Get text (code) and file stats.
+									let text = $el.text().trim();
+									let line_count = text.split("\n").length;
+									let lines = add_commas_to_num(line_count);
+									let chars = add_commas_to_num(
+										text.split("").length
+									);
+
+									// Get the parent element.
+									let $parent = $el.parent();
+
+									// Note: Skip this entirely for codegroups.
+									// Check whether it's part of a codegroup.
+									var is_partof_codegroup = $el
+										.parents()
+										.filter(".code-block-grouped").length;
+
+									// Generate a special ID for the pre element.
+									var uid = `exp-${id(25)}`;
+
+									// Get the language.
+									var classes = $el.attr()["class"];
+									var lang = " ";
+									var langmatch = "";
+									if (classes) {
+										langmatch =
+											(` ${classes} `.match(
+												/ (lang-.+) /i
+											) || "")[1] || "";
+										if (langmatch) {
+											langmatch = langmatch.replace(
+												/lang-/i,
+												""
+											);
+											lang = ` <span class="show-code-lang">${langmatch}</span>`;
+										}
+									}
+
+									// If the code is > 40 lines show an expander.
+									if (line_count >= 40) {
+										$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
 									<div class="code-template-cont">
 										<div class="code-template-line">
 											<div class="code-template code-template-len40"></div>
@@ -1761,208 +1932,225 @@ versions.forEach(function(vdata) {
 									</div>
 								</div>`);
 
-								// Dont't add the buttons when the block is part of a group.
-								if (!is_partof_codegroup) {
-									// Add the action buttons
-									$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
-												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span>
-												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}">collapse</span>
+										// Dont't add the buttons when the block is part of a group.
+										if (!is_partof_codegroup) {
+											// Add the action buttons
+											$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
+												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr2"></i> copy</span>
+												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr2"></i> collapse</span>
 							</div>`);
-								}
+										}
 
-								// Finally hide the element.
-								$parent.addClass("none");
-								$parent.addClass("animate-fadein");
-							} else {
-								// Dont't add the buttons when the block is part of a group.
-								if (!is_partof_codegroup) {
-									$parent.before(
-										`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
+										// Finally hide the element.
+										$parent.addClass("none");
+										$parent.addClass("animate-fadein");
+									} else {
+										// Dont't add the buttons when the block is part of a group.
+										if (!is_partof_codegroup) {
+											$parent.before(
+												`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr2"></i> copy</span></div>`
+											);
+										}
+									}
+									$parent.attr("id", uid);
+
+									// Set the line numbers element.
+
+									// Trim the HTML.
+									let html = $el.html().trim();
+									// Reset the HTML.
+									$el.html(html);
+									// Get the text.
+									text = $el.text();
+									// Get the number of lines.
+									lines = text.split("\n").length;
+
+									// Get the lines to highlight.
+									var _lines = lines_to_highlight($el);
+
+									var line_nums = [];
+									for (let i = 0, l = lines; i < l; i++) {
+										// Check whether the line needs to be highlighted.
+										let needs_highlight = _lines.includes(
+											i + 1
+										)
+											? " class='line-block-highlight'"
+											: "";
+										line_nums.push(
+											`<div class="line-num-cont"><span${needs_highlight}>${i +
+												1}</span></div>`
+										);
+									}
+
+									// Make the "line" highlight HTML.
+									var line_nums2 = [];
+									for (let i = 0, l = lines; i < l; i++) {
+										// Check whether the line needs to be highlighted.
+										let needs_highlight = _lines.includes(
+											i + 1
+										)
+											? " lang-code-line-highlight"
+											: "";
+										line_nums2.push(
+											`<div class="line-num-cont${needs_highlight}"> </div>`
+										);
+									}
+
+									// Add the block code name.
+									var blockname_html = "";
+									var top_pad_fix = "";
+									// Check for line highlight numbers/ranges.
+									var blockname =
+										$el.attr()["data-block-name"] || "";
+									if (!blockname) {
+										var __lang = langmatch.replace(
+											"lang-",
+											""
+										);
+
+										blockname =
+											"untitled" +
+											(__lang !== "" ? "." + __lang : "");
+									}
+
+									blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
+									top_pad_fix = "padtop-26";
+									$el.addClass(top_pad_fix);
+
+									// Add the line numbers HTML.
+									$parent.prepend(
+										// Note: Insert a duplicate element to allow the
+										// second element to be able to be "fixed". This
+										// allows the code element to be properly adjacent
+										// to the fixed element.
+										`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
+											""
+										)}</div><div class="line-num line-num-third noselect pnone ${top_pad_fix}">${line_nums2.join(
+											""
+										)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
+											""
+										)}</div>`
 									);
 								}
-							}
-							$parent.attr("id", uid);
+							);
 
-							// Set the line numbers element.
+							// Hide code blocks that are too big.
+							$("pre code[class^='lang']").each(
+								function(/*i, el*/) {
+									// Cache the element.
+									let $el = $(this);
 
-							// Trim the HTML.
-							let html = $el.html().trim();
-							// Reset the HTML.
-							$el.html(html);
-							// Get the text.
-							text = $el.text();
-							// Get the number of lines.
-							lines = text.split("\n").length;
+									// Store the original text.
+									$el.attr(
+										"data-orig-text",
+										entities.decode(
+											$el.text().replace(/\s*$/, "")
+										)
+									);
+								}
+							);
 
-							// Get the lines to highlight.
-							var _lines = lines_to_highlight($el);
+							// Extract and store the details elements' HTML.
+							var details_lookup = [];
+							var details_counter = -1;
 
-							var line_nums = [];
-							for (let i = 0, l = lines; i < l; i++) {
-								// Check whether the line needs to be highlighted.
-								let needs_highlight = _lines.includes(i + 1)
-									? " class='line-block-highlight'"
-									: "";
-								line_nums.push(
-									`<div class="line-num-cont"><span${needs_highlight}>${i +
-										1}</span></div>`
+							// Remove and placehold the <details> inner HTML.
+							$("details").each(function(/*i, el*/) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Store the HTML.
+								details_lookup.push($el.html());
+
+								// Reset the HTML.
+								$el.html(`[dd::-details-${++details_counter}]`);
+							});
+
+							// Finally reset the data to the newly parsed/modified HTML.
+							data = $.html().replace(
+								/<\/?(html|body|head)>/gi,
+								""
+							);
+
+							// Wrap the headers with their "contents".
+							var indices = [];
+							var index = regexp_index(data, /<h[1-6].*?>/i);
+							while (index !== -1) {
+								indices.push(index);
+
+								index = regexp_index(
+									data,
+									/<h[1-6].*?>/i,
+									index + 1
 								);
 							}
 
-							// Make the "line" highlight HTML.
-							var line_nums2 = [];
-							for (let i = 0, l = lines; i < l; i++) {
-								// Check whether the line needs to be highlighted.
-								let needs_highlight = _lines.includes(i + 1)
-									? " lang-code-line-highlight"
-									: "";
-								line_nums2.push(
-									`<div class="line-num-cont${needs_highlight}"> </div>`
+							// Create the HTML inserts.
+							var inserts = {};
+							indices.forEach(function(index, i) {
+								// <h1st --> Start.
+								// <h2nd --> End+Start.
+								// <h3rd --> End+Start.
+								// <h4th --> End+Start, Find ending tag.
+
+								// Start.
+								if (i === 0) {
+									inserts[index] =
+										'<div class="header-content-ddwrap">';
+									// End+Start.
+								} else if (i === indices.length - 1) {
+									inserts[index] =
+										'</div><div class="header-content-ddwrap">';
+									inserts[data.length] = "</div>";
+								} else {
+									// End+Start, Find ending tag.
+									inserts[index] =
+										'</div><div class="header-content-ddwrap">';
+								}
+							});
+
+							// Reset the data.
+							data = string_index_insert(data, inserts);
+							// If a single insert exists the entire thing things to
+							// be wrapped.
+							if (Object.keys(inserts).length === 1) {
+								data = `${data}</div>`;
+							}
+
+							// Fill back in the details placeholders.
+							var r = /\[dd\:\:\-details-\d+\]/g;
+							var rfn = function(match) {
+								return details_lookup[
+									match.replace(/[^\d]/g, "") * 1
+								];
+							};
+							// Loop contents until all details have been filled back in.
+							while (r.test(data)) {
+								// Add back the code blocks.
+								data = data.replace(r, rfn);
+							}
+
+							// Finally reset the data to the newly parsed/modified HTML.
+							data = `<div class="markdown-body animate-fadein">${data}${timeago_html}</div>`;
+
+							// Add to the object.
+							var _placeholder = __dir.contents[`${fpath}`];
+							if (_placeholder && _placeholder === -1) {
+								// Set the actual contents to the data object.
+								__dir.contents[`${fpath}`] = data;
+							}
+
+							if (debug) {
+								print.gulp.info(
+									"Processed",
+									chalk.magenta(`${fpath}`)
 								);
 							}
 
-							// Add the block code name.
-							var blockname_html = "";
-							var top_pad_fix = "";
-							// Check for line highlight numbers/ranges.
-							var blockname = $el.attr()["data-block-name"] || "";
-							if (!blockname) {
-								var __lang = langmatch.replace("lang-", "");
-
-								blockname =
-									"untitled" +
-									(__lang !== "" ? "." + __lang : "");
-							}
-
-							blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
-							top_pad_fix = "padtop-26";
-							$el.addClass(top_pad_fix);
-
-							// Add the line numbers HTML.
-							$parent.prepend(
-								// Note: Insert a duplicate element to allow the
-								// second element to be able to be "fixed". This
-								// allows the code element to be properly adjacent
-								// to the fixed element.
-								`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
-									""
-								)}</div><div class="line-num line-num-third noselect pnone ${top_pad_fix}">${line_nums2.join(
-									""
-								)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
-									""
-								)}</div>`
-							);
+							// Finally, resolve the Promise and return the file path,
+							// data, and headings as the data.
+							resolve([__path, data, headings]);
 						});
-
-						// Hide code blocks that are too big.
-						$("pre code[class^='lang']").each(function(/*i, el*/) {
-							// Cache the element.
-							let $el = $(this);
-
-							// Store the original text.
-							$el.attr(
-								"data-orig-text",
-								entities.decode($el.text().replace(/\s*$/, ""))
-							);
-						});
-
-						// Extract and store the details elements' HTML.
-						var details_lookup = [];
-						var details_counter = -1;
-
-						// Remove and placehold the <details> inner HTML.
-						$("details").each(function(/*i, el*/) {
-							// Cache the element.
-							let $el = $(this);
-
-							// Store the HTML.
-							details_lookup.push($el.html());
-
-							// Reset the HTML.
-							$el.html(`[dd::-details-${++details_counter}]`);
-						});
-
-						// Finally reset the data to the newly parsed/modified HTML.
-						data = $.html().replace(/<\/?(html|body|head)>/gi, "");
-
-						// Wrap the headers with their "contents".
-						var indices = [];
-						var index = regexp_index(data, /<h[1-6].*?>/i);
-						while (index !== -1) {
-							indices.push(index);
-
-							index = regexp_index(
-								data,
-								/<h[1-6].*?>/i,
-								index + 1
-							);
-						}
-
-						// Create the HTML inserts.
-						var inserts = {};
-						indices.forEach(function(index, i) {
-							// <h1st --> Start.
-							// <h2nd --> End+Start.
-							// <h3rd --> End+Start.
-							// <h4th --> End+Start, Find ending tag.
-
-							// Start.
-							if (i === 0) {
-								inserts[index] =
-									'<div class="header-content-ddwrap">';
-								// End+Start.
-							} else if (i === indices.length - 1) {
-								inserts[index] =
-									'</div><div class="header-content-ddwrap">';
-								inserts[data.length] = "</div>";
-							} else {
-								// End+Start, Find ending tag.
-								inserts[index] =
-									'</div><div class="header-content-ddwrap">';
-							}
-						});
-
-						// Reset the data.
-						data = string_index_insert(data, inserts);
-						// If a single insert exists the entire thing things to
-						// be wrapped.
-						if (Object.keys(inserts).length === 1) {
-							data = `${data}</div>`;
-						}
-
-						// Fill back in the details placeholders.
-						var r = /\[dd\:\:\-details-\d+\]/g;
-						var rfn = function(match) {
-							return details_lookup[
-								match.replace(/[^\d]/g, "") * 1
-							];
-						};
-						// Loop contents until all details have been filled back in.
-						while (r.test(data)) {
-							// Add back the code blocks.
-							data = data.replace(r, rfn);
-						}
-
-						// Finally reset the data to the newly parsed/modified HTML.
-						data = `<div class="markdown-body animate-fadein">${data}</div>`;
-
-						// Add to the object.
-						var _placeholder = __dir.contents[`${fpath}`];
-						if (_placeholder && _placeholder === -1) {
-							// Set the actual contents to the data object.
-							__dir.contents[`${fpath}`] = data;
-						}
-
-						if (debug) {
-							print.gulp.info(
-								"Processed",
-								chalk.magenta(`${fpath}`)
-							);
-						}
-
-						// Finally, resolve the Promise and return the file path,
-						// data, and headings as the data.
-						resolve([__path, data, headings]);
 					});
 				});
 			});
@@ -2369,7 +2557,7 @@ gulp.task("favicon:app", function(done) {
 gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
 	config.html.logo = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
-	config.html.socials = links_html.join("");
+	config.html.footer = footer_html.join("");
 
 	var __path = path.join(outputpath, "/zdata");
 
@@ -2415,7 +2603,8 @@ gulp.task("json-data:app", function(done) {
 
 					// Create the submenu for the current directory.
 					menu.push(
-						remove_space(`<ul class="submenu">
+						remove_space(`<ul id="submenu-${index +
+							1}" class="submenu">
 						${directory.html}
 						<li>
 							<div class="menu-section-cont" data-dir="${index}">
@@ -2424,7 +2613,7 @@ gulp.task("json-data:app", function(done) {
 										<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>
 									</div>
 								</div>
-								<ul>
+								<ul id="submenu-inner-${index + 1}">
 									${html.join("")}
 								</ul>
 							</div>
