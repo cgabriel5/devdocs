@@ -531,7 +531,7 @@ function expand_ctags(text) {
 			// Build and return the HTML.
 			return `\n\n<div class="dd-expandable-base">
 	<div class="dd-expandable-message noselect">
-		<i class="fas fa-chevron-circle-right mr5 mr3 dd-expandable-message-icon"></i>
+		<i class="fas fa-chevron-circle-right mr5 mb3 dd-expandable-message-icon"></i>
 		<span>${title}</span>
 	</div>
 	<div class="dd-expandable-content none animate-fadein">`;
@@ -622,7 +622,7 @@ function expand_ctags(text) {
 			return `\n\n<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
 			<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
 			<div class="flex flex-center mr5">
-				<span class="btn btn-white noselect code-block-action btn-cba-copy">copy</span>
+				<span class="btn btn-white noselect code-block-action btn-cba-copy"><i class="fas fa-clipboard mr2"></i> copy</span>
 			</div>
 		</div>
 		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
@@ -748,7 +748,8 @@ if (!configpath) {
 let config = require(configpath);
 let root = get(config, "root", "docs/");
 let versions = get(config, "versions", []);
-let links = get(config, "links", {});
+let footer = get(config, "footer", []);
+let titlen = get(config, "title", "devdocs");
 let logo = config.logo;
 // let title = config.title;
 // If debug flag was not supplied via the CL, look for it in the config file.
@@ -1078,52 +1079,135 @@ renderer.text = function(text) {
 // All processed directory data will be contained in this array.
 var dirs = [];
 
-// Supported social platforms for social links.
-let socials = {
-	user: "fas fa-user-circle",
-	facebook: "fab fa-facebook-square",
-	twitter: "fab fa-twitter-square",
-	youtube: "fab fa-youtube-square",
-	vimeo: "fab fa-vimeo-square",
-	google_plus: "fab fa-google-plus-square",
-	reddit: "fab fa-reddit-square",
-	pinterest: "fab fa-pinterest-square",
-	snapchat: "fab fa-snapchat-square",
-	tumblr: "fab fa-tumblr-square",
-	github: "fab fa-github-square",
-	bitbucket: "fab fa-bitbucket",
-	blogger: "fab fa-blogger",
-	stumbleupon: "fab fa-stumbleupon-circle"
-};
+// Build the footer if links are provided.
+let footer_html = ['<div id="md-footer" class="md-footer">'];
+if (footer.length) {
+	// Supported social platforms for footer links.
+	let socials = {
+		personal: "fas fa-globe-americas",
+		facebook: "fab fa-facebook",
+		messenger: "fab fa-facebook-messenger",
+		twitter: "fab fa-twitter",
+		youtube: "fab fa-youtube",
+		vimeo: "fab fa-vimeo-v",
+		google: "fab fa-google",
+		google_plus: "fab fa-google-plus-g",
+		google_drive: "fab fa-google-drive",
+		reddit: "fab fa-reddit-alien",
+		pinterest: "fab fa-pinterest-p",
+		snapchat: "fab fa-snapchat-ghost",
+		tumblr: "fab fa-tumblr",
+		github: "fab fa-github",
+		bitbucket: "fab fa-bitbucket",
+		blogger: "fab fa-blogger-b",
+		stumbleupon: "fab fa-stumbleupon",
+		medium: "fab fa-medium-m",
+		gitter: "fab fa-gitter",
+		gitlab: "fab fa-gitlab",
+		wordpress: "fab fa-wordpress",
+		overflow: "fab fa-stack-overflow",
+		slack: "fab fa-slack",
+		gratipay: "fab fa-gratipay",
+		location: "fas fa-map-marker-alt",
+		email: "fas fa-envelope"
+	};
 
-// Build the social links if provide.
-let links_html = ['<div class="link-socials">'];
-if (links) {
-	// Loop over the links.
-	links.forEach(function(item) {
-		// Get the needed information.
-		let platform = item[0].toLowerCase();
-		let url = item[1];
+	// Loop over the footer sections.
+	footer.forEach(function(section) {
+		// Get the title and links.
+		let title = section.title;
+		let links = section.links; // ["text", "url", "icon"]
 
-		// Get the font-awesome classes.
-		let fa_classes = socials[platform];
+		// Vars.
+		var title_html = "";
+		var content_html = "";
+		var section_html = "";
+		var link_content = [];
 
-		// Only make the HTML for the platform if the platform is supported.
-		if (fa_classes) {
-			links_html.push(
-				`<div class="social-link"><a href="${url}" target="_blank" class="social-link"><i class="${fa_classes}"></i></a></div>`
-			);
-		} else {
-			if (debug) {
-				print.gulp.warn(
-					`'${platform}' was ignored as it's not a supported social link.`
-				);
-			}
+		// Start building the section HTML.
+
+		// If a title is provided make the title HTML.
+		if (title) {
+			title_html = `<div class="md-footer-section-title">${title}</div>`;
 		}
+
+		// If a links are provided make the content HTML.
+		links.forEach(function(link) {
+			// Get the needed information.
+			let text = link[0];
+			let url = link[1];
+			let link_start = "";
+			let link_end = "";
+			let icon = link[2];
+
+			// Reset the link start/end.
+			if (url) {
+				link_start = `<a href="${url}" target="_blank" class="social-link">`;
+				link_end = "</a>";
+			}
+
+			// Check whether a social icon was provided or an actual image.
+			icon = !/^\:[\w_]+/.test(icon) // :facebook-icon || ./path/to/icon
+				? `<img src="${icon}" class="mr5 md-footer-img">`
+				: socials[icon.replace(/^\:/g, "")]
+					? `<i class="${socials[icon.replace(/^\:/g, "")]} mr5"></i>`
+					: "";
+
+			// Add the HTML to the collection.
+			link_content.push(
+				`${link_start}<div class="truncate">${icon}<span class="mr5">${text}</span></div>${link_end}`
+			);
+		});
+
+		// If the content array is populated make the content HTML.
+		if (link_content.length) {
+			content_html = `<div class="md-footer-section-content">${link_content.join(
+				""
+			)}</div>`;
+		}
+
+		// Finally, make the section HTML and add it to the footer_html array.
+		footer_html.push(
+			`<div class="md-footer-section">${title_html}${content_html}</div>`
+		);
 	});
 }
-// Close the HTML.
-links_html.push("</div>");
+
+// Add the footer copyright information.
+
+// Get the GitHub account information.
+var github = Object.assign(
+	{
+		// Defaults.
+		account_username: "",
+		project_name: ""
+	},
+	config.github
+);
+
+// Get the GitHub information.
+var uname = github.account_username;
+var pname = github.project_name;
+
+// Vars.
+var link_start = "",
+	link_end = "";
+
+// Make the link HTML if the GitHub info exists.
+if (uname && pname) {
+	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
+	link_end = "</a>";
+}
+
+// Close footer HTML.
+footer_html.push(`</div>`);
+
+// Add copyright HTML.
+footer_html.push(
+	`<div class="flex flex-center md-footer-copyright"><div class="truncate">${link_start}<i class="far fa-copyright"></i> ${new Date(
+		Date.now()
+	).getFullYear()} ${titlen}${link_end}</div></div>`
+);
 
 // Store the versions.
 config.versions = [];
@@ -1279,11 +1363,11 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div class="mtime-cont"><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span>${timeago(
+						let timeago_html = `<div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span>${timeago(
 							mtime
 						)}</span> <span class="mtime-ts-long">(${timelong(
 							mtime
-						)})</span></div>`;
+						)})</span></div></div>`;
 
 						// Remove any HTML comments as having comments close to markup
 						// causes marked to parse it :/.
@@ -1590,13 +1674,13 @@ versions.forEach(function(vdata) {
 										entities.encode(text)
 									);
 									// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
-									$el.append(`
-<a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}">
-	<svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
-		<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
-		</path>
-	</svg>
-</a>`);
+									$el.append(
+										`<a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}"><i class="fas fa-link"></i></a>`
+									);
+									// <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
+									// 	<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
+									// 	</path>
+									// </svg>
 								});
 
 							// Get all headings in the HTML.
@@ -1852,8 +1936,8 @@ versions.forEach(function(vdata) {
 										if (!is_partof_codegroup) {
 											// Add the action buttons
 											$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
-												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span>
-												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}">collapse</span>
+												<span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr2"></i> copy</span>
+												<span class="btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr2"></i> collapse</span>
 							</div>`);
 										}
 
@@ -1864,7 +1948,7 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											$parent.before(
-												`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}">copy</span></div>`
+												`<div class="code-block-actions-cont def-font animate-fadein"><span class="btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr2"></i> copy</span></div>`
 											);
 										}
 									}
@@ -2473,7 +2557,7 @@ gulp.task("favicon:app", function(done) {
 gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
 	config.html.logo = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
-	config.html.socials = links_html.join("");
+	config.html.footer = footer_html.join("");
 
 	var __path = path.join(outputpath, "/zdata");
 

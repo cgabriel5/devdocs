@@ -1141,6 +1141,8 @@ document.onreadystatechange = function() {
 				});
 			})
 			.then(function(data) {
+				// console.log(data);
+
 				// Animate the logo.
 				$splash_icon.classList.add("animate-pulse");
 
@@ -2270,10 +2272,19 @@ document.onreadystatechange = function() {
 							? `<div class="bottom-arrow-btn-cont" id="bottom-arrow-btn-cont">${prev_html}${next_html}</div>`
 							: "";
 
+					// Everything will get inserted after the modified time container.
+					var $mtime = document.getElementsByClassName(
+						"mtime-cont"
+					)[0];
+
 					// Insert the HTML.
-					document
-						.getElementsByClassName("mtime-cont")[0]
-						.insertAdjacentHTML("beforebegin", html);
+					$mtime.insertAdjacentHTML("beforebegin", html);
+
+					// Add the footer HTML.
+					let footer_html = data.html.footer;
+					if (footer_html) {
+						$mtime.insertAdjacentHTML("afterend", footer_html);
+					}
 				}
 
 				/**
@@ -2549,7 +2560,7 @@ document.onreadystatechange = function() {
 					// Inject the versions list.
 					$vlist.innerHTML = versions_html.join("");
 					// Set the current version.
-					$current_version.innerHTML = `Version: ${version}`; // +
+					$current_version.innerHTML = `<i class="fas fa-layer-group"></i> v${version}`; // +
 					$current_version.insertAdjacentHTML(
 						"afterend",
 						version === latest
@@ -2576,16 +2587,6 @@ document.onreadystatechange = function() {
 					$no_matches_cont = document.getElementById(
 						"no-matches-cont"
 					);
-
-					// Add the social links.
-					if (data.html.socials) {
-						document
-							.getElementById("sidebar")
-							.children[1].insertAdjacentHTML(
-								"beforeend",
-								data.html.socials
-							);
-					}
 
 					// Animate the entire menu.
 					document
