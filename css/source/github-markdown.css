@@ -413,7 +413,7 @@
 	line-height: 1;
 	/* Keep the anchor hyper-link on the right due limited space on mobile
 	devices.*//*float: left;*//*margin-left: -20px;*//*padding-right: 4px;*/
-	margin-left: 6px;
+	margin-left: 3px;
 }
 
 .markdown-body .anchor:focus {

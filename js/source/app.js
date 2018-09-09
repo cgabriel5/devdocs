@@ -3055,7 +3055,10 @@ document.onreadystatechange = function() {
 
 						$search_cont.classList.add("sinput-focused");
 						$input.focus();
-					} else if (classes.contains("current-version")) {
+					} else if (is_target_el($target, "current-version")) {
+						// Reset the target.
+						$target = is_target_el($target, "current-version");
+
 						// Show the versions container.
 						$versions_cont.classList.remove("none");
 
