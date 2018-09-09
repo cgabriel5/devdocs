@@ -413,15 +413,6 @@ document.onreadystatechange = function() {
 			// Not the element needed.
 			return false;
 		};
-		is_target_el.code_block_actions = function(parent, $el /*parents*/) {
-			if (
-				parent.classList &&
-				parent.classList.contains("code-block-actions-cont") &&
-				$el.classList.contains("btn-cba-collapse")
-			) {
-				return parent;
-			}
-		};
 		is_target_el.code_pre_code_element = function(parent /*$el, parents*/) {
 			// The parent must be a:
 			// - pre element
@@ -2927,19 +2918,10 @@ document.onreadystatechange = function() {
 						$target.nextElementSibling.nextElementSibling.classList.remove(
 							"none"
 						);
-					} else if (
-						is_target_el(
-							$target,
-							null,
-							is_target_el.code_block_actions
-						)
-					) {
+					} else if (is_target_el($target, "btn-cba-collapse")) {
 						// Reset the target.
-						$target = is_target_el(
-							$target,
-							null,
-							is_target_el.code_block_actions
-						);
+						$target = is_target_el($target, "btn-cba-collapse")
+							.parentNode;
 
 						// Hide itself and the pre element.
 						$target.classList.add("none");
