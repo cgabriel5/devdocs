@@ -2786,35 +2786,14 @@ document.onreadystatechange = function() {
 						return;
 					}
 
-					// Since using event delegation, check that the clicked
-					// element is either the anchor element containing the
-					// needed data-attribute or the anchor's parent li
-					// element.
+					// Actions/code logic is broken down into returnables
+					// and non-returnables. Returnables will stop the event
+					// from within the code block. Non-returnables will
+					// continue down to change the spa contents.
 
-					// The clicked element is an li element since it has the
-					// l-2 (level-2) class. Since this is the case get the
-					// child element's (anchor element) data-attribute.
-					if (is_target_el($target, "l-2")) {
-						// Remove any expanders.
-						remove_expanders();
+					// Returnables:
 
-						// Reset the target.
-						$target = is_target_el($target, "l-2");
-
-						// Get the data-attribute.
-						filename = $target.children[0].getAttribute(
-							"data-file"
-						);
-					} else if (classes.contains("link-doc")) {
-						// Get the data-attribute.
-						filename = $target.getAttribute("data-file");
-
-						// Reset the target element.
-						// $target = $target.parentNode;
-						$target = document.querySelector(
-							`a.link[data-file='${filename}']`
-						).parentNode.parentNode;
-					} else if (
+					if (
 						is_target_el($target, "link-heading") ||
 						is_target_el($target, "l-3")
 					) {
@@ -2880,14 +2859,6 @@ document.onreadystatechange = function() {
 						}
 
 						return;
-					} else if (classes.contains("btn-home")) {
-						// Get the data-attribute.
-						filename = data.first_file;
-
-						// Reset the target element.
-						$target = document.querySelector(
-							`a.link[data-file='${filename}']`
-						).parentNode.parentNode;
 					} else if (
 						classes.contains("mobile-menu-ham") &&
 						$overlay.style.display !== "block"
@@ -2918,6 +2889,8 @@ document.onreadystatechange = function() {
 						$target.nextElementSibling.nextElementSibling.classList.remove(
 							"none"
 						);
+
+						return;
 					} else if (is_target_el($target, "btn-cba-collapse")) {
 						// Reset the target.
 						$target = is_target_el($target, "btn-cba-collapse")
@@ -2928,6 +2901,8 @@ document.onreadystatechange = function() {
 						$target.nextElementSibling.classList.add("none");
 						// Show the show element.
 						$target.previousElementSibling.classList.remove("none");
+
+						return;
 					} else if (is_target_el($target, "dd-expandable-message")) {
 						// Reset the target.
 						$target = is_target_el(
@@ -2966,6 +2941,8 @@ document.onreadystatechange = function() {
 								"dd-expandable-message-icon-active"
 							);
 						}
+
+						return;
 					} else if (is_target_el($target, "codegroup-tab")) {
 						// Cancel any current codeblock scroll.
 						if (codeblock_scroll) {
@@ -3021,6 +2998,8 @@ document.onreadystatechange = function() {
 							// Reset code block width/highlight.
 							reset_cblock_width_highlight();
 						}, 300);
+
+						return;
 					} else if (is_target_el($target, "search-cont-inner")) {
 						// Save a reference to the old target before reset.
 						var $tar = $target;
@@ -3037,6 +3016,8 @@ document.onreadystatechange = function() {
 
 						$search_cont.classList.add("sinput-focused");
 						$input.focus();
+
+						return;
 					} else if (is_target_el($target, "current-version")) {
 						// Reset the target.
 						$target = is_target_el($target, "current-version");
@@ -3067,6 +3048,8 @@ document.onreadystatechange = function() {
 
 						// Focus on the input.
 						$versions_cont.getElementsByTagName("input")[0].focus();
+
+						return;
 					} else if (is_target_el($target, "version-option")) {
 						// Reset the target.
 						$target = is_target_el($target, "version-option");
@@ -3102,23 +3085,16 @@ document.onreadystatechange = function() {
 
 						e.preventDefault();
 						return;
-					} else if (is_target_el($target, "arrow-content")) {
-						// Reset the target.
-						$target = is_target_el($target, "arrow-content");
-
-						// Trigger the click on the element.
-						document
-							.getElementById($target.getAttribute("data-refid"))
-							.click();
-					} else {
+					} else if (is_target_el($target, "anchor")) {
 						// Check if clicking the header anchor octicon element.
 						let $header = false;
 
-						var $anchor = is_target_el($target, "anchor");
+						// Reset the target.
+						$target = is_target_el($target, "anchor");
 
-						if ($anchor) {
+						if ($target) {
 							// Get the parent.
-							$header = $anchor.parentNode;
+							$header = $target.parentNode;
 						}
 
 						// Skip if empty (no children).
@@ -3168,6 +3144,54 @@ document.onreadystatechange = function() {
 						}
 					}
 
+					// Non-returnables:
+
+					// The clicked element is an li element since it has the
+					// l-2 (level-2) class. Since this is the case get the
+					// child element's (anchor element) data-attribute.
+					if (is_target_el($target, "l-2")) {
+						// Remove any expanders.
+						remove_expanders();
+
+						// Reset the target.
+						$target = is_target_el($target, "l-2");
+
+						// Get the data-attribute.
+						filename = $target.children[0].getAttribute(
+							"data-file"
+						);
+					} else if (is_target_el($target, "arrow-content")) {
+						// Reset the target.
+						$target = is_target_el($target, "arrow-content");
+
+						// Reset the target to the l-2.
+						$target = document.getElementById(
+							$target.getAttribute("data-refid")
+						);
+
+						// Get the data-attribute.
+						filename = $target.children[0].getAttribute(
+							"data-file"
+						);
+					} else if (classes.contains("link-doc")) {
+						// Get the data-attribute.
+						filename = $target.getAttribute("data-file");
+
+						// Reset the target element.
+						// $target = $target.parentNode;
+						$target = document.querySelector(
+							`a.link[data-file='${filename}']`
+						).parentNode.parentNode;
+					} else if (classes.contains("btn-home")) {
+						// Get the data-attribute.
+						filename = data.first_file;
+
+						// Reset the target element.
+						$target = document.querySelector(
+							`a.link[data-file='${filename}']`
+						).parentNode.parentNode;
+					}
+
 					// If filename variable is set then a menu item was
 					// clicked. Therefore, insert the corresponding HTML into
 					// the page.
@@ -3196,7 +3220,15 @@ document.onreadystatechange = function() {
 					}
 				});
 
+				/**
+				 * Remove any and all the expanded menu items.
+				 *
+				 * @param  {htmlelement} $el - Optional element to set moused
+				 *     over element to.
+				 * @return {undefined} - Nothing.
+				 */
 				function remove_expanders($el) {
+					// Reset the moused_el2 ref if an element is provided.
 					if ($el) {
 						$moused_el2 = $el;
 					}
