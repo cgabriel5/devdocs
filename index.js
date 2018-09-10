@@ -137,7 +137,7 @@ let mkdirp = require("mkdirp");
 let fe = require("file-exists");
 let findup = require("find-up");
 // let json = require("json-file");
-// let jsonc = require("comment-json");
+let jsonc = require("comment-json");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
 let vfsfake = require("vinyl-fs-fake");
@@ -2425,6 +2425,13 @@ gulp.task("js:app", function(done) {
 		return done();
 	}
 
+	// Get uglify configuration.
+	let UGLIFYCONFIG = jsonc.parse(
+		fs.readFileSync(apath("./configs/uglify.cm.json")).toString(),
+		null,
+		true
+	);
+
 	return pump(
 		[
 			gulp.src([
@@ -2448,7 +2455,7 @@ gulp.task("js:app", function(done) {
 				$.debug({ loader: false, title: "files for app.min.js..." })
 			),
 			$.concat("app.min.js"),
-			$.uglify(),
+			$.uglify(UGLIFYCONFIG),
 			gulp.dest(path.join(outputpath, "/js")),
 			$.gulpif(
 				debug_flist,
