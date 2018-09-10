@@ -36,8 +36,8 @@ The message/text.
 | <i class="fas fa-list-ul"></i> `icon="list"` | `color="spacegray"` <span style="background: #5d687b;" class="color-square"><span>
 | <i class="fas fa-list-ol"></i> `icon="list-num"` | 
 | <i class="fas fa-pen"></i> `icon="pen"` | 
-| <i class="fas fa-thumbtack"></i> `icon="thumbtack"` | 
-| <i class="fas fa-flask"></i> `icon="flask"` | 
+| <i class="fas fa-thumbtack"></i> `icon="pin"` | 
+| <i class="fas fa-flask"></i> `icon="experimental"` | 
 | <i class="fas fa-lock"></i> `icon="lock"` | 
 
 <dd-expand title="Show note examples">
