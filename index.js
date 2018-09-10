@@ -571,7 +571,7 @@ function expand_ctags(text) {
 		"list-num": "list-ol",
 		pen: "pen",
 		lock: "lock",
-		thumbtack: "thumbtack",
+		pin: "thumbtack",
 		experimental: "flask",
 		default: ""
 	};
