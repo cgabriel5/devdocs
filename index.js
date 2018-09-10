@@ -416,14 +416,23 @@ var regexp_index = function(string, regexp, startindex) {
 /**
  * Create a human readable time format from a timestamp.
  *
- * @param  {number} timestamp - The timestamp to format.
+ * @param  {number} timestamp - The timestamp in milliseconds (not UNIX).
+ * @param  {boolean} format12 - Format in 12 hour format.
+ * @param  {string} delimiter - Delimiter character.
  * @return {string} - The timestamp pretty format.
  *
  * @resource [https://stackoverflow.com/a/6078873]
  * @resource [https://stackoverflow.com/a/45464959]
+ * @resource [https://stackoverflow.com/a/5971324]
  * @resource [https://www.w3schools.com/js/js_date_methods.asp]
  */
-var timelong = function(timestamp) {
+var timelong = function(timestamp, format12, delimiter) {
+	// Default the delimiter to nothing.
+	delimiter = delimiter || " ";
+	if (delimiter.trim() !== "") {
+		delimiter = ` ${delimiter.trim()} `;
+	}
+
 	// Create the date object using the modified timestamp.
 	var date = new Date(timestamp);
 
@@ -437,22 +446,24 @@ var timelong = function(timestamp) {
 	var min = date.getMinutes();
 	var sec = date.getSeconds();
 
-	// Reset the hour/min.
-	if (hour > 12) {
-		hour = hour - 12;
-	}
-	if (hour < 10) {
-		hour = `0${hour + ""}`;
-	}
-	if (min < 10) {
-		min = `0${min + ""}`;
-	}
-	if (sec < 10) {
-		sec = `0${sec + ""}`;
-	}
+	/**
+	 * Prefix number with a zero.
+	 *
+	 * @param  {number} num - The number to prefix.
+	 * @return {string} - The prefixed number as a string.
+	 */
+	var prefix_zero = function(num) {
+		return num < 10 ? `0${num + ""}` : num + "";
+	};
+
+	// Reset the hour.
+	hour = hour > 12 && format12 ? hour - 12 : hour;
+	hour = hour === 0 ? 12 : hour;
 
 	// Format the time in the following format:
-	return `${year}-${month}-${day} / ${hour}:${min}:${sec}`;
+	return `${year}-${month}-${day}${delimiter}${prefix_zero(
+		hour
+	)}:${prefix_zero(min)}:${prefix_zero(sec)}`;
 };
 
 /**
@@ -1366,9 +1377,7 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Updated:</span> <span>${timeago(
-							mtime
-						)}</span> <span class="mtime-ts-long">(${timelong(
+						let timeago_html = `<div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="mtime-ts-long">(${timelong(
 							mtime
 						)})</span></div></div>`;
 

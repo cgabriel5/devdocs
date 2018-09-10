@@ -953,6 +953,56 @@ document.onreadystatechange = function() {
 			};
 		};
 
+		/**
+		 * Get the time ago from a timestamp given in milliseconds.
+		 *
+		 * @param  {number} timestamp - The timestamp in milliseconds (not UNIX).
+		 * @return {string} - The "time ago" (i.e. 1 minute ago).
+		 *
+		 * @resource [https://github.com/simonlc/epoch-timeago/blob/master/src/index.js]
+		 * @resource [https://stackoverflow.com/a/5971324]
+		 * @resource [https://stackoverflow.com/a/11072549]
+		 */
+		var timeago = function(timestamp) {
+			// Get the elapsed time.
+			var elapsed = Date.now() - (timestamp || 0);
+
+			// Time segment information.
+			var time_segments = [
+				["year", "1 year ago", 3.154e10],
+				["month", "1 month ago", 2.628e9],
+				["week", "1 week ago", 6.048e8],
+				["day", "1 day ago", 8.64e7],
+				["hour", "1 hour ago", 3.6e6],
+				["minute", "1 minute ago", 60000],
+				["second", "just now", -Infinity]
+			];
+
+			// Find the time segment index to grab the needed segment array.
+			var index = -1;
+			var params;
+			for (let i = 0, l = time_segments.length; i < l; i++) {
+				var cur = time_segments[i];
+				if (elapsed > cur[2]) {
+					index = i;
+					params = cur;
+					break;
+				}
+			}
+
+			// If an index exists, calculate the timeago.
+			if (-~index) {
+				return index === time_segments.length - 1
+					? params[1]
+					: elapsed >= 2 * params[2]
+						? `${Math.floor(elapsed / params[2])} ${params[0]}s ago`
+						: params[1];
+			}
+
+			// In the case no index, return just now.
+			return "just now";
+		};
+
 		// ------------------------------------------------------------
 
 		// Start the logo/splash animations.
@@ -1148,6 +1198,7 @@ document.onreadystatechange = function() {
 				var clipboardjs_instance;
 				var codeblock_scroll;
 				var sidebar_menu_scroll;
+				var timeago_timer;
 
 				// Functions:Scoped:Inner //
 
@@ -4172,6 +4223,43 @@ document.onreadystatechange = function() {
 
 							// Enable mouse events again.
 							$markdown.classList.remove("pnone");
+
+							// Calculate the time ago times.
+							var mtime_update = function() {
+								// Get the needed elements.
+								var $mtimes = document.getElementsByClassName(
+									"mtime-ts"
+								);
+
+								for (
+									let i = 0, l = $mtimes.length;
+									i < l;
+									i++
+								) {
+									// Cache the current mtime element.
+									var $mtime = $mtimes[i];
+
+									// Set the timeago.
+									$mtime.textContent = timeago(
+										$mtime.getAttribute("data-ts")
+									);
+
+									// Finally, show the element.
+									$mtime.classList.remove("none");
+								}
+							};
+
+							// Run for the first time.
+							mtime_update();
+
+							// Clear any previous timer.
+							if (timeago_timer) {
+								clearInterval(timeago_timer);
+							}
+							// Set the mtime time internal timer.
+							timeago_timer = setInterval(function() {
+								mtime_update();
+							}, 60000);
 						}
 					});
 				});
