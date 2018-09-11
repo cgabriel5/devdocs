@@ -2155,7 +2155,7 @@ details, summary {
 }
 
 .md-footer-copyright {
-	font-size: 13px;
+	font-size: 12px;
 	margin-top: 10px;
 	display: flex;
 	flex-flow: row nowrap;
@@ -2173,6 +2173,9 @@ details, summary {
 
 .md-footer-copyright a {
 	color: #afafaf;
+	padding: 1px 10px;
+	border-radius: 100px;
+	background: rgba(0, 0, 0, 0.02);
 }
 
 .md-footer-copyright i {
