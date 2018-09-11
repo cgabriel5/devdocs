@@ -853,6 +853,10 @@ ul.file-headers {
 	margin-right: 2px;
 }
 
+.mr3 {
+	margin-right: 3px;
+}
+
 .mr5 {
 	margin-right: 5px;
 }
@@ -1967,14 +1971,14 @@ details, summary {
 }
 
 .current-version-cont {
-	display: flex;
+	display: inline-flex;
 	align-items: center;
+	cursor: pointer;
 }
 
 .current-version {
 	color: #999999;
 	font-size: 13px;
-	cursor: pointer;
 	/*display: inline-flex;*//*align-items: center;*/
 }
 
@@ -2152,12 +2156,15 @@ details, summary {
 
 .md-footer-copyright {
 	font-size: 12px;
-	font-weight: bold;
 	padding-top: 10px;
 }
 
 .md-footer-copyright a {
 	color: #afafaf;
+}
+
+.md-footer-copyright i {
+	font-size: 9px;
 }
 
 .anchor {

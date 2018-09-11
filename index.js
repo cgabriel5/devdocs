@@ -137,7 +137,7 @@ let mkdirp = require("mkdirp");
 let fe = require("file-exists");
 let findup = require("find-up");
 // let json = require("json-file");
-// let jsonc = require("comment-json");
+let jsonc = require("comment-json");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
 let vfsfake = require("vinyl-fs-fake");
@@ -1233,7 +1233,7 @@ var link_start = "",
 
 // Make the link HTML if the GitHub info exists.
 if (uname && pname) {
-	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
+	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank" class="flex flex-center">`;
 	link_end = "</a>";
 }
 
@@ -1242,9 +1242,9 @@ footer_html.push(`</div>`);
 
 // Add copyright HTML.
 footer_html.push(
-	`<div class="flex flex-center md-footer-copyright"><div class="truncate">${link_start}<i class="far fa-copyright"></i> ${new Date(
+	`<div class="flex flex-center md-footer-copyright"><div class="truncate">${link_start}<i class="far fa-copyright mr3"></i> <span>${new Date(
 		Date.now()
-	).getFullYear()} ${titlen}${link_end}</div></div>`
+	).getFullYear()}</span> ${titlen}${link_end}</div></div>`
 );
 
 // Store the versions.
@@ -2425,6 +2425,13 @@ gulp.task("js:app", function(done) {
 		return done();
 	}
 
+	// Get uglify configuration.
+	let UGLIFYCONFIG = jsonc.parse(
+		fs.readFileSync(apath("./configs/uglify.cm.json")).toString(),
+		null,
+		true
+	);
+
 	return pump(
 		[
 			gulp.src([
@@ -2448,7 +2455,7 @@ gulp.task("js:app", function(done) {
 				$.debug({ loader: false, title: "files for app.min.js..." })
 			),
 			$.concat("app.min.js"),
-			$.uglify(),
+			$.uglify(UGLIFYCONFIG),
 			gulp.dest(path.join(outputpath, "/js")),
 			$.gulpif(
 				debug_flist,
