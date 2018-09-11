@@ -1242,9 +1242,9 @@ footer_html.push(`</div>`);
 
 // Add copyright HTML.
 footer_html.push(
-	`<div class="flex flex-center md-footer-copyright"><div class="truncate">${link_start}<i class="far fa-copyright"></i> <span>${new Date(
+	`<div class="md-footer-copyright">${link_start}<div class="truncate md-footer-inner"><i class="far fa-copyright mr3"></i> <span class="mr3">${new Date(
 		Date.now()
-	).getFullYear()}</span> <span>${titlen}</span>${link_end}</div></div>`
+	).getFullYear()}</span> <span>${titlen}</span></div>${link_end}</div>`
 );
 
 // Store the versions.
