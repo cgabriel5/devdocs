@@ -2601,7 +2601,7 @@ document.onreadystatechange = function() {
 					// Inject the versions list.
 					$vlist.innerHTML = versions_html.join("");
 					// Set the current version.
-					$current_version.innerHTML = `<i class="fas fa-layer-group"></i> v${version}`; // +
+					$current_version.innerHTML = `<i class="fas fa-layer-group mr2"></i> v${version}`; // +
 					$current_version.insertAdjacentHTML(
 						"afterend",
 						version === latest
@@ -3068,9 +3068,9 @@ document.onreadystatechange = function() {
 						$input.focus();
 
 						return;
-					} else if (is_target_el($target, "current-version")) {
+					} else if (is_target_el($target, "current-version-cont")) {
 						// Reset the target.
-						$target = is_target_el($target, "current-version");
+						// $target = is_target_el($target, "current-version-cont");
 
 						// Show the versions container.
 						$versions_cont.classList.remove("none");
