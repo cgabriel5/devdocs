@@ -46,6 +46,6 @@
             "::-webkit-scrollbar-corner {\n\tbackground: #ffffff;\n\tborder-top: 1px solid #dddddd;\n\tborder-left: 1px solid #dddddd;\n}"
         ],
         "logo": "<div class=\"menu-logo\"><div class=\"menu-logo-wrapper\"><img src=\"docs/branding/leaf-216.png\"></div></div>",
-        "footer": "<div id=\"md-footer\" class=\"md-footer\"><div class=\"md-footer-section\"><div class=\"md-footer-section-title\">Social</div><div class=\"md-footer-section-content\"><a href=\"https://github.com/cgabriel5/devdocs\" target=\"_blank\" class=\"social-link\"><div class=\"truncate\"><i class=\"fab fa-github mr5\"></i><span class=\"mr5\">Github</span></div></a></div></div></div><div class=\"flex flex-center md-footer-copyright\"><div class=\"truncate\"><a href=\"https://github.com/cgabriel5/devdocs/\" target=\"_blank\"><i class=\"far fa-copyright\"></i> <span>2018</span> <span>devdocs</span></a></div></div>"
+        "footer": "<div id=\"md-footer\" class=\"md-footer\"><div class=\"md-footer-section\"><div class=\"md-footer-section-title\">Social</div><div class=\"md-footer-section-content\"><a href=\"https://github.com/cgabriel5/devdocs\" target=\"_blank\" class=\"social-link\"><div class=\"truncate\"><i class=\"fab fa-github mr5\"></i><span class=\"mr5\">Github</span></div></a></div></div></div><div class=\"md-footer-copyright\"><a href=\"https://github.com/cgabriel5/devdocs/\" target=\"_blank\"><div class=\"truncate md-footer-inner\"><i class=\"far fa-copyright mr3\"></i> <span class=\"mr3\">2018</span> <span>devdocs</span></div></a></div>"
     }
 }
