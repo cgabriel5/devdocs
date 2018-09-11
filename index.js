@@ -1233,7 +1233,7 @@ var link_start = "",
 
 // Make the link HTML if the GitHub info exists.
 if (uname && pname) {
-	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
+	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank" class="truncate">`;
 	link_end = "</a>";
 }
 
@@ -1242,9 +1242,9 @@ footer_html.push(`</div>`);
 
 // Add copyright HTML.
 footer_html.push(
-	`<div class="md-footer-copyright">${link_start}<div class="truncate md-footer-inner"><i class="far fa-copyright mr3"></i> <span class="mr3">${new Date(
+	`<div class="md-footer-copyright">${link_start}© ${new Date(
 		Date.now()
-	).getFullYear()}</span> <span>${titlen}</span></div>${link_end}</div>`
+	).getFullYear()} ${titlen}${link_end}</div>`
 );
 
 // Store the versions.
