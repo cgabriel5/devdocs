@@ -2155,8 +2155,20 @@ details, summary {
 }
 
 .md-footer-copyright {
-	font-size: 12px;
-	padding-top: 10px;
+	font-size: 13px;
+	margin-top: 10px;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	color: #afafaf;
+}
+
+.md-footer-inner {
+	display: inline-flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
 }
 
 .md-footer-copyright a {
@@ -2446,6 +2458,20 @@ details, summary {
 
 	.l-2-link {
 		max-width: 160px;
+	}
+
+	.markdown-body .highlight pre,.markdown-body pre {
+		margin-left: -15px;
+		width: calc(100% + 30px);
+		border-radius: 0;
+	}
+
+	.markdown-body pre code {
+		border-radius: 0;
+	}
+
+	.line-num {
+		border-radius: 0;
 	}
 }
 
