@@ -2161,6 +2161,44 @@ versions.forEach(function(vdata) {
 								data = `${data}</div>`;
 							}
 
+							// Re-parse to wrap the wrap header/contents.
+							var $ = cheerio.load(data);
+							$(".header-content-ddwrap").each(function(i) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Get the children.
+								let $children = $el.children();
+								let chtml = [];
+
+								// Get all the children HTML.
+								$children.each(function(/*i, el*/) {
+									// Get outerHTML:
+									// [https://github.com/cheeriojs/cheerio/issues/54#issuecomment-5234419]
+
+									// Store the child HTML.
+									chtml.push($.html($(this)));
+								});
+
+								// Remove the first child HTML.
+								let firstc = chtml.shift();
+								// Get the other children HTML.
+								let otherc = chtml.join("");
+
+								// Remove all children.
+								$el.empty();
+
+								// Reset the HTML.
+								$el.html(
+									`${firstc}<div class="ddwrap-content-inner">${otherc}</div>`
+								);
+							});
+							// Finally reset the data to the newly parsed/modified HTML.
+							data = $.html().replace(
+								/<\/?(html|body|head)>/gi,
+								""
+							);
+
 							// Fill back in the details placeholders.
 							var r = /\[dd\:\:\-details-\d+\]/g;
 							var rfn = function(match) {
