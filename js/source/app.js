@@ -2313,19 +2313,20 @@ document.onreadystatechange = function() {
 							? `<div class="bottom-arrow-btn-cont" id="bottom-arrow-btn-cont">${prev_html}${next_html}</div>`
 							: "";
 
-					// Everything will get inserted after the modified time container.
-					var $mtime = document.getElementsByClassName(
-						"mtime-cont"
-					)[0];
+					// Everything will get inserted inside the footer
+					// content ddwrap element.
+					var $footer_ddwrap = document.getElementById(
+						"footer-content-ddwrap"
+					);
+
+					// Get the footer HTML.
+					let footer_html = data.html.footer || "";
 
 					// Insert the HTML.
-					$mtime.insertAdjacentHTML("beforebegin", html);
-
-					// Add the footer HTML.
-					let footer_html = data.html.footer;
-					if (footer_html) {
-						$mtime.insertAdjacentHTML("afterend", footer_html);
-					}
+					$footer_ddwrap.insertAdjacentHTML(
+						"beforeend",
+						html + footer_html
+					);
 				}
 
 				/**

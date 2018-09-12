@@ -1401,9 +1401,9 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="mtime-ts-long">(${timedate(
+						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="mtime-ts-long">(${timedate(
 							mtime
-						)})</span></div></div>`;
+						)})</span></div></div></div>`;
 
 						// Remove any HTML comments as having comments close to markup
 						// causes marked to parse it :/.
