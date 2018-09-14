@@ -24,7 +24,9 @@
     },
     "files": {
         "internal": {
-            "_404": "<div class=\"markdown-body animate-fadein\"><div class=\"error-cont\"><div class=\"error-logo-cont\"><img alt=\"logo-leaf\" class=\"error-logo\" src=\"devdocs/img/leaf-216.png\" width=\"30%\"></div><div class=\"error-msg-1\"><i class=\"fas fa-exclamation-circle\"></i></div><div class=\"error-msg-2\">The page trying to be viewed does not exist.</div><div class=\"error-btn-cont\"><span class=\"btn btn-white btn-home noselect\" id=\"btn-home\">Take me home</span></div></div></div>"
+            "_404": "<div class=\"markdown-body animate-fadein\"><div class=\"error-cont\"><div class=\"error-logo-cont none\"><img alt=\"logo-leaf\" class=\"error-logo\" src=\"devdocs/img/leaf-216.png\"> devdocs</div><div class=\"error-msg-1\">Page Not Found</div><div class=\"error-msg-2\">The page trying to be viewed does not exist.</div><div class=\"error-btn-cont\"><span class=\"btn btn-white btn-home noselect\" id=\"btn-home\"><i class=\"fas fa-home mr2\"></i> Go home</span></div></div></div>",
+            "_404_version": "<div class=\"markdown-body animate-fadein\"><div class=\"error-cont\"><div class=\"error-logo-cont none\"><img alt=\"logo-leaf\" class=\"error-logo\" src=\"devdocs/img/leaf-216.png\"> devdocs</div><div class=\"error-msg-1\">Version Not Found</div><div class=\"error-msg-2\">{{#version}} doesn't exist.</div><div class=\"error-btn-cont none\" id=\"existing-versions-cont\">{{#version_html}}</div></div></div>",
+            "_404_missing_docs": "<div class=\"markdown-body animate-fadein\"><div class=\"error-cont\"><div class=\"error-logo-cont none\"><img alt=\"logo-leaf\" class=\"error-logo\" src=\"devdocs/img/leaf-216.png\"> devdocs</div><div class=\"error-msg-1\">Docs Not Found</div><div class=\"error-msg-2\">No docs exist.</div></div></div>"
         },
         "user": {}
     },
