@@ -803,27 +803,30 @@ config.files = {
 config.files.internal._404 = remove_space(
 	`<div class="markdown-body animate-fadein">
 	<div class="error-cont">
-		<div class="error-logo-cont"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png" width="30%"></div>
-		<div class="error-msg-1"><i class="fas fa-exclamation-circle"></i></div>
+		<div class="error-logo-cont none"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png"> devdocs</div>
+		<div class="error-msg-1">Page Not Found</div>
 		<div class="error-msg-2">The page trying to be viewed does not exist.</div>
 		<div class="error-btn-cont">
-			<span class="btn btn-white btn-home noselect" id="btn-home">Take me home</span>
+			<span class="btn btn-white btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span>
 		</div>
 	</div>
 </div>`
 );
-// config.files.internal._001 = remove_space(
-// 	`<div class="markdown-body animate-fadein">
-// 		<div class="dd-message-wrapper">
-// 			<div class="dd-message-base">
-// 				<div class="dd-message-title">
-// 					<i class="fas fa-info-circle"></i> <span>Nothing is opened.</span>
-// 				</div>
-// 				<div>Open a file from the sidebar.</div>
-// 			</div>
-// 		</div>
-// 	</div>`
-// );
+config.files.internal._404_version = remove_space(`<div class="markdown-body animate-fadein">
+	<div class="error-cont">
+		<div class="error-logo-cont none"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png"> devdocs</div>
+		<div class="error-msg-1">Version Not Found</div>
+		<div class="error-msg-2">{{#version}} doesn't exist.</div>
+		<div class="error-btn-cont none" id="existing-versions-cont">{{#version_html}}</div>
+	</div>
+</div>`);
+config.files.internal._404_missing_docs = remove_space(`<div class="markdown-body animate-fadein">
+	<div class="error-cont">
+		<div class="error-logo-cont none"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png"> devdocs</div>
+		<div class="error-msg-1">Docs Not Found</div>
+		<div class="error-msg-2">No docs exist.</div>
+	</div>
+</div>`);
 
 // Add an object to store HTML structures.
 config.html = {};
@@ -1401,9 +1404,9 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="mtime-ts-long">(${timedate(
+						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="mtime-ts-long">(${timedate(
 							mtime
-						)})</span></div></div>`;
+						)})</span></div></div></div>`;
 
 						// Remove any HTML comments as having comments close to markup
 						// causes marked to parse it :/.
@@ -2161,6 +2164,44 @@ versions.forEach(function(vdata) {
 								data = `${data}</div>`;
 							}
 
+							// Re-parse to wrap the wrap header/contents.
+							var $ = cheerio.load(data);
+							$(".header-content-ddwrap").each(function(i) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Get the children.
+								let $children = $el.children();
+								let chtml = [];
+
+								// Get all the children HTML.
+								$children.each(function(/*i, el*/) {
+									// Get outerHTML:
+									// [https://github.com/cheeriojs/cheerio/issues/54#issuecomment-5234419]
+
+									// Store the child HTML.
+									chtml.push($.html($(this)));
+								});
+
+								// Remove the first child HTML.
+								let firstc = chtml.shift();
+								// Get the other children HTML.
+								let otherc = chtml.join("");
+
+								// Remove all children.
+								$el.empty();
+
+								// Reset the HTML.
+								$el.html(
+									`${firstc}<div class="ddwrap-content-inner">${otherc}</div>`
+								);
+							});
+							// Finally reset the data to the newly parsed/modified HTML.
+							data = $.html().replace(
+								/<\/?(html|body|head)>/gi,
+								""
+							);
+
 							// Fill back in the details placeholders.
 							var r = /\[dd\:\:\-details-\d+\]/g;
 							var rfn = function(match) {
@@ -2271,19 +2312,36 @@ gulp.task("clean:app", function(done) {
 	// Get the devdocs path.
 	var dd_path = path.join("./", outputpath);
 
-	return del(
-		[
-			// [https://github.com/gulpjs/gulp/issues/165#issuecomment-32611271]
-			// [https://medium.com/@jack.yin/exclude-directory-pattern-in-gulp-with-glob-in-gulp-src-9cc981f32116]
-			`${dd_path}**/**.*`,
-			`!${dd_path}zdata/`,
-			`!${dd_path}zdata/**`,
-			`!${dd_path}zdata/**.*`,
-			// `${dd_path}zdata/data-VERSION.json`,
-			path.join("./index.html")
-		]
-		// { dryRun: false }
-	).then(function(paths) {
+	// All the path path globs.
+	var pglobs = [
+		// [https://github.com/gulpjs/gulp/issues/165#issuecomment-32611271]
+		// [https://medium.com/@jack.yin/exclude-directory-pattern-in-gulp-with-glob-in-gulp-src-9cc981f32116]
+		`${dd_path}**/**.*`,
+		`!${dd_path}zdata/`,
+		`!${dd_path}zdata/**`,
+		`!${dd_path}zdata/**.*`,
+		// `${dd_path}zdata/data-VERSION.json`,
+		path.join("./index.html")
+	];
+
+	// Remove all versions of data files where the version is not
+	// in the versions array.
+	var vfiles = fs
+		.readdirSync(`${dd_path}/zdata/`)
+		.filter(function(item) {
+			// Remove all text but the version.
+			var ver = item.replace(/^data-|.json$/g, "");
+
+			// Check whether the version is in the versions array.
+			return !config.versions.includes(ver);
+		})
+		.map(function(item) {
+			return `${dd_path}zdata/${item}`;
+		});
+
+	return del(pglobs.concat(vfiles), {
+		/* dryRun: false */
+	}).then(function(paths) {
 		// Contain fake gulp files here.
 		var ffiles = [];
 
@@ -2480,6 +2538,14 @@ gulp.task("html:app", function(done) {
 		/\$\{dir_path\}/g,
 		__path
 	);
+	config.files.internal._404_version = config.files.internal._404_version.replace(
+		/\$\{dir_path\}/g,
+		__path
+	);
+	config.files.internal._404_missing_docs = config.files.internal._404_missing_docs.replace(
+		/\$\{dir_path\}/g,
+		__path
+	);
 
 	// Skip task logic if initial flag is not set.
 	if (!initial) {
@@ -2609,6 +2675,27 @@ gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
 	config.html.logo = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
 	config.html.footer = footer_html.join("");
+
+	// If the latest version is not one of the processed version, throw
+	// an error message.
+	if (debug && !config.versions.includes(config.latest)) {
+		print.gulp.warn(
+			"The latest version:",
+			chalk.magenta(config.latest),
+			"was not one of the processed versions:"
+		);
+
+		// Show processed versions.
+		print.ln();
+		print(chalk.underline("Processed versions"));
+
+		// Log versions.
+		config.versions.forEach(function(item) {
+			print(`  ${item}`);
+		});
+
+		print.ln();
+	}
 
 	var __path = path.join(outputpath, "/zdata");
 

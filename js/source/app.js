@@ -1002,6 +1002,21 @@ document.onreadystatechange = function() {
 			}
 		};
 
+		/**
+		 * Formats template with provided data object.
+		 *
+		 * @param {string} template - The template to use.
+		 * @param {object} data - The object containing the data to replace
+		 *     placeholders with.
+		 * @return {undefined} - Nothing.
+		 */
+		var format = function(template, data) {
+			return template.replace(/\{\{\#(.*?)\}\}/g, function(match) {
+				match = match.replace(/^\{\{\#|\}\}$/g, "");
+				return data[match] ? data[match] : match;
+			});
+		};
+
 		// ------------------------------------------------------------
 
 		// Start the logo/splash animations.
@@ -1074,7 +1089,60 @@ document.onreadystatechange = function() {
 					// Return the JSON response.
 					return xhr.responseJSON;
 				} else {
-					return Promise.reject("Failed to load version data file.");
+					// If the version data file could not be loaded, it more
+					// than likely does not exist. Therefore, hide the sidebar
+					// elements, remove the splash screen and inject the 404
+					// version file HTML content.
+
+					// Hide the splash screen, side bar elements.
+					$splash.classList.add("none");
+					$search_cont.classList.add("none");
+
+					// Get the version.
+					let version = parameters().v;
+
+					// Get the versions array.
+					var versions = __data.versions;
+
+					if (versions.length) {
+						// Finally inject the 404 version HTML.
+						$markdown.innerHTML = format(
+							__data.files.internal._404_version,
+							{
+								version: `<code>v${version}</code>`,
+								version_html: versions.length
+									? versions
+											.map(function(item) {
+												return `<div class="found-versions-cont"><a href="?v=${item}"><code class="found-versions flex flex-center"><i class="fas fa-external-link-square-alt mr5"></i>v${item}</code></a></div>`;
+											})
+											.join("")
+									: ""
+							}
+						);
+
+						// Show the versions list if versions exists.
+						document
+							.getElementById("existing-versions-cont")
+							.classList.remove("none");
+						// Add the message.
+						document
+							.getElementsByClassName("error-msg-2")[0]
+							.insertAdjacentHTML(
+								"beforeend",
+								versions.length
+									? " Docs exist for:"
+									: " No other versions exist."
+							);
+					} else {
+						// If there are no docs at all show that specific HTML error.
+						$markdown.innerHTML =
+							__data.files.internal._404_missing_docs;
+					}
+
+					// Throw error to stop further code execution.
+					return Promise.reject(
+						`Failed to load ${parameters().v} data file.`
+					);
 				}
 			})
 			.then(function(data) {
@@ -2313,19 +2381,20 @@ document.onreadystatechange = function() {
 							? `<div class="bottom-arrow-btn-cont" id="bottom-arrow-btn-cont">${prev_html}${next_html}</div>`
 							: "";
 
-					// Everything will get inserted after the modified time container.
-					var $mtime = document.getElementsByClassName(
-						"mtime-cont"
-					)[0];
+					// Everything will get inserted inside the footer
+					// content ddwrap element.
+					var $footer_ddwrap = document.getElementById(
+						"footer-content-ddwrap"
+					);
+
+					// Get the footer HTML.
+					let footer_html = data.html.footer || "";
 
 					// Insert the HTML.
-					$mtime.insertAdjacentHTML("beforebegin", html);
-
-					// Add the footer HTML.
-					let footer_html = data.html.footer;
-					if (footer_html) {
-						$mtime.insertAdjacentHTML("afterend", footer_html);
-					}
+					$footer_ddwrap.insertAdjacentHTML(
+						"beforeend",
+						html + footer_html
+					);
 				}
 
 				/**
