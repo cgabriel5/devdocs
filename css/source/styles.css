@@ -2,15 +2,6 @@
 
 body {
 	margin: 0;
-	font-family: -apple-system,
-                 BlinkMacSystemFont,
-                 "Segoe UI",
-                 Helvetica,
-                 Arial,
-                 sans-serif,
-                 "Apple Color Emoji",
-                 "Segoe UI Emoji",
-                 "Segoe UI Symbol";
 	font-size: 16px;
 	/*overflow-y: scroll;*//* Thicken Safari fonts:
 	[https://github.com/cgabriel5/snippets/blob/master/css/fonts/normalize_macos_fonts.css] */
@@ -861,22 +852,6 @@ ul.file-headers {
 	margin: 0 15px 0 5px;
 }
 
-.mr2 {
-	margin-right: 2px;
-}
-
-.mr3 {
-	margin-right: 3px;
-}
-
-.mr5 {
-	margin-right: 5px;
-}
-
-.mb3 {
-	margin-bottom: 3px;
-}
-
 .loader-img {
 	height: 16px;
 	width: 16px;
@@ -1094,41 +1069,6 @@ ul.file-headers {
 	/*transition: width 0.2s cubic-bezier(1,0,.62,.86);*/
 }
 
-.none {
-	display: none !important;
-}
-
-.hidden {
-	visibility: hidden;
-}
-
-/* https://css-tricks.com/removing-the-dotted-outline/ */
-
-a {
-	outline: 0;
-}
-
-.noselect {
-	user-select: none;
-	touch-callout: none;
-}
-
-.bold {
-	font-weight: bold;
-}
-
-.pnone {
-	pointer-events: none;
-}
-
-.opa1 {
-	opacity: 1;
-}
-
-.opa0 {
-	opacity: 0;
-}
-
 .topbar,
 .markdown {
 	transform: translate3D(0, 0, 0);
@@ -1141,26 +1081,6 @@ a {
 	transform: translate3D(300px, 0, 0);
 	/* Width of the sizebar. */
 	transform: translate3D(calc(300px), 0, 0);
-}
-
-.tdelay05 {
-	transition-delay: 0.05s !important;
-}
-
-.tdelay1 {
-	transition-delay: 0.1s !important;
-}
-
-.tdelay15 {
-	transition-delay: 0.15s !important;
-}
-
-.tdelay2 {
-	transition-delay: 0.2s !important;
-}
-
-.tdelay25 {
-	transition-delay: 0.25s !important;
 }
 
 .markdown {
@@ -1304,47 +1224,6 @@ a {
 	/*border-radius: 1px;*/
 }
 
-@keyframes animate-spin {
-	0% {
-		transform: rotate(0deg);
-	}
-
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-.loader-base {
-	background-position: center;
-	background-size: cover;
-	background-repeat: no-repeat;
-}
-
-/*.loader-bg-base {
-	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23999999'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23bbbbbb' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23d4d4d4' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ebebeb' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f3f3f3' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f3f3f3' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f3f3f3' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f3f3f3' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
-}*/
-
-.loader-bg-dark {
-	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23666666'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23999999' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23bfbfbf' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e0e0e0' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ededed' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ededed' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ededed' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23ededed' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
-}
-
-/*
-.loader-bg-darker {
-	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23333333'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23777777' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23a9a9a9' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23d6d6d6' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e7e7e7' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e7e7e7' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e7e7e7' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e7e7e7' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
-}
-
-.loader-bg-darkest {
-	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23000000'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23555555' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23949494' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23cccccc' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e1e1e1' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e1e1e1' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e1e1e1' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e1e1e1' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
-}
-
-.loader-bg-light {
-	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23c2c2c2'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23d6d6d6' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23e5e5e5' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f3f3f3' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f8f8f8' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f8f8f8' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f8f8f8' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f8f8f8' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
-}
-
-.loader-bg-lighter {
-	background-image: url("data:image/svg+xml;charset=utf8,%3C?xml version='1.0' encoding='UTF-8' standalone='no'?%3E%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' width='100px' height='100px' viewBox='0 0 128 128' xml:space='preserve'%3E%3Cscript type='text/ecmascript' xlink:href='//preloaders.net/jscripts/smil.user.js'/%3E%3Cg%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f0edf0'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f5f3f5' transform='rotate(45,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23f9f7f9' transform='rotate(90,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fcfbfc' transform='rotate(135,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(180,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(225,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(270,64,64)'/%3E%3Ccircle cx='16' cy='64' r='16' fill='%23fdfdfd' transform='rotate(315,64,64)'/%3E%3CanimateTransform attributeName='transform' type='rotate' values='0 64 64;315 64 64;270 64 64;225 64 64;180 64 64;135 64 64;90 64 64;45 64 64' calcMode='discrete' dur='640ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
-}*/
-
 .expander-close-cont {
 	border-radius: 1000px;
 	font-size: 18px;
@@ -1445,18 +1324,6 @@ a {
 .menu-arrow-active {
 	/*color: #2578f8;*/
 	color: white;
-}
-
-.def-font {
-	font-family: -apple-system,
-                 BlinkMacSystemFont,
-                 "Segoe UI",
-                 Helvetica,
-                 Arial,
-                 sans-serif,
-                 "Apple Color Emoji",
-                 "Segoe UI Emoji",
-                 "Segoe UI Symbol";
 }
 
 .code-block-name-cont {

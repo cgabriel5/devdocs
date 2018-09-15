@@ -1,6 +1,26 @@
-/*transition: height 500ms cubic-bezier(0.23, 1, 0.32, 1); height: 0; overflow-y: hidden; height: 138.96px*/
+/* [animation resources] */
 
-/*@keyframes animate-fadein {
+/* [https://www.w3schools.com/cssref/css3_pr_animation.asp] */
+
+/*.ANIMATION-TEMPLATE {
+	animation-name: ANIMATION-TEMPLATE;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes ANIMATION-TEMPLATE {
+	0% {}
+}*/
+
+/*.animate-fadein-y {
+	animation-name: animate-fadein-y;
+	animation-duration: 0.3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes animate-fadein-y {
 	0% {
 		transform: translateY(-15px);
 		opacity: 0;
@@ -10,14 +30,14 @@
 		transform: translateY(0);
 		opacity: 1;
 	}
-}
+}*/
 
 .animate-fadein {
 	animation-name: animate-fadein;
-	animation-duration: 0.3s;
+	animation-duration: 0.2s;
 	animation-timing-function: ease-in-out;
 	animation-iteration-count: 1;
-}*/
+}
 
 @keyframes animate-fadein {
 	0% {
@@ -29,94 +49,22 @@
 	}
 }
 
-.animate-fadein {
-	animation-name: animate-fadein;
-	animation-duration: 0.2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes animate-header-highlight {
-	0% {
-		border-radius: 4px;
-		background: #ffc758;
-	}
-
-	50% {
-		background: #ffffff;
-	}
-}
-
-@media (max-width: 768px) {
-	@keyframes animate-header-highlight {
-		0% {
-			border-radius: 0;
-			background: #ffc758;
-		}
-
-		50% {
-			background: #ffffff;
-		}
-	}
-}
-
-/* [animation resources] */
-
-/* [source::api](http://www.w3schools.com/cssref/css3_pr_animation.asp)
-   [source](http://stackoverflow.com/questions/33835096/css-to-pan-background-image-back-and-forth)
-*/
-
-.animate-header-highlight {
-	animation-name: animate-header-highlight;
-	animation-duration: 2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-.animate-icon {
-	animation-name: animate-icon;
-	animation-duration: 0.2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes animate-icon {
-	0% {
-		background: #699935;
-		/*       opacity: 1; *//*       transform: scale(.4); *//*       background: #699935; */
-	}
-
-	80% {
-		/*       opacity: 0; *//*       transform: scale(.6); */
-	}
-
-	100% {
-		/*       opacity: 0; *//*       transform: scale(3); */
-		background: #699935;
-	}
-}
-
-/*.animate-pulse-fade {
-	animation-name: animate-pulse-fade;
-	animation-duration: 2s;
-	animation-timing-function: ease-in-out;
+.animate-spin {
+	animation-name: animate-spin;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 }
 
-@keyframes animate-pulse-fade {
+@keyframes animate-spin {
 	0% {
-		opacity: 1;
-	}
-
-	50% {
-		opacity: 0;
+		transform: rotate(0deg);
 	}
 
 	100% {
-		opacity: 1;
+		transform: rotate(360deg);
 	}
 }
-*/
 
 .animate-pulse {
 	animation-name: animate-pulse;
@@ -145,5 +93,36 @@
 
 	50% {
 		transform: translate3d(0, 0, 0) scale(1);
+	}
+}
+
+.animate-header-highlight {
+	animation-name: animate-header-highlight;
+	animation-duration: 2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes animate-header-highlight {
+	0% {
+		border-radius: 4px;
+		background: #ffc758;
+	}
+
+	50% {
+		background: #ffffff;
+	}
+}
+
+@media (max-width: 768px) {
+	@keyframes animate-header-highlight {
+		0% {
+			border-radius: 0;
+			background: #ffc758;
+		}
+
+		50% {
+			background: #ffffff;
+		}
 	}
 }

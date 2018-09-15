@@ -1,1 +1,79 @@
 /* App helpers here. */
+
+/* Font Helpers */
+
+.def-font {
+	font-family: -apple-system,
+                 BlinkMacSystemFont,
+                 "Segoe UI",
+                 Helvetica,
+                 Arial,
+                 sans-serif,
+                 "Apple Color Emoji",
+                 "Segoe UI Emoji",
+                 "Segoe UI Symbol";
+}
+
+.bold {
+	font-weight: bold;
+}
+
+/* Visibility Helpers */
+
+.none {
+	display: none !important;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.opa0 {
+	opacity: 0;
+}
+
+.opa1 {
+	opacity: 1;
+}
+
+/* Box-modal Helpers */
+
+.mr2 {
+	margin-right: 2px;
+}
+
+.mr3 {
+	margin-right: 3px;
+}
+
+.mr5 {
+	margin-right: 5px;
+}
+
+.mb3 {
+	margin-bottom: 3px;
+}
+
+/* Interaction Helpers */
+
+.noselect {
+	user-select: none;
+	touch-callout: none;
+}
+
+.pnone {
+	pointer-events: none;
+}
+
+/* Animation Helpers */
+
+.tdelay1 {
+	transition-delay: 0.1s !important;
+}
+
+/* TAG Helpers */
+
+a {
+	/* [https://css-tricks.com/removing-the-dotted-outline/] */
+	outline: 0;
+}
