@@ -37,6 +37,7 @@ var PRETTIER = get($configs, "prettier", {});
 var JSBEAUTIFY = get($configs, "jsbeautify", {});
 var AUTOPREFIXER = get($configs, "autoprefixer", {});
 var PERFECTIONIST = get($configs, "perfectionist", {});
+var CSSSORTER = get($configs, "csssorter", {});
 var REALFAVICONGEN = get($configs, "realfavicongen", {});
 var BROWSERSYNC = get($configs, "browsersync", {});
 var HTMLMIN = get($configs, "htmlmin", {});

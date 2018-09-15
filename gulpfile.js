@@ -207,6 +207,7 @@ var PRETTIER = get($configs, "prettier", {});
 var JSBEAUTIFY = get($configs, "jsbeautify", {});
 var AUTOPREFIXER = get($configs, "autoprefixer", {});
 var PERFECTIONIST = get($configs, "perfectionist", {});
+var CSSSORTER = get($configs, "csssorter", {});
 var REALFAVICONGEN = get($configs, "realfavicongen", {});
 var BROWSERSYNC = get($configs, "browsersync", {});
 var HTMLMIN = get($configs, "htmlmin", {});
@@ -1421,6 +1422,7 @@ gulp.task("css:app", function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
 
 	pump(
 		[
@@ -1433,7 +1435,8 @@ gulp.task("css:app", function(done) {
 				unprefix(),
 				shorthand(),
 				autoprefixer(AUTOPREFIXER),
-				perfectionist(PERFECTIONIST)
+				perfectionist(PERFECTIONIST),
+				csssorter(CSSSORTER)
 			]),
 			gulp.dest($paths.css_bundles),
 			$.debug.edit(),
@@ -1461,6 +1464,7 @@ gulp.task("css:vendor", function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
 
 	// Note: Absolute vendor library file paths should be used.
 	// The paths should be supplied in ./configs/bundles.json
@@ -1475,7 +1479,8 @@ gulp.task("css:vendor", function(done) {
 				unprefix(),
 				shorthand(),
 				autoprefixer(AUTOPREFIXER),
-				perfectionist(PERFECTIONIST)
+				perfectionist(PERFECTIONIST),
+				csssorter(CSSSORTER)
 			]),
 			gulp.dest($paths.css_bundles),
 			$.debug.edit(),
@@ -2592,6 +2597,7 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
 
 	// Run yargs.
 	var __flags = yargs
@@ -2639,7 +2645,7 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 
 	// By default CSS files will only be unprefixed and beautified. If needed
 	// files can also be autoprefixed when the --cssprefix/-p flag is used.
-	var css_plugins = [perfectionist(PERFECTIONIST)];
+	var css_plugins = [perfectionist(PERFECTIONIST), csssorter(CSSSORTER)];
 
 	// To unprefix CSS files one of two things must happen. Either the
 	// unprefix or the cssprefix flag must be provided. The unprefix flag

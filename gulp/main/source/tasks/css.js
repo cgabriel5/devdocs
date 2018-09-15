@@ -11,6 +11,7 @@ gulp.task("css:app", function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
 
 	pump(
 		[
@@ -23,7 +24,8 @@ gulp.task("css:app", function(done) {
 				unprefix(),
 				shorthand(),
 				autoprefixer(AUTOPREFIXER),
-				perfectionist(PERFECTIONIST)
+				perfectionist(PERFECTIONIST),
+				csssorter(CSSSORTER)
 			]),
 			gulp.dest($paths.css_bundles),
 			$.debug.edit(),
@@ -51,6 +53,7 @@ gulp.task("css:vendor", function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
 
 	// Note: Absolute vendor library file paths should be used.
 	// The paths should be supplied in ./configs/bundles.json
@@ -65,7 +68,8 @@ gulp.task("css:vendor", function(done) {
 				unprefix(),
 				shorthand(),
 				autoprefixer(AUTOPREFIXER),
-				perfectionist(PERFECTIONIST)
+				perfectionist(PERFECTIONIST),
+				csssorter(CSSSORTER)
 			]),
 			gulp.dest($paths.css_bundles),
 			$.debug.edit(),

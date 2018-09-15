@@ -4977,6 +4977,13 @@ postcss-selector-parser@^2.0.0, postcss-selector-parser@^2.2.3:
     indexes-of "^1.0.1"
     uniq "^1.0.1"
 
+postcss-sorting@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/postcss-sorting/-/postcss-sorting-2.1.0.tgz#32b1e9afa913bb225a6ad076d503d8f983bb4a82"
+  dependencies:
+    lodash "^4.17.4"
+    postcss "^5.2.17"
+
 postcss-unprefix@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/postcss-unprefix/-/postcss-unprefix-2.1.1.tgz#883bd249e94228e3dfd2a1052056db07b05f9f7f"
@@ -4994,7 +5001,7 @@ postcss-value-parser@^3.2.3, postcss-value-parser@^3.3.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/postcss-value-parser/-/postcss-value-parser-3.3.0.tgz#87f38f9f18f774a4ab4c8a232f5c5ce8872a9d15"
 
-postcss@^5.0.0, postcss@^5.0.18, postcss@^5.0.5, postcss@^5.0.8, postcss@^5.2.4:
+postcss@^5.0.0, postcss@^5.0.18, postcss@^5.0.5, postcss@^5.0.8, postcss@^5.2.17, postcss@^5.2.4:
   version "5.2.18"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-5.2.18.tgz#badfa1497d46244f6390f58b319830d9107853c5"
   dependencies:
