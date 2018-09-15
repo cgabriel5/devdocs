@@ -832,7 +832,8 @@ config.files.internal._404_missing_docs = remove_space(`<div class="markdown-bod
 config.html = {};
 // Add the svg loader.
 config.html.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
-// Add the MacOS scrollbar styles.
+
+// Add the MacOS scrollbar styles:
 config.html.styles_macos_sb = [
 	`::-webkit-scrollbar {
 	width: 16px;
@@ -894,71 +895,6 @@ config.html.styles_macos_sb = [
 	border-left: 1px solid #dddddd;
 }`
 ];
-// "Floating Scrollbars"
-// config.html.styles_macos_sb = [
-// 	`::-webkit-scrollbar {
-// 	width: 16px;
-// 	height: 16px;
-// }`,
-// 	`::-webkit-scrollbar:hover {
-// 	width: 16px;
-// 	height: 16px;
-// 	background: #f8f8f8;
-// }`,
-// 	`::-webkit-scrollbar:window-inactive {
-// 	background: #f8f8f850;
-// }`,
-// 	`::-webkit-scrollbar-button {
-// 	width: 0;
-// 	height: 0;
-// }`,
-// 	`::-webkit-scrollbar-thumb {
-// 	background: #c1c1c1;
-// 	border-radius: 1000px;
-// 	border: 4px solid transparent;
-// 	background-clip: content-box;
-// }`,
-// 	`::-webkit-scrollbar-thumb:window-inactive {
-// 	background: #c1c1c150;
-// 	border-radius: 1000px;
-// 	border: 4px solid transparent;
-// 	background-clip: content-box;
-// }`,
-// 	`::-webkit-scrollbar-thumb:hover {
-// 	background: #7d7d7d;
-// 	border: 4px solid transparent;
-// 	background-clip: content-box;
-// }`,
-// 	`::-webkit-scrollbar-thumb:window-inactive:hover {
-// 	background: #c1c1c150;
-// 	border: 4px solid transparent;
-// 	background-clip: content-box;
-// }`,
-// 	`::-webkit-scrollbar-track {
-// 	background: 0 0;
-// 	border-radius: 0;
-// }`,
-// 	`::-webkit-scrollbar-track:vertical {
-// 	background: 0 0;
-// 	border-radius: 0;
-// 	border-left: 1px solid transparent;
-// }`,
-// 	`::-webkit-scrollbar-track:vertical:hover {
-// 	background: 0 0;
-// 	border-radius: 0;
-// 	border-left: 1px solid #eaeaea;
-// }`,
-// 	`::-webkit-scrollbar-track:horizontal {
-// 	background: 0 0;
-// 	border-radius: 0;
-// 	border-top: 1px solid #eaeaea;
-// }`,
-// 	`::-webkit-scrollbar-corner {
-// 	background: #ffffff;
-// 	border-top: 1px solid #dddddd;
-// 	border-left: 1px solid #dddddd;
-// }`
-// ];
 
 // Honor the CLI outputpath parameter but if nothing is provided reset the
 // value to the config given value. If nothing is found in the config file

@@ -3,7 +3,7 @@
 body {
 	margin: 0;
 	font-size: 16px;
-	/*overflow-y: scroll;*//* Thicken Safari fonts:
+	/* Thicken Safari fonts:
 	[https://github.com/cgabriel5/snippets/blob/master/css/fonts/normalize_macos_fonts.css] */
 	font-smoothing: subpixel-antialiased;
 }
@@ -11,19 +11,16 @@ body {
 .app {
 	display: flex;
 	flex-flow: row nowrap;
-	/*justify-content: flex-start;*//*align-items: stretch;*/
 	width: 1280px;
 	margin: auto;
 	min-height: calc(100vh);
 	height: auto;
-	/*overflow-x: hidden;*/
 }
 
 .sidebar {
 	user-select: none;
 	touch-callout: none;
 	font-size: 15px;
-	/*width: 300px;*/
 	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	display: flex;
 	flex: 1 0 300px;
@@ -44,265 +41,6 @@ body {
 	/* Width of the sizebar. */
 	width: 300px;
 }
-
-/* Scrollbar-START:MacOS Style */
-
-/*
-Scrollbar Style Sources:
-[https://stackoverflow.com/a/24405833]
-[https://gist.github.com/jbrewer/2571697]
-[https://stackoverflow.com/a/33809641]
-[https://gist.github.com/howar31/127f71018a9ef025291f9c76293972ea]
-[https://codepen.io/waterplea/pen/dVMopv]
-[https://poselab.com/en/blog/custom-scrollbars-in-webkit/]
-[https://stackoverflow.com/a/9356321]
-[https://css-tricks.com/custom-scrollbars-in-webkit/]
-[https://css-tricks.com/almanac/properties/s/scrollbar/]
-[https://scotch.io/tutorials/customize-the-browsers-scrollbar-with-css]
- */
-
-/*::-webkit-scrollbar {
-	width: 15px;
-	height: 15px;
-	background: #f8f8f8;
-}
-
-::-webkit-scrollbar:window-inactive {
-	background: #f8f8f850;
-}
-
-::-webkit-scrollbar-button {
-	width: 0;
-	height: 0;
-}
-
-::-webkit-scrollbar-thumb {
-	background: #c1c1c1;
-	border-radius: 1000px;
-	border: 4px solid transparent;
-	background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:window-inactive {
-	background: #c1c1c150;
-	border-radius: 1000px;
-	border: 4px solid transparent;
-	background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-	background: #7d7d7d;
-	border: 4px solid transparent;
-	background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:window-inactive:hover {
-	background: #c1c1c150;
-	border: 4px solid transparent;
-	background-clip: content-box;
-}
-
-::-webkit-scrollbar-track {
-	background: 0 0;
-	border-radius: 0;
-}
-
-::-webkit-scrollbar-track:vertical {
-	background: 0 0;
-	border-radius: 0;
-	border-left: 1px solid #eaeaea;
-}
-
-::-webkit-scrollbar-track:horizontal {
-	background: 0 0;
-	border-radius: 0;
-	border-top: 1px solid #eaeaea;
-}
-
-::-webkit-scrollbar-track:vertical:window-inactive {
-	border-left: 1px solid #eaeaea50;
-}
-
-::-webkit-scrollbar-track:horizontal:window-inactive {
-	border-top: 1px solid #eaeaea50;
-}
-
-::-webkit-scrollbar-corner {
-	background: #ffffff;
-	border-top: 1px solid #dddddd;
-	border-left: 1px solid #dddddd;
-}*/
-
-/* Scrollbar-END:MacOS Style */
-
-/*::-webkit-scrollbar-button {
-	background-size: 100%;
-	height: 10px;
-	width: 10px;
-	-webkit-box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-::-webkit-scrollbar-button:horizontal:increment {
-	background-image: url(../img/arrow-down.png);
-}
-
-::-webkit-scrollbar-button:horizontal:decrement {
-	background-image: url(../img/arrow-down.png);
-}
-
-::-webkit-scrollbar-button:vertical:increment {
-	background-image: url(../img/arrow-down.png);
-}
-
-::-webkit-scrollbar-button:vertical:decrement {
-	background-image: url(../img/arrow-down.png);
-}*/
-
-/*::-webkit-scrollbar-button:vertical:decrement {
-	background-image: url(../img/arrow-down.png),
-                      -webkit-linear-gradient(left, #f9f9f9 50%, #e2e2e2 100%);
-	background-repeat: no-repeat;
-	background-position: 3px 4px, 0 0;
-}
-
-::-webkit-scrollbar-button:vertical:increment {
-	background-image: url(../img/arrow-down.png),
-                      -webkit-linear-gradient(left, #f9f9f9 50%, #e2e2e2 100%);
-	background-repeat: no-repeat;
-	background-position: 3px 5px, 0 0;
-}
-
-::-webkit-scrollbar-button:horizontal:decrement {
-	background-image: url(../img/arrow-down.png),
-                      -webkit-linear-gradient(top, #f9f9f9 50%, #e2e2e2 100%);
-	background-repeat: no-repeat;
-	background-position: 4px 3px, 0 0;
-}
-
-::-webkit-scrollbar-button:horizontal:increment {
-	background-image: url(../img/arrow-down.png),
-                      -webkit-linear-gradient(top, #f9f9f9 50%, #e2e2e2 100%);
-	background-repeat: no-repeat;
-	background-position: 5px 3px, 0 0;
-}*/
-
-/*corner resizer*/
-
-/*::-webkit-resizer {
-     background: #f2f2f2 url(scrollbar/resizer.png) no-repeat 2px 4px;
-     border-top: 1px solid #d9d9d9;
-     border-left: 1px solid #d9d9d9
-}*/
-
-/* SCROLL Button:START; */
-
-/*::-webkit-scrollbar-button:end {
-	display: block;
-}
-
-::-webkit-scrollbar-button:start {
-	display: none;
-}
-
-::-webkit-scrollbar-button:disabled {
-	display: none !important;
-}
-
-::-webkit-scrollbar:vertical:corner-present {
-	border-bottom-width: 0;
-}
-
-::-webkit-scrollbar-track:vertical:disabled:corner-present {
-	margin-bottom: 5px;
-}
-
-::-webkit-scrollbar-button:vertical {
-	height: 20px;
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button.png) 2 0 2 0;
-	border-color: transparent;
-	border-width: 2px 0;
-}
-
-::-webkit-scrollbar-button:vertical:decrement {
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
-                      url(resources/vertical-button-background.png);
-	background-repeat: no-repeat, repeat-y;
-	background-position: 3px 3px, 0 0;
-}
-
-::-webkit-scrollbar-button:vertical:decrement:hover {
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-hover.png) 2 0 2 0;
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
-                      url(resources/vertical-button-background-hover.png);
-}
-
-::-webkit-scrollbar-button:vertical:decrement:active {
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-active.png) 2 0 2 0;
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
-                      url(resources/vertical-button-background-active.png);
-}
-
-::-webkit-scrollbar-button:vertical:decrement:window-inactive {
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-inactive.png) 2 0 2 0;
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-decrement-arrow.png),
-                      url(resources/vertical-button-background-inactive.png);
-}
-
-::-webkit-scrollbar-button:vertical:increment {
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
-                      url(resources/vertical-button-background.png);
-	background-repeat: no-repeat, repeat-y;
-	background-position: 3px 8px, 0 0;
-}
-
-::-webkit-scrollbar-button:vertical:increment:hover {
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-hover.png) 2 0 2 0;
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
-                      url(resources/vertical-button-background-hover.png);
-}
-
-::-webkit-scrollbar-button:vertical:increment:active {
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-active.png) 2 0 2 0;
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
-                      url(resources/vertical-button-background-active.png);
-}
-
-::-webkit-scrollbar-button:vertical:increment:window-inactive {
-	border-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-button-inactive.png) 2 0 2 0;
-	background-image: url(http://trac.webkit.org/export/41842/trunk/LayoutTests/scrollbars/resources/vertical-increment-arrow.png),
-                      url(resources/vertical-button-background-inactive.png);
-}
-
-::-webkit-scrollbar-button:double-button:vertical:start:decrement,::-webkit-scrollbar-button:vertical:start:decrement {
-	height: 14px;
-	border-bottom-width: 0;
-	background-position: 3px 3px, 0 0;
-}
-
-::-webkit-scrollbar-button:double-button:vertical:start:increment,::-webkit-scrollbar-button:vertical:start:increment {
-	background-position: 3px 4px, 0 0;
-}
-
-,::-webkit-scrollbar-button:double-button:vertical:end:decrement {
-	background-position: 3px 8px, 0 0;
-}
-
-::-webkit-scrollbar-button:double-button:vertical:end:increment {
-	height: 14px;
-	border-top-width: 0;
-	background-position: 3px 4px, 0 0;
-}
-
-::-webkit-scrollbar-button:vertical:end:increment:corner-present {
-	border-bottom-width: 0;
-	height: 19px;
-}*/
-
-/* ::-webkit-scrollbar-button:double-button:vertical:end:increment:corner-present,::-webkit-scrollbar-button:vertical:end:increment:corner-present {
-    height: 13px
-} */
-
-/* SCROLL Button:END; */
 
 /*
 iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
@@ -332,12 +70,11 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .markdown {
-	/*overflow: auto;*//* Width of the sizebar. */
+	/* Width of the sizebar. */
 	margin-left: 300px;
 	width: 100%;
 	transition: opacity 0.2s ease-in-out;
 	opacity: 1;
-	/*filter: grayscale(0);*/
 	background: transparent;
 }
 
@@ -359,10 +96,6 @@ to become invisible when header scrolling. This seems to solve the issue.
 	padding: 0;
 	list-style: none;
 }
-
-/*.submenu {}*/
-
-/*.menu-item {}*/
 
 .menu-logo {
 	margin-bottom: 20px;
@@ -388,7 +121,6 @@ to become invisible when header scrolling. This seems to solve the issue.
 .logo-base {
 	padding: 0 0 0 0;
 	margin-left: 5px;
-	/* max-width: 85px; */
 	justify-content: flex-start;
 	align-items: center;
 }
@@ -405,15 +137,10 @@ to become invisible when header scrolling. This seems to solve the issue.
 
 .logo-portrait {
 	max-width: 55px;
-	/*min-width: 45px;*/
 }
 
 .logo-square img {
-	/* [https://stackoverflow.com/a/9445306] *//*    height: auto;
-    width: auto\9;
-	max-width: 100%;
-    max-width: 40%;
-*//*width: 100%;*//*height: 100%;*/
+	/* [https://stackoverflow.com/a/9445306] */
 	width: 16px;
 }
 
@@ -434,9 +161,7 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .sb-logo img {
-	/*width: 100%;*/
 	width: 16px;
-	/*display: block;*/
 }
 
 .tb-logo-fix {
@@ -450,25 +175,17 @@ to become invisible when header scrolling. This seems to solve the issue.
 
 .l-1 {
 	font-weight: bold;
-	/* background: rgba(0, 0, 0, 0.03); *//*padding: 10px 0 10px 20px;*/
 	padding: 10px 0 10px 5px;
-	/* border-radius: 5px; *//* border-bottom: 1px dashed #dddddd; *//*text-transform: capitalize;*/
 }
 
 .l-2 {
 	padding: 6px 10px 6px 20px;
-	/*text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;*/
 	cursor: pointer;
 	font-weight: bold;
 	display: flex;
 	align-items: center;
-	/*transition: all 0.2s ease-in-out;*//*transition: background 0.2s ease-in-out;*/
 	position: sticky !important;
-	/*top: 78px;*/
 	z-index: 1;
-	/*background: white;*/
 }
 
 .l-2-main-cont {
@@ -501,24 +218,16 @@ to become invisible when header scrolling. This seems to solve the issue.
 .active-page .link-headings-count {
 	color: #666666;
 	background: white;
-	/*border: 1px solid rgba(0, 0, 0, 0.1);*/
 	border: 1px solid transparent;
 }
 
 .l-3 {
-	/*	padding: 6px 25px 6px 20px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
-	cursor: pointer;
-	font-size: 15px;*/
 	padding: 5px 20px 5px 20px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	cursor: pointer;
 	font-size: 15px;
-	/*text-transform: capitalize;*/
 	border-right: 2px solid transparent;
 }
 
@@ -536,57 +245,32 @@ ul.file-headers {
 	overflow: hidden;
 }
 
-/* .file-headers-active {
-	overflow: auto !important;
-	overflow-x: hidden !important;
-} */
-
 .headings-cont {
-	/*opacity: 0;*/
 	height: 0;
 	overflow: hidden;
-	/*transition: height 0.25s ease-out, opacity 0.4s ease-out;*/
 	backface-visibility: hidden;
 }
 
-/*
-.l-3:before {
-    content: '';
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 8px;
-    height: 2px;
-    width: 12px;
-    background: #505d6b;
-    opacity: .3;
-} */
-
 .link,
 .link:visited {
-	/*color: #505d6b;*/
 	color: #333333;
 	text-decoration: none;
 	position: relative;
 }
 
 .active-page {
-	/*background-image: linear-gradient(to right, #ffffff, #fdfdfd, #fbfbfb, #f9f9f9, #f7f7f7);*//*border-right: 3px solid #6f42c1;*//* border-left: 3px solid #1267e8; *//* padding-bottom: 7px !important; *//*background: #f4f4f4;*/
 	background: #2578f8;
-	/*margin: 0 3px;*//*border-radius: 4px;*//*margin-bottom: 5px;*//*margin-top: 5px;*/
 	margin-left: -1px;
 }
 
 .active-page .link {
-	/*color: #1267e8;*//*color: #0f91ee;*//*color: #2578f8;*/
 	color: white;
-	/*color: white;*//*color: #333;*/
 	font-weight: bold;
 }
 
 /* Don't add a top margin to the first li element when the active-page class it on. */
 
 .menu-section-cont li:first-child.l-2.active-page {
-	/*margin: 0 3px 8px 3px;*/
 }
 
 .file-headers.headings-cont li:first-child.l-3 {
@@ -606,7 +290,6 @@ ul.file-headers {
 	filter: grayscale(10);
 	margin-bottom: -40px;
 	padding: 50px 0 15px 0;
-	/*opacity: 1;*/
 }
 
 .logo-devdocs-img-cont {
@@ -616,13 +299,6 @@ ul.file-headers {
 
 .logo-devdocs img {
 	width: 13px;
-}
-
-.logo-devdocs-text {
-	margin-left: 5px;
-	font-weight: 600;
-	/*color: #555;*/
-	color: #b8b8b8;
 }
 
 .sb-footer-inner {
@@ -657,7 +333,6 @@ ul.file-headers {
 	color: #333333;
 	background: #ffffff;
 	transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-	/*     box-shadow: 0 1px 0 0 rgba(0,0,0,.03) */
 }
 
 .btn-white:hover {
@@ -667,7 +342,6 @@ ul.file-headers {
 }
 
 .btn-blue {
-	/*background: #699935;*//*background: #0f91ee;*/
 	background: #2578f8;
 	color: #ffffff;
 	border: 1px solid transparent;
@@ -725,9 +399,7 @@ ul.file-headers {
 
 .error-msg-2 {
 	color: #6d6d6d;
-	/*padding-top: 20px;*/
 	padding-top: 10px;
-	/*width: 200px;*/
 	text-align: center;
 	font-size: 14px;
 	max-width: 375px;
@@ -743,16 +415,6 @@ ul.file-headers {
 
 /* Old top loader CSS. */
 
-/*.loader-top {
-	position: fixed;
-	z-index: 3;
-	width: 0%;
-	height: 2px;
-	left: 0;
-	background: #2578f8;
-	transition: all 0.2s ease-in-out;
-}*/
-
 /* [https://www.pexels.com/blog/css-only-loaders/]
 [https://codepen.io/brunjo/pen/XJmbNz]
  */
@@ -765,71 +427,31 @@ ul.file-headers {
 	width: 100%;
 	overflow: hidden;
 	opacity: 0;
-	/*background-color: #9b9b9b20;*/
 	background-color: #2578f8;
 	transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
 	pointer-events: none;
-	animation: loading 0.8s linear infinite;
-}
-
-/*.loader-top:before {
-	display: block;
-	position: absolute;
-	content: "";
-	left: -200px;
-	width: 200px;
-	height: 4px;
-	background-color: #2578f8;
-	animation: loading 2s linear infinite;
-}*/
-
-@keyframes loading {
-	/*	0% {
-		height: 0px;
-		opacity: 0;
-		background-color: transparent;
-	}*/
-
-	25% {
-		height: 2px;
-		opacity: 0.5;
-	}
-
-	75% {
-		height: 0;
-		opacity: 0;
-		background-color: transparent;
-	}/*	75% {
-		height: 2px;
-		opacity: 1;
-	}*/
 }
 
 .main-overlay {
 	/* The highest z-index used. */
 	z-index: 4;
 	position: fixed;
-	/*background: rgba(255, 255, 255, 0.1);*//*background: rgba(0, 0, 0, 0.2);*/
 	background: transparent;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	/*transition: opacity 0.3s ease-in-out;*/
 }
 
 .sidebar-overlay {
 	z-index: 2;
 	position: fixed;
 	background: rgba(0, 0, 0, 0.1);
-	/* background: transparent; */
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	/*display: none;*/
 	transition: opacity 0.3s ease-in-out;
-	/* opacity: 0; */
 }
 
 .topbar {
@@ -858,33 +480,9 @@ ul.file-headers {
 }
 
 .tb-logo {
-	/*cursor: pointer;*/
 	margin-left: -5px;
 	margin-right: -5px;
 }
-
-.tb-shadow {
-	top: -15px;
-	left: 0;
-	width: 100%;
-	height: 50px;
-	z-index: 0;
-	position: fixed;
-	box-shadow: 0 0 10px 7px rgba(0, 0, 0, 0.05);
-	border-radius: 450px/15px;
-	display: none;
-	transition: box-shadow 0.2s ease-in-out;
-}
-
-/*.tb-percent-scrolled {
-	position: fixed;
-	width: 0;
-	height: 2px;
-	background: #fab733;
-	z-index: 1;
-	bottom: -1px;
-	left: 0;
-}*/
 
 .tb-menu {
 	padding: 7px;
@@ -897,56 +495,12 @@ ul.file-headers {
 	opacity: 0.7;
 }
 
-.topbar-scroll {
-	position: absolute;
-	top: 0;
-	left: 0;
-	/*background: #2578f8;*//*background: #2578f8;*//*background: #5a79c7;*/
-	background: rgba(90, 121, 199, 0.98);
-	/* background: #c75a5a; *//* background: #7c5ac7; *//* background: #5a83c7; *//* background: #3367d6; *//* background: white; *//* background: #fff5cc; *//* background: #f3f3f3; *//* color: #71471c; *//* color: #2578f8; */
-	color: white;
-	width: 100%;
-	padding: 8px 20px;
-	z-index: 1;
-	margin-top: 42px;
-	font-size: 12px;
-	font-weight: 700;
-	display: flex;
-	cursor: pointer;
-	transition: 0.2s ease-in-out;
-	border-top: 1px solid rgba(0, 0, 0, 0.0975);
-	border-bottom: 1px solid #71471c12;
-	backdrop-filter: blur(10px);
-}
-
-.topbar-scroll:active {
-	opacity: 0.5;
-}
-
 .scroll-def {
 	font-size: 12px;
 	padding: 4px 8px;
 	border-radius: 100px;
-	/*background: #ffffff;*/
 	border: 1px solid rgba(0, 0, 0, 0.0975);
 }
-
-.flex {
-	display: flex;
-}
-
-.flex-center {
-	justify-content: center;
-	align-items: center;
-}
-
-.fixed {
-	position: fixed;
-}
-
-/*.scroll-dynamic {
-	display: flex;
-}*/
 
 .scroll-df-text {
 	white-space: nowrap;
@@ -959,34 +513,20 @@ ul.file-headers {
 	padding: 0 4px;
 }
 
-.scroll-icon-right {
-	margin-top: 1px;
-	padding: 0 0 0 4px;
-}
-
 .splash-loader {
 	width: 100%;
 	height: 100%;
 	top: 0;
 	left: 0;
-	/*border-radius: 4px 4px 0px 0px;*/
 	position: fixed;
-	/*	display: flex;
-	flex-flow: column nowrap;
-	justify-content: center;
-	align-items: center;*//* background: #699935; *//*background: #f4f4f4;*//*background: #f1f1f1;*//*background: rgba(0, 0, 0, 0.5);*//*background: rgba(255, 255, 255, 0.7);*//*background: #699935;*//*background: #e2e2e2;*//*background: #eeeeee;*//*background: rgba(255, 255, 255, 0.4);*//*background: linear-gradient(180deg,rgb(128, 180, 71), rgba(105,153,53,1));*//*background: linear-gradient(180deg,#77AB59, #36802D);*//*background: #699935;*/
 	background: white;
 	transition: opacity 0.4s ease-in-out;
-	/*opacity: 0;*//*opacity: 1;*/
 	z-index: 4;
-	/*transform: translateY(-100px);*/
 }
 
 .splash-loader-cont {
-	/*transform: translateY(-10%);*/
 	width: 100%;
 	height: 100%;
-	/*top: 0;*//*left: 0;*/
 	display: flex;
 	flex-flow: column nowrap;
 	justify-content: center;
@@ -997,76 +537,27 @@ ul.file-headers {
 	width: 70px;
 	height: 70px;
 	min-width: 70px;
-	/*border: 2px solid white; *//* border-radius: 30px/32px; *//*margin-bottom: 30px;*//*margin-top: -100px;*//*transform: translateY(0);*//*transition: transform 0.4s ease-in-out;*/
 	transform: translate3d(0, 0, 0);
 }
 
 .splash-loader-icon {
-	/*width: 900px;*//*height: 900px;*/
 	border-radius: 400px 1000px 0 1000px;
-	/*background: #699935;*//*background: #f3f3f3;*//*background: #b1b1b1;*//*background: #d8d8d8;*//*transform: translate3d(0, 0, 0) scale(0.5);*/
 	box-shadow: inset 0 3px 0 0 rgba(0, 0, 0, 0.02);
 	width: 100%;
 	height: 100%;
 	border-radius: 100px 250px 0 250px;
-	/*transition: background 0.2s ease-in-out, transform 0.8s ease-in-out;*/
 	transition: transform 0.3s ease-in-out,
                 opacity 0.3s ease-in-out,
                 background 0.2s ease-in-out;
 	background: transparent;
 }
 
-/*.splash-loader-icon:after {
-  content:"";
-  display:block;
-  width: 100%;
-  height: 100%;
-  border-radius: 100px 250px 0 250px;
-  border: 5px solid #ffffffc9;
-  position:absolute;
-  animation: pulse 2s ease 0s infinite;
-}*/
-
 .sl-icon-off {
-	/*background: #d8d8d8;*//*background: white;*//*background: #ffffff;*//*background: #d8d8d8;*//*background: #727272;*//*background: #8c8c8c;*//*background: #b8b8b8;*//*background: #699935;*//*background: white;*//*background: #699935;*/
 	background: #d1d1d1;
 }
 
 .sl-icon-on {
-	/*background: #699935;*/
 	background: #699935;
-	/*background: white;*//*background: white;*/
-}
-
-.loader-cont {
-	background: red;
-	width: 60px;
-	height: 5px;
-	/* border: 0px solid rgba(255, 255, 255, 0.99); *//*border: 1px solid #727272;*//*border: 1px solid #8c8c8c;*//* box-shadow: inset 0px 1px 0px 0px #8c8c8c14; *//* border: 2px solid transparent; *//*background: #73a73af7;*//*background: #d8d8d8;*//*background: #c0c0bf;*//*background: #e2e2e2;*//*background: #d4d4d4;*//*background: #e6e6e7;*/
-	background: rgba(255, 255, 255, 0.2);
-	/* background: #727272; */
-	border-radius: 100px;
-	display: flex;
-	/* color: #699935; */
-	overflow: hidden;
-	transition: opacity 0.2s ease-in-out;
-	/*margin-top: 30px;*/
-	background-clip: content-box;
-}
-
-.loader {
-	/*width: 70%;*//*background: white;*/
-	width: 0%;
-	/*background: #727272;*//*background: #8c8c8c;*//*background: #b8b8b8;*/
-	background: white;
-	/*	    background: -webkit-gradient(linear, left top, right top,
-                    color-stop(0%,#01dcd7),
-                    color-stop(23%,#086df2),
-                    color-stop(50%,#11a1e3),
-                    color-stop(78%,#9350ad),
-                    color-stop(100%,#fb4a71));*//* background-size: 400px 5px; */
-	transition: all 0.2s ease-in-out;
-	/*transition: width 0.2s cubic-bezier(1,0,.62,.86);*/
 }
 
 .topbar,
@@ -1079,7 +570,6 @@ ul.file-headers {
 .mobile-slide {
 	/* Width of the sizebar. */
 	transform: translate3D(300px, 0, 0);
-	/* Width of the sizebar. */
 	transform: translate3D(calc(300px), 0, 0);
 }
 
@@ -1095,7 +585,6 @@ ul.file-headers {
 	border: 1px solid transparent;
 	cursor: pointer;
 	margin-bottom: 15px;
-	/*border: 1px solid rgba(0, 0, 0, 0.095);*/
 	border: 1px solid #eaecee;
 }
 
@@ -1214,14 +703,8 @@ ul.file-headers {
 }
 
 .searched-highlight {
-	/*     background: #ffcc0050;
-    border-bottom: 1px dashed #ffcc00; *//*	background: #ffc10780;
-	border-bottom: 1px dashed #ffc107;
-	color: #000000;
-	border-radius: 3px;*/
 	background: #ffe300;
 	color: #000000;
-	/*border-radius: 1px;*/
 }
 
 .expander-close-cont {
@@ -1262,7 +745,6 @@ ul.file-headers {
 	justify-content: flex-end;
 	align-items: center;
 	padding: 10px;
-	/*bottom: 0;*/
 	transition: opacity 0.2s ease-in-out;
 }
 
@@ -1274,7 +756,6 @@ ul.file-headers {
 	font-size: 14px;
 	font-weight: bold;
 	line-height: 10px;
-	/*box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.05);*/
 }
 
 .copied-message i {
@@ -1322,29 +803,10 @@ ul.file-headers {
 }
 
 .menu-arrow-active {
-	/*color: #2578f8;*/
 	color: white;
 }
 
-.code-block-name-cont {
-	/*position: absolute;*//*margin-top: -27px;*/
-}
-
 .codeblock-name {
-	/*	padding: 2px 10px 2px 10px;
-	border-radius: 3px 3px 0 0;
-	font-size: 11px;
-	font-weight: bold;
-	color: #949494;
-	color: #b7b7b7;
-	background: #fbfbfb;
-	position: absolute;
-	margin-top: 10px;
-	margin-top: 27px;
-	z-index: 1;
-	border-right: 1px solid #c8c8c87a;
-	border-bottom: 1px solid #c8c8c87a;
-	border-radius: 3px 0 3px 0;*/
 	padding: 2px 10px;
 	font-size: 11px;
 	font-weight: 700;
@@ -1354,7 +816,6 @@ ul.file-headers {
 	position: absolute;
 	margin-top: -26px;
 	margin-left: -10px;
-	/*z-index: 1;*/
 	border-right: 1px solid #c8c8c87a;
 	border-bottom: 1px solid #c8c8c87a;
 	border-radius: 3px 0 3px 0;
@@ -1371,7 +832,6 @@ ul.file-headers {
 	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	/*background: #f6f6f6;*/
 	border-radius: 3px 3px 0 0;
 	margin-bottom: 3px;
 }
@@ -1393,25 +853,17 @@ ul.file-headers {
 	opacity: 1;
 }
 
-/*.code-block-action i {
-	margin-top: -3px;
-}*/
-
 .line-num {
-	/*margin-right: 10px;*/
 	color: #919191;
 	border-right: 1px solid #c8c8c87a;
-	/*padding: 10px 5px 10px 10px;*//*padding: 16px 10px 16px 16px;*//*padding: 16px 0;*/
 	padding: 16px 3px 16px 10px;
 	background: #fbfbfb;
-	/*background: #f8f8f8;*/
 	border-radius: 5px 0 0 5px;
 }
 
 .line-num-third {
 	position: absolute;
 	width: 100%;
-	/*width: 932px;*//*background: #ff00001a;*/
 	background: transparent;
 	border-right: none;
 }
@@ -1426,7 +878,6 @@ ul.file-headers {
 
 .line-num-line-highlight {
 	background: #698cfe20;
-	/* box-shadow: inset -1px -1px 0px 0px #698cfe20, inset 32px 1px 0px 0px #698cfe20; *//*border-radius: 3px;*/
 }
 
 .lang-code-line-highlight {
@@ -1438,13 +889,9 @@ ul.file-headers {
 
 .line-num-cont {
 	position: relative;
-	/*display: flex;*/
 }
 
-/*.line-num-cont div {*/
-
 .line-num-cont span {
-	/*padding: 0 9px 0 16px;*/
 	padding: 0 10px;
 }
 
@@ -1456,27 +903,6 @@ ul.file-headers {
 	border-radius: 3px;
 }
 
-/* .line-block-highlight:after {
-	content: "";
-	position: absolute;
-	height: 0;
-	border-top: 4px solid transparent;
-	border-bottom: 4px solid transparent;
-	border-left: 4px solid #698cfe;
-	margin-left: 10px;
-	margin-top: 4px;
-}
-.line-block-highlight:after {
-    content: "";
-    position: absolute;
-    height: 0;
-    border-top: 8px solid transparent;
-    border-bottom: 8px solid transparent;
-    border-left: 8px solid #698cfe;
-    margin-left: 9px;
-    margin-top: 0px;
-} */
-
 /* Custom expandable */
 
 .dd-expandable-base {
@@ -1484,7 +910,6 @@ ul.file-headers {
 	flex-flow: column nowrap;
 	border: 1px solid transparent;
 	background: white;
-	/*white-space: pre-wrap;*/
 }
 
 .dd-expandable-message {
@@ -1492,18 +917,14 @@ ul.file-headers {
 	justify-content: flex-start;
 	align-items: center;
 	font-weight: 700;
-	/* background: #f1f1f17d; */
 	padding: 6px 0;
-	/*border-radius: 100px;*/
 	pointer: cursor;
-	/* font-size: 14px; */
 	margin-top: 10px;
 	margin-bottom: 10px;
 	transition: all 0.2s ease-in-out;
 }
 
 .dd-expandable-message-active {
-	/*background: #2578f820;*/
 	background: #f7f7f7;
 	border-radius: 3px;
 	padding: 6px 10px;
@@ -1518,10 +939,6 @@ ul.file-headers {
 	color: #2578f8;
 }
 
-.dd-expandable-content {
-	/*margin-top: 20px;*//*margin-left: 20px;*/
-}
-
 /* Custom Messages */
 
 .dd-message-wrapper {
@@ -1534,9 +951,7 @@ ul.file-headers {
 	padding: 10px 16px;
 	border-radius: 4px;
 	border: 1px solid #e8e8e8;
-	/*border-left-width: 5px;*//*border-left-style: solid;*/
 	background: white;
-	/*border-left-color: white;*//*white-space: pre-wrap;*/
 	white-space: unset;
 }
 
@@ -1549,7 +964,6 @@ ul.file-headers {
 }
 
 .dd-message-base i {
-	/*font-size: 13px;*/
 	margin-right: 8px;
 }
 
@@ -1570,94 +984,77 @@ ul.file-headers {
 
 .dd-message--grapefruit {
 	border-left: 5px solid #ed5565;
-	/*border-left-color: #ed5565;*//*background: #da445320;*/
 	background: #ffffff;
 }
 
 .dd-message--bittersweet {
 	border-left: 5px solid #fc6e51;
-	/*border-left-color: #fc6e51;*//*background: #e9573f20;*/
 	background: #ffffff;
 }
 
 .dd-message--honeybutter {
 	border-left: 5px solid #fee450;
-	/*border-left-color: #fee450;*//*background: #fffade;*/
 	background: #ffffff;
 }
 
 .dd-message--sunflower {
 	border-left: 5px solid #ffce54;
-	/*border-left-color: #ffce54;*//*background: #f6bb4220;*/
 	background: #ffffff;
 }
 
 .dd-message--grass {
 	border-left: 5px solid #a0d468;
-	/*border-left-color: #a0d468;*//*background: #8cc15220;*/
 	background: #ffffff;
 }
 
 .dd-message--mint {
 	border-left: 5px solid #48cfad;
-	/*border-left-color: #48cfad;*//*background: #37bc9b20;*/
 	background: #ffffff;
 }
 
 .dd-message--sky {
 	border-left: 5px solid #4fc1e9;
-	/*border-left-color: #4fc1e9;*//*background: #3bafda20;*/
 	background: #ffffff;
 }
 
 .dd-message--bluejeans {
 	border-left: 5px solid #5d9cec;
-	/*border-left-color: #5d9cec;*//*background: #4a89dc20;*/
 	background: #ffffff;
 }
 
 .dd-message--aqua {
 	border-left: 5px solid #4894f6;
-	/*border-left-color: #4894f6;*//*background: #4894f620;*/
 	background: #ffffff;
 }
 
 .dd-message--lavender {
 	border-left: 5px solid #ac92ec;
-	/*border-left-color: #ac92ec;*//*background: #967adc20;*/
 	background: #ffffff;
 }
 
 .dd-message--pinkrose {
 	border-left: 5px solid #ec87c0;
-	/*border-left-color: #ec87c0;*//*background: #d770ad20;*/
 	background: #ffffff;
 }
 
 .dd-message--lightgray {
-	/*border-left-color: #f5f7fa;*/
 	border-left: 5px solid #e3e3e4;
-	/*border-left-color: #e3e3e4;*//*background: #e6e9ed20;*//*background: #fbfbfb;*/
 	background: #ffffff;
 }
 
 .dd-message--mediumgray {
 	border-left: 5px solid #ccd1d9;
-	/*border-left-color: #ccd1d9;*//*background: #aab2bd20;*/
 	background: #ffffff;
 }
 
 .dd-message--darkgray {
 	border-left: 5px solid #656d78;
-	/*border-left-color: #656d78;*//*background: #434a5420;*/
 	background: #ffffff;
 }
 
 .dd-message--spacegray {
 	border-left: 5px solid #5d687b;
-	/*border-left-color: #5d687b;*//*background: #474c54;*/
 	background: #ffffff;
-	/*color: #e6e2e2;*/
 }
 
 details, summary {
@@ -1674,14 +1071,8 @@ details, summary {
 	border-radius: 3px;
 }
 
-/* .codegroup-tab:hover {
-    background: rgba(0,0,0,.04);
-    color: #333
-} */
-
 .codegroup-tab-active {
 	color: #333333;
-	/*     background: rgba(0,0,0,.04); *//*     box-shadow: inset 0 -2px 0 0 #2578f8 */
 }
 
 .tabs-cont {
@@ -1703,20 +1094,8 @@ details, summary {
 	padding-top: 26px !important;
 }
 
-/*
-.dd-wireframe {
-    border-radius: 4px;
-    color: transparent !important;
-    background: #aeaeae60 !important;
-}
-
-.dd-wireframe * {
-    visibility: hidden;
-}*/
-
 .loading-content {
 	opacity: 0.6;
-	/*filter: grayscale(1);*/
 	background: #ffffff !important;
 	pointer-events: none;
 }
@@ -1727,7 +1106,6 @@ details, summary {
 	margin: 0 0.05em 0 0.1em;
 	vertical-align: -0.1em;
 	box-sizing: content-box;
-	/*max-width: 100%;*//*background-color: #ffffff;*//*background-color: transparent;*/
 	max-width: none;
 	vertical-align: middle;
 	background-color: transparent;
@@ -1753,17 +1131,13 @@ details, summary {
 }
 
 .search-cont {
-	/*margin-left: 20px;*//*margin-left: 0px;*/
 	position: sticky !important;
 	top: 0;
-	/*background: #f4f4f4;*/
 	background: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	z-index: 1;
 	padding: 10px;
-	/*border: 1px solid rgba(0, 0, 0, 0.04);*//*border: 1px solid transparent;*/
 	border-right: none;
 	border-radius: 0 0 0 4px;
-	/*margin-right: 1px;*/
 }
 
 .search-cont-inner {
@@ -1772,14 +1146,11 @@ details, summary {
 	flex-flow: row nowrap;
 	justify-content: space-around;
 	align-items: center;
-	/*border: 1px solid rgba(0, 0, 0, 0.1);*//*border: 1px solid transparent;*//*border-radius: 100px;*/
 	border-radius: 5px;
 	padding: 0 10px;
 	font-size: 13px;
 	top: 0;
-	/*background: white;*/
 	background: #f7f7f7;
-	/* border-color: #2188ff; *//* border-color: #2578f8; *//* box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); *//* box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3); *//*transition: border-color 0.05s ease-in-out, box-shadow 0.05s ease-in-out;*/
 }
 
 .search-icon, .search-clear {
@@ -1815,18 +1186,7 @@ details, summary {
 	color: #999999;
 }
 
-/*.sinput:focus::placeholder {
-	font-size: 14px;
-	color: transparent;
-}
-*/
-
-.sinput-focused {
-	/*border-color: #2188ff; *//*border-color: #2578f8;*//*box-shadow: inset 0 1px 2px rgba(27,31,35,0.075), 0 0 0 0.2em rgba(3,102,214,0.3); *//*box-shadow: inset 0 1px 2px rgba(37, 120, 248, 0.075), 0 0 0 0.2em rgba(37, 120, 248, 0.3);*//*background: #ffffff;*/
-}
-
 .no-matches-cont {
-	/*padding: 5px;*/
 	margin: 0 3px 0;
 }
 
@@ -1836,12 +1196,9 @@ details, summary {
 	justify-content: flex-start;
 	align-items: center;
 	background: #ffc10770;
-	/*padding: 5px;*//*padding-left: 10px;*/
 	padding: 8px 10px 8px 20px;
-	/*font-size: 14px;*/
 	font-weight: bold;
 	border-radius: 5px;
-	/*margin-top: 10px;*/
 }
 
 .version-cont {
@@ -1858,7 +1215,6 @@ details, summary {
 .current-version {
 	color: #999999;
 	font-size: 13px;
-	/*display: inline-flex;*//*align-items: center;*/
 }
 
 .current-version:hover {
@@ -1867,11 +1223,8 @@ details, summary {
 
 .versions-list-cont {
 	margin-top: 5px;
-	/*border-left: 1px solid rgba(0, 0, 0, 0.1);*/
 	position: absolute;
-	/*border: 1px solid rgba(27, 31, 35, 0.15);*/
 	border-radius: 4px;
-	/*box-shadow: 0 3px 12px rgba(27, 31, 35, 0.15);*/
 	box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
 	padding: 5px 0;
 	background: white;
@@ -1896,7 +1249,6 @@ details, summary {
 .version-latest {
 	font-size: 7px;
 	padding: 2px;
-	/*background: #dd6a58;*//* background: #2578f8; */
 	background: #5885dd;
 	color: white;
 	border-radius: 2px;
@@ -1933,24 +1285,6 @@ details, summary {
 	color: #2578f8;
 }
 
-/*.version-option:hover, .active-version {
-	background: #f7f7f7;
-	cursor: pointer;
-	background: #2578f8;
-	color: white;
-}
-
-.version-option:hover .version-latest {
-	background: white;
-	color: #2578f8;
-}
-*/
-
-/*.active-version {
-	background: #f7f7f7;
-	color: #333333;
-}*/
-
 .version-option i {
 	font-size: 10px;
 }
@@ -1977,7 +1311,6 @@ details, summary {
 	font-size: 14px;
 	font-weight: bold;
 	padding: 5px 5px;
-	/*min-width: 50%;*/
 	width: 120px;
 	flex-grow: 1;
 	flex-shrink: 1;
@@ -2022,7 +1355,6 @@ details, summary {
 }
 
 .md-footer-section {
-	/*font-size: 14px;*/
 	padding: 15px;
 	color: #4a4a4a;
 	min-width: 150px;
@@ -2111,10 +1443,6 @@ details, summary {
 	.app {
 		width: 1000px;
 	}
-
-	.sidebar {
-		/*flex: 1 0 220px;*/
-	}
 }
 
 @media (max-width: 1024px) {
@@ -2132,7 +1460,6 @@ details, summary {
 		background: #fafafa;
 		padding: 5px;
 		border-bottom: 1px solid #ededed;
-		/*margin-right: 0;*/
 	}
 
 	.search-cont-inner {
@@ -2155,11 +1482,8 @@ details, summary {
 	}
 
 	.sinput {
-		/*padding: 5px 6px;*/
 		font-size: 16px;
-	}/*	.l-2 {
-		top: 72px;
-	}*/
+	}
 
 	.logo-spacer {
 		display: block;
@@ -2177,10 +1501,6 @@ details, summary {
 
 	.markdown {
 		overflow: auto;
-	}
-
-	.tb-shadow {
-		display: none !important;
 	}
 }
 
@@ -2219,7 +1539,9 @@ details, summary {
 		will-change: transform, contents;
 	}/* To make the sidebar constantly show the y-scroller make the div
 	dip/overflow. This or simply giving the .menu a min-height: 101%; also
-	works. *//*	.logo-devdocs {
+	works.
+
+	.logo-devdocs {
 		margin-bottom: -40px;
 	}*/
 
@@ -2244,15 +1566,11 @@ details, summary {
 		top: 42px;
 		background: rgba(255, 255, 255, 0.95);
 		backdrop-filter: blur(10px);
-		/*padding: 8px 10px;*//*margin-left: -10px;*//*width: calc(100% + 20px);*//* width: 100%; *//*        padding: 8px 0px;
-        margin-left: 0px;
-        width: calc(100% + 0px);
-        width: 100%;*//*display: flex;*//*flex-flow: row nowrap;*//*align-items: center;*/
 		white-space: nowrap;
 		overflow-x: auto;
 		overflow-y: hidden;
 		text-overflow: initial;
-		/* Full Width Tweak *//*font-size: 15px;*/
+		/* Full Width Tweak */
 		border-radius: 0 !important;
 		margin-left: -15px;
 		width: calc(100% + 30px);
@@ -2262,7 +1580,6 @@ details, summary {
 		z-index: 1;
 		font-size: 18px;
 		font-weight: 600;
-		/*border-radius: 4px;*/
 		border-bottom: 1px solid #eaecef;
 		margin-top: 0;
 		margin-bottom: 0;
@@ -2276,13 +1593,11 @@ details, summary {
 	.markdown-body h6.ignore-header {
 		position: relative;
 		background: rgba(255, 255, 255, 0.95);
-		/*display: flex;*//*flex-flow: row nowrap;*//*align-items: center;*/
 		white-space: nowrap;
 		overflow-x: auto;
 		overflow-y: hidden;
 		text-overflow: initial;
 		border-radius: 0 !important;
-		/* 		margin-left: -15px; *//* 		width: calc(100% + 30px); */
 		padding: 10px 15px;
 		/* Make scrolling smooth in iOS */
 		overflow-scrolling: touch;
@@ -2291,20 +1606,7 @@ details, summary {
 		border-bottom: 1px solid #eaecef;
 		margin-top: 10px;
 		margin-bottom: 0;
-	}/*
-	.markdown h3::after {
-		content: "";
-		position: fixed;
-		width: 23px;
-		height: 100%;
-		margin-top: -8px;
-		right: 0;
-		top: 0;
-		background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%);
-		background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
-        background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 60%);
-		background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 50%);
-	}*/
+	}
 
 	.header-spacer {
 		padding-bottom: 24px;
@@ -2325,14 +1627,7 @@ details, summary {
 
 	.line-block-highlight {
 		box-shadow: none;
-	}/*	.l-1 {
-		padding: 10px 0 10px 15px;
 	}
-
-	.search-cont {
-		margin-left: 0;
-		border-radius: 0;
-	}*/
 
 	.search-cont {
 		margin-right: 0;
@@ -2355,13 +1650,4 @@ details, summary {
 	.line-num {
 		border-radius: 0;
 	}
-}
-
-@media (max-width: 324px) {
-	/*	.app {
-		width: auto;
-	}*//*
-	.scroll-df-text {
-		max-width: 90px;
-	}*/
 }

@@ -96,6 +96,26 @@
 	}
 }
 
+.animate-loading {
+	animation-name: animate-loading;
+	animation-duration: 0.8s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+
+@keyframes animate-loading {
+	25% {
+		height: 2px;
+		opacity: 0.5;
+	}
+
+	75% {
+		height: 0;
+		opacity: 0;
+		background-color: transparent;
+	}
+}
+
 .animate-header-highlight {
 	animation-name: animate-header-highlight;
 	animation-duration: 2s;

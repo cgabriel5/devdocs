@@ -65,6 +65,21 @@
 	pointer-events: none;
 }
 
+/* Positional Helpers  */
+
+.flex {
+	display: flex;
+}
+
+.flex-center {
+	justify-content: center;
+	align-items: center;
+}
+
+.fixed {
+	position: fixed;
+}
+
 /* Animation Helpers */
 
 .tdelay1 {

@@ -24,15 +24,10 @@ document.onreadystatechange = function() {
 		// Elements //
 
 		// Get needed elements.
-		// var $loader = document.getElementById("loader");
 		var $loadertop = document.getElementById("loader-top");
-		// var $loader_cont = document.getElementById("loader-cont");
-		// var $html = document.getElementsByTagName("html")[0];
 		var $topbar = document.getElementById("topbar");
 		var $sidebar = document.getElementById("sidebar");
-		// var $shadow = document.getElementById("tb-shadow");
 		var $markdown = document.getElementById("markdown");
-		// var $scrolled = document.getElementById("tb-percent-scrolled");
 		var $overlay = document.getElementsByClassName("sidebar-overlay")[0];
 		var $moverlay = document.getElementById("main-overlay");
 		var $splash = document.getElementById("splash-loader");
@@ -42,14 +37,13 @@ document.onreadystatechange = function() {
 		var $tb_loader = document.getElementById("topbar-loader");
 		var $copied_message = document.getElementById("copied-message");
 		var $search_cont = document.getElementById("search-cont");
-		// var $clear_search = document.getElementById("search-clear");
 		var $sinput = document.getElementById("sinput");
-		var $no_matches_cont; // = document.getElementById("no-matches-cont");
+		var $no_matches_cont;
+		var $no_matches_cont_v = document.getElementById("no-matches-cont-v");
 		var $versions_cont = document.getElementById("versions-list-cont");
 		var $version_cont = document.getElementById("version-cont");
 		var $vlist = document.getElementById("v-list-wrapper");
 		var $current_version = document.getElementById("current-version");
-		var $no_matches_cont_v = document.getElementById("no-matches-cont-v");
 		var $sb_menu = document.getElementById("sidebar-menu");
 		var $sb_footer = document.getElementById("sb-footer");
 
@@ -2793,12 +2787,6 @@ document.onreadystatechange = function() {
 							// Trigger a click on the overlay to hide the sidebar and overlay.
 							$overlay.click();
 						}
-
-						// // Hide the tb shadow div.
-						// if (window.matchMedia("(min-width: 769px)").matches) {
-						// 	$shadow.style.display = "none";
-						// 	$shadow.style.top = null;
-						// }
 
 						get_headers();
 
