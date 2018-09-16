@@ -105,14 +105,17 @@
 
 @keyframes animate-loading {
 	25% {
-		height: 2px;
 		opacity: 0.5;
+
+		height: 2px;
 	}
 
 	75% {
-		height: 0;
 		opacity: 0;
+
 		background-color: transparent;
+
+		height: 0;
 	}
 }
 

@@ -4,6 +4,7 @@
 }
 
 .markdown-body {
+	color: #24292e;
 	font-family: -apple-system,
                  BlinkMacSystemFont,
                  "Segoe UI",
@@ -16,11 +17,10 @@
 	font-size: 16px;
 	line-height: 1.5;
 	line-height: 1.5;
-	word-wrap: break-word;
-	color: #24292e;
 	-webkit-text-size-adjust: 100%;
 	    -ms-text-size-adjust: 100%;
 	        text-size-adjust: 100%;
+	word-wrap: break-word;
 }
 
 .markdown-body .pl-c {
@@ -70,13 +70,15 @@
 }
 
 .markdown-body .pl-ii {
-	color: #fafbfc;
 	background-color: #b31d28;
+
+	color: #fafbfc;
 }
 
 .markdown-body .pl-c2 {
-	color: #fafbfc;
 	background-color: #d73a49;
+
+	color: #fafbfc;
 }
 
 .markdown-body .pl-c2::before {
@@ -84,8 +86,8 @@
 }
 
 .markdown-body .pl-sr .pl-cce {
-	font-weight: bold;
 	color: #22863a;
+	font-weight: bold;
 }
 
 .markdown-body .pl-ml {
@@ -95,33 +97,36 @@
 .markdown-body .pl-mh,
 .markdown-body .pl-mh .pl-en,
 .markdown-body .pl-ms {
-	font-weight: bold;
 	color: #005cc5;
+	font-weight: bold;
 }
 
 .markdown-body .pl-mi {
-	font-style: italic;
 	color: #24292e;
+	font-style: italic;
 }
 
 .markdown-body .pl-mb {
-	font-weight: bold;
 	color: #24292e;
+	font-weight: bold;
 }
 
 .markdown-body .pl-md {
-	color: #b31d28;
 	background-color: #ffeef0;
+
+	color: #b31d28;
 }
 
 .markdown-body .pl-mi1 {
-	color: #22863a;
 	background-color: #f0fff4;
+
+	color: #22863a;
 }
 
 .markdown-body .pl-mc {
-	color: #e36209;
 	background-color: #ffebda;
+
+	color: #e36209;
 }
 
 .markdown-body .pl-mi2 {
@@ -131,8 +136,8 @@
 }
 
 .markdown-body .pl-mdr {
-	font-weight: bold;
 	color: #6f42c1;
+	font-weight: bold;
 }
 
 .markdown-body .pl-ba {
@@ -144,8 +149,8 @@
 }
 
 .markdown-body .pl-corl {
-	text-decoration: underline;
 	color: #032f62;
+	text-decoration: underline;
 }
 
 .markdown-body .octicon {
@@ -156,6 +161,7 @@
 
 .markdown-body a {
 	background-color: transparent;
+
 	-webkit-text-decoration-skip: objects;
 	        text-decoration-skip: objects;
 }
@@ -174,8 +180,9 @@
 }
 
 .markdown-body h1 {
-	font-size: 2em;
 	margin: 0.67em 0;
+
+	font-size: 2em;
 }
 
 .markdown-body img {
@@ -194,14 +201,16 @@
 }
 
 .markdown-body hr {
-	overflow: visible;
 	box-sizing: content-box;
+
 	height: 0;
+	overflow: visible;
 }
 
 .markdown-body input {
-	font: inherit;
 	margin: 0;
+
+	font: inherit;
 }
 
 .markdown-body input {
@@ -224,8 +233,8 @@
 }
 
 .markdown-body a {
-	text-decoration: none;
 	color: #0366d6;
+	text-decoration: none;
 }
 
 .markdown-body a:hover {
@@ -237,28 +246,31 @@
 }
 
 .markdown-body hr {
-	overflow: hidden;
-	height: 0;
 	margin: 15px 0;
 	border: 0;
 	border-bottom: 1px solid #dfe2e5;
 	background: transparent;
+
+	height: 0;
+	overflow: hidden;
 }
 
 .markdown-body hr::before {
 	display: table;
+
 	content: "";
 }
 
 .markdown-body hr::after {
 	display: table;
 	clear: both;
+
 	content: "";
 }
 
 .markdown-body table {
-	border-spacing: 0;
 	border-collapse: collapse;
+	border-spacing: 0;
 }
 
 .markdown-body td,
@@ -287,12 +299,14 @@
 }
 
 .markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4, .markdown-body h5, .markdown-body h6 {
+	margin-left: -5px;
+	padding-left: 5px;
+
+	width: calc(100% + 5px);
+
 	font-size: 20px;
 	font-weight: 600;
 	/* For custom highlight purpose. *//*border-radius: 4px;*//*padding: 0 5px;*/
-	margin-left: -5px;
-	padding-left: 5px;
-	width: calc(100% + 5px);
 }
 
 .markdown-body h4 {
@@ -348,9 +362,10 @@
 }
 
 .markdown-body pre {
-	font: 12px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 	margin-top: 0;
 	margin-bottom: 0;
+
+	font: 12px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 .markdown-body .octicon {
@@ -387,12 +402,14 @@
 
 .markdown-body::before {
 	display: table;
+
 	content: "";
 }
 
 .markdown-body::after {
 	display: table;
 	clear: both;
+
 	content: "";
 }
 
@@ -405,15 +422,16 @@
 }
 
 .markdown-body a:not([href]) {
-	text-decoration: none;
 	color: inherit;
+	text-decoration: none;
 }
 
 .markdown-body .anchor {
+	margin-left: 3px;
+
 	line-height: 1;
 	/* Keep the anchor hyper-link on the right due limited space on mobile
 	devices.*//*float: left;*//*margin-left: -20px;*//*padding-right: 4px;*/
-	margin-left: 3px;
 }
 
 .markdown-body .anchor:focus {
@@ -432,17 +450,19 @@
 }
 
 .markdown-body hr {
-	height: 0.25em;
 	margin: 24px 0;
-	padding: 0;
 	border: 0;
 	background-color: #e1e4e8;
+	padding: 0;
+
+	height: 0.25em;
 }
 
 .markdown-body blockquote {
-	padding: 0 1em;
-	color: #6a737d;
 	border-left: 0.25em solid #dfe2e5;
+	padding: 0 1em;
+
+	color: #6a737d;
 }
 
 .markdown-body blockquote > :first-child {
@@ -454,17 +474,19 @@
 }
 
 .markdown-body kbd {
+	display: inline-block;
+	vertical-align: middle;
+
+	box-shadow: inset 0 -1px 0 #959da5;
+	border: solid 1px;
+	border-radius: 3px;
+	border-color: #c6cbd1 #c6cbd1 #959da5;
+	background-color: #fafbfc;
+	padding: 3px 5px;
+
+	color: #444d56;
 	font-size: 11px;
 	line-height: 10px;
-	display: inline-block;
-	padding: 3px 5px;
-	vertical-align: middle;
-	color: #444d56;
-	border: solid 1px;
-	border-color: #c6cbd1 #c6cbd1 #959da5;
-	border-radius: 3px;
-	background-color: #fafbfc;
-	box-shadow: inset 0 -1px 0 #959da5;
 }
 
 .markdown-body h1,
@@ -473,10 +495,11 @@
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-	font-weight: 600;
-	line-height: 1.25;
 	margin-top: 24px;
 	margin-bottom: 16px;
+
+	font-weight: 600;
+	line-height: 1.25;
 }
 
 .markdown-body h1 .octicon-link,
@@ -487,6 +510,7 @@
 .markdown-body h6 .octicon-link {
 	/*visibility: hidden;*/
 	vertical-align: middle;
+
 	color: #1b1f23;
 }
 
@@ -509,19 +533,21 @@
 }
 
 .markdown-body h1 {
-	font-size: 2em;
+	border-bottom: 1px solid #eaecef;
 	/* padding-bottom: 0.3em; */
 	padding-top: 0.2em;
 	padding-bottom: 0.2em;
-	border-bottom: 1px solid #eaecef;
+
+	font-size: 2em;
 }
 
 .markdown-body h2 {
-	font-size: 1.5em;
+	border-bottom: 1px solid #eaecef;
 	/* padding-bottom: 0.3em; */
 	padding-top: 0.2em;
 	padding-bottom: 0.2em;
-	border-bottom: 1px solid #eaecef;
+
+	font-size: 1.5em;
 }
 
 .markdown-body h3 {
@@ -537,8 +563,8 @@
 }
 
 .markdown-body h6 {
-	font-size: 0.85em;
 	color: #6a737d;
+	font-size: 0.85em;
 }
 
 .markdown-body ul,
@@ -567,11 +593,12 @@
 }
 
 .markdown-body dl dt {
-	font-size: 1em;
-	font-weight: 600;
-	font-style: italic;
 	margin-top: 16px;
 	padding: 0;
+
+	font-size: 1em;
+	font-style: italic;
+	font-weight: 600;
 }
 
 .markdown-body dl dd {
@@ -582,8 +609,9 @@
 .markdown-body table {
 	/* display: block; */
 	display: table;
-	overflow: auto;
+
 	width: 100%;
+	overflow: auto;
 	/* Make table fit in parent element:
 	[https://stackoverflow.com/a/19282108] */
 	word-break: break-word;
@@ -595,8 +623,8 @@
 
 .markdown-body table th,
 .markdown-body table td {
-	padding: 6px 13px;
 	border: 1px solid #dfe2e5;
+	padding: 6px 13px;
 }
 
 .markdown-body table tr {
@@ -611,8 +639,9 @@
 
 .markdown-body img {
 	box-sizing: content-box;
-	max-width: 100%;
 	background-color: #ffffff;
+
+	max-width: 100%;
 	/*background-color: transparent;*/
 }
 
@@ -625,34 +654,36 @@
 }
 
 .markdown-body code {
-	font-size: 85%;
 	margin: 0;
-	padding: 0.2em 0;
 	border-radius: 3px;
 	background-color: rgba(27, 31, 35, 0.05);
+	padding: 0.2em 0;
+
+	font-size: 85%;
 }
 
 .markdown-body code::before,
 .markdown-body code::after {
-	content: "\00a0";
 	letter-spacing: -0.2em;
+	content: "\00a0";
 }
 
 .markdown-body pre {
-	word-wrap: normal;
 	/* For the line number element container. */
 	display: flex;
 	flex-flow: row nowrap;
+	word-wrap: normal;
 }
 
 .markdown-body pre > code {
-	font-size: 100%;
 	margin: 0;
-	padding: 0;
-	white-space: pre;
-	word-break: normal;
 	border: 0;
 	background: transparent;
+	padding: 0;
+
+	font-size: 100%;
+	white-space: pre;
+	word-break: normal;
 }
 
 .markdown-body .highlight {
@@ -661,50 +692,60 @@
 
 .markdown-body .highlight pre {
 	margin-bottom: 0;
+
 	word-break: normal;
 }
 
 .markdown-body .highlight pre,
 .markdown-body pre {
+	position: relative;
+
+	background-color: #fbfbfb;
+
+	overflow: auto;
+
 	font-size: 85%;
 	line-height: 1.45;
-	overflow: auto;
 	overflow-scrolling: touch;
 	/*padding: 16px;*//*border-radius: 3px;*//* Custom color *//*background-color: #f6f8fa;*/
-	background-color: #fbfbfb;
-	position: relative;
 }
 
 .markdown-body pre code {
-	line-height: inherit;
 	display: inline;
-	overflow: visible;
-	max-width: auto;
+
 	margin: 0;
-	padding: 0;
-	word-wrap: normal;
 	border: 0;
 	background-color: transparent;
+	padding: 0;
+
+	max-width: auto;
+	overflow: visible;
+
+	line-height: inherit;
+	word-wrap: normal;
 }
 
 /* simple code highlight yellow  */
 
 .markdown-body code {
-	color: #71471c;
 	background: #fff5cc;
+
+	color: #71471c;
 }
 
 /* pre>code unhighlight yellow */
 
 .markdown-body pre code {
-	color: #333333;
-	/*background: #f6f8fa;*/
-	background: #fbfbfb;
-	/*background: #f8f8f8;*//* For line numbers. *//*padding: 10px 10px 10px 0;*/
-	padding: 16px 16px 16px 15px;
 	/*background: transparent !important;*/
 	border-radius: 0 5px 5px 0;
+	/*background: #f6f8fa;*/
+	background: #fbfbfb;
+	padding: 16px 16px 16px 15px;
+
 	width: 100%;
+
+	color: #333333;
+	/*background: #f8f8f8;*//* For line numbers. *//*padding: 10px 10px 10px 0;*/
 }
 
 .markdown-body pre code::before,
@@ -713,27 +754,32 @@
 }
 
 .markdown-body .full-commit .btn-outline:not(:disabled):hover {
-	color: #005cc5;
 	border-color: #005cc5;
+
+	color: #005cc5;
 }
 
 .markdown-body kbd {
+	display: inline-block;
+	vertical-align: middle;
+
+	box-shadow: inset 0 -1px 0 #c6cbd1;
+	border: solid 1px;
+	border-radius: 3px;
+	border-color: #d1d5da #d1d5da #c6cbd1;
+	background-color: #fafbfc;
+	padding: 3px 5px;
+
+	color: #444d56;
 	font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 	line-height: 10px;
-	display: inline-block;
-	padding: 3px 5px;
-	vertical-align: middle;
-	color: #444d56;
-	border: solid 1px;
-	border-color: #d1d5da #d1d5da #c6cbd1;
-	border-radius: 3px;
-	background-color: #fafbfc;
-	box-shadow: inset 0 -1px 0 #c6cbd1;
 }
 
 .markdown-body:checked + .radio-label {
 	position: relative;
+
 	z-index: 1;
+
 	border-color: #0366d6;
 }
 
@@ -746,8 +792,9 @@
 }
 
 .markdown-body .task-list-item input {
-	margin: 0 0.2em 0.25em -1.6em;
 	vertical-align: middle;
+
+	margin: 0 0.2em 0.25em -1.6em;
 }
 
 .markdown-body hr {
@@ -758,10 +805,11 @@
 
 .markdown-body {
 	box-sizing: border-box;
-	padding: 45px;
-	word-wrap: break-word;
-	min-height: 100%;
 	background-color: #ffffff;
+	padding: 45px;
+
+	min-height: 100%;
+	word-wrap: break-word;
 }
 
 /* GitHub heading style */

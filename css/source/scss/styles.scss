@@ -2,6 +2,7 @@
 
 body {
 	margin: 0;
+
 	font-size: 16px;
 	/* Thicken Safari fonts:
 	[https://github.com/cgabriel5/snippets/blob/master/css/fonts/normalize_macos_fonts.css] */
@@ -11,35 +12,39 @@ body {
 .app {
 	display: flex;
 	flex-flow: row nowrap;
-	width: 1280px;
+
 	margin: auto;
-	min-height: calc(100vh);
+
+	width: 1280px;
 	height: auto;
+	min-height: calc(100vh);
 }
 
 .sidebar {
-	user-select: none;
-	touch-callout: none;
-	font-size: 15px;
-	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
 	display: flex;
 	flex: 1 0 300px;
-	border-right: 1px solid #dddddd;
 	flex-flow: column nowrap;
 	justify-content: space-between;
+
+	border-right: 1px solid #dddddd;
+	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
+
+	font-size: 15px;
+	user-select: none;
+	touch-callout: none;
 }
 
 /* Make the sidebar fixed. */
 
 .sidebar {
 	position: fixed;
+	/* Width of the sizebar. */
+	width: 300px;
 	height: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	/* Make scrolling smooth in iOS */
 	overflow-scrolling: touch;
-	/* Width of the sizebar. */
-	width: 300px;
 }
 
 /*
@@ -70,12 +75,13 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .markdown {
+	opacity: 1;
+	transition: opacity 0.2s ease-in-out;
 	/* Width of the sizebar. */
 	margin-left: 300px;
-	width: 100%;
-	transition: opacity 0.2s ease-in-out;
-	opacity: 1;
 	background: transparent;
+
+	width: 100%;
 }
 
 .sidebar-show {
@@ -88,12 +94,14 @@ to become invisible when header scrolling. This seems to solve the issue.
 
 .menu {
 	margin-top: 50px;
+
 	width: 100%;
 }
 
 .menu ul {
 	margin: 0;
 	padding: 0;
+
 	list-style: none;
 }
 
@@ -103,8 +111,9 @@ to become invisible when header scrolling. This seems to solve the issue.
 
 .menu-logo-wrapper {
 	display: flex;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+
 	width: 100%;
 }
 
@@ -113,16 +122,19 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .logo-spacer {
-	border: 1px solid #eaeaea;
-	height: 18px;
 	display: none;
+
+	border: 1px solid #eaeaea;
+
+	height: 18px;
 }
 
 .logo-base {
-	padding: 0 0 0 0;
-	margin-left: 5px;
-	justify-content: flex-start;
 	align-items: center;
+	justify-content: flex-start;
+
+	margin-left: 5px;
+	padding: 0 0 0 0;
 }
 
 .logo-square {
@@ -131,8 +143,8 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .logo-landscape {
-	max-width: 55px;
 	min-width: 45px;
+	max-width: 55px;
 }
 
 .logo-portrait {
@@ -145,19 +157,21 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .logo-landscape img {
+	width: auto\9;
 	max-width: 100%;
 	height: auto;
-	width: auto\9;
 }
 
 .logo-portrait img {
-	height: 20px;
 	margin-left: 5px;
+
+	height: 20px;
 }
 
 .sb-logo {
-	width: 32px;
 	padding: 3px;
+
+	width: 32px;
 }
 
 .sb-logo img {
@@ -174,24 +188,29 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .l-1 {
-	font-weight: bold;
 	padding: 10px 0 10px 5px;
+
+	font-weight: bold;
 }
 
 .l-2 {
-	padding: 6px 10px 6px 20px;
-	cursor: pointer;
-	font-weight: bold;
 	display: flex;
-	align-items: center;
 	position: sticky !important;
+	align-items: center;
+
 	z-index: 1;
+	cursor: pointer;
+
+	padding: 6px 10px 6px 20px;
+
+	font-weight: bold;
 }
 
 .l-2-main-cont {
-	width: 100%;
-	justify-content: space-between;
 	align-items: center;
+	justify-content: space-between;
+
+	width: 100%;
 }
 
 .l-2-link {
@@ -199,36 +218,44 @@ to become invisible when header scrolling. This seems to solve the issue.
 }
 
 .truncate {
-	text-overflow: ellipsis;
 	overflow: hidden;
+
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
 .link-headings-count {
+	display: flex;
+
+	transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+
+	border: 1px solid transparent;
+	border-radius: 4px;
+	padding: 3px 3px 2px 3px;
+
+	color: #d0d0d0;
 	font-size: 11px;
 	font-weight: bold;
-	color: #d0d0d0;
-	padding: 3px 3px 2px 3px;
-	border-radius: 4px;
-	border: 1px solid transparent;
-	display: flex;
-	transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
 }
 
 .active-page .link-headings-count {
-	color: #666666;
-	background: white;
 	border: 1px solid transparent;
+	background: white;
+
+	color: #666666;
 }
 
 .l-3 {
-	padding: 5px 20px 5px 20px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
 	cursor: pointer;
-	font-size: 15px;
+
 	border-right: 2px solid transparent;
+	padding: 5px 20px 5px 20px;
+
+	overflow: hidden;
+
+	font-size: 15px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .l-3:hover {
@@ -242,25 +269,28 @@ to become invisible when header scrolling. This seems to solve the issue.
 ul.file-headers {
 	margin-left: 20px;
 	border-left: 1px solid #dddddd;
+
 	overflow: hidden;
 }
 
 .headings-cont {
+	backface-visibility: hidden;
+
 	height: 0;
 	overflow: hidden;
-	backface-visibility: hidden;
 }
 
 .link,
 .link:visited {
+	position: relative;
+
 	color: #333333;
 	text-decoration: none;
-	position: relative;
 }
 
 .active-page {
-	background: #2578f8;
 	margin-left: -1px;
+	background: #2578f8;
 }
 
 .active-page .link {
@@ -284,16 +314,19 @@ ul.file-headers {
 .logo-devdocs {
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: center;
 	align-items: center;
-	padding: 10px 10px;
+	justify-content: center;
+
 	filter: grayscale(10);
+
 	margin-bottom: -40px;
+	padding: 10px 10px;
 	padding: 50px 0 15px 0;
 }
 
 .logo-devdocs-img-cont {
 	opacity: 0.3;
+
 	margin-top: -3px;
 }
 
@@ -304,10 +337,11 @@ ul.file-headers {
 .sb-footer-inner {
 	display: flex;
 	flex-flow: nowrap;
-	justify-content: center;
 	align-items: center;
-	font-size: 12px;
+	justify-content: center;
+
 	color: #afafaf;
+	font-size: 12px;
 }
 
 .footer-logo-name {
@@ -315,8 +349,8 @@ ul.file-headers {
 }
 
 .footer-logo-name a {
-	text-decoration: none;
 	color: #afafaf;
+	text-decoration: none;
 }
 
 .footer-logo-name a:active {
@@ -325,27 +359,32 @@ ul.file-headers {
 
 .btn {
 	cursor: pointer;
-	border-radius: 4px;
+
 	border: 1px solid rgba(0, 0, 0, 0.17);
+	border-radius: 4px;
 }
 
 .btn-white {
-	color: #333333;
-	background: #ffffff;
 	transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+
+	background: #ffffff;
+
+	color: #333333;
 }
 
 .btn-white:hover {
-	color: #333333;
-	background: #99999905;
 	box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.03);
+	background: #99999905;
+
+	color: #333333;
 }
 
 .btn-blue {
-	background: #2578f8;
-	color: #ffffff;
 	border: 1px solid transparent;
 	border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+	background: #2578f8;
+
+	color: #ffffff;
 }
 
 .btn:hover {
@@ -358,51 +397,60 @@ ul.file-headers {
 
 .btn-home {
 	padding: 6px 10px;
-	font-weight: 700;
+
 	font-size: 12px;
+	font-weight: 700;
 }
 
 .error-cont {
 	display: flex;
 	flex-flow: column nowrap;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+
 	padding-top: 25px;
 }
 
 .error-logo-cont {
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: space-evenly;
 	align-items: center;
-	width: 85px;
+	justify-content: space-evenly;
+
 	opacity: 0.5;
-	border: 1px solid #ededed;
-	padding: 2px 6px;
-	border-radius: 100px;
+
 	margin-bottom: 20px;
-	font-weight: bold;
+	border: 1px solid #ededed;
+	border-radius: 100px;
+	padding: 2px 6px;
+
+	width: 85px;
+
 	color: #888888;
 	font-size: 12px;
+	font-weight: bold;
 }
 
 .error-logo {
 	filter: grayscale(1);
+
 	width: 10px;
 }
 
 .error-msg-1 {
-	font-weight: bold;
 	color: #444343;
 	font-size: 20px;
+	font-weight: bold;
 }
 
 .error-msg-2 {
-	color: #6d6d6d;
 	padding-top: 10px;
-	text-align: center;
-	font-size: 14px;
+
 	max-width: 375px;
+
+	color: #6d6d6d;
+	font-size: 14px;
+	text-align: center;
 }
 
 .error-btn-cont {
@@ -421,51 +469,63 @@ ul.file-headers {
 
 .loader-top {
 	position: fixed;
-	z-index: 3;
 	left: 0;
-	height: 0;
-	width: 100%;
-	overflow: hidden;
+
 	opacity: 0;
-	background-color: #2578f8;
+	z-index: 3;
 	transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
+
+	background-color: #2578f8;
+
+	width: 100%;
+	height: 0;
+	overflow: hidden;
 	pointer-events: none;
 }
 
 .main-overlay {
-	/* The highest z-index used. */
-	z-index: 4;
 	position: fixed;
-	background: transparent;
 	top: 0;
 	left: 0;
+	/* The highest z-index used. */
+	z-index: 4;
+
+	background: transparent;
+
 	width: 100%;
 	height: 100%;
 }
 
 .sidebar-overlay {
-	z-index: 2;
 	position: fixed;
-	background: rgba(0, 0, 0, 0.1);
 	top: 0;
 	left: 0;
+
+	z-index: 2;
+	transition: opacity 0.3s ease-in-out;
+
+	background: rgba(0, 0, 0, 0.1);
+
 	width: 100%;
 	height: 100%;
-	transition: opacity 0.3s ease-in-out;
 }
 
 .topbar {
 	display: flex;
-	width: 100%;
-	background: #fbfbfb;
-	font-weight: bold;
-	padding: 5px 20px 5px;
-	justify-content: space-between;
-	align-items: center;
-	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
 	display: none;
+	align-items: center;
+	justify-content: space-between;
+
 	z-index: 1;
 	backdrop-filter: blur(10px);
+
+	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+	background: #fbfbfb;
+	padding: 5px 20px 5px;
+
+	width: 100%;
+
+	font-weight: bold;
 }
 
 /* [https://codepen.io/hoshts/pen/BHoij?editors=1100] */
@@ -475,19 +535,21 @@ ul.file-headers {
 }
 
 .loader-img {
-	height: 16px;
 	width: 16px;
+	height: 16px;
 }
 
 .tb-logo {
-	margin-left: -5px;
 	margin-right: -5px;
+	margin-left: -5px;
 }
 
 .tb-menu {
-	padding: 7px;
 	cursor: pointer;
+
 	margin-left: -10px;
+	padding: 7px;
+
 	font-size: 18px;
 }
 
@@ -496,16 +558,18 @@ ul.file-headers {
 }
 
 .scroll-def {
-	font-size: 12px;
-	padding: 4px 8px;
-	border-radius: 100px;
 	border: 1px solid rgba(0, 0, 0, 0.0975);
+	border-radius: 100px;
+	padding: 4px 8px;
+
+	font-size: 12px;
 }
 
 .scroll-df-text {
-	white-space: nowrap;
 	overflow: hidden;
+
 	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .scroll-icon-middle {
@@ -514,42 +578,49 @@ ul.file-headers {
 }
 
 .splash-loader {
-	width: 100%;
-	height: 100%;
+	position: fixed;
 	top: 0;
 	left: 0;
-	position: fixed;
-	background: white;
-	transition: opacity 0.4s ease-in-out;
+
 	z-index: 4;
+	transition: opacity 0.4s ease-in-out;
+
+	background: white;
+
+	width: 100%;
+	height: 100%;
 }
 
 .splash-loader-cont {
-	width: 100%;
-	height: 100%;
 	display: flex;
 	flex-flow: column nowrap;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+
+	width: 100%;
+	height: 100%;
 }
 
 .splash-loader-icon-cont {
-	width: 70px;
-	height: 70px;
-	min-width: 70px;
 	transform: translate3d(0, 0, 0);
+
+	width: 70px;
+	min-width: 70px;
+	height: 70px;
 }
 
 .splash-loader-icon {
-	border-radius: 400px 1000px 0 1000px;
-	box-shadow: inset 0 3px 0 0 rgba(0, 0, 0, 0.02);
-	width: 100%;
-	height: 100%;
-	border-radius: 100px 250px 0 250px;
 	transition: transform 0.3s ease-in-out,
                 opacity 0.3s ease-in-out,
                 background 0.2s ease-in-out;
+
+	box-shadow: inset 0 3px 0 0 rgba(0, 0, 0, 0.02);
+	border-radius: 400px 1000px 0 1000px;
+	border-radius: 100px 250px 0 250px;
 	background: transparent;
+
+	width: 100%;
+	height: 100%;
 }
 
 .sl-icon-off {
@@ -564,6 +635,7 @@ ul.file-headers {
 .markdown {
 	transform: translate3D(0, 0, 0);
 	transform: translate3D(calc(0), 0, 0);
+
 	transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease-in-out;
 }
 
@@ -578,14 +650,16 @@ ul.file-headers {
 }
 
 .show-code-cont {
-	border-radius: 3px;
 	display: flex;
-	background-clip: padding-box;
-	background: #fbfbfb;
-	border: 1px solid transparent;
+
 	cursor: pointer;
+
 	margin-bottom: 15px;
+	border: 1px solid transparent;
 	border: 1px solid #eaecee;
+	border-radius: 3px;
+	background: #fbfbfb;
+	background-clip: padding-box;
 }
 
 .show-code-cont:active span,
@@ -601,32 +675,35 @@ ul.file-headers {
 }
 
 .show-code-lang {
-	text-transform: uppercase;
-	font-weight: bold;
-	padding: 4px;
-	font-size: 10px;
-	border-radius: 3px;
-	border: 1px solid rgb(207, 207, 207);
-	color: #949494;
 	margin-left: 5px;
+	border: 1px solid rgb(207, 207, 207);
+	border-radius: 3px;
 	background: white;
+	padding: 4px;
+
+	color: #949494;
+	font-size: 10px;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 
 .code-template-cont {
 	display: flex;
 	flex-flow: column nowrap;
-	width: 50%;
-	padding: 5px;
 	transform: scale(0.8);
+
+	padding: 5px;
+
+	width: 50%;
 }
 
 .code-template {
+	margin-top: 3px;
+	margin-right: 10px;
+	margin-bottom: 3px;
+	border-radius: 3px;
 	background: #e3e3e3;
 	padding: 6px 10px;
-	margin-right: 10px;
-	border-radius: 3px;
-	margin-top: 3px;
-	margin-bottom: 3px;
 }
 
 .code-template-line {
@@ -666,20 +743,23 @@ ul.file-headers {
 
 .show-code-message-cont {
 	display: flex;
-	width: 100%;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+
+	width: 100%;
 }
 
 .show-code-file-info {
-	font-size: 12px;
 	margin-top: 5px;
+
 	color: #999999;
+	font-size: 12px;
 }
 
 .show-code-message-cont div:first-child {
-	min-width: 50%;
 	padding: 3px;
+
+	min-width: 50%;
 }
 
 /* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
@@ -687,72 +767,89 @@ ul.file-headers {
 /* Used SVG to CSS converter: [https://websemantics.uk/tools/svg-to-background-image-conversion/] */
 
 .mloader {
-	border-radius: 50%;
-	border: 3px solid;
-	border-color: #555555 #dddddd #dddddd;
-	animation: animate-spin 0.5s linear infinite;
 	position: relative;
+
+	animation: animate-spin 0.5s linear infinite;
+
+	border: 3px solid;
+	border-radius: 50%;
+	border-color: #555555 #dddddd #dddddd;
 }
 
 .mloader-white {
-	border-radius: 50%;
-	border: 3px solid;
-	border-color: #ffffffa3 #ffffff #ffffff;
-	animation: animate-spin 0.5s linear infinite;
 	position: relative;
+
+	animation: animate-spin 0.5s linear infinite;
+
+	border: 3px solid;
+	border-radius: 50%;
+	border-color: #ffffffa3 #ffffff #ffffff;
 }
 
 .searched-highlight {
 	background: #ffe300;
+
 	color: #000000;
 }
 
 .expander-close-cont {
-	border-radius: 1000px;
-	font-size: 18px;
 	display: flex;
-	justify-content: space-between;
 	align-items: center;
-	width: 100%;
+	justify-content: space-between;
+
 	cursor: pointer;
+
+	border-radius: 1000px;
+
+	width: 100%;
+
+	font-size: 18px;
 }
 
 .expander-close {
 	position: absolute;
-	margin-left: -23px;
-	margin-top: -3px;
-	padding: 5px;
-	background: 0 0;
+
 	opacity: 0.3;
+
+	margin-top: -3px;
+	margin-left: -23px;
+	background: 0 0;
+	padding: 5px;
 }
 
 .expander-close:hover {
-	color: #2578f8;
 	opacity: 1;
+
+	color: #2578f8;
 }
 
 .expander-close:active {
-	color: #2578f8;
 	opacity: 0.5;
+
+	color: #2578f8;
 }
 
 .copied-message {
+	display: flex;
 	position: absolute;
 	position: fixed;
-	z-index: 10;
-	width: 100%;
-	display: flex;
-	justify-content: flex-end;
 	align-items: center;
-	padding: 10px;
+	justify-content: flex-end;
+
+	z-index: 10;
 	transition: opacity 0.2s ease-in-out;
+
+	padding: 10px;
+
+	width: 100%;
 }
 
 .copied-message span {
-	padding: 10px;
-	color: white;
-	background: #2578f8;
 	border-radius: 4px;
+	background: #2578f8;
+	padding: 10px;
+
+	color: white;
 	font-size: 14px;
 	font-weight: bold;
 	line-height: 10px;
@@ -773,21 +870,25 @@ ul.file-headers {
 .link-socials {
 	display: flex;
 	flex-flow: row wrap;
-	justify-content: flex-start;
 	align-items: flex-start;
-	width: 100%;
-	font-size: 25px;
-	padding: 5px 20px;
+	justify-content: flex-start;
+
 	margin-top: 10px;
 	border: 3px;
+	padding: 5px 20px;
+
+	width: 100%;
+
+	font-size: 25px;
 }
 
 .social-link {
-	border-radius: 3px;
-	padding: 3px 10px;
-	margin: 0 10px 0 -10px;
 	/* [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items] */
 	flex: 1 1 250px;
+
+	margin: 0 10px 0 -10px;
+	border-radius: 3px;
+	padding: 3px 10px;
 }
 
 .social-link:hover {
@@ -807,73 +908,87 @@ ul.file-headers {
 }
 
 .codeblock-name {
-	padding: 2px 10px;
-	font-size: 11px;
-	font-weight: 700;
-	color: #949494;
-	color: #b7b7b7;
-	background: #fbfbfb;
 	position: absolute;
+
 	margin-top: -26px;
 	margin-left: -10px;
 	border-right: 1px solid #c8c8c87a;
 	border-bottom: 1px solid #c8c8c87a;
 	border-radius: 3px 0 3px 0;
+	background: #fbfbfb;
+	padding: 2px 10px;
+
+	color: #b7b7b7;
+	color: #949494;
+	font-size: 11px;
+	font-weight: 700;
 }
 
 .code-block-actions-cont {
-	width: 100%;
 	display: flex;
 	justify-content: flex-end;
+
 	padding-bottom: 5px;
+
+	width: 100%;
 }
 
 .code-block-actions-cont-group {
-	width: 100%;
 	display: flex;
 	justify-content: space-between;
-	border-radius: 3px 3px 0 0;
+
 	margin-bottom: 3px;
+	border-radius: 3px 3px 0 0;
+
+	width: 100%;
 }
 
 .code-block-action {
-	font-weight: 700;
-	color: #999999;
-	padding: 3px 10px;
-	border: 1px solid rgba(0, 0, 0, 0.1);
-	box-shadow: none;
-	margin-left: 10px;
-	font-size: 13px;
 	opacity: 0.4;
+
+	margin-left: 10px;
+	box-shadow: none;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 3px 10px;
+
+	color: #999999;
+	font-size: 13px;
+	font-weight: 700;
 }
 
 .code-block-action:hover,
 .code-block-action:active {
-	color: #333333;
 	opacity: 1;
+
+	color: #333333;
 }
 
 .line-num {
-	color: #919191;
 	border-right: 1px solid #c8c8c87a;
-	padding: 16px 3px 16px 10px;
-	background: #fbfbfb;
 	border-radius: 5px 0 0 5px;
+	background: #fbfbfb;
+	padding: 16px 3px 16px 10px;
+
+	color: #919191;
 }
 
 .line-num-third {
 	position: absolute;
-	width: 100%;
-	background: transparent;
+
 	border-right: none;
+	background: transparent;
+
+	width: 100%;
 }
 
 .line-num-line-highlight-cont {
 	position: absolute;
-	width: 100%;
-	background: transparent;
+
 	margin-top: -1px;
 	border-right: none;
+	background: transparent;
+
+	width: 100%;
 }
 
 .line-num-line-highlight {
@@ -881,10 +996,10 @@ ul.file-headers {
 }
 
 .lang-code-line-highlight {
+	margin-right: 10px;
+	border-radius: 4px;
 	background: #698cfe20;
 	background: linear-gradient(to right, #698cfe20 85%, #698cfe00);
-	border-radius: 4px;
-	margin-right: 10px;
 }
 
 .line-num-cont {
@@ -896,11 +1011,12 @@ ul.file-headers {
 }
 
 .line-block-highlight {
-	color: #ffffff;
-	font-weight: 700;
-	background: #698cfe;
 	box-shadow: 0 -3px 0 0 #698cfe;
 	border-radius: 3px;
+	background: #698cfe;
+
+	color: #ffffff;
+	font-weight: 700;
 }
 
 /* Custom expandable */
@@ -908,25 +1024,29 @@ ul.file-headers {
 .dd-expandable-base {
 	display: flex;
 	flex-flow: column nowrap;
+
 	border: 1px solid transparent;
 	background: white;
 }
 
 .dd-expandable-message {
 	display: flex;
-	justify-content: flex-start;
 	align-items: center;
-	font-weight: 700;
-	padding: 6px 0;
-	pointer: cursor;
+	justify-content: flex-start;
+
+	transition: all 0.2s ease-in-out;
+
 	margin-top: 10px;
 	margin-bottom: 10px;
-	transition: all 0.2s ease-in-out;
+	padding: 6px 0;
+
+	font-weight: 700;
+	pointer: cursor;
 }
 
 .dd-expandable-message-active {
-	background: #f7f7f7;
 	border-radius: 3px;
+	background: #f7f7f7;
 	padding: 6px 10px;
 }
 
@@ -936,6 +1056,7 @@ ul.file-headers {
 
 .dd-expandable-message-icon-active {
 	transform: rotate(450deg);
+
 	color: #2578f8;
 }
 
@@ -948,19 +1069,23 @@ ul.file-headers {
 .dd-message-base {
 	display: flex;
 	flex-flow: column nowrap;
-	padding: 10px 16px;
-	border-radius: 4px;
+
 	border: 1px solid #e8e8e8;
+	border-radius: 4px;
 	background: white;
+	padding: 10px 16px;
+
 	white-space: unset;
 }
 
 .dd-message-title {
-	font-weight: bold;
-	margin-bottom: 5px;
 	display: flex;
-	justify-content: start;
 	align-items: center;
+	justify-content: start;
+
+	margin-bottom: 5px;
+
+	font-weight: bold;
 }
 
 .dd-message-base i {
@@ -972,14 +1097,16 @@ ul.file-headers {
 /* Flat colors: [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS] */
 
 .color-square {
-	border: 1px solid rgba(0, 0, 0, 0.1);
 	display: inline-block;
-	border-radius: 3px;
-	margin-right: 5px;
+	float: left;
+
 	margin-top: 5px;
+	margin-right: 5px;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	border-radius: 3px;
+
 	width: 16px;
 	height: 16px;
-	float: left;
 }
 
 .dd-message--grapefruit {
@@ -1062,13 +1189,15 @@ details, summary {
 }
 
 .codegroup-tab {
-	padding: 5px 13px;
-	font-size: 13px;
 	cursor: pointer;
+
+	border-radius: 3px;
+	padding: 5px 13px;
+
 	color: #999999;
+	font-size: 13px;
 	font-weight: 700;
 	white-space: pre;
-	border-radius: 3px;
 }
 
 .codegroup-tab-active {
@@ -1076,18 +1205,19 @@ details, summary {
 }
 
 .tabs-cont {
-	max-width: 600px;
-	overflow-y: hide;
-	overflow-x: auto;
-	overflow: auto;
-	overflow-scrolling: touch;
 	position: relative;
+
+	max-width: 600px;
+	overflow: auto;
+	overflow-x: auto;
+	overflow-y: hide;
+	overflow-scrolling: touch;
 }
 
 .lang-code-line {
-	padding: 0 10px;
 	border-radius: 3px;
 	background: #ff000036;
+	padding: 0 10px;
 }
 
 .padtop-26 {
@@ -1096,34 +1226,40 @@ details, summary {
 
 .loading-content {
 	opacity: 0.6;
+
 	background: #ffffff !important;
+
 	pointer-events: none;
 }
 
 .emoji {
-	height: 1em;
-	width: 1em;
-	margin: 0 0.05em 0 0.1em;
 	vertical-align: -0.1em;
-	box-sizing: content-box;
-	max-width: none;
 	vertical-align: middle;
+
+	box-sizing: content-box;
+	margin: 0 0.05em 0 0.1em;
 	background-color: transparent;
+
+	width: 1em;
+	max-width: none;
+	height: 1em;
 }
 
 .diff-deletion {
-	color: #b31d28;
 	background-color: #ffeef0;
+
+	color: #b31d28;
 }
 
 .diff-addition {
-	color: #22863a;
 	background-color: #f0fff4;
+
+	color: #22863a;
 }
 
 .diff-coordinate {
-	font-weight: bold;
 	color: #6f42c1;
+	font-weight: bold;
 }
 
 .diff-diffline {
@@ -1133,24 +1269,29 @@ details, summary {
 .search-cont {
 	position: sticky !important;
 	top: 0;
-	background: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
+
 	z-index: 1;
-	padding: 10px;
+
 	border-right: none;
 	border-radius: 0 0 0 4px;
+	background: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
+	padding: 10px;
 }
 
 .search-cont-inner {
 	display: flex;
-	width: 100%;
-	flex-flow: row nowrap;
-	justify-content: space-around;
-	align-items: center;
-	border-radius: 5px;
-	padding: 0 10px;
-	font-size: 13px;
 	top: 0;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-around;
+
+	border-radius: 5px;
 	background: #f7f7f7;
+	padding: 0 10px;
+
+	width: 100%;
+
+	font-size: 13px;
 }
 
 .search-icon, .search-clear {
@@ -1159,8 +1300,9 @@ details, summary {
 
 .search-clear {
 	cursor: pointer;
-	padding: 6px;
+
 	margin-right: -6px;
+	padding: 6px;
 }
 
 .search-clear:hover {
@@ -1172,18 +1314,21 @@ details, summary {
 }
 
 .sinput {
+	display: flex;
+
+	outline: none;
 	border: none;
 	padding: 6px;
-	outline: none;
-	width: 100%;
-	display: flex;
-	font-size: 14px;
 	padding-left: 10px;
+
+	width: 100%;
+
+	font-size: 14px;
 }
 
 .sinput::placeholder {
-	font-size: 14px;
 	color: #999999;
+	font-size: 14px;
 }
 
 .no-matches-cont {
@@ -1193,22 +1338,25 @@ details, summary {
 .no-matches-cont-inner {
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: flex-start;
 	align-items: center;
+	justify-content: flex-start;
+
+	border-radius: 5px;
 	background: #ffc10770;
 	padding: 8px 10px 8px 20px;
+
 	font-weight: bold;
-	border-radius: 5px;
 }
 
 .version-cont {
-	padding: 5px;
 	margin-top: 5px;
+	padding: 5px;
 }
 
 .current-version-cont {
 	display: inline-flex;
 	align-items: center;
+
 	cursor: pointer;
 }
 
@@ -1222,20 +1370,23 @@ details, summary {
 }
 
 .versions-list-cont {
-	margin-top: 5px;
 	position: absolute;
-	border-radius: 4px;
+
+	margin-top: 5px;
 	box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
-	padding: 5px 0;
+	border-radius: 4px;
 	background: white;
+	padding: 5px 0;
+
 	width: calc(100% - 20px);
 	pointer-events: all;
 }
 
 .v-list-wrapper {
+	position: relative;
+
 	max-height: 175px;
 	overflow-y: auto;
-	position: relative;
 }
 
 .vlist-padding {
@@ -1247,14 +1398,15 @@ details, summary {
 }
 
 .version-latest {
-	font-size: 7px;
-	padding: 2px;
-	background: #5885dd;
-	color: white;
+	margin-left: 5px;
 	border-radius: 2px;
+	background: #5885dd;
+	padding: 2px;
+
+	color: white;
+	font-size: 7px;
 	font-weight: bold;
 	text-transform: uppercase;
-	margin-left: 5px;
 }
 
 .version-latest-not {
@@ -1262,26 +1414,33 @@ details, summary {
 }
 
 .version-option {
-	background: white;
-	font-size: 13px;
-	padding: 10px 20px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
-	cursor: pointer;
 	display: flex;
 	align-items: center;
+
+	cursor: pointer;
+
 	border-radius: 3px;
+	background: white;
+	padding: 10px 20px;
+
+	overflow: hidden;
+
+	font-size: 13px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .version-option:hover, .active-version {
 	cursor: pointer;
+
 	background: #2578f8;
+
 	color: white;
 }
 
 .version-option:hover .version-latest, .active-version .version-latest {
 	background: white;
+
 	color: #2578f8;
 }
 
@@ -1290,17 +1449,20 @@ details, summary {
 }
 
 .v-text {
-	text-overflow: ellipsis;
 	overflow: hidden;
+
+	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
 .mtime-cont {
-	font-size: 11px;
-	padding-top: 20px;
-	margin-left: 10px;
 	display: flex;
 	justify-content: flex-end;
+
+	margin-left: 10px;
+	padding-top: 20px;
+
+	font-size: 11px;
 }
 
 .mtime-cont .mtime-ts-long, .c999 {
@@ -1308,17 +1470,20 @@ details, summary {
 }
 
 .arrow-content {
-	font-size: 14px;
-	font-weight: bold;
-	padding: 5px 5px;
-	width: 120px;
-	flex-grow: 1;
-	flex-shrink: 1;
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: center;
+	flex-grow: 1;
+	flex-shrink: 1;
 	align-items: center;
+	justify-content: center;
+
 	margin: 0 5px;
+	padding: 5px 5px;
+
+	width: 120px;
+
+	font-size: 14px;
+	font-weight: bold;
 }
 
 .arrow-content span {
@@ -1328,65 +1493,74 @@ details, summary {
 .bottom-arrow-btn-cont {
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: space-evenly;
 	align-items: center;
+	justify-content: space-evenly;
+
 	margin-top: 30px;
 	margin-bottom: 10px;
 }
 
 .md-footer {
-	padding: 5px;
-	margin-top: 30px;
 	display: flex;
 	flex-flow: row wrap;
+
+	margin-top: 30px;
 	border-top: 1px solid #eaecef;
+	padding: 5px;
 }
 
 .md-footer-section-title {
-	font-weight: bold;
 	padding-bottom: 10px;
+
+	font-weight: bold;
 }
 
 .md-footer-section-content {
 	display: flex;
 	flex-flow: row wrap;
-	justify-content: flex-start;
 	align-items: flex-start;
+	justify-content: flex-start;
 }
 
 .md-footer-section {
 	padding: 15px;
-	color: #4a4a4a;
+
 	min-width: 150px;
+
+	color: #4a4a4a;
 }
 
 .md-footer-img {
-	width: 15px;
 	background: transparent;
+
+	width: 15px;
 }
 
 .md-footer-copyright {
-	font-size: 12px;
-	margin-top: 10px;
 	display: flex;
 	flex-flow: row nowrap;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
+
+	margin-top: 10px;
+
 	color: #afafaf;
+	font-size: 12px;
 }
 
 .md-footer-inner {
 	display: inline-flex;
 	flex-flow: row nowrap;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
 }
 
 .md-footer-copyright a {
-	color: #afafaf;
-	padding: 1px 10px;
 	border-radius: 100px;
 	background: rgba(0, 0, 0, 0.02);
+	padding: 1px 10px;
+
+	color: #afafaf;
 }
 
 .md-footer-copyright i {
@@ -1398,21 +1572,23 @@ details, summary {
 }
 
 .anchor i {
-	font-size: 12px;
 	color: #24292e;
+	font-size: 12px;
 }
 
 @media (max-width: 768px) {
 	.md-footer {
-		padding: 5px;
-		margin-top: 30px;
 		display: flex;
 		flex-flow: row wrap;
-		border-top: 1px solid #eaecef;
+
+		margin-top: 30px;
 		margin-left: -15px;
-		width: calc(100% + 30px);
+		border-top: 1px solid #eaecef;
 		background: #fcfcfc;
 		background: linear-gradient(180deg, #fcfcfc 0%, rgba(255, 255, 255, 1) 100%);
+		padding: 5px;
+
+		width: calc(100% + 30px);
 	}
 }
 
@@ -1456,15 +1632,16 @@ details, summary {
 
 	.search-cont {
 		margin-left: 0;
+		border-bottom: 1px solid #ededed;
 		border-radius: 0;
 		background: #fafafa;
 		padding: 5px;
-		border-bottom: 1px solid #ededed;
 	}
 
 	.search-cont-inner {
-		padding: 0 10px 0 5px;
 		background: transparent;
+		padding: 0 10px 0 5px;
+
 		font-size: 15px;
 	}
 
@@ -1478,6 +1655,7 @@ details, summary {
 
 	.search-clear {
 		padding: 4px 6px;
+
 		font-size: 18px;
 	}
 
@@ -1517,6 +1695,7 @@ details, summary {
 	.topbar {
 		display: flex;
 		position: fixed;
+
 		background: rgba(255, 255, 255, 0.95);
 	}
 
@@ -1525,18 +1704,21 @@ details, summary {
 	}
 
 	.sidebar {
-		width: 280px;
 		position: fixed;
-		left: 0;
 		top: 0;
-		height: 100%;
-		transform: translate3D(-100%, 0, 0);
+		left: 0;
 		transform: translate3D(calc(-100%), 0, 0);
-		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
-		background: white;
+		transform: translate3D(-100%, 0, 0);
+
 		z-index: 2;
-		border-right: 1px solid rgba(0, 0, 0, 0.15);
+		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
 		will-change: transform, contents;
+
+		border-right: 1px solid rgba(0, 0, 0, 0.15);
+		background: white;
+
+		width: 280px;
+		height: 100%;
 	}/* To make the sidebar constantly show the y-scroller make the div
 	dip/overflow. This or simply giving the .menu a min-height: 101%; also
 	works.
@@ -1553,6 +1735,7 @@ details, summary {
 	.markdown-body {
 		margin-top: 40px;
 		padding: 15px;
+
 		font-size: 15px;
 	}
 
@@ -1564,25 +1747,29 @@ details, summary {
 	.markdown-body h6:not(.ignore-header) {
 		position: sticky !important;
 		top: 42px;
-		background: rgba(255, 255, 255, 0.95);
-		backdrop-filter: blur(10px);
-		white-space: nowrap;
-		overflow-x: auto;
-		overflow-y: hidden;
-		text-overflow: initial;
-		/* Full Width Tweak */
-		border-radius: 0 !important;
-		margin-left: -15px;
-		width: calc(100% + 30px);
-		padding: 10px 15px;
-		/* Make scrolling smooth in iOS */
-		overflow-scrolling: touch;
+
 		z-index: 1;
-		font-size: 18px;
-		font-weight: 600;
-		border-bottom: 1px solid #eaecef;
+		backdrop-filter: blur(10px);
+
 		margin-top: 0;
 		margin-bottom: 0;
+		margin-left: -15px;
+		border-bottom: 1px solid #eaecef;
+		/* Full Width Tweak */
+		border-radius: 0 !important;
+		background: rgba(255, 255, 255, 0.95);
+		padding: 10px 15px;
+
+		width: calc(100% + 30px);
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		font-size: 18px;
+		font-weight: 600;
+		text-overflow: initial;
+		white-space: nowrap;
+		/* Make scrolling smooth in iOS */
+		overflow-scrolling: touch;
 	}
 
 	.markdown-body h1.ignore-header,
@@ -1592,20 +1779,23 @@ details, summary {
 	.markdown-body h5.ignore-header,
 	.markdown-body h6.ignore-header {
 		position: relative;
-		background: rgba(255, 255, 255, 0.95);
-		white-space: nowrap;
-		overflow-x: auto;
-		overflow-y: hidden;
-		text-overflow: initial;
-		border-radius: 0 !important;
-		padding: 10px 15px;
-		/* Make scrolling smooth in iOS */
-		overflow-scrolling: touch;
-		font-size: 18px;
-		font-weight: 600;
-		border-bottom: 1px solid #eaecef;
+
 		margin-top: 10px;
 		margin-bottom: 0;
+		border-bottom: 1px solid #eaecef;
+		border-radius: 0 !important;
+		background: rgba(255, 255, 255, 0.95);
+		padding: 10px 15px;
+
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		font-size: 18px;
+		font-weight: 600;
+		text-overflow: initial;
+		white-space: nowrap;
+		/* Make scrolling smooth in iOS */
+		overflow-scrolling: touch;
 	}
 
 	.header-spacer {
@@ -1613,8 +1803,9 @@ details, summary {
 	}
 
 	.code-block-action {
-		color: inherit;
 		opacity: 1;
+
+		color: inherit;
 	}
 
 	.line-num-first {
@@ -1639,8 +1830,9 @@ details, summary {
 
 	.markdown-body .highlight pre,.markdown-body pre {
 		margin-left: -15px;
-		width: calc(100% + 30px);
 		border-radius: 0;
+
+		width: calc(100% + 30px);
 	}
 
 	.markdown-body pre code {
