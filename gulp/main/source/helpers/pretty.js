@@ -325,11 +325,14 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 			),
 			// Prettify JS/JSON files.
 			$.gulpif(function(file) {
-				// Exclude HTML and CSS files.
-				return extension(file, ["html", "css"]) ? false : true;
+				// Exclude anything but JS/JSON files.
+				return extension(file, ["js", "json"]) ? true : false;
 			}, $.prettier(PRETTIER)),
-			// Prettify CSS files.
-			$.gulpif(extension.iscss, $.postcss(css_plugins)),
+			// Prettify CSS/SCSS files.
+			$.gulpif(function(file) {
+				// Exclude anything but CSS/SCSS files.
+				return extension(file, ["css", "scss"]) ? true : false;
+			}, $.postcss(css_plugins)),
 			$.eol(ending),
 			$.debug.edit(),
 			gulp.dest($paths.basedir)

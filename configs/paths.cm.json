@@ -9,7 +9,8 @@
 	"html_source": "${homedir}html/source/",
 
 	// CSS paths.
-	"css_source": "${homedir}css/source/",
+	"css_source": "${homedir}css/source/css/",
+	"scss_source": "${homedir}css/source/scss/",
 	"css_vendor": "${homedir}css/vendor/",
 	"css_bundles": "${homedir}css/bundles/",
 
@@ -88,7 +89,7 @@
 	// File paths.
 	"files_all": "**/*.*",
 	"files_min": "**/*.min.*",
-	"files_common": "**/*.{html,css,js,json}",
+	"files_common": "**/*.{html,css,scss,js,json}",
 	"files_code":
 		"**/*.{bat,coffee,css,htm,html,inc,ini,js,json,jsx,less,od,onlydata,php,pl,py,rb,sass,scm,scss,sh,sql,styl,tag,ts,tsx,xml,xhtml,markdown,md,mdwn,mdown,mkd,mkdn,mdtxt,mdtext,txt,text}",
 

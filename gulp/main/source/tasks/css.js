@@ -1,9 +1,53 @@
 /**
+ * Process any SASS files into their CSS equivalents.
+ *
+ * @internal - Ran via the "css" task.
+ */
+gulp.task("css:sass", function(done) {
+	// Pause the watcher to prevent infinite loops.
+	$.watcher.pause("watcher:css:app");
+
+	pump(
+		[
+			gulp.src([$paths.files_all.replace(/\*$/, "scss")], {
+				cwd: $paths.scss_source
+			}),
+			$.debug({ loader: false }),
+			// [https://github.com/dlmanning/gulp-sass]
+			// [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
+			$.sass.sync().on("error", function(err) {
+				// $.sass.logError
+				// Note: For consistency, use the universal lint printer.
+
+				// Pretty print the issues.
+				lint_printer(
+					[[err.line, err.column, err.name, err.messageOriginal]],
+					err.relativePath
+				);
+
+				// [https://github.com/dlmanning/gulp-sass/blob/master/index.js]
+				// End gulp.
+				this.emit("end");
+			}),
+			gulp.dest($paths.css_source),
+			$.debug.edit({ loader: false }),
+			__bs.stream()
+		],
+		function() {
+			// Un-pause and re-start the watcher.
+			$.watcher.start("watcher:css:app");
+
+			done();
+		}
+	);
+});
+
+/**
  * Build app.css bundle (autoprefix, prettify, etc.).
  *
  * @internal - Ran via the "css" task.
  */
-gulp.task("css:app", function(done) {
+gulp.task("css:app", ["css:sass"], function(done) {
 	// Pause the watcher to prevent infinite loops.
 	$.watcher.pause("watcher:css:app");
 

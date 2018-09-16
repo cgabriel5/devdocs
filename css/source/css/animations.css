@@ -1,0 +1,111 @@
+/* [animation resources] */
+/* [https://www.w3schools.com/cssref/css3_pr_animation.asp] */
+/*.ANIMATION-TEMPLATE {
+	animation-name: ANIMATION-TEMPLATE;
+	animation-duration: 0.2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes ANIMATION-TEMPLATE {
+	0% {}
+}*/
+/*.animate-fadein-y {
+	animation-name: animate-fadein-y;
+	animation-duration: 0.3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: 1;
+}
+
+@keyframes animate-fadein-y {
+	0% {
+		transform: translateY(-15px);
+		opacity: 0;
+	}
+
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}*/
+.animate-fadein {
+  animation-name: animate-fadein;
+  animation-duration: 0.2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1; }
+
+@keyframes animate-fadein {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+.animate-spin {
+  animation-name: animate-spin;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite; }
+
+@keyframes animate-spin {
+  0% {
+    transform: rotate(0deg); }
+  100% {
+    transform: rotate(360deg); } }
+
+.animate-pulse {
+  animation-name: animate-pulse;
+  animation-duration: 0.6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1; }
+
+@keyframes animate-pulse {
+  40% {
+    transform: translate3d(0, 0, 0) scale(0.5); } }
+
+.animate-logo {
+  animation-name: animate-logo;
+  animation-duration: 0.4s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1; }
+
+@keyframes animate-logo {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0); }
+  50% {
+    transform: translate3d(0, 0, 0) scale(1); } }
+
+.animate-loading {
+  animation-name: animate-loading;
+  animation-duration: 0.8s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite; }
+
+@keyframes animate-loading {
+  25% {
+    height: 2px;
+    opacity: 0.5; }
+  75% {
+    height: 0;
+    opacity: 0;
+    background-color: transparent; } }
+
+.animate-header-highlight {
+  animation-name: animate-header-highlight;
+  animation-duration: 2s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1; }
+
+@keyframes animate-header-highlight {
+  0% {
+    border-radius: 4px;
+    background: #ffc758; }
+  50% {
+    background: #ffffff; } }
+
+@media (max-width: 768px) {
+  @keyframes animate-header-highlight {
+    0% {
+      border-radius: 0;
+      background: #ffc758; }
+    50% {
+      background: #ffffff; } } }

@@ -1410,11 +1410,55 @@ gulp.task("html", function(done) {
 // -----------------------------------------------------------------------------
 
 /**
+ * Process any SASS files into their CSS equivalents.
+ *
+ * @internal - Ran via the "css" task.
+ */
+gulp.task("css:sass", function(done) {
+	// Pause the watcher to prevent infinite loops.
+	$.watcher.pause("watcher:css:app");
+
+	pump(
+		[
+			gulp.src([$paths.files_all.replace(/\*$/, "scss")], {
+				cwd: $paths.scss_source
+			}),
+			$.debug({ loader: false }),
+			// [https://github.com/dlmanning/gulp-sass]
+			// [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
+			$.sass.sync().on("error", function(err) {
+				// $.sass.logError
+				// Note: For consistency, use the universal lint printer.
+
+				// Pretty print the issues.
+				lint_printer(
+					[[err.line, err.column, err.name, err.messageOriginal]],
+					err.relativePath
+				);
+
+				// [https://github.com/dlmanning/gulp-sass/blob/master/index.js]
+				// End gulp.
+				this.emit("end");
+			}),
+			gulp.dest($paths.css_source),
+			$.debug.edit({ loader: false }),
+			__bs.stream()
+		],
+		function() {
+			// Un-pause and re-start the watcher.
+			$.watcher.start("watcher:css:app");
+
+			done();
+		}
+	);
+});
+
+/**
  * Build app.css bundle (autoprefix, prettify, etc.).
  *
  * @internal - Ran via the "css" task.
  */
-gulp.task("css:app", function(done) {
+gulp.task("css:app", ["css:sass"], function(done) {
 	// Pause the watcher to prevent infinite loops.
 	$.watcher.pause("watcher:css:app");
 
@@ -2780,11 +2824,14 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 			),
 			// Prettify JS/JSON files.
 			$.gulpif(function(file) {
-				// Exclude HTML and CSS files.
-				return extension(file, ["html", "css"]) ? false : true;
+				// Exclude anything but JS/JSON files.
+				return extension(file, ["js", "json"]) ? true : false;
 			}, $.prettier(PRETTIER)),
-			// Prettify CSS files.
-			$.gulpif(extension.iscss, $.postcss(css_plugins)),
+			// Prettify CSS/SCSS files.
+			$.gulpif(function(file) {
+				// Exclude anything but CSS/SCSS files.
+				return extension(file, ["css", "scss"]) ? true : false;
+			}, $.postcss(css_plugins)),
 			$.eol(ending),
 			$.debug.edit(),
 			gulp.dest($paths.basedir)
