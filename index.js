@@ -2311,8 +2311,185 @@ gulp.task("clean:app", function(done) {
 	});
 });
 
+/**
+ * This function abstracts the linter printer logic. It prints the
+ *     issues in a consistent manner between different HTML, CSS,
+ *     and JS linters.
+ *
+ * @param  {array} issues - Array containing issues as object.
+ * @param  {string} filepath - The path of the linted file.
+ * @return {undefined} - Nothing.
+ */
+function lint_printer(issues, filepath) {
+	var table = require("text-table");
+	var strip_ansi = require("strip-ansi");
+
+	// Get the file name.
+	var filename = path.relative(cwd, filepath);
+
+	// Print the file name header.
+	print.ln();
+	print(chalk.underline(filename));
+
+	// No issues found.
+	if (!issues.length) {
+		print.ln();
+		print(`  ${chalk.yellow("⚠")}  0 issues`);
+		print.ln();
+
+		return;
+	}
+
+	// Else issues exist so print them.
+
+	// Loop over issues to add custom reporter format/styling.
+	issues = issues.map(function(issue) {
+		// Replace the array item with the new styled/highlighted parts.
+		return [
+			"", // Empty space for spacing purposes.
+			// Highlight parts.
+			chalk.gray(`line ${issue[0]}`),
+			chalk.gray(`char ${issue[1]}`),
+			chalk.blue(`(${issue[2]})`),
+			chalk.yellow(`${issue[3]}.`)
+		];
+	});
+
+	// Print issues.
+	print(
+		table(issues, {
+			// Remove ansi color to get the string length.
+			stringLength: function(string) {
+				return strip_ansi(string).length;
+			}
+		})
+	);
+
+	print.ln();
+
+	// Make the issue plural if needed.
+	var issue = "issue" + (issues.length > 1 ? "s" : "");
+
+	// Print the issue count.
+	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${issue}`);
+	print.ln();
+}
+
+/**
+ * Process any SASS files into their CSS equivalents.
+ */
+gulp.task("css:sass", function(done) {
+	// Skip task logic if initial flag is not set.
+	if (!initial) {
+		if (debug) {
+			print.gulp.warn("Skipped SCSS processing.");
+		}
+
+		return done();
+	}
+
+	// The default SCSS style sheets.
+	let scss_source_files = ["css/source/scss/**/*.*scss"];
+
+	// Make the paths absolute to the devdocs module. Not the user's dir.
+	scss_source_files = scss_source_files.map(function(__path) {
+		return apath(__path);
+	});
+
+	let sass = require("node-sass");
+
+	// Contain any SCSS processing errors here.
+	var scss_errors = { filenames: [] };
+
+	pump(
+		[
+			gulp.src(scss_source_files),
+			$.gulpif(
+				debug_flist,
+				$.debug({
+					loader: false,
+					title: "files for SASS processing..."
+				})
+			),
+			$.each(function(content, file, callback) {
+				// Get the file path.
+				var __path = file.path;
+
+				// Run the Node-SASS processor on the file.
+				// [https://github.com/sass/node-sass#render-callback--v300]
+				sass.render({ file: __path }, function(err, result) {
+					if (err) {
+						// Store the error for later output.
+						if (scss_errors[__path]) {
+							// Append to the errors.
+							scss_errors[__path].push([
+								err.line,
+								err.column,
+								err.status,
+								err.message
+							]);
+						} else {
+							// Add for the first time.
+							scss_errors[__path] = [
+								[err.line, err.column, err.status, err.message]
+							];
+
+							// Maintain file processing order.
+							scss_errors.filenames.push(__path);
+						}
+					} else {
+						// Reset the file contents with the CSS output.
+						file.contents = Buffer.from(result.css.toString());
+					}
+
+					callback(null, file.contents);
+				});
+			}),
+			// // [https://github.com/dlmanning/gulp-sass]
+			// // [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
+			// $.sass.sync().on("error", function(err) {
+			// 	// $.sass.logError
+			// 	// Note: For consistency, use the universal lint printer.
+
+			// 	// Pretty print the issues.
+			// 	lint_printer(
+			// 		[[err.line, err.column, err.name, err.messageOriginal]],
+			// 		err.relativePath
+			// 	);
+
+			// 	// [https://github.com/dlmanning/gulp-sass/blob/master/index.js]
+			// 	// End gulp.
+			// 	this.emit("end");
+			// }),
+			gulp.dest(apath("./css/source/css")),
+			$.gulpif(
+				debug_flist,
+				$.debug.edit({
+					loader: false,
+					title: "SASS files processed..."
+				})
+			)
+		],
+		function() {
+			// Output any processing errors.
+			if (scss_errors.filenames.length) {
+				// Loop over the errors.
+				for (let i = 0, l = scss_errors.filenames.length; i < l; i++) {
+					// Cache current loop item.
+					var filename = scss_errors.filenames[i];
+
+					// Print the errors.
+					lint_printer(scss_errors[filename], filename);
+				}
+			}
+
+			done();
+		}
+	);
+});
+
 // Create the CSS bundle.
-gulp.task("css:app", function(done) {
+gulp.task("css:app", ["css:sass"], function(done) {
 	// Skip task logic if initial flag is not set.
 	if (!initial) {
 		if (debug) {
@@ -2326,6 +2503,7 @@ gulp.task("css:app", function(done) {
 	let autoprefixer = require("autoprefixer");
 	let perfectionist = require("perfectionist");
 	let shorthand = require("postcss-merge-longhand");
+	let csssorter = require("postcss-sorting");
 
 	// The default CSS style sheets.
 	let css_source_files = [
@@ -2366,6 +2544,11 @@ gulp.task("css:app", function(done) {
 	// Get the postcss plugins' configurations.
 	let AUTOPREFIXER = require("./configs/autoprefixer.json");
 	let PERFECTIONIST = require("./configs/perfectionist.json");
+	let CSSSORTER = jsonc.parse(
+		fs.readFileSync(apath("./configs/csssorter.cm.json")).toString(),
+		null,
+		true
+	);
 
 	return pump(
 		[
@@ -2385,7 +2568,8 @@ gulp.task("css:app", function(done) {
 				unprefix(),
 				shorthand(),
 				autoprefixer(AUTOPREFIXER),
-				perfectionist(PERFECTIONIST)
+				perfectionist(PERFECTIONIST),
+				csssorter(CSSSORTER)
 			]),
 			// CSS style must be prefixed for it to work at the moment.
 			$.replace(/overflow\-scrolling/g, "-webkit-overflow-scrolling"),
