@@ -2445,6 +2445,10 @@ gulp.task("css:sass", function(done) {
 					callback(null, file.contents);
 				});
 			}),
+			$.rename(function(path) {
+				// Rename the file extension from .scss to .css.
+				path.extname = ".css";
+			}),
 			// // [https://github.com/dlmanning/gulp-sass]
 			// // [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
 			// $.sass.sync().on("error", function(err) {
@@ -2505,10 +2509,13 @@ gulp.task("css:app", ["css:sass"], function(done) {
 	let shorthand = require("postcss-merge-longhand");
 	let csssorter = require("postcss-sorting");
 
+	// The CSS file source path.
+	var css_path_source = "css/source/css/";
+
 	// The default CSS style sheets.
 	let css_source_files = [
 		"css/vendor/sanitize.css/sanitize.css",
-		"css/source/github-markdown.css"
+		`${css_path_source}github-markdown.css`
 		// "css/vendor/font-awesome/font-awesome.css"
 	];
 
@@ -2521,19 +2528,22 @@ gulp.task("css:app", ["css:sass"], function(done) {
 	// If a highlighter name was passed determine whether it is prismjs or
 	// highlighterjs.
 	if (highlighter_fchar !== "n") {
-		if (highlighter_fchar === "h") {
-			css_source_files.push("css/source/highlightjs.css");
-		} else {
-			// Default to prismjs.
-			css_source_files.push("css/source/prism-github.css");
-		}
+		// Default to prismjs.
+		css_source_files.push(
+			`${css_path_source}${
+				highlighter_fchar === "h" ? "highlightjs" : "prism-github"
+			}.css`
+		);
 	}
 
 	// Add the app styles.
-	css_source_files.push("css/source/styles.css", "css/source/helpers.css");
+	css_source_files.push(
+		`${css_path_source}styles.css`,
+		`${css_path_source}helpers.css`
+	);
 	// Add CSS animations if wanted.
 	if (animations) {
-		css_source_files.push("css/source/animations.css");
+		css_source_files.push(`${css_path_source}animations.css`);
 	}
 
 	// Make the paths absolute to the devdocs module. Not the user's dir.

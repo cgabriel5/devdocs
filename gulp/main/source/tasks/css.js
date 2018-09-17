@@ -52,6 +52,10 @@ gulp.task("css:sass", function(done) {
 					callback(null, file.contents);
 				});
 			}),
+			$.rename(function(path) {
+				// Rename the file extension from .scss to .css.
+				path.extname = ".css";
+			}),
 
 			// Old Gulp SASS method.
 			// // [https://github.com/dlmanning/gulp-sass]
