@@ -173,7 +173,7 @@ function lint_printer(issues, filepath) {
 	// No issues found.
 	if (!issues.length) {
 		print.ln();
-		print(`  ${chalk.yellow("⚠")}  0 warnings`);
+		print(`  ${chalk.yellow("⚠")}  0 issues`);
 		print.ln();
 
 		return;
@@ -206,10 +206,10 @@ function lint_printer(issues, filepath) {
 
 	print.ln();
 
-	// Make the warning plural if needed.
-	var warning = "warning" + (issues.length > 1 ? "s" : "");
+	// Make the issue plural if needed.
+	var issue = "issue" + (issues.length > 1 ? "s" : "");
 
 	// Print the issue count.
-	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${warning}`);
+	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${issue}`);
 	print.ln();
 }

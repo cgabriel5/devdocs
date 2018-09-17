@@ -89,6 +89,7 @@
 				"helpers/make.js",
 				"helpers/lintjs.js",
 				"helpers/lintcss.js",
+				"helpers/lintscss.js",
 				"helpers/linthtml.js",
 				"helpers/settings.js",
 				"helpers/indent.js",

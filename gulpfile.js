@@ -20,6 +20,7 @@ var $ = require("gulp-load-plugins")({
 	rename: {
 		"gulp-if": "gulpif",
 		"gulp-purifycss": "purify",
+		"gulp-scss-lint": "scsslint",
 		"gulp-clean-css": "clean_css",
 		"gulp-json-sort": "json_sort",
 		"gulp-jsbeautifier": "beautify",
@@ -441,7 +442,7 @@ function lint_printer(issues, filepath) {
 	// No issues found.
 	if (!issues.length) {
 		print.ln();
-		print(`  ${chalk.yellow("⚠")}  0 warnings`);
+		print(`  ${chalk.yellow("⚠")}  0 issues`);
 		print.ln();
 
 		return;
@@ -474,11 +475,11 @@ function lint_printer(issues, filepath) {
 
 	print.ln();
 
-	// Make the warning plural if needed.
-	var warning = "warning" + (issues.length > 1 ? "s" : "");
+	// Make the issue plural if needed.
+	var issue = "issue" + (issues.length > 1 ? "s" : "");
 
 	// Print the issue count.
-	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${warning}`);
+	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${issue}`);
 	print.ln();
 }
 
@@ -1418,35 +1419,89 @@ gulp.task("css:sass", function(done) {
 	// Pause the watcher to prevent infinite loops.
 	$.watcher.pause("watcher:css:app");
 
+	let sass = require("node-sass");
+
+	// Contain any SCSS processing errors here.
+	var scss_errors = { filenames: [] };
+
 	pump(
 		[
 			gulp.src([$paths.files_all.replace(/\*$/, "scss")], {
 				cwd: $paths.scss_source
 			}),
-			$.debug({ loader: false }),
-			// [https://github.com/dlmanning/gulp-sass]
-			// [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
-			$.sass.sync().on("error", function(err) {
-				// $.sass.logError
-				// Note: For consistency, use the universal lint printer.
+			$.debug({ loader: false, title: "files for SASS processing..." }),
+			$.each(function(content, file, callback) {
+				// Get the file path.
+				var __path = file.path;
 
-				// Pretty print the issues.
-				lint_printer(
-					[[err.line, err.column, err.name, err.messageOriginal]],
-					err.relativePath
-				);
+				// Run the Node-SASS processor on the file.
+				// [https://github.com/sass/node-sass#render-callback--v300]
+				sass.render({ file: __path }, function(err, result) {
+					if (err) {
+						// Store the error for later output.
+						if (scss_errors[__path]) {
+							// Append to the errors.
+							scss_errors[__path].push([
+								err.line,
+								err.column,
+								err.status,
+								err.message
+							]);
+						} else {
+							// Add for the first time.
+							scss_errors[__path] = [
+								[err.line, err.column, err.status, err.message]
+							];
 
-				// [https://github.com/dlmanning/gulp-sass/blob/master/index.js]
-				// End gulp.
-				this.emit("end");
+							// Maintain file processing order.
+							scss_errors.filenames.push(__path);
+						}
+					} else {
+						// Reset the file contents with the CSS output.
+						file.contents = Buffer.from(result.css.toString());
+					}
+
+					callback(null, file.contents);
+				});
 			}),
+
+			// Old Gulp SASS method.
+			// // [https://github.com/dlmanning/gulp-sass]
+			// // [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
+			// $.sass.sync().on("error", function(err) {
+			// 	// $.sass.logError
+			// 	// Note: For consistency, use the universal lint printer.
+
+			// 	// Pretty print the issues.
+			// 	lint_printer(
+			// 		[[err.line, err.column, err.name, err.messageOriginal]],
+			// 		err.relativePath
+			// 	);
+
+			// 	// [https://github.com/dlmanning/gulp-sass/blob/master/index.js]
+			// 	// End gulp.
+			// 	this.emit("end");
+			// }),
+
 			gulp.dest($paths.css_source),
-			$.debug.edit({ loader: false }),
+			$.debug.edit({ loader: false, title: "SASS files processed..." }),
 			__bs.stream()
 		],
 		function() {
 			// Un-pause and re-start the watcher.
 			$.watcher.start("watcher:css:app");
+
+			// Output any processing errors.
+			if (scss_errors.filenames.length) {
+				// Loop over the errors.
+				for (let i = 0, l = scss_errors.filenames.length; i < l; i++) {
+					// Cache current loop item.
+					var filename = scss_errors.filenames[i];
+
+					// Print the errors.
+					lint_printer(scss_errors[filename], filename);
+				}
+			}
 
 			done();
 		}
@@ -4016,6 +4071,83 @@ gulp.task("lintcss", function(done) {
 							issue.col,
 							issue.rule.id,
 							issue.message
+						]);
+					});
+				}
+
+				// Pretty print the issues.
+				lint_printer(issues_std, file.path);
+			})
+		],
+		done
+	);
+});
+
+// -----------------------------------------------------------------------------
+// lintscss.js -- ./gulp/main/source/helpers/lintscss.js
+// -----------------------------------------------------------------------------
+
+/**
+ * Lint a SCSS file.
+ *
+ * -F, --file <array>
+ *     The SCSS file to lint.
+ *
+ * $ gulp lintcss --file ./css/source/scss/styles.scss
+ *     Lint ./css/source/scss/styles.scss.
+ *
+ * Notes
+ *
+ * • This task requires Ruby and the Ruby gem 'scss_lint' to be installed. If
+ *     running Ubuntu, simply run: '$ sudo apt-get install ruby-full --yes'
+ *     followed by '$ sudo gem install scss_lint'. For other OS's please check
+ *     for your specific OS installation.
+ *     Linux install: [https://www.thoughtco.com/instal-ruby-on-linux-2908370]
+ */
+gulp.task("lintscss", function(done) {
+	// Run yargs.
+	var __flags = yargs.option("file", {
+		alias: "F",
+		type: "array"
+	}).argv;
+
+	// Get flag values.
+	var file = __flags.F || __flags.file;
+
+	// When no files are provided print an error.
+	if (!file.length) {
+		print.gulp.error("Provide a file to lint.");
+		return done();
+	}
+
+	pump(
+		[
+			gulp.src(file, {
+				cwd: $paths.basedir
+			}),
+			$.debug({ loader: false }),
+			// $.scsslint(/* $configs.csslint */),
+			$.scsslint({ customReport: function() {} }),
+			// Note: Use the custom reporter printer function to be consistent
+			// with the other linters.
+			$.fn(function(file) {
+				// Array will contain the standardized issues.
+				var issues_std = [];
+
+				// Only if there were issues found.
+				if (!file.scsslint.success) {
+					// Get the issues.
+					var issues = file.scsslint.issues;
+
+					// Loop over the issues to standardized.
+					issues.forEach(function(issue) {
+						// [https://github.com/juanfran/gulp-scss-lint#results]
+						// Add the standardized issue to the array.
+						issues_std.push([
+							issue.line,
+							issue.column,
+							issue.severity,
+							issue.reason
 						]);
 					});
 				}
