@@ -2554,11 +2554,6 @@ gulp.task("css:app", ["css:sass"], function(done) {
 	// Get the postcss plugins' configurations.
 	let AUTOPREFIXER = require("./configs/autoprefixer.json");
 	let PERFECTIONIST = require("./configs/perfectionist.json");
-	let CSSSORTER = jsonc.parse(
-		fs.readFileSync(apath("./configs/csssorter.cm.json")).toString(),
-		null,
-		true
-	);
 
 	return pump(
 		[
@@ -2578,8 +2573,7 @@ gulp.task("css:app", ["css:sass"], function(done) {
 				unprefix(),
 				shorthand(),
 				autoprefixer(AUTOPREFIXER),
-				perfectionist(PERFECTIONIST),
-				csssorter(CSSSORTER)
+				perfectionist(PERFECTIONIST)
 			]),
 			// CSS style must be prefixed for it to work at the moment.
 			$.replace(/overflow\-scrolling/g, "-webkit-overflow-scrolling"),
