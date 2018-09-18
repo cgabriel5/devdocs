@@ -188,9 +188,18 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var remove_prefixes = __flags.unprefix || __flags.u;
 	var ending = __flags.l || __flags["line-ending"] || EOL_ENDING;
 
+	// The PostCSS plugin order:
+	// 1. unprefix (CLI flag dependant)
+	// 2. shorthand (CLI flag dependant w/ autoprefixer flag)
+	// 3. autoprefixer? (CLI flag dependant)
+	// 4. perfectionist (Always added)
+	// 5. csssorter (Only for SCSS files)
+
 	// By default CSS files will only be unprefixed and beautified. If needed
 	// files can also be autoprefixed when the --cssprefix/-p flag is used.
-	var css_plugins = [perfectionist(PERFECTIONIST), csssorter(CSSSORTER)];
+	var css_plugins = [perfectionist(PERFECTIONIST)];
+	// Add the sorter plugin for SCSS files.
+	var css_plugins_scss = [perfectionist(PERFECTIONIST), csssorter(CSSSORTER)];
 
 	// To unprefix CSS files one of two things must happen. Either the
 	// unprefix or the cssprefix flag must be provided. The unprefix flag
@@ -199,11 +208,13 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	// unprefixd state.
 	if (remove_prefixes || cssprefix) {
 		css_plugins.unshift(unprefix());
+		css_plugins_scss.unshift(unprefix());
 	}
 
 	// If the flag is provided, shorthand and autoprefix CSS.
 	if (cssprefix) {
 		css_plugins.splice(1, 0, shorthand(), autoprefixer(AUTOPREFIXER));
+		css_plugins_scss.splice(1, 0, shorthand(), autoprefixer(AUTOPREFIXER));
 	}
 
 	// Default globs: look for HTML, CSS, JS, and JSON files. They also
@@ -216,7 +227,8 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 		bangify(globall($paths.node_modules_name)),
 		bangify(globall($paths.git)),
 		$paths.not_vendor,
-		$paths.not_ignore
+		$paths.not_ignore,
+		$paths.not_css_source
 	];
 
 	// When the empty flag is provided the files array will be emptied.
@@ -328,11 +340,10 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 				// Exclude anything but JS/JSON files.
 				return extension(file, ["js", "json"]) ? true : false;
 			}, $.prettier(PRETTIER)),
-			// Prettify CSS/SCSS files.
-			$.gulpif(function(file) {
-				// Exclude anything but CSS/SCSS files.
-				return extension(file, ["css", "scss"]) ? true : false;
-			}, $.postcss(css_plugins)),
+			// Prettify CSS files.
+			$.gulpif(extension.iscss, $.postcss(css_plugins)),
+			// Prettify SCSS files.
+			$.gulpif(extension.isscss, $.postcss(css_plugins_scss)),
 			$.eol(ending),
 			$.debug.edit(),
 			gulp.dest($paths.basedir)

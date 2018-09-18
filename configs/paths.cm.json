@@ -53,6 +53,7 @@
 	"config_$modernizr": "modernizr",
 	"config_$csslint": "csslint.cm",
 	"config_$prettier": "prettier",
+	"config_$uglify": "uglify.cm",
 	"config_$jshint": "jshint.cm",
 	"config_$htmlmin": "htmlmin",
 	"config_$bundles": "bundles",
@@ -97,5 +98,6 @@
 	"not_min": "!**/*.min.*",
 	"not_tests": "!**/test/**",
 	"not_vendor": "!**/vendor/**",
-	"not_ignore": "!**/*.ig.*"
+	"not_ignore": "!**/*.ig.*",
+	"not_css_source": "!**/source/css/**"
 }

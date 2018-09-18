@@ -132,6 +132,8 @@ var time = function() {
  * Creates an OS notifcation.
  *
  * @param {string} message - The notifcation message to display.
+ * @param {boolean} title - Optional notification title.
+ * @param {boolean} error - Optional notification message.
  * @param {boolean} error - Flag indicating what image to use.
  * @return {undefined} - Nothing.
  */
@@ -274,6 +276,9 @@ ext.ishtml = function(file) {
 };
 ext.iscss = function(file) {
 	return ext(file, ["css"]);
+};
+ext.isscss = function(file) {
+	return ext(file, ["scss"]);
 };
 ext.isjs = function(file) {
 	return ext(file, ["js"]);
