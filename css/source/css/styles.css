@@ -1,3 +1,4 @@
+/* File vars. */
 /* App styles here. */
 body {
   margin: 0;
@@ -28,7 +29,6 @@ body {
 /* Make the sidebar fixed. */
 .sidebar {
   position: fixed;
-  /* Width of the sizebar. */
   width: 300px;
   height: 100%;
   overflow-x: hidden;
@@ -64,7 +64,6 @@ to become invisible when header scrolling. This seems to solve the issue.
 .markdown {
   opacity: 1;
   transition: opacity 0.2s ease-in-out;
-  /* Width of the sizebar. */
   margin-left: 300px;
   background: transparent;
   width: 100%; }
@@ -474,7 +473,6 @@ ul.file-headers {
   transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease-in-out; }
 
 .mobile-slide {
-  /* Width of the sizebar. */
   transform: translate3D(300px, 0, 0);
   transform: translate3D(calc(300px), 0, 0); }
 
@@ -1198,7 +1196,6 @@ details, summary {
   .app {
     width: 1100px; }
   .sidebar {
-    /* Width of the sizebar. */
     flex: 1 0 300px; } }
 
 @media (max-width: 1125px) {
