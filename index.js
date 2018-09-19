@@ -2538,8 +2538,8 @@ gulp.task("css:app", ["css:sass"], function(done) {
 
 	// Add the app styles.
 	css_source_files.push(
-		`${css_path_source}styles.css`,
-		`${css_path_source}helpers.css`
+		`${css_path_source}helpers.css`,
+		`${css_path_source}styles.css`
 	);
 	// Add CSS animations if wanted.
 	if (animations) {
