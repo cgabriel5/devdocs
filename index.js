@@ -2388,8 +2388,11 @@ gulp.task("css:sass", function(done) {
 		return done();
 	}
 
+	// Note: Make sure to exclude partials (_filename.scss) from processing.
+	// [https://stackoverflow.com/a/38095853]
+
 	// The default SCSS style sheets.
-	let scss_source_files = ["css/source/scss/**/*.*scss"];
+	let scss_source_files = ["css/source/scss/**/[^_]*.*scss"];
 
 	// Make the paths absolute to the devdocs module. Not the user's dir.
 	scss_source_files = scss_source_files.map(function(__path) {
