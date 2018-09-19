@@ -14,7 +14,9 @@ gulp.task("css:sass", function(done) {
 
 	pump(
 		[
-			gulp.src([$paths.files_all.replace(/\*$/, "scss")], {
+			// Note: Make sure to exclude partials (_filename.scss) from processing.
+			// [https://stackoverflow.com/a/38095853]
+			gulp.src([$paths.files_all.replace(/\/\*\.\*$/, "/[^_]*.*scss")], {
 				cwd: $paths.scss_source
 			}),
 			$.debug({ loader: false, title: "files for SASS processing..." }),
