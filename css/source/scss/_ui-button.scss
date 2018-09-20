@@ -1,0 +1,44 @@
+// Get main/top-level imports.
+@import "mixins";
+
+/* Button UI */
+
+%btn {
+	transition: box-shadow 0.2s ease-in-out;
+	cursor: pointer;
+
+	border: 1px solid rgba(0, 0, 0, 0.17);
+	border-radius: 4px;
+	/* Defaults to a white button. */
+	background: #ffffff;
+
+	color: #333333;
+	@include noselect();
+}
+
+.btn {
+	@extend %btn;
+
+	&:hover {
+		box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+	}
+
+	&:active {
+		opacity: 0.7;
+	}
+
+	&-blue {
+		border: 1px solid transparent;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+		background: #2578f8;
+
+		color: #ffffff;
+	}
+
+	&-home {
+		padding: 6px 10px;
+
+		font-size: 12px;
+		font-weight: bold;
+	}
+}

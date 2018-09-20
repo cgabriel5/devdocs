@@ -1,0 +1,58 @@
+.error-cont {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: center;
+
+	padding-top: 25px;
+}
+
+.error-logo-cont {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: space-evenly;
+
+	opacity: 0.5;
+
+	margin-bottom: 20px;
+	border: 1px solid #ededed;
+	border-radius: 100px;
+	padding: 2px 6px;
+
+	width: 85px;
+
+	color: #888888;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.error-logo {
+	filter: grayscale(1);
+
+	width: 10px;
+}
+
+.error-msg-1 {
+	color: #444343;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.error-msg-2 {
+	padding-top: 10px;
+
+	max-width: 375px;
+
+	color: #6d6d6d;
+	font-size: 14px;
+	text-align: center;
+}
+
+.error-btn-cont {
+	margin-top: 15px;
+}
+
+.found-versions-cont {
+	padding: 3px 0 3px 0;
+}

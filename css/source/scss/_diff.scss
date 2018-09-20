@@ -1,0 +1,22 @@
+.diff {
+	&-deletion {
+		background-color: #ffeef0;
+
+		color: #b31d28;
+	}
+
+	&-addition {
+		background-color: #f0fff4;
+
+		color: #22863a;
+	}
+
+	&-coordinate {
+		color: #6f42c1;
+		font-weight: bold;
+	}
+
+	&-diffline {
+		color: #005cc5;
+	}
+}

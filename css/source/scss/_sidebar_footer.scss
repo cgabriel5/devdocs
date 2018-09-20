@@ -1,0 +1,45 @@
+.logo-devdocs {
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	justify-content: center;
+
+	filter: grayscale(10);
+
+	margin-bottom: -40px;
+	padding: 10px 10px;
+	padding: 50px 0 15px 0;
+}
+
+.logo-devdocs-img-cont {
+	opacity: 0.3;
+
+	margin-top: -3px;
+}
+
+.logo-devdocs img {
+	width: 13px;
+}
+
+.sb-footer-inner {
+	display: flex;
+	flex-flow: nowrap;
+	align-items: center;
+	justify-content: center;
+
+	color: #afafaf;
+	font-size: 12px;
+}
+
+.footer-logo-name {
+	font-weight: bold;
+}
+
+.footer-logo-name a {
+	color: #afafaf;
+	text-decoration: none;
+}
+
+.footer-logo-name a:active {
+	text-decoration: underline;
+}

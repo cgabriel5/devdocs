@@ -1,0 +1,9 @@
+body {
+	margin: 0;
+
+	font-size: 16px;
+	/* Thicken Safari fonts:
+	[https://github.com/cgabriel5/snippets/blob/master/css/fonts/normalize_macos_fonts.css] */
+	font-smoothing: subpixel-antialiased;
+	@include def-font();
+}

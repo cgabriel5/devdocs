@@ -1,0 +1,58 @@
+// Get main/top-level imports.
+@import "mixins";
+
+.topbar {
+	display: flex;
+	display: none;
+	align-items: center;
+	justify-content: space-between;
+
+	z-index: 1;
+	backdrop-filter: blur(10px);
+
+	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+	background: #fbfbfb;
+	padding: 5px 20px 5px;
+
+	width: 100%;
+
+	font-weight: bold;
+	@include translate3d();
+}
+
+/* [https://codepen.io/hoshts/pen/BHoij?editors=1100] */
+
+.topbar-loader {
+	margin: 0 15px 0 5px;
+}
+
+.tb-logo {
+	margin-right: -5px;
+	margin-left: -5px;
+}
+
+.tb-menu {
+	cursor: pointer;
+
+	margin-left: -10px;
+	padding: 7px;
+
+	font-size: 18px;
+}
+
+.tb-menu:active {
+	opacity: 0.7;
+}
+
+.scroll-def {
+	border: 1px solid rgba(0, 0, 0, 0.0975);
+	border-radius: 100px;
+	padding: 4px 8px;
+
+	font-size: 12px;
+}
+
+.scroll-icon-middle {
+	margin-top: 1px;
+	padding: 0 4px;
+}

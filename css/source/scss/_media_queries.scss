@@ -1,0 +1,258 @@
+@media (max-width: 768px) {
+	.md-footer {
+		display: flex;
+		flex-flow: row wrap;
+
+		margin-top: 30px;
+		margin-left: -15px;
+		border-top: 1px solid #eaecef;
+		background: #fcfcfc;
+		background: linear-gradient(180deg, #fcfcfc 0%, rgba(255, 255, 255, 1) 100%);
+		padding: 5px;
+
+		width: calc(100% + 30px);
+	}
+}
+
+@media (max-width: 270px) {
+	.arrow-content {
+		width: 75px;
+	}
+}
+
+@media (max-width: 366px) {
+	.show-code-message-cont {
+		font-size: 13px;
+	}
+}
+
+@media (max-width: 1325px) {
+	.app {
+		width: 1100px;
+	}
+
+	.sidebar {
+		flex: 1 0 $sidebar-width-normal;
+	}
+}
+
+@media (max-width: 1125px) {
+	.app {
+		width: 1000px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.app {
+		width: auto;
+	}
+
+	.l-1 {
+		padding: 10px 0 10px 15px;
+	}
+
+	.search-cont {
+		margin-left: 0;
+		border-bottom: 1px solid #ededed;
+		border-radius: 0;
+		background: #fafafa;
+		padding: 5px;
+	}
+
+	.search-cont-inner {
+		background: transparent;
+		padding: 0 10px 0 5px;
+
+		font-size: 15px;
+	}
+
+	.search-cont-inner-vlist {
+		background: #f7f7f7;
+	}
+
+	.sinput::placeholder {
+		font-size: 16px;
+	}
+
+	.search-clear {
+		padding: 4px 6px;
+
+		font-size: 18px;
+	}
+
+	.sinput {
+		font-size: 16px;
+	}
+
+	.logo-spacer {
+		display: block;
+	}
+}
+
+@media (min-width: 768px) {
+	body {
+		overflow-y: scroll;
+	}
+
+	.app {
+		overflow-x: hidden;
+	}
+
+	.markdown {
+		overflow: auto;
+	}
+}
+
+@media (max-width: 768px) {
+	.markdown {
+		margin-left: 0;
+	}
+
+	.app {
+		/* width: 900px; */
+		flex-flow: column nowrap;
+	}
+
+	.topbar {
+		display: flex;
+		position: fixed;
+
+		background: rgba(255, 255, 255, 0.95);
+	}
+
+	.menu {
+		margin-top: 10px;
+	}
+
+	.sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+
+		z-index: 2;
+		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+		will-change: transform, contents;
+
+		border-right: 1px solid rgba(0, 0, 0, 0.15);
+		background: white;
+
+		width: $sidebar-width-mobile;
+		height: 100%;
+		@include translate3d(-100%);
+	}/* To make the sidebar constantly show the y-scroller make the div
+	dip/overflow. This or simply giving the .menu a min-height: 101%; also
+	works.
+
+	.logo-devdocs {
+		margin-bottom: -40px;
+	}*/
+
+	.markdown-body {
+		margin-top: 40px;
+		padding: 15px;
+
+		font-size: 15px;
+	}
+
+	.markdown-body h1:not(.ignore-header),
+	.markdown-body h2:not(.ignore-header),
+	.markdown-body h3:not(.ignore-header),
+	.markdown-body h4:not(.ignore-header),
+	.markdown-body h5:not(.ignore-header),
+	.markdown-body h6:not(.ignore-header) {
+		position: sticky !important;
+		top: 42px;
+
+		z-index: 1;
+		backdrop-filter: blur(10px);
+
+		margin-top: 0;
+		margin-bottom: 0;
+		margin-left: -15px;
+		border-bottom: 1px solid #eaecef;
+		/* Full Width Tweak */
+		border-radius: 0 !important;
+		background: rgba(255, 255, 255, 0.95);
+		padding: 10px 15px;
+
+		width: calc(100% + 30px);
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		font-size: 18px;
+		font-weight: 600;
+		text-overflow: initial;
+		white-space: nowrap;
+		@include ios_smooth_scrolling();
+	}
+
+	.markdown-body h1.ignore-header,
+	.markdown-body h2.ignore-header,
+	.markdown-body h3.ignore-header,
+	.markdown-body h4.ignore-header,
+	.markdown-body h5.ignore-header,
+	.markdown-body h6.ignore-header {
+		position: relative;
+
+		margin-top: 10px;
+		margin-bottom: 0;
+		border-bottom: 1px solid #eaecef;
+		border-radius: 0 !important;
+		background: rgba(255, 255, 255, 0.95);
+		padding: 10px 15px;
+
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		font-size: 18px;
+		font-weight: 600;
+		text-overflow: initial;
+		white-space: nowrap;
+		@include ios_smooth_scrolling();
+	}
+
+	.header-spacer {
+		padding-bottom: 24px;
+	}
+
+	.code-block-action {
+		opacity: 1;
+
+		color: inherit;
+	}
+
+	.line-num-first {
+		display: none;
+	}
+
+	.line-num-second {
+		position: relative;
+	}
+
+	.line-block-highlight {
+		box-shadow: none;
+	}
+
+	.search-cont {
+		margin-right: 0;
+	}
+
+	.l-2-link {
+		max-width: 160px;
+	}
+
+	.markdown-body .highlight pre,.markdown-body pre {
+		margin-left: -15px;
+		border-radius: 0;
+
+		width: calc(100% + 30px);
+	}
+
+	.markdown-body pre code {
+		border-radius: 0;
+	}
+
+	.line-num {
+		border-radius: 0;
+	}
+}

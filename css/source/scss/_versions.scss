@@ -1,0 +1,96 @@
+.version-cont {
+	margin-top: 5px;
+	padding: 5px;
+}
+
+.current-version-cont {
+	display: inline-flex;
+	align-items: center;
+
+	cursor: pointer;
+}
+
+.current-version {
+	color: #999999;
+	font-size: 13px;
+}
+
+.current-version:hover {
+	text-decoration: underline;
+}
+
+.versions-list-cont {
+	position: absolute;
+
+	margin-top: 5px;
+	box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
+	border-radius: 4px;
+	background: white;
+	padding: 5px 0;
+
+	width: calc(100% - 20px);
+	pointer-events: all;
+}
+
+.v-list-wrapper {
+	position: relative;
+
+	max-height: 175px;
+	overflow-y: auto;
+}
+
+.vlist-padding {
+	padding: 0 5px;
+}
+
+.vlist-padding-top {
+	padding: 5px 0 0 0;
+}
+
+.version-latest {
+	margin-left: 5px;
+	border-radius: 2px;
+	background: #5885dd;
+	padding: 2px;
+
+	color: white;
+	font-size: 7px;
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.version-latest-not {
+	background: #dd6d58;
+}
+
+.version-option {
+	display: flex;
+	align-items: center;
+
+	cursor: pointer;
+
+	border-radius: 3px;
+	background: white;
+	padding: 10px 20px;
+
+	font-size: 13px;
+	@include truncate();
+}
+
+.version-option:hover, .active-version {
+	cursor: pointer;
+
+	background: #2578f8;
+
+	color: white;
+}
+
+.version-option:hover .version-latest, .active-version .version-latest {
+	background: white;
+
+	color: #2578f8;
+}
+
+.version-option i {
+	font-size: 10px;
+}

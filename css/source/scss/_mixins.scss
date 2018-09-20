@@ -1,0 +1,47 @@
+@mixin def-font() {
+	/* Default font. */
+	font-family: -apple-system,
+                 BlinkMacSystemFont,
+                 "Segoe UI",
+                 Helvetica,
+                 Arial,
+                 sans-serif,
+                 "Apple Color Emoji",
+                 "Segoe UI Emoji",
+                 "Segoe UI Symbol";
+}
+
+@mixin ios_smooth_scrolling() {
+	/* Make scrolling smooth in iOS */
+	overflow-scrolling: touch;
+}
+
+@mixin noselect() {
+	user-select: none;
+	touch-callout: none;
+}
+
+@mixin translate3d($tx: 0, $ty: 0, $tz: 0, $specificity: null) {
+	/* CSS acceleration: [https://stackoverflow.com/a/18529444] *//* Specificity: [https://stackoverflow.com/a/33319903] */
+	transform: translate3D($tx, $ty, $tz) $specificity;
+}
+
+@mixin def-ul() {
+	/* Default UL styles. */
+	margin: 0;
+	padding: 0;
+
+	list-style: none;
+}
+
+@mixin truncate() {
+	overflow: hidden;
+
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+@mixin slide_transform() {
+	// Use on the topbar, markdown elements if sliding them to the right when the sidebar gets slid into view.
+	transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}

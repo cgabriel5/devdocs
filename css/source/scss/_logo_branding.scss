@@ -1,0 +1,42 @@
+.logo {
+	align-items: center;
+	justify-content: flex-start;
+
+	margin-left: 5px;
+	padding: 0 0 0 0;
+
+	&.square {
+		width: 20px;
+		height: 20px;
+
+		img {
+			/* [https://stackoverflow.com/a/9445306] */
+			width: 16px;
+		}
+	}
+
+	&.landscape {
+		min-width: 45px;
+		max-width: 55px;
+
+		img {
+			width: auto\9;
+			max-width: 100%;
+			height: auto;
+		}
+	}
+
+	&.portrait {
+		max-width: 55px;
+
+		img {
+			margin-left: 5px;
+
+			height: 20px;
+		}
+	}
+
+	.topbar-fix {
+		vertical-align: unset;
+	}
+}

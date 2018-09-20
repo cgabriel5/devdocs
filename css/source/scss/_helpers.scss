@@ -1,17 +1,12 @@
-/* App helpers here. */
-
-/* Font Helpers */
+// Get main/top-level imports.
+@import "mixins";
 
 .def-font {
-	font-family: -apple-system,
-                 BlinkMacSystemFont,
-                 "Segoe UI",
-                 Helvetica,
-                 Arial,
-                 sans-serif,
-                 "Apple Color Emoji",
-                 "Segoe UI Emoji",
-                 "Segoe UI Symbol";
+	@include def-font();
+}
+
+.truncate {
+	@include truncate();
 }
 
 .bold {
@@ -57,8 +52,7 @@
 /* Interaction Helpers */
 
 .noselect {
-	user-select: none;
-	touch-callout: none;
+	@include noselect();
 }
 
 .pnone {
@@ -80,15 +74,23 @@
 	position: fixed;
 }
 
+.abs {
+	position: absolute !important;
+}
+
 /* Animation Helpers */
 
 .tdelay1 {
 	transition-delay: 0.1s !important;
 }
 
-/* TAG Helpers */
+/*  */
 
-a {
-	/* [https://css-tricks.com/removing-the-dotted-outline/] */
-	outline: 0;
+.anchor {
+	padding: 0 6px;
+}
+
+.anchor i {
+	color: #24292e;
+	font-size: 12px;
 }

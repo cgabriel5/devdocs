@@ -1831,7 +1831,7 @@ document.onreadystatechange = function() {
 					clone.style.height = "auto";
 
 					// Get the height using a virtual dom.
-					var html = `<div id="virtual-height-element" class="menu">${
+					var html = `<div id="virtual-height-element">${
 						clone.outerHTML
 					}</div>`;
 
@@ -2064,7 +2064,7 @@ document.onreadystatechange = function() {
 								},
 								onComplete: function() {
 									var $ulp = document.querySelector(
-										`.menu-section-cont[data-dir='${id.split(
+										`.menu-section[data-dir='${id.split(
 											"."
 										)[0] *
 											1 -
@@ -2368,7 +2368,7 @@ document.onreadystatechange = function() {
 
 					// If a prev element exists, build the HTML.
 					if ($prev_el) {
-						prev_html = `<div class="arrow-content btn btn-white noselect" data-refid="${
+						prev_html = `<div class="arrow-content btn noselect" data-refid="${
 							$prev_el.id
 						}"><i class="fas fa-arrow-alt-circle-left mr5"></i> <span class="truncate">${$prev_el.getAttribute(
 							"title"
@@ -2397,7 +2397,7 @@ document.onreadystatechange = function() {
 
 					// If a next element exists, build the HTML.
 					if ($next_el) {
-						next_html = `<div class="arrow-content btn btn-white noselect" data-refid="${
+						next_html = `<div class="arrow-content btn noselect" data-refid="${
 							$next_el.id
 						}"><span class="mr5 truncate">${$next_el.getAttribute(
 							"title"
@@ -2595,9 +2595,6 @@ document.onreadystatechange = function() {
 
 					// Embed the logo to the page if it exists.
 					if (logo) {
-						// document.getElementById("menu-dynamic-cont-logo")
-						//	.innerHTML = data.html.logo;
-
 						// Get the GitHub account information.
 						var github = Object.assign(
 							{
@@ -2626,7 +2623,7 @@ document.onreadystatechange = function() {
 						var img_html = !logo.data
 							? `<img src="${logo.src}">`
 							: logo.data;
-						var logo_html = `<div class="none animate-fadein animate-logo logo-base logo-${
+						var logo_html = `<div class="none animate-fadein animate-logo logo ${
 							logo.type
 						} mr5">${link_start}${img_html}${link_end}</div>`;
 
@@ -2643,29 +2640,22 @@ document.onreadystatechange = function() {
 						$search_cont.children[0].insertAdjacentHTML(
 							"afterbegin",
 							logo_html
-							// + '<div class="logo-spacer animate-fadein"></div>'
 						);
 
 						// Embed the topbar logo.
 						$tb_loader.insertAdjacentHTML(
 							"beforebegin",
-							// '<div class="logo-spacer animate-fadein"></div>' +
 							logo_html
-								.replace(
-									"logo-base",
-									"flex flex-center logo-base"
-								)
+								.replace("logo", "flex flex-center logo")
 								.replace(
 									"_blank",
-									'_blank" class="flex flex-center tb-logo-fix'
+									'_blank" class="flex flex-center topbar-fix'
 								)
 						);
 
 						// Show logos after some time.
 						setTimeout(function() {
-							var $els = document.getElementsByClassName(
-								"logo-base"
-							);
+							var $els = document.getElementsByClassName("logo");
 							for (let i = 0, l = $els.length; i < l; i++) {
 								$els[i].classList.remove("none");
 							}
@@ -2689,7 +2679,7 @@ document.onreadystatechange = function() {
 								(v === version
 									? '<i class="fa-check fas mr5"></i>'
 									: "") +
-								`<span class="v-text">${v}</span>` +
+								`<span class="v-text truncate">${v}</span>` +
 								(v === latest
 									? '<span class="version-latest">latest</span>'
 									: "") +
@@ -2728,9 +2718,7 @@ document.onreadystatechange = function() {
 					);
 
 					// Animate the entire menu.
-					document
-						.getElementsByClassName("menu")[0]
-						.classList.add("animate-fadein");
+					$sb_menu.classList.add("animate-fadein");
 
 					// Show the sidebar footer.
 					$sb_footer.classList.remove("none");
@@ -3475,7 +3463,7 @@ document.onreadystatechange = function() {
 							// Add the coordinates to the clone.
 							$clone.setAttribute(
 								"style",
-								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute;${radius}background: #f4f4f4;`
+								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute !important;${radius}background: #f4f4f4;font-size:15px;`
 							);
 
 							// Add clone to page.

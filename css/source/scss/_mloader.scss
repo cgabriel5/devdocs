@@ -1,0 +1,22 @@
+/* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
+
+/* Used SVG to CSS converter: [https://websemantics.uk/tools/svg-to-background-image-conversion/] */
+
+%mloader {
+	position: relative;
+
+	animation: animate-spin 0.5s linear infinite;
+
+	border: 3px solid;
+	border-radius: 50%;
+}
+
+.mloader {
+	@extend %mloader;
+	border-color: #555555 #dddddd #dddddd;
+}
+
+.mloader-white {
+	@extend %mloader;
+	border-color: #ffffffa3 #ffffff #ffffff;
+}

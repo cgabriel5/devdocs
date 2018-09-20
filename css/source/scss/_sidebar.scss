@@ -1,0 +1,193 @@
+.sidebar {
+	display: flex;
+	position: fixed;
+	flex: 1 0 $sidebar-width-normal;
+	flex-flow: column nowrap;
+	justify-content: space-between;
+
+	border-right: 1px solid #dddddd;
+	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
+
+	width: $sidebar-width-normal;
+	height: 100%;
+	overflow-x: hidden;
+	overflow-y: auto;
+
+	font-size: 15px;
+	@include ios_smooth_scrolling();
+	@include noselect();
+
+	> * {
+		/*
+iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
+to become invisible when header scrolling. This seems to solve the issue.
+
+[https://stackoverflow.com/a/3921870]
+[https://stackoverflow.com/a/3461770]
+[https://www.drupal.org/project/flexslider/issues/1748514]
+[https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/]
+[https://github.com/scottjehl/Device-Bugs/issues/8]
+[https://stackoverflow.com/a/19172250]
+[https://github.com/janpaepke/ScrollMagic/issues/467]
+[https://davidwalsh.name/translate3d]
+[https://github.com/nolimits4web/Swiper/issues/45]
+[https://stanko.github.io/ios-safari-scroll-position-fixed/]
+[https://github.com/scottjehl/Device-Bugs/issues/8#issuecomment-5742063]
+[https://stackoverflow.com/a/11634004]
+[https://stackoverflow.com/a/36606198]
+[https://stackoverflow.com/a/11782061]
+[https://github.com/leafo/sticky-kit/issues/213#issuecomment-291172357]
+[https://stackoverflow.com/a/10122689]
+[https://stackoverflow.com/a/43188105]
+*/
+		transform: translateZ(0);
+	}
+}
+
+.sidebar-show {
+	/* When class is applied the sidebars position will be reset
+	and therefore "slide back" into view. */
+	@include translate3d(0, 0, 0, !important);
+}
+
+.menu-section {
+	margin-left: 20px;
+	border-left: 1px solid #dddddd;
+}
+
+.sidebar-menu {
+	flex-grow: 1;
+
+	margin-top: 50px;
+
+	width: 100%;
+
+	ul {
+		@include def-ul();
+	}
+}
+
+/* Do not nest these styles are they also needed for
+the clones element used for the sidebar tooltips. */
+
+.l-1 {
+	padding: 10px 0 10px 5px;
+
+	font-weight: bold;
+}
+
+.l-2 {
+	display: flex;
+	position: sticky !important;
+	align-items: center;
+
+	z-index: 1;
+	cursor: pointer;
+
+	padding: 6px 10px 6px 20px;
+
+	font-weight: bold;
+}
+
+.l-2-main-cont {
+	align-items: center;
+	justify-content: space-between;
+
+	width: 100%;
+}
+
+.l-2-link {
+	max-width: 180px;
+}
+
+.link-headings-count {
+	display: flex;
+
+	transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+
+	border: 1px solid transparent;
+	border-radius: 4px;
+	padding: 3px 3px 2px 3px;
+
+	color: #d0d0d0;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+.active-page .link-headings-count {
+	border: 1px solid transparent;
+	background: white;
+
+	color: #666666;
+}
+
+.l-3 {
+	cursor: pointer;
+
+	border-right: 2px solid transparent;
+	padding: 5px 20px 5px 20px;
+
+	font-size: 15px;
+	@include truncate();
+}
+
+.l-3:hover {
+	border-right: 2px solid #2578f8;
+}
+
+.l-2:hover:not(.active-page),.l-3:hover:not(.active-page) {
+	background: #f7f7f7;
+}
+
+ul.file-headers {
+	margin-left: 20px;
+	border-left: 1px solid #dddddd;
+
+	overflow: hidden;
+}
+
+.headings-cont {
+	backface-visibility: hidden;
+
+	height: 0;
+	overflow: hidden;
+}
+
+.link,
+.link:visited {
+	position: relative;
+
+	color: #333333;
+	text-decoration: none;
+}
+
+.active-page {
+	margin-left: -1px;
+	background: #2578f8;
+}
+
+.active-page .link {
+	color: white;
+	font-weight: bold;
+}
+
+/* Don't add a top margin to the first li element when the active-page class it on. */
+
+.menu-section-cont li:first-child.l-2.active-page {
+}
+
+.file-headers.headings-cont li:first-child.l-3 {
+	margin-top: 10px;
+}
+
+.file-headers.headings-cont li:last-child.l-3 {
+	margin-bottom: 10px;
+}
+
+.menu-arrow {
+	padding-right: 5px;
+}
+
+.menu-arrow-active {
+	color: white;
+}

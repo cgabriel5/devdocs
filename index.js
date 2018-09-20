@@ -660,7 +660,7 @@ function expand_ctags(text) {
 			return `\n\n<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
 			<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
 			<div class="flex flex-center mr5">
-				<span class="flex flex-center btn btn-white noselect code-block-action btn-cba-copy"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+				<span class="flex flex-center btn noselect code-block-action btn-cba-copy"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
 			</div>
 		</div>
 		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
@@ -807,7 +807,7 @@ config.files.internal._404 = remove_space(
 		<div class="error-msg-1">Page Not Found</div>
 		<div class="error-msg-2">The page trying to be viewed does not exist.</div>
 		<div class="error-btn-cont">
-			<span class="btn btn-white btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span>
+			<span class="btn btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span>
 		</div>
 	</div>
 </div>`
@@ -830,8 +830,6 @@ config.files.internal._404_missing_docs = remove_space(`<div class="markdown-bod
 
 // Add an object to store HTML structures.
 config.html = {};
-// Add the svg loader.
-config.html.loader = `<img class="loader-img" src="devdocs/img/loader-dark.svg">`;
 
 // Add the MacOS scrollbar styles:
 config.html.styles_macos_sb = [
@@ -1919,8 +1917,8 @@ versions.forEach(function(vdata) {
 										if (!is_partof_codegroup) {
 											// Add the action buttons
 											$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
-												<span class="flex flex-center btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
-												<span class="flex flex-center btn btn-white noselect code-block-action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr5"></i><span>collapse</span></span>
+												<span class="flex flex-center btn noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+												<span class="flex flex-center btn noselect code-block-action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr5"></i><span>collapse</span></span>
 							</div>`);
 										}
 
@@ -1931,7 +1929,7 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											$parent.before(
-												`<div class="code-block-actions-cont def-font animate-fadein"><span class="flex flex-center btn btn-white noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
+												`<div class="code-block-actions-cont def-font animate-fadein"><span class="flex flex-center btn noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
 											);
 										}
 									}
@@ -2541,7 +2539,7 @@ gulp.task("css:app", ["css:sass"], function(done) {
 
 	// Add the app styles.
 	css_source_files.push(
-		`${css_path_source}helpers.css`,
+		// `${css_path_source}helpers.css`,
 		`${css_path_source}styles.css`
 	);
 	// Add CSS animations if wanted.
@@ -2800,7 +2798,6 @@ gulp.task("favicon:app", function(done) {
 // Save the configuration data in its own file to access it in the front-end.
 gulp.task("json-data:app", function(done) {
 	// Add other needed config data to config object.
-	config.html.logo = `<div class="menu-logo"><div class="menu-logo-wrapper"><img src="${logo}"></div></div>`;
 	config.html.footer = footer_html.join("");
 
 	// If the latest version is not one of the processed version, throw
@@ -2872,7 +2869,7 @@ gulp.task("json-data:app", function(done) {
 							1}" class="submenu">
 						${directory.html}
 						<li>
-							<div class="menu-section-cont" data-dir="${index}">
+							<div class="menu-section" data-dir="${index}">
 								<div id="no-matches-cont" class="no-matches-cont none">
 									<div class="no-matches-cont-inner">
 										<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>

@@ -1,0 +1,19 @@
+.markdown {
+	opacity: 1;
+	transition: opacity 0.2s ease-in-out;
+	will-change: contents;
+
+	margin-left: $sidebar-width-normal;
+	background: transparent;
+
+	width: 100%;
+	@include translate3d();
+
+	&.loading-content {
+		opacity: 0.6;
+
+		background: #ffffff !important;
+
+		pointer-events: none;
+	}
+}

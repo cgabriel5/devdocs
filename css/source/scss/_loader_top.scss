@@ -1,0 +1,21 @@
+/* Old top loader CSS. */
+
+/* [https://www.pexels.com/blog/css-only-loaders/]
+[https://codepen.io/brunjo/pen/XJmbNz]
+ */
+
+.loader-top {
+	position: fixed;
+	left: 0;
+
+	opacity: 0;
+	z-index: 3;
+	transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
+
+	background-color: #2578f8;
+
+	width: 100%;
+	height: 0;
+	overflow: hidden;
+	pointer-events: none;
+}

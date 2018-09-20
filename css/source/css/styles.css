@@ -1,11 +1,127 @@
 /* File vars. */
-/* App styles here. */
+::-moz-selection {
+  color: inherit; }
+
+::selection {
+  color: inherit; }
+
+details, summary {
+  outline: none; }
+
+a {
+  /* [https://css-tricks.com/removing-the-dotted-outline/] */
+  outline: 0; }
+
+/* Button UI */
+.btn {
+  transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.17);
+  border-radius: 4px;
+  /* Defaults to a white button. */
+  background: #ffffff;
+  color: #333333;
+  user-select: none;
+  touch-callout: none; }
+
+.btn:hover {
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }
+
+.btn:active {
+  opacity: 0.7; }
+
+.btn-blue {
+  border: 1px solid transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  background: #2578f8;
+  color: #ffffff; }
+
+.btn-home {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: bold; }
+
+.def-font {
+  /* Default font. */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; }
+
+.bold {
+  font-weight: bold; }
+
+/* Visibility Helpers */
+.none {
+  display: none !important; }
+
+.hidden {
+  visibility: hidden; }
+
+.opa0 {
+  opacity: 0; }
+
+.opa1 {
+  opacity: 1; }
+
+/* Box-modal Helpers */
+.mr2 {
+  margin-right: 2px; }
+
+.mr3 {
+  margin-right: 3px; }
+
+.mr5 {
+  margin-right: 5px; }
+
+.mb3 {
+  margin-bottom: 3px; }
+
+/* Interaction Helpers */
+.noselect {
+  user-select: none;
+  touch-callout: none; }
+
+.pnone {
+  pointer-events: none; }
+
+/* Positional Helpers  */
+.flex {
+  display: flex; }
+
+.flex-center {
+  align-items: center;
+  justify-content: center; }
+
+.fixed {
+  position: fixed; }
+
+.abs {
+  position: absolute !important; }
+
+/* Animation Helpers */
+.tdelay1 {
+  transition-delay: 0.1s !important; }
+
+/*  */
+.anchor {
+  padding: 0 6px; }
+
+.anchor i {
+  color: #24292e;
+  font-size: 12px; }
+
+/* App Styles */
 body {
   margin: 0;
   font-size: 16px;
   /* Thicken Safari fonts:
 	[https://github.com/cgabriel5/snippets/blob/master/css/fonts/normalize_macos_fonts.css] */
-  font-smoothing: subpixel-antialiased; }
+  font-smoothing: subpixel-antialiased;
+  /* Default font. */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; }
 
 .app {
   display: flex;
@@ -15,28 +131,73 @@ body {
   height: auto;
   min-height: calc(100vh); }
 
+.markdown {
+  opacity: 1;
+  transition: opacity 0.2s ease-in-out;
+  will-change: contents;
+  margin-left: 300px;
+  background: transparent;
+  width: 100%;
+  /* CSS acceleration: [https://stackoverflow.com/a/18529444] */
+  /* Specificity: [https://stackoverflow.com/a/33319903] */
+  transform: translate3D(0, 0, 0); }
+  .markdown.loading-content {
+    opacity: 0.6;
+    background: #ffffff !important;
+    pointer-events: none; }
+
+/* Old top loader CSS. */
+/* [https://www.pexels.com/blog/css-only-loaders/]
+[https://codepen.io/brunjo/pen/XJmbNz]
+ */
+.loader-top {
+  position: fixed;
+  left: 0;
+  opacity: 0;
+  z-index: 3;
+  transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
+  background-color: #2578f8;
+  width: 100%;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none; }
+
+.main-overlay, .sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; }
+
+.main-overlay {
+  /* The highest z-index used. */
+  z-index: 4;
+  background: transparent; }
+
+.sidebar-overlay {
+  z-index: 2;
+  transition: opacity 0.3s ease-in-out;
+  background: rgba(0, 0, 0, 0.1); }
+
 .sidebar {
   display: flex;
+  position: fixed;
   flex: 1 0 300px;
   flex-flow: column nowrap;
   justify-content: space-between;
   border-right: 1px solid #dddddd;
   background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
-  font-size: 15px;
-  user-select: none;
-  touch-callout: none; }
-
-/* Make the sidebar fixed. */
-.sidebar {
-  position: fixed;
   width: 300px;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  font-size: 15px;
   /* Make scrolling smooth in iOS */
-  overflow-scrolling: touch; }
-
-/*
+  overflow-scrolling: touch;
+  user-select: none;
+  touch-callout: none; }
+  .sidebar > * {
+    /*
 iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
 to become invisible when header scrolling. This seems to solve the issue.
 
@@ -58,92 +219,31 @@ to become invisible when header scrolling. This seems to solve the issue.
 [https://stackoverflow.com/a/10122689]
 [https://stackoverflow.com/a/43188105]
 */
-.sidebar > * {
-  transform: translateZ(0); }
-
-.markdown {
-  opacity: 1;
-  transition: opacity 0.2s ease-in-out;
-  margin-left: 300px;
-  background: transparent;
-  width: 100%; }
+    transform: translateZ(0); }
 
 .sidebar-show {
+  /* When class is applied the sidebars position will be reset
+	and therefore "slide back" into view. */
+  /* CSS acceleration: [https://stackoverflow.com/a/18529444] */
+  /* Specificity: [https://stackoverflow.com/a/33319903] */
   transform: translate3D(0, 0, 0) !important; }
 
-.sidebar-menu {
-  flex-grow: 1; }
-
-.menu {
-  margin-top: 50px;
-  width: 100%; }
-
-.menu ul {
-  margin: 0;
-  padding: 0;
-  list-style: none; }
-
-.menu-logo {
-  margin-bottom: 20px; }
-
-.menu-logo-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%; }
-
-.menu-logo img {
-  max-width: 75%; }
-
-.logo-spacer {
-  display: none;
-  border: 1px solid #eaeaea;
-  height: 18px; }
-
-.logo-base {
-  align-items: center;
-  justify-content: flex-start;
-  margin-left: 5px;
-  padding: 0 0 0 0; }
-
-.logo-square {
-  width: 20px;
-  height: 20px; }
-
-.logo-landscape {
-  min-width: 45px;
-  max-width: 55px; }
-
-.logo-portrait {
-  max-width: 55px; }
-
-.logo-square img {
-  /* [https://stackoverflow.com/a/9445306] */
-  width: 16px; }
-
-.logo-landscape img {
-  width: auto\9;
-  max-width: 100%;
-  height: auto; }
-
-.logo-portrait img {
-  margin-left: 5px;
-  height: 20px; }
-
-.sb-logo {
-  padding: 3px;
-  width: 32px; }
-
-.sb-logo img {
-  width: 16px; }
-
-.tb-logo-fix {
-  vertical-align: unset; }
-
-.menu-section-cont {
+.menu-section {
   margin-left: 20px;
   border-left: 1px solid #dddddd; }
 
+.sidebar-menu {
+  flex-grow: 1;
+  margin-top: 50px;
+  width: 100%; }
+  .sidebar-menu ul {
+    /* Default UL styles. */
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+
+/* Do not nest these styles are they also needed for
+the clones element used for the sidebar tooltips. */
 .l-1 {
   padding: 10px 0 10px 5px;
   font-weight: bold; }
@@ -165,11 +265,6 @@ to become invisible when header scrolling. This seems to solve the issue.
 .l-2-link {
   max-width: 180px; }
 
-.truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
-
 .link-headings-count {
   display: flex;
   transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
@@ -189,8 +284,8 @@ to become invisible when header scrolling. This seems to solve the issue.
   cursor: pointer;
   border-right: 2px solid transparent;
   padding: 5px 20px 5px 20px;
-  overflow: hidden;
   font-size: 15px;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
 
@@ -231,6 +326,12 @@ ul.file-headers {
 .file-headers.headings-cont li:last-child.l-3 {
   margin-bottom: 10px; }
 
+.menu-arrow {
+  padding-right: 5px; }
+
+.menu-arrow-active {
+  color: white; }
+
 .logo-devdocs {
   display: flex;
   flex-flow: row nowrap;
@@ -266,37 +367,31 @@ ul.file-headers {
 .footer-logo-name a:active {
   text-decoration: underline; }
 
-.btn {
-  cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.17);
-  border-radius: 4px; }
-
-.btn-white {
-  transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-  background: #ffffff;
-  color: #333333; }
-
-.btn-white:hover {
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.03);
-  background: #99999905;
-  color: #333333; }
-
-.btn-blue {
-  border: 1px solid transparent;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-  background: #2578f8;
-  color: #ffffff; }
-
-.btn:hover {
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }
-
-.btn:active {
-  opacity: 0.7; }
-
-.btn-home {
-  padding: 6px 10px;
-  font-size: 12px;
-  font-weight: 700; }
+.logo {
+  align-items: center;
+  justify-content: flex-start;
+  margin-left: 5px;
+  padding: 0 0 0 0; }
+  .logo.square {
+    width: 20px;
+    height: 20px; }
+    .logo.square img {
+      /* [https://stackoverflow.com/a/9445306] */
+      width: 16px; }
+  .logo.landscape {
+    min-width: 45px;
+    max-width: 55px; }
+    .logo.landscape img {
+      width: auto\9;
+      max-width: 100%;
+      height: auto; }
+  .logo.portrait {
+    max-width: 55px; }
+    .logo.portrait img {
+      margin-left: 5px;
+      height: 20px; }
+  .logo .topbar-fix {
+    vertical-align: unset; }
 
 .error-cont {
   display: flex;
@@ -342,42 +437,6 @@ ul.file-headers {
 .found-versions-cont {
   padding: 3px 0 3px 0; }
 
-/* Old top loader CSS. */
-/* [https://www.pexels.com/blog/css-only-loaders/]
-[https://codepen.io/brunjo/pen/XJmbNz]
- */
-.loader-top {
-  position: fixed;
-  left: 0;
-  opacity: 0;
-  z-index: 3;
-  transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
-  background-color: #2578f8;
-  width: 100%;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none; }
-
-.main-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  /* The highest z-index used. */
-  z-index: 4;
-  background: transparent;
-  width: 100%;
-  height: 100%; }
-
-.sidebar-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  transition: opacity 0.3s ease-in-out;
-  background: rgba(0, 0, 0, 0.1);
-  width: 100%;
-  height: 100%; }
-
 .topbar {
   display: flex;
   display: none;
@@ -389,15 +448,14 @@ ul.file-headers {
   background: #fbfbfb;
   padding: 5px 20px 5px;
   width: 100%;
-  font-weight: bold; }
+  font-weight: bold;
+  /* CSS acceleration: [https://stackoverflow.com/a/18529444] */
+  /* Specificity: [https://stackoverflow.com/a/33319903] */
+  transform: translate3D(0, 0, 0); }
 
 /* [https://codepen.io/hoshts/pen/BHoij?editors=1100] */
 .topbar-loader {
   margin: 0 15px 0 5px; }
-
-.loader-img {
-  width: 16px;
-  height: 16px; }
 
 .tb-logo {
   margin-right: -5px;
@@ -417,11 +475,6 @@ ul.file-headers {
   border-radius: 100px;
   padding: 4px 8px;
   font-size: 12px; }
-
-.scroll-df-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
 
 .scroll-icon-middle {
   margin-top: 1px;
@@ -446,10 +499,12 @@ ul.file-headers {
   height: 100%; }
 
 .splash-loader-icon-cont {
-  transform: translate3d(0, 0, 0);
   width: 70px;
   min-width: 70px;
-  height: 70px; }
+  height: 70px;
+  /* CSS acceleration: [https://stackoverflow.com/a/18529444] */
+  /* Specificity: [https://stackoverflow.com/a/33319903] */
+  transform: translate3D(0, 0, 0); }
 
 .splash-loader-icon {
   transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, background 0.2s ease-in-out;
@@ -465,19 +520,6 @@ ul.file-headers {
 
 .sl-icon-on {
   background: #699935; }
-
-.topbar,
-.markdown {
-  transform: translate3D(0, 0, 0);
-  transform: translate3D(calc(0), 0, 0);
-  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.2s ease-in-out; }
-
-.mobile-slide {
-  transform: translate3D(300px, 0, 0);
-  transform: translate3D(calc(300px), 0, 0); }
-
-.markdown {
-  will-change: contents; }
 
 .show-code-cont {
   display: flex;
@@ -567,110 +609,6 @@ ul.file-headers {
   padding: 3px;
   min-width: 50%; }
 
-/* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
-/* Used SVG to CSS converter: [https://websemantics.uk/tools/svg-to-background-image-conversion/] */
-.mloader {
-  position: relative;
-  animation: animate-spin 0.5s linear infinite;
-  border: 3px solid;
-  border-radius: 50%;
-  border-color: #555555 #dddddd #dddddd; }
-
-.mloader-white {
-  position: relative;
-  animation: animate-spin 0.5s linear infinite;
-  border: 3px solid;
-  border-radius: 50%;
-  border-color: #ffffffa3 #ffffff #ffffff; }
-
-.searched-highlight {
-  background: #ffe300;
-  color: #000000; }
-
-.expander-close-cont {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  border-radius: 1000px;
-  width: 100%;
-  font-size: 18px; }
-
-.expander-close {
-  position: absolute;
-  opacity: 0.3;
-  margin-top: -3px;
-  margin-left: -23px;
-  background: 0 0;
-  padding: 5px; }
-
-.expander-close:hover {
-  opacity: 1;
-  color: #2578f8; }
-
-.expander-close:active {
-  opacity: 0.5;
-  color: #2578f8; }
-
-.copied-message {
-  display: flex;
-  position: absolute;
-  position: fixed;
-  align-items: center;
-  justify-content: flex-end;
-  z-index: 10;
-  transition: opacity 0.2s ease-in-out;
-  padding: 10px;
-  width: 100%; }
-
-.copied-message span {
-  border-radius: 4px;
-  background: #2578f8;
-  padding: 10px;
-  color: white;
-  font-size: 14px;
-  font-weight: bold;
-  line-height: 10px; }
-
-.copied-message i {
-  font-size: 12px; }
-
-::-moz-selection {
-  color: inherit; }
-
-::selection {
-  color: inherit; }
-
-.link-socials {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  margin-top: 10px;
-  border: 3px;
-  padding: 5px 20px;
-  width: 100%;
-  font-size: 25px; }
-
-.social-link {
-  /* [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items] */
-  flex: 1 1 250px;
-  margin: 0 10px 0 -10px;
-  border-radius: 3px;
-  padding: 3px 10px; }
-
-.social-link:hover {
-  background: #f7f7f7; }
-
-.social-link {
-  color: #4a4a4a !important; }
-
-.menu-arrow {
-  padding-right: 5px; }
-
-.menu-arrow-active {
-  color: white; }
-
 .codeblock-name {
   position: absolute;
   margin-top: -26px;
@@ -754,6 +692,164 @@ ul.file-headers {
   background: #698cfe;
   color: #ffffff;
   font-weight: 700; }
+
+.codegroup-tab {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 5px 13px;
+  color: #999999;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: pre; }
+
+.codegroup-tab-active {
+  color: #333333; }
+
+.tabs-cont {
+  position: relative;
+  max-width: 600px;
+  overflow: auto;
+  overflow-x: auto;
+  overflow-y: hide;
+  /* Make scrolling smooth in iOS */
+  overflow-scrolling: touch; }
+
+.padtop-26 {
+  padding-top: 26px !important; }
+
+/* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
+/* Used SVG to CSS converter: [https://websemantics.uk/tools/svg-to-background-image-conversion/] */
+.mloader, .mloader-white {
+  position: relative;
+  animation: animate-spin 0.5s linear infinite;
+  border: 3px solid;
+  border-radius: 50%; }
+
+.mloader {
+  border-color: #555555 #dddddd #dddddd; }
+
+.mloader-white {
+  border-color: #ffffffa3 #ffffff #ffffff; }
+
+.copied-message {
+  display: flex;
+  position: absolute;
+  position: fixed;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 10;
+  transition: opacity 0.2s ease-in-out;
+  padding: 10px;
+  width: 100%; }
+
+.copied-message span {
+  border-radius: 4px;
+  background: #2578f8;
+  padding: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+  line-height: 10px; }
+
+.copied-message i {
+  font-size: 12px; }
+
+.social-link {
+  /* [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items] */
+  flex: 1 1 250px;
+  margin: 0 10px 0 -10px;
+  border-radius: 3px;
+  padding: 3px 10px; }
+
+.social-link:hover {
+  background: #f7f7f7; }
+
+.social-link {
+  color: #4a4a4a !important; }
+
+.mtime-cont {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 10px;
+  padding-top: 20px;
+  font-size: 11px; }
+
+.mtime-cont .mtime-ts-long, .c999 {
+  color: #999999 !important; }
+
+.arrow-content {
+  display: flex;
+  flex-flow: row nowrap;
+  flex-grow: 1;
+  flex-shrink: 1;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+  padding: 5px 5px;
+  width: 120px;
+  font-size: 14px;
+  font-weight: bold; }
+
+.arrow-content span {
+  max-width: 50%; }
+
+.bottom-arrow-btn-cont {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-evenly;
+  margin-top: 30px;
+  margin-bottom: 10px; }
+
+.md-footer {
+  display: flex;
+  flex-flow: row wrap;
+  margin-top: 30px;
+  border-top: 1px solid #eaecef;
+  padding: 5px; }
+
+.md-footer-section-title {
+  padding-bottom: 10px;
+  font-weight: bold; }
+
+.md-footer-section-content {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: flex-start; }
+
+.md-footer-section {
+  padding: 15px;
+  min-width: 150px;
+  color: #4a4a4a; }
+
+.md-footer-img {
+  background: transparent;
+  width: 15px; }
+
+.md-footer-copyright {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  color: #afafaf;
+  font-size: 12px; }
+
+.md-footer-inner {
+  display: inline-flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center; }
+
+.md-footer-copyright a {
+  border-radius: 100px;
+  background: rgba(0, 0, 0, 0.02);
+  padding: 1px 10px;
+  color: #afafaf; }
+
+.md-footer-copyright i {
+  font-size: 9px; }
 
 /* Custom expandable */
 .dd-expandable-base {
@@ -880,43 +976,8 @@ ul.file-headers {
   border-left: 5px solid #5d687b;
   background: #ffffff; }
 
-details, summary {
-  outline: none; }
-
-.codegroup-tab {
-  cursor: pointer;
-  border-radius: 3px;
-  padding: 5px 13px;
-  color: #999999;
-  font-size: 13px;
-  font-weight: 700;
-  white-space: pre; }
-
-.codegroup-tab-active {
-  color: #333333; }
-
-.tabs-cont {
-  position: relative;
-  max-width: 600px;
-  overflow: auto;
-  overflow-x: auto;
-  overflow-y: hide;
-  overflow-scrolling: touch; }
-
-.lang-code-line {
-  border-radius: 3px;
-  background: #ff000036;
-  padding: 0 10px; }
-
-.padtop-26 {
-  padding-top: 26px !important; }
-
-.loading-content {
-  opacity: 0.6;
-  background: #ffffff !important;
-  pointer-events: none; }
-
 .emoji {
+  /* [https://github.com/twitter/twemoji#tips] */
   vertical-align: -0.1em;
   vertical-align: middle;
   box-sizing: content-box;
@@ -940,6 +1001,10 @@ details, summary {
 
 .diff-diffline {
   color: #005cc5; }
+
+.searched-highlight {
+  background: #ffe300;
+  color: #000000; }
 
 .search-cont {
   position: sticky !important;
@@ -1059,8 +1124,8 @@ details, summary {
   border-radius: 3px;
   background: white;
   padding: 10px 20px;
-  overflow: hidden;
   font-size: 13px;
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap; }
 
@@ -1075,102 +1140,6 @@ details, summary {
 
 .version-option i {
   font-size: 10px; }
-
-.v-text {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap; }
-
-.mtime-cont {
-  display: flex;
-  justify-content: flex-end;
-  margin-left: 10px;
-  padding-top: 20px;
-  font-size: 11px; }
-
-.mtime-cont .mtime-ts-long, .c999 {
-  color: #999999 !important; }
-
-.arrow-content {
-  display: flex;
-  flex-flow: row nowrap;
-  flex-grow: 1;
-  flex-shrink: 1;
-  align-items: center;
-  justify-content: center;
-  margin: 0 5px;
-  padding: 5px 5px;
-  width: 120px;
-  font-size: 14px;
-  font-weight: bold; }
-
-.arrow-content span {
-  max-width: 50%; }
-
-.bottom-arrow-btn-cont {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: space-evenly;
-  margin-top: 30px;
-  margin-bottom: 10px; }
-
-.md-footer {
-  display: flex;
-  flex-flow: row wrap;
-  margin-top: 30px;
-  border-top: 1px solid #eaecef;
-  padding: 5px; }
-
-.md-footer-section-title {
-  padding-bottom: 10px;
-  font-weight: bold; }
-
-.md-footer-section-content {
-  display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
-  justify-content: flex-start; }
-
-.md-footer-section {
-  padding: 15px;
-  min-width: 150px;
-  color: #4a4a4a; }
-
-.md-footer-img {
-  background: transparent;
-  width: 15px; }
-
-.md-footer-copyright {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-  color: #afafaf;
-  font-size: 12px; }
-
-.md-footer-inner {
-  display: inline-flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center; }
-
-.md-footer-copyright a {
-  border-radius: 100px;
-  background: rgba(0, 0, 0, 0.02);
-  padding: 1px 10px;
-  color: #afafaf; }
-
-.md-footer-copyright i {
-  font-size: 9px; }
-
-.anchor {
-  padding: 0 6px; }
-
-.anchor i {
-  color: #24292e;
-  font-size: 12px; }
 
 @media (max-width: 768px) {
   .md-footer {
@@ -1253,15 +1222,16 @@ details, summary {
     position: fixed;
     top: 0;
     left: 0;
-    transform: translate3D(calc(-100%), 0, 0);
-    transform: translate3D(-100%, 0, 0);
     z-index: 2;
     transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
     will-change: transform, contents;
     border-right: 1px solid rgba(0, 0, 0, 0.15);
     background: white;
     width: 280px;
-    height: 100%; }
+    height: 100%;
+    /* CSS acceleration: [https://stackoverflow.com/a/18529444] */
+    /* Specificity: [https://stackoverflow.com/a/33319903] */
+    transform: translate3D(-100%, 0, 0); }
   /* To make the sidebar constantly show the y-scroller make the div
 	dip/overflow. This or simply giving the .menu a min-height: 101%; also
 	works.
@@ -1269,9 +1239,6 @@ details, summary {
 	.logo-devdocs {
 		margin-bottom: -40px;
 	}*/
-  .mobile-slide {
-    transform: translate3D(280px, 0, 0);
-    transform: translate3D(calc(280px), 0, 0); }
   .markdown-body {
     margin-top: 40px;
     padding: 15px;

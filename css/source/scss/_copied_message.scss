@@ -1,0 +1,29 @@
+.copied-message {
+	display: flex;
+	position: absolute;
+	position: fixed;
+	align-items: center;
+	justify-content: flex-end;
+
+	z-index: 10;
+	transition: opacity 0.2s ease-in-out;
+
+	padding: 10px;
+
+	width: 100%;
+}
+
+.copied-message span {
+	border-radius: 4px;
+	background: #2578f8;
+	padding: 10px;
+
+	color: white;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 10px;
+}
+
+.copied-message i {
+	font-size: 12px;
+}
