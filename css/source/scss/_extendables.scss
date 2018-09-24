@@ -1,80 +1,81 @@
-/* Custom expandable */
-
-.dd-expandable-base {
+// Custom Expandable.
+.dd-expandable {
 	display: flex;
 	flex-flow: column nowrap;
 
 	border: 1px solid transparent;
-	background: white;
+	background: #ffffff;
+
+	&-message {
+		@include cur;
+		@include flex($align: center, $justify: flex-start, $flow: null);
+
+		transition: 0.2s ease-in-out;
+		transition-property: background, border-radius, padding;
+
+		margin-top: 10px;
+		margin-bottom: 10px;
+		padding: 6px 0;
+
+		font-weight: bold;
+
+		&-active {
+			@include bg($c-g-3);
+
+			border-radius: 3px;
+			padding: 6px 10px;
+		}
+
+		&-icon {
+			transition: transform 0.4s cubic-bezier(0.04, 0.78, 0.54, 1.13);
+
+			&-active {
+				@include c($c-b-2);
+
+				transform: rotate(450deg);
+			}
+		}
+	}
 }
 
-.dd-expandable-message {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
+// Custom Message.
+.dd-message {
+	@include bg($c-w);
+	@include flex($flow: "column nowrap");
 
-	transition: all 0.2s ease-in-out;
-
-	margin-top: 10px;
-	margin-bottom: 10px;
-	padding: 6px 0;
-
-	font-weight: 700;
-	pointer: cursor;
-}
-
-.dd-expandable-message-active {
-	border-radius: 3px;
-	background: #f7f7f7;
-	padding: 6px 10px;
-}
-
-.dd-expandable-message-icon {
-	transition: transform 0.4s cubic-bezier(0.04, 0.78, 0.54, 1.13);
-}
-
-.dd-expandable-message-icon-active {
-	transform: rotate(450deg);
-
-	color: #2578f8;
-}
-
-/* Custom Messages */
-
-.dd-message-wrapper {
-	padding: 6px 0;
-}
-
-.dd-message-base {
-	display: flex;
-	flex-flow: column nowrap;
-
-	border: 1px solid #e8e8e8;
+	margin: 6px 0;
+	border: 1px solid $c-g-5;
 	border-radius: 4px;
-	background: white;
 	padding: 10px 16px;
 
 	white-space: unset;
+
+	i {
+		margin-right: 8px;
+	}
+
+	.title {
+		@include flex($align: center, $justify: start, $flow: null);
+
+		margin-bottom: 5px;
+
+		font-weight: bold;
+	}
+
+	@mixin msg-c($color) {
+		@include bg($c-w);
+
+		border-left: 5px solid $color;
+	}
+
+	@for $i from 1 through length($colors) {
+		&--#{nth($names, $i)} {
+			@include msg-c(nth($colors, $i));
+		}
+	}
 }
 
-.dd-message-title {
-	display: flex;
-	align-items: center;
-	justify-content: start;
-
-	margin-bottom: 5px;
-
-	font-weight: bold;
-}
-
-.dd-message-base i {
-	margin-right: 8px;
-}
-
-/* Message Colors */
-
-/* Flat colors: [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS] */
-
+// Demo the message colors in the expandables.md file.
 .color-square {
 	display: inline-block;
 	float: left;
@@ -86,79 +87,4 @@
 
 	width: 16px;
 	height: 16px;
-}
-
-.dd-message--grapefruit {
-	border-left: 5px solid #ed5565;
-	background: #ffffff;
-}
-
-.dd-message--bittersweet {
-	border-left: 5px solid #fc6e51;
-	background: #ffffff;
-}
-
-.dd-message--honeybutter {
-	border-left: 5px solid #fee450;
-	background: #ffffff;
-}
-
-.dd-message--sunflower {
-	border-left: 5px solid #ffce54;
-	background: #ffffff;
-}
-
-.dd-message--grass {
-	border-left: 5px solid #a0d468;
-	background: #ffffff;
-}
-
-.dd-message--mint {
-	border-left: 5px solid #48cfad;
-	background: #ffffff;
-}
-
-.dd-message--sky {
-	border-left: 5px solid #4fc1e9;
-	background: #ffffff;
-}
-
-.dd-message--bluejeans {
-	border-left: 5px solid #5d9cec;
-	background: #ffffff;
-}
-
-.dd-message--aqua {
-	border-left: 5px solid #4894f6;
-	background: #ffffff;
-}
-
-.dd-message--lavender {
-	border-left: 5px solid #ac92ec;
-	background: #ffffff;
-}
-
-.dd-message--pinkrose {
-	border-left: 5px solid #ec87c0;
-	background: #ffffff;
-}
-
-.dd-message--lightgray {
-	border-left: 5px solid #e3e3e4;
-	background: #ffffff;
-}
-
-.dd-message--mediumgray {
-	border-left: 5px solid #ccd1d9;
-	background: #ffffff;
-}
-
-.dd-message--darkgray {
-	border-left: 5px solid #656d78;
-	background: #ffffff;
-}
-
-.dd-message--spacegray {
-	border-left: 5px solid #5d687b;
-	background: #ffffff;
 }

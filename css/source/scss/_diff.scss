@@ -1,22 +1,21 @@
 .diff {
 	&-deletion {
-		background-color: #ffeef0;
-
-		color: #b31d28;
+		@include bg($c-r-3);
+		@include c($c-r-2);
 	}
 
 	&-addition {
-		background-color: #f0fff4;
-
-		color: #22863a;
+		@include bg($c-gr-2);
+		@include c($c-gr-1);
 	}
 
 	&-coordinate {
-		color: #6f42c1;
+		@include c($c-p-3);
+
 		font-weight: bold;
 	}
 
 	&-diffline {
-		color: #005cc5;
+		@include c($c-b-3);
 	}
 }

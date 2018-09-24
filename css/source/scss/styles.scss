@@ -1,14 +1,16 @@
 // Get main/top-level imports.
 @import "vars";
 @import "reset";
-@import "ui-button";
 @import "mixins";
 @import "helpers";
 
-/* App Styles */
+// Wrappers.
 @import "body_wrapper";
 @import "app_wrapper";
 @import "markdown_wrapper";
+
+// Components.
+@import "ui-button";
 @import "loader_top";
 @import "overlays";
 @import "sidebar";
@@ -17,12 +19,12 @@
 @import "error_pages";
 @import "topbar";
 @import "splash_screen";
+@import "emoji";
+@import "footer";
 @import "codeblock_placeholder";
 @import "mloader";
-@import "copied_message";
-@import "footer";
 @import "extendables";
-@import "emoji";
+@import "copied_message";
 @import "diff";
 @import "search";
 @import "versions";

@@ -6,8 +6,11 @@
 		margin-top: 30px;
 		margin-left: -15px;
 		border-top: 1px solid #eaecef;
-		background: #fcfcfc;
-		background: linear-gradient(180deg, #fcfcfc 0%, rgba(255, 255, 255, 1) 100%);
+		background: linear-gradient(
+			180deg,
+			#fcfcfc 0%,
+			rgba(255, 255, 255, 1) 100%
+		);
 		padding: 5px;
 
 		width: calc(100% + 30px);
@@ -21,7 +24,7 @@
 }
 
 @media (max-width: 366px) {
-	.show-code-message-cont {
+	.codeblock-placeholder .info {
 		font-size: 13px;
 	}
 }
@@ -51,37 +54,37 @@
 		padding: 10px 0 10px 15px;
 	}
 
-	.search-cont {
+	.search {
 		margin-left: 0;
 		border-bottom: 1px solid #ededed;
 		border-radius: 0;
 		background: #fafafa;
 		padding: 5px;
-	}
 
-	.search-cont-inner {
-		background: transparent;
-		padding: 0 10px 0 5px;
+		.search-ui {
+			@include fsize(15);
 
-		font-size: 15px;
+			background: transparent;
+			padding: 0 10px 0 5px;
+
+			.icon-clear {
+				padding: 4px 6px;
+
+				font-size: 18px;
+			}
+
+			.input {
+				@include fsize(16);
+
+				&::placeholder {
+					@include fsize(16);
+				}
+			}
+		}
 	}
 
 	.search-cont-inner-vlist {
 		background: #f7f7f7;
-	}
-
-	.sinput::placeholder {
-		font-size: 16px;
-	}
-
-	.search-clear {
-		padding: 4px 6px;
-
-		font-size: 18px;
-	}
-
-	.sinput {
-		font-size: 16px;
 	}
 
 	.logo-spacer {
@@ -109,7 +112,7 @@
 	}
 
 	.app {
-		/* width: 900px; */
+		// width: 900px;
 		flex-flow: column nowrap;
 	}
 
@@ -120,11 +123,13 @@
 		background: rgba(255, 255, 255, 0.95);
 	}
 
-	.menu {
+	.sidebar-menu {
 		margin-top: 10px;
 	}
 
 	.sidebar {
+		@include translate3d(-100%);
+
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -134,18 +139,55 @@
 		will-change: transform, contents;
 
 		border-right: 1px solid rgba(0, 0, 0, 0.15);
-		background: white;
+		background: #ffffff;
 
 		width: $sidebar-width-mobile;
 		height: 100%;
-		@include translate3d(-100%);
-	}/* To make the sidebar constantly show the y-scroller make the div
-	dip/overflow. This or simply giving the .menu a min-height: 101%; also
-	works.
+	}
 
-	.logo-devdocs {
-		margin-bottom: -40px;
-	}*/
+	// To make the sidebar constantly show the y-scroller make the div
+	// dip/overflow. This or simply giving the .menu a min-height: 101%;
+	// also works.
+	// .sb-footer { margin-bottom: -40px; }
+
+	.header-spacer {
+		padding-bottom: 24px;
+	}
+
+	.codeblock-actions,
+	.codeblock-actions-group {
+		.action {
+			opacity: 1;
+
+			color: inherit;
+		}
+	}
+
+	.line-nums {
+		border-radius: 0;
+
+		&.first {
+			display: none;
+		}
+
+		&.second {
+			position: relative;
+		}
+
+		.line {
+			.highlight-n {
+				box-shadow: none;
+			}
+		}
+	}
+
+	.search {
+		margin-right: 0;
+	}
+
+	.l-2-link {
+		max-width: 160px;
+	}
 
 	.markdown-body {
 		margin-top: 40px;
@@ -154,12 +196,26 @@
 		font-size: 15px;
 	}
 
+	.markdown-body pre code {
+		border-radius: 0;
+	}
+
+	.markdown-body .highlight pre,
+	.markdown-body pre {
+		margin-left: -15px;
+		border-radius: 0;
+
+		width: calc(100% + 30px);
+	}
+
 	.markdown-body h1:not(.ignore-header),
 	.markdown-body h2:not(.ignore-header),
 	.markdown-body h3:not(.ignore-header),
 	.markdown-body h4:not(.ignore-header),
 	.markdown-body h5:not(.ignore-header),
 	.markdown-body h6:not(.ignore-header) {
+		@include ios-smooth-scrolling;
+
 		position: sticky !important;
 		top: 42px;
 
@@ -170,7 +226,7 @@
 		margin-bottom: 0;
 		margin-left: -15px;
 		border-bottom: 1px solid #eaecef;
-		/* Full Width Tweak */
+		// Full Width Tweak.
 		border-radius: 0 !important;
 		background: rgba(255, 255, 255, 0.95);
 		padding: 10px 15px;
@@ -183,7 +239,6 @@
 		font-weight: 600;
 		text-overflow: initial;
 		white-space: nowrap;
-		@include ios_smooth_scrolling();
 	}
 
 	.markdown-body h1.ignore-header,
@@ -192,6 +247,8 @@
 	.markdown-body h4.ignore-header,
 	.markdown-body h5.ignore-header,
 	.markdown-body h6.ignore-header {
+		@include ios-smooth-scrolling;
+
 		position: relative;
 
 		margin-top: 10px;
@@ -208,51 +265,5 @@
 		font-weight: 600;
 		text-overflow: initial;
 		white-space: nowrap;
-		@include ios_smooth_scrolling();
-	}
-
-	.header-spacer {
-		padding-bottom: 24px;
-	}
-
-	.code-block-action {
-		opacity: 1;
-
-		color: inherit;
-	}
-
-	.line-num-first {
-		display: none;
-	}
-
-	.line-num-second {
-		position: relative;
-	}
-
-	.line-block-highlight {
-		box-shadow: none;
-	}
-
-	.search-cont {
-		margin-right: 0;
-	}
-
-	.l-2-link {
-		max-width: 160px;
-	}
-
-	.markdown-body .highlight pre,.markdown-body pre {
-		margin-left: -15px;
-		border-radius: 0;
-
-		width: calc(100% + 30px);
-	}
-
-	.markdown-body pre code {
-		border-radius: 0;
-	}
-
-	.line-num {
-		border-radius: 0;
 	}
 }

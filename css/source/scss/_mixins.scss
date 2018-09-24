@@ -1,47 +1,99 @@
-@mixin def-font() {
-	/* Default font. */
-	font-family: -apple-system,
-                 BlinkMacSystemFont,
-                 "Segoe UI",
-                 Helvetica,
-                 Arial,
-                 sans-serif,
-                 "Apple Color Emoji",
-                 "Segoe UI Emoji",
-                 "Segoe UI Symbol";
+// Generate font size.
+@mixin fsize($size, $unit: "px") {
+	// $sizes: 7 9 10 11 12 13 14 15 16 18 20;
+	font-size: unquote($size + $unit);
 }
 
-@mixin ios_smooth_scrolling() {
-	/* Make scrolling smooth in iOS */
+@mixin underline($val: underline) {
+	text-decoration: $val;
+}
+
+@mixin c($val, $specificity: null) {
+	@if $specificity {
+		color: $val unquote($specificity);
+	} @else {
+		color: $val;
+	}
+}
+
+@mixin bg($val) {
+	background: $val;
+}
+
+// Useful when needing to make iOS elements clickable.
+@mixin cur($val: pointer) {
+	cursor: $val;
+}
+
+@mixin flex($dis: flex, $flow: "row nowrap", $justify: null, $align: null, $grow: null, $shrink: null, $flex: null, $aligns: null, $basis: null) {
+	@if $dis {
+		display: unquote($dis);
+	}
+	@if $flow {
+		flex-flow: unquote($flow);
+	}
+	@if $justify {
+		justify-content: unquote($justify);
+	}
+	@if $align {
+		align-items: unquote($align);
+	}
+	@if $grow {
+		flex-grow: unquote($grow);
+	}
+	@if $shrink {
+		flex-shrink: unquote($shrink);
+	}
+	@if $flex {
+		flex: unquote($flex);
+	}
+	@if $aligns {
+		align-self: unquote($aligns);
+	}
+	@if $basis {
+		flex-basis: unquote($basis);
+	}
+}
+
+// Default font.
+@mixin def-font {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
+		sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+// Make scrolling smooth in iOS.
+@mixin ios-smooth-scrolling {
 	overflow-scrolling: touch;
 }
 
-@mixin noselect() {
+@mixin noselect {
 	user-select: none;
 	touch-callout: none;
 }
 
 @mixin translate3d($tx: 0, $ty: 0, $tz: 0, $specificity: null) {
-	/* CSS acceleration: [https://stackoverflow.com/a/18529444] *//* Specificity: [https://stackoverflow.com/a/33319903] */
-	transform: translate3D($tx, $ty, $tz) $specificity;
+	// CSS acceleration: [https://stackoverflow.com/a/18529444]
+	// Specificity: [https://stackoverflow.com/a/33319903]
+	transform: translate3d($tx, $ty, $tz) $specificity;
 }
 
-@mixin def-ul() {
-	/* Default UL styles. */
+// Default UL styles.
+@mixin def-ul {
 	margin: 0;
 	padding: 0;
 
 	list-style: none;
 }
 
-@mixin truncate() {
+@mixin truncate {
 	overflow: hidden;
 
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
 
-@mixin slide_transform() {
-	// Use on the topbar, markdown elements if sliding them to the right when the sidebar gets slid into view.
+@mixin slide-transform {
+	// Use on the topbar, markdown elements if sliding them to the right
+	// when the sidebar gets slid into view.
 	transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }

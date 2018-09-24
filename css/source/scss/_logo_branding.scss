@@ -3,14 +3,14 @@
 	justify-content: flex-start;
 
 	margin-left: 5px;
-	padding: 0 0 0 0;
+	padding: 0;
 
 	&.square {
 		width: 20px;
 		height: 20px;
 
 		img {
-			/* [https://stackoverflow.com/a/9445306] */
+			// [https://stackoverflow.com/a/9445306]
 			width: 16px;
 		}
 	}

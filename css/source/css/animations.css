@@ -1,33 +1,3 @@
-/* [animation resources] */
-/* [https://www.w3schools.com/cssref/css3_pr_animation.asp] */
-/*.ANIMATION-TEMPLATE {
-	animation-name: ANIMATION-TEMPLATE;
-	animation-duration: 0.2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes ANIMATION-TEMPLATE {
-	0% {}
-}*/
-/*.animate-fadein-y {
-	animation-name: animate-fadein-y;
-	animation-duration: 0.3s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes animate-fadein-y {
-	0% {
-		transform: translateY(-15px);
-		opacity: 0;
-	}
-
-	100% {
-		transform: translateY(0);
-		opacity: 1;
-	}
-}*/
 .animate-fadein {
   animation-name: animate-fadein;
   animation-duration: 0.2s;

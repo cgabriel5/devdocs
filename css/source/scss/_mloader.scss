@@ -1,22 +1,19 @@
-/* Used SVG to CSS converter: [https://codepen.io/elliz/full/ygvgay] */
-
-/* Used SVG to CSS converter: [https://websemantics.uk/tools/svg-to-background-image-conversion/] */
-
-%mloader {
+// Used SVG to CSS converter:
+// [https://codepen.io/elliz/full/ygvgay],[https://websemantics.uk/tools/svg-to-background-image-conversion/]
+@mixin mloader($c1, $c2, $c3) {
 	position: relative;
 
 	animation: animate-spin 0.5s linear infinite;
 
 	border: 3px solid;
 	border-radius: 50%;
+	border-color: $c1 $c2 $c3;
 }
 
 .mloader {
-	@extend %mloader;
-	border-color: #555555 #dddddd #dddddd;
+	@include mloader($c-g-6, $c-g-7, $c-g-7);
 }
 
 .mloader-white {
-	@extend %mloader;
-	border-color: #ffffffa3 #ffffff #ffffff;
+	@include mloader($c-w-2, $c-w, $c-w);
 }

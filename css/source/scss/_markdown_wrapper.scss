@@ -1,4 +1,6 @@
 .markdown {
+	@include translate3d;
+
 	opacity: 1;
 	transition: opacity 0.2s ease-in-out;
 	will-change: contents;
@@ -7,12 +9,11 @@
 	background: transparent;
 
 	width: 100%;
-	@include translate3d();
 
 	&.loading-content {
 		opacity: 0.6;
 
-		background: #ffffff !important;
+		background: $c-w !important;
 
 		pointer-events: none;
 	}

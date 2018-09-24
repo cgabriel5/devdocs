@@ -1,9 +1,7 @@
 .copied-message {
-	display: flex;
-	position: absolute;
+	@include flex($flow: null, $align: center, $justify: flex-end);
+
 	position: fixed;
-	align-items: center;
-	justify-content: flex-end;
 
 	z-index: 10;
 	transition: opacity 0.2s ease-in-out;
@@ -11,19 +9,20 @@
 	padding: 10px;
 
 	width: 100%;
-}
 
-.copied-message span {
-	border-radius: 4px;
-	background: #2578f8;
-	padding: 10px;
+	span {
+		@include c($c-w);
+		@include bg($c-b-2);
+		@include fsize(14);
 
-	color: white;
-	font-size: 14px;
-	font-weight: bold;
-	line-height: 10px;
-}
+		border-radius: 4px;
+		padding: 10px;
 
-.copied-message i {
-	font-size: 12px;
+		font-weight: bold;
+		line-height: 10px;
+	}
+
+	i {
+		@include fsize(12);
+	}
 }

@@ -1,153 +1,118 @@
-.show-code-cont {
-	display: flex;
-
-	cursor: pointer;
+.codeblock-placeholder {
+	@include cur;
+	@include bg($c-g-8);
+	@include flex($flow: null);
 
 	margin-bottom: 15px;
-	border: 1px solid transparent;
 	border: 1px solid #eaecee;
 	border-radius: 3px;
-	background: #fbfbfb;
 	background-clip: padding-box;
+
+	.template {
+		@include flex($flow: "column nowrap");
+
+		// The gray bar code template.
+		transform: scale(0.8);
+
+		padding: 5px;
+
+		width: 50%;
+
+		.row {
+			@include flex($flow: null);
+		}
+
+		.indent {
+			margin-left: 25px;
+		}
+
+		.block {
+			@include bg($c-g-9);
+
+			margin: 3px 10px 3px 0;
+			border-radius: 3px;
+			padding: 6px 10px;
+
+			// Loop to make the block sizes.
+			@each $w in (4 5 7 8 10 13) {
+				$w: $w * 10;
+
+				&.size-#{$w} {
+					width: #{$w}px;
+				}
+			}
+		}
+	}
+
+	.info {
+		// The right side shows code block info.
+		@include flex($flow: null, $align: center, $justify: center);
+		width: 100%;
+
+		div:first-child {
+			padding: 3px;
+
+			min-width: 50%;
+		}
+
+		.details {
+			@include c($c-g-1);
+			@include fsize(12);
+
+			margin-top: 5px;
+		}
+
+		.lang {
+			@include bg($c-w);
+			@include fsize(10);
+			@include c($c-g-10);
+
+			margin-left: 5px;
+			border: 1px solid rgb(207, 207, 207);
+			border-radius: 3px;
+			padding: 4px;
+
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+	}
+
+	&:active span,
+	&:hover span {
+		@include c($c-b-2, "!important");
+	}
+
+	&:active,
+	&:hover,
+	&:active .lang,
+	&:hover .lang {
+		border: 1px solid $c-b-2 !important;
+	}
 }
 
-.show-code-cont:active span,
-.show-code-cont:hover span {
-	color: #2578f8;
-}
-
-.show-code-cont:active,
-.show-code-cont:hover,
-.show-code-cont:active .show-code-lang,
-.show-code-cont:hover .show-code-lang {
-	border: 1px solid #2578f8;
-}
-
-.show-code-lang {
-	margin-left: 5px;
-	border: 1px solid rgb(207, 207, 207);
-	border-radius: 3px;
-	background: white;
-	padding: 4px;
-
-	color: #949494;
-	font-size: 10px;
-	font-weight: bold;
-	text-transform: uppercase;
-}
-
-.code-template-cont {
-	display: flex;
-	flex-flow: column nowrap;
-	transform: scale(0.8);
-
-	padding: 5px;
-
-	width: 50%;
-}
-
-.code-template {
-	margin-top: 3px;
-	margin-right: 10px;
-	margin-bottom: 3px;
-	border-radius: 3px;
-	background: #e3e3e3;
-	padding: 6px 10px;
-}
-
-.code-template-line {
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
-}
-
-.code-template-left-pad {
-	margin-left: 25px;
-}
-
-.code-template-len40 {
-	width: 40px;
-}
-
-.code-template-len50 {
-	width: 50px;
-}
-
-.code-template-len70 {
-	width: 70px;
-}
-
-.code-template-len80 {
-	width: 80px;
-}
-
-.code-template-len100 {
-	width: 100px;
-}
-
-.code-template-len130 {
-	width: 130px;
-}
-
-.show-code-message-cont {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: 100%;
-}
-
-.show-code-file-info {
-	margin-top: 5px;
-
-	color: #999999;
-	font-size: 12px;
-}
-
-.show-code-message-cont div:first-child {
-	padding: 3px;
-
-	min-width: 50%;
-}
-
+// The name of the code block (i.e. "untitled.js").
 .codeblock-name {
+	@include fsize(11);
+	@include c($c-g-13);
+	@include bg($c-g-8);
+	@include def-font;
+
 	position: absolute;
 
 	margin-top: -26px;
 	margin-left: -10px;
 	border-right: 1px solid #c8c8c87a;
 	border-bottom: 1px solid #c8c8c87a;
-	border-radius: 3px 0 3px 0;
-	background: #fbfbfb;
+	border-radius: 3px 0;
 	padding: 2px 10px;
 
-	color: #b7b7b7;
-	color: #949494;
-	font-size: 11px;
-	font-weight: 700;
+	font-weight: bold;
 }
 
-.code-block-actions-cont {
-	display: flex;
-	justify-content: flex-end;
+%action {
+	@include c($c-g-1);
+	@include fsize(13);
 
-	padding-bottom: 5px;
-
-	width: 100%;
-}
-
-.code-block-actions-cont-group {
-	display: flex;
-	justify-content: space-between;
-
-	margin-bottom: 3px;
-	border-radius: 3px 3px 0 0;
-
-	width: 100%;
-}
-
-.code-block-action {
 	opacity: 0.4;
 
 	margin-left: 10px;
@@ -155,98 +120,114 @@
 	border: 1px solid rgba(0, 0, 0, 0.1);
 	padding: 3px 10px;
 
-	color: #999999;
-	font-size: 13px;
-	font-weight: 700;
+	font-weight: bold;
+
+	&:hover,
+	&:active {
+		@include c($c-g-12);
+
+		opacity: 1;
+	}
 }
 
-.code-block-action:hover,
-.code-block-action:active {
-	opacity: 1;
+// Simple actions: copy/collapse.
+.codeblock-actions {
+	@include flex($flow: null, $justify: flex-end);
 
-	color: #333333;
+	padding-bottom: 5px;
+
+	width: 100%;
+
+	.action {
+		@extend %action;
+	}
 }
 
-.line-num {
+// Simple + Tab actions.
+.codeblock-actions-group {
+	@include flex($flow: null, $justify: space-between);
+
+	margin-bottom: 3px;
+	border-radius: 3px 3px 0 0;
+
+	width: 100%;
+
+	.action {
+		@extend %action;
+	}
+
+	.tabs {
+		@include ios-smooth-scrolling;
+
+		position: relative;
+
+		max-width: 600px;
+		overflow: auto;
+		overflow-x: auto;
+		overflow-y: hide;
+
+		.tab {
+			@include cur;
+			@include c($c-g-1);
+			@include fsize(13);
+
+			border-radius: 3px;
+			padding: 5px 13px;
+
+			font-weight: bold;
+			white-space: pre;
+
+			&.activetab {
+				@include c($c-g-12);
+			}
+		}
+	}
+}
+
+.line-nums {
+	@include c($c-g-11);
+	@include bg($c-g-8);
+
 	border-right: 1px solid #c8c8c87a;
 	border-radius: 5px 0 0 5px;
-	background: #fbfbfb;
 	padding: 16px 3px 16px 10px;
 
-	color: #919191;
-}
+	&.third {
+		@include bg($c-tr);
 
-.line-num-third {
-	position: absolute;
+		position: absolute;
 
-	border-right: none;
-	background: transparent;
+		border-right: 0;
 
-	width: 100%;
-}
+		width: 100%;
+	}
 
-.line-num-line-highlight-cont {
-	position: absolute;
+	.line {
+		position: relative;
 
-	margin-top: -1px;
-	border-right: none;
-	background: transparent;
+		span {
+			padding: 0 10px;
+		}
 
-	width: 100%;
-}
+		&.highlight-l {
+			@include bg($c-p-1);
+			@include bg(linear-gradient(to right, $c-p-1 85%, $c-p-2));
 
-.line-num-line-highlight {
-	background: #698cfe20;
-}
+			// Line highlight.
+			margin-right: 10px;
+			border-radius: 4px;
+		}
 
-.lang-code-line-highlight {
-	margin-right: 10px;
-	border-radius: 4px;
-	background: #698cfe20;
-	background: linear-gradient(to right, #698cfe20 85%, #698cfe00);
-}
+		.highlight-n {
+			@include c($c-w) @include bg($c-b-4);
 
-.line-num-cont {
-	position: relative;
-}
+			// Line number highlight.
+			box-shadow: 0 -3px 0 0 $c-b-4;
+			border-radius: 3px;
 
-.line-num-cont span {
-	padding: 0 10px;
-}
-
-.line-block-highlight {
-	box-shadow: 0 -3px 0 0 #698cfe;
-	border-radius: 3px;
-	background: #698cfe;
-
-	color: #ffffff;
-	font-weight: 700;
-}
-
-.codegroup-tab {
-	cursor: pointer;
-
-	border-radius: 3px;
-	padding: 5px 13px;
-
-	color: #999999;
-	font-size: 13px;
-	font-weight: 700;
-	white-space: pre;
-}
-
-.codegroup-tab-active {
-	color: #333333;
-}
-
-.tabs-cont {
-	position: relative;
-
-	max-width: 600px;
-	overflow: auto;
-	overflow-x: auto;
-	overflow-y: hide;
-	@include ios_smooth_scrolling();
+			font-weight: bold;
+		}
+	}
 }
 
 .padtop-26 {

@@ -8,7 +8,9 @@
 }
 
 .main-overlay {
-	@extend %overlay;/* The highest z-index used. */
+	@extend %overlay;
+
+	// The highest z-index used.
 	z-index: 4;
 
 	background: transparent;
@@ -16,6 +18,7 @@
 
 .sidebar-overlay {
 	@extend %overlay;
+
 	z-index: 2;
 	transition: opacity 0.3s ease-in-out;
 

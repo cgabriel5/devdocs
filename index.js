@@ -565,7 +565,7 @@ function expand_ctags(text) {
 			title = title ? title : "Expand";
 
 			// Build and return the HTML.
-			return `\n\n<div class="dd-expandable-base">
+			return `\n\n<div class="dd-expandable">
 	<div class="dd-expandable-message noselect">
 		<i class="fas fa-chevron-circle-right mr5 mb3 dd-expandable-message-icon"></i>
 		<span>${title}</span>
@@ -624,13 +624,13 @@ function expand_ctags(text) {
 			title = title ? title : "";
 			if (title) {
 				title = mdzero.renderInline(title);
-				title = `<div class="dd-message-title">${icon}<span>${title}</span></div>`;
+				title = `<div class="title">${icon}<span>${title}</span></div>`;
 			}
 
 			// Build and return the HTML.
-			return `\n\n<div class="dd-message-wrapper"><div class="dd-message-base dd-message--${color}">${title}<div>\n\n`;
+			return `\n\n<div class="dd-message dd-message--${color}">${title}<div>\n\n`;
 		})
-		.replace(/<\/dd-note>/gim, "\n\n</div></div></div>");
+		.replace(/<\/dd-note>/gim, "\n\n</div></div>");
 
 	text = text
 		.replace(/<dd-codegroup(.*?)>/gim, function(match) {
@@ -648,19 +648,19 @@ function expand_ctags(text) {
 			var tabs = tabs_string.split(";");
 			var tabs_html = [];
 			tabs.forEach(function(tab, i) {
-				var is_first = i === 0 ? " codegroup-tab-active" : "";
+				var is_first = i === 0 ? " activetab" : "";
 				tabs_html.push(
-					`<span class="codegroup-tab${is_first}" data-tab-index="${i}">${tab.trim()}</span>`
+					`<span class="tab${is_first}" data-tab-index="${i}">${tab.trim()}</span>`
 				);
 			});
 
 			// Generate a special ID for the pre element.
 			var uid = `exp-${id(25)}`;
 
-			return `\n\n<div class="code-block-actions-cont-group animate-fadein" data-cgroup-id="${uid}">
-			<div class="tabs-cont flex noselect">${tabs_html.join("")}</div>
+			return `\n\n<div class="codeblock-actions-group animate-fadein" data-cgroup-id="${uid}">
+			<div class="tabs flex noselect">${tabs_html.join("")}</div>
 			<div class="flex flex-center mr5">
-				<span class="flex flex-center btn noselect code-block-action btn-cba-copy"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+				<span class="flex flex-center btn noselect action BTN-COPY--"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
 			</div>
 		</div>
 		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
@@ -1055,7 +1055,7 @@ renderer.text = function(text) {
 var dirs = [];
 
 // Build the footer if links are provided.
-let footer_html = ['<div id="md-footer" class="md-footer">'];
+let footer_html = ['<div class="footer">'];
 if (footer.length) {
 	// Supported social platforms for footer links.
 	let socials = {
@@ -1103,7 +1103,7 @@ if (footer.length) {
 
 		// If a title is provided make the title HTML.
 		if (title) {
-			title_html = `<div class="md-footer-section-title">${title}</div>`;
+			title_html = `<div class="title">${title}</div>`;
 		}
 
 		// If a links are provided make the content HTML.
@@ -1117,13 +1117,13 @@ if (footer.length) {
 
 			// Reset the link start/end.
 			if (url) {
-				link_start = `<a href="${url}" target="_blank" class="social-link">`;
+				link_start = `<a href="${url}" target="_blank" class="link">`;
 				link_end = "</a>";
 			}
 
 			// Check whether a social icon was provided or an actual image.
 			icon = !/^\:[\w_]+/.test(icon) // :facebook-icon || ./path/to/icon
-				? `<img src="${icon}" class="mr5 md-footer-img">`
+				? `<img src="${icon}" class="img mr5">`
 				: socials[icon.replace(/^\:/g, "")]
 					? `<i class="${socials[icon.replace(/^\:/g, "")]} mr5"></i>`
 					: "";
@@ -1136,14 +1136,14 @@ if (footer.length) {
 
 		// If the content array is populated make the content HTML.
 		if (link_content.length) {
-			content_html = `<div class="md-footer-section-content">${link_content.join(
+			content_html = `<div class="content">${link_content.join(
 				""
 			)}</div>`;
 		}
 
 		// Finally, make the section HTML and add it to the footer_html array.
 		footer_html.push(
-			`<div class="md-footer-section">${title_html}${content_html}</div>`
+			`<div class="section">${title_html}${content_html}</div>`
 		);
 	});
 }
@@ -1179,7 +1179,7 @@ footer_html.push(`</div>`);
 
 // Add copyright HTML.
 footer_html.push(
-	`<div class="md-footer-copyright">${link_start}© ${new Date(
+	`<div class="copyright">${link_start}© ${new Date(
 		Date.now()
 	).getFullYear()} ${titlen}${link_end}</div>`
 );
@@ -1270,7 +1270,7 @@ versions.forEach(function(vdata) {
 			__file.name = file;
 			__file.alias = alias_file;
 			__file.html = `<div id="parent-menu-file-${counter_dir}.${counter_file}" class="l-2-parent">
-			<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
+			<li class="l-2 L2--" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 			<div class="flex l-2-main-cont">
 				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
@@ -1338,7 +1338,7 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime-cont"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="mtime-ts-long">(${timedate(
+						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none ts MTIME-TS-- animate-fadein" data-ts="${mtime}"></span> <span class="long">(${timedate(
 							mtime
 						)})</span></div></div></div>`;
 
@@ -1623,7 +1623,7 @@ versions.forEach(function(vdata) {
 								.filter(function(/*i, el*/) {
 									return !$(this)
 										.parents()
-										.filter(".dd-expandable-base").length;
+										.filter(".dd-expandable").length;
 								})
 								.each(function(/*i, el*/) {
 									// Cache the element.
@@ -1656,7 +1656,7 @@ versions.forEach(function(vdata) {
 									);
 									// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
 									$el.append(
-										`<div>${html}</div><a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}"><i class="fas fa-link"></i></a>`
+										`<div>${html}</div><a href="#${escaped_text}" aria-hidden="true" class="anchor ANCHOR--" name="${escaped_text}" id="${escaped_text}"><i class="fas fa-link"></i></a>`
 									);
 									// <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
 									// 	<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
@@ -1667,12 +1667,12 @@ versions.forEach(function(vdata) {
 							// Get all headings in the HTML.
 							var __headings = {};
 							$(
-								"h1 a.anchor, h2 a.anchor, h3 a.anchor, h4 a.anchor, h5 a.anchor, h6 a.anchor"
+								"h1 a.ANCHOR--, h2 a.ANCHOR--, h3 a.ANCHOR--, h4 a.ANCHOR--, h5 a.ANCHOR--, h6 a.ANCHOR--"
 							)
 								.filter(function(/*i, el*/) {
 									return !$(this)
 										.parents()
-										.filter(".dd-expandable-base").length;
+										.filter(".dd-expandable").length;
 								})
 								.each(function(/*i, el*/) {
 									// Cache the element.
@@ -1875,37 +1875,37 @@ versions.forEach(function(vdata) {
 												/lang-/i,
 												""
 											);
-											lang = ` <span class="show-code-lang">${langmatch}</span>`;
+											lang = ` <span class="lang">${langmatch}</span>`;
 										}
 									}
 
-									// If the code is > 40 lines show an expander.
+									// If the code is more than 40 lines show an code block placeholder.
 									if (line_count >= 40) {
-										$parent.before(`<div class="show-code-cont animate-fadein" data-expid="${uid}">
-									<div class="code-template-cont">
-										<div class="code-template-line">
-											<div class="code-template code-template-len40"></div>
-											<div class="code-template code-template-len100"></div>
+										$parent.before(`<div class="codeblock-placeholder animate-fadein" data-expid="${uid}">
+									<div class="template">
+										<div class="row">
+											<div class="block size-40"></div>
+											<div class="block size-100"></div>
 										</div>
-										<div class="code-template-left-pad code-template-line">
-											<div class="code-template code-template-len40"></div>
-											<div class="code-template code-template-len130"></div>
+										<div class="indent row">
+											<div class="block size-40"></div>
+											<div class="block size-130"></div>
 										</div>
-										<div class="code-template-left-pad code-template-line">
-											<div class="code-template code-template-len40"></div>
-											<div class="code-template code-template-len80"></div>
-											<div class="code-template code-template-len70"></div>
+										<div class="indent row">
+											<div class="block size-40"></div>
+											<div class="block size-80"></div>
+											<div class="block size-70"></div>
 										</div>
-										<div class="code-template-line">
-											<div class="code-template code-template-len40"></div>
-											<div class="code-template code-template-len50"></div>
+										<div class="row">
+											<div class="block size-40"></div>
+											<div class="block size-50"></div>
 										</div>
 									</div>
-									<div class="show-code-message-cont">
+									<div class="info">
 										<div>
 											<div>
 												<span class="bold noselect">Show block ${lang}</span>
-												<div class="show-code-file-info">
+												<div class="details">
 													<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
 												</div>
 											</div>
@@ -1916,9 +1916,9 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											// Add the action buttons
-											$parent.before(`<div class="code-block-actions-cont def-font none animate-fadein">
-												<span class="flex flex-center btn noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
-												<span class="flex flex-center btn noselect code-block-action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr5"></i><span>collapse</span></span>
+											$parent.before(`<div class="codeblock-actions def-font none animate-fadein">
+												<span class="flex flex-center btn noselect action BTN-COPY--" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+												<span class="flex flex-center btn noselect action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr5"></i><span>collapse</span></span>
 							</div>`);
 										}
 
@@ -1929,7 +1929,7 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											$parent.before(
-												`<div class="code-block-actions-cont def-font animate-fadein"><span class="flex flex-center btn noselect code-block-action btn-cba-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
+												`<div class="codeblock-actions def-font animate-fadein"><span class="flex flex-center btn noselect action BTN-COPY--" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
 											);
 										}
 									}
@@ -1955,10 +1955,10 @@ versions.forEach(function(vdata) {
 										let needs_highlight = _lines.includes(
 											i + 1
 										)
-											? " class='line-block-highlight'"
+											? " class='highlight-n'"
 											: "";
 										line_nums.push(
-											`<div class="line-num-cont"><span${needs_highlight}>${i +
+											`<div class="line"><span${needs_highlight}>${i +
 												1}</span></div>`
 										);
 									}
@@ -1970,10 +1970,10 @@ versions.forEach(function(vdata) {
 										let needs_highlight = _lines.includes(
 											i + 1
 										)
-											? " lang-code-line-highlight"
+											? " highlight-l"
 											: "";
 										line_nums2.push(
-											`<div class="line-num-cont${needs_highlight}"> </div>`
+											`<div class="line${needs_highlight}"> </div>`
 										);
 									}
 
@@ -1994,7 +1994,7 @@ versions.forEach(function(vdata) {
 											(__lang !== "" ? "." + __lang : "");
 									}
 
-									blockname_html = `<div class="code-block-name-cont noselect"><span class="codeblock-name def-font">${blockname}</span></div>`;
+									blockname_html = `<div class="noselect"><span class="codeblock-name">${blockname}</span></div>`;
 									top_pad_fix = "padtop-26";
 									$el.addClass(top_pad_fix);
 
@@ -2004,11 +2004,11 @@ versions.forEach(function(vdata) {
 										// second element to be able to be "fixed". This
 										// allows the code element to be properly adjacent
 										// to the fixed element.
-										`<div class="line-num line-num-first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
+										`<div class="line-nums first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
 											""
-										)}</div><div class="line-num line-num-third noselect pnone ${top_pad_fix}">${line_nums2.join(
+										)}</div><div class="line-nums third noselect pnone ${top_pad_fix}">${line_nums2.join(
 											""
-										)}</div><div class="line-num line-num-second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
+										)}</div><div class="line-nums second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
 											""
 										)}</div>`
 									);

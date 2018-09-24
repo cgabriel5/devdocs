@@ -1,19 +1,20 @@
 // Get main/top-level imports.
 @import "mixins";
 
-/* Button UI */
+// Button UI.
 
 %btn {
+	@include noselect;
+
 	transition: box-shadow 0.2s ease-in-out;
 	cursor: pointer;
 
 	border: 1px solid rgba(0, 0, 0, 0.17);
 	border-radius: 4px;
-	/* Defaults to a white button. */
+	// Defaults to a white button.
 	background: #ffffff;
 
 	color: #333333;
-	@include noselect();
 }
 
 .btn {

@@ -2,18 +2,18 @@
 @import "mixins";
 
 .def-font {
-	@include def-font();
+	@include def-font;
 }
 
 .truncate {
-	@include truncate();
+	@include truncate;
 }
 
 .bold {
 	font-weight: bold;
 }
 
-/* Visibility Helpers */
+// Visibility Helpers.
 
 .none {
 	display: none !important;
@@ -31,7 +31,7 @@
 	opacity: 1;
 }
 
-/* Box-modal Helpers */
+// Box-modal Helpers.
 
 .mr2 {
 	margin-right: 2px;
@@ -49,25 +49,24 @@
 	margin-bottom: 3px;
 }
 
-/* Interaction Helpers */
+// Interaction Helpers.
 
 .noselect {
-	@include noselect();
+	@include noselect;
 }
 
 .pnone {
 	pointer-events: none;
 }
 
-/* Positional Helpers  */
+// Positional Helpers .
 
 .flex {
-	display: flex;
+	@include flex($flow: null);
 }
 
 .flex-center {
-	align-items: center;
-	justify-content: center;
+	@include flex(null, null, center, center);
 }
 
 .fixed {
@@ -78,13 +77,11 @@
 	position: absolute !important;
 }
 
-/* Animation Helpers */
+// Animation Helpers.
 
 .tdelay1 {
 	transition-delay: 0.1s !important;
 }
-
-/*  */
 
 .anchor {
 	padding: 0 6px;

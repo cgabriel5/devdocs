@@ -1,4 +1,7 @@
 .sidebar {
+	@include ios-smooth-scrolling;
+	@include noselect;
+
 	display: flex;
 	position: fixed;
 	flex: 1 0 $sidebar-width-normal;
@@ -6,7 +9,14 @@
 	justify-content: space-between;
 
 	border-right: 1px solid #dddddd;
-	background-image: linear-gradient(to right, #ffffff, #ffffff, #ffffff, #ffffff, #fcfcfc);
+	background-image: linear-gradient(
+		to right,
+		#ffffff,
+		#ffffff,
+		#ffffff,
+		#ffffff,
+		#fcfcfc
+	);
 
 	width: $sidebar-width-normal;
 	height: 100%;
@@ -14,39 +24,34 @@
 	overflow-y: auto;
 
 	font-size: 15px;
-	@include ios_smooth_scrolling();
-	@include noselect();
 
 	> * {
-		/*
-iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
-to become invisible when header scrolling. This seems to solve the issue.
-
-[https://stackoverflow.com/a/3921870]
-[https://stackoverflow.com/a/3461770]
-[https://www.drupal.org/project/flexslider/issues/1748514]
-[https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/]
-[https://github.com/scottjehl/Device-Bugs/issues/8]
-[https://stackoverflow.com/a/19172250]
-[https://github.com/janpaepke/ScrollMagic/issues/467]
-[https://davidwalsh.name/translate3d]
-[https://github.com/nolimits4web/Swiper/issues/45]
-[https://stanko.github.io/ios-safari-scroll-position-fixed/]
-[https://github.com/scottjehl/Device-Bugs/issues/8#issuecomment-5742063]
-[https://stackoverflow.com/a/11634004]
-[https://stackoverflow.com/a/36606198]
-[https://stackoverflow.com/a/11782061]
-[https://github.com/leafo/sticky-kit/issues/213#issuecomment-291172357]
-[https://stackoverflow.com/a/10122689]
-[https://stackoverflow.com/a/43188105]
-*/
+		// iOS Bug: overflow-scrolling/fixed causes for the sidebar elements
+		// to become invisible when header scrolling. This seems to solve the issue.
+		// [https://stackoverflow.com/a/3921870]
+		// [https://stackoverflow.com/a/3461770]
+		// [https://www.drupal.org/project/flexslider/issues/1748514]
+		// [https://css-tricks.com/forums/topic/safari-for-ios-z-index-ordering-bug-while-scrolling-a-page-with-a-fixed-element/]
+		// [https://github.com/scottjehl/Device-Bugs/issues/8]
+		// [https://stackoverflow.com/a/19172250]
+		// [https://github.com/janpaepke/ScrollMagic/issues/467]
+		// [https://davidwalsh.name/translate3d]
+		// [https://github.com/nolimits4web/Swiper/issues/45]
+		// [https://stanko.github.io/ios-safari-scroll-position-fixed/]
+		// [https://github.com/scottjehl/Device-Bugs/issues/8#issuecomment-5742063]
+		// [https://stackoverflow.com/a/11634004]
+		// [https://stackoverflow.com/a/36606198]
+		// [https://stackoverflow.com/a/11782061]
+		// [https://github.com/leafo/sticky-kit/issues/213#issuecomment-291172357]
+		// [https://stackoverflow.com/a/10122689]
+		// [https://stackoverflow.com/a/43188105]
 		transform: translateZ(0);
 	}
 }
 
 .sidebar-show {
-	/* When class is applied the sidebars position will be reset
-	and therefore "slide back" into view. */
+	// When class is applied the sidebars position will be reset and
+	// therefore "slide back" into view.
 	@include translate3d(0, 0, 0, !important);
 }
 
@@ -63,12 +68,12 @@ to become invisible when header scrolling. This seems to solve the issue.
 	width: 100%;
 
 	ul {
-		@include def-ul();
+		@include def-ul;
 	}
 }
 
-/* Do not nest these styles are they also needed for
-the clones element used for the sidebar tooltips. */
+// Do not nest these styles are they also needed for the clones element used
+// for the sidebar tooltips.
 
 .l-1 {
 	padding: 10px 0 10px 5px;
@@ -107,7 +112,7 @@ the clones element used for the sidebar tooltips. */
 
 	border: 1px solid transparent;
 	border-radius: 4px;
-	padding: 3px 3px 2px 3px;
+	padding: 3px 3px 2px;
 
 	color: #d0d0d0;
 	font-size: 11px;
@@ -116,26 +121,26 @@ the clones element used for the sidebar tooltips. */
 
 .active-page .link-headings-count {
 	border: 1px solid transparent;
-	background: white;
+	background: #ffffff;
 
 	color: #666666;
 }
 
 .l-3 {
-	cursor: pointer;
+	@include fsize(15);
+	@include truncate;
+	@include cur;
 
 	border-right: 2px solid transparent;
-	padding: 5px 20px 5px 20px;
-
-	font-size: 15px;
-	@include truncate();
+	padding: 5px 20px;
 }
 
 .l-3:hover {
 	border-right: 2px solid #2578f8;
 }
 
-.l-2:hover:not(.active-page),.l-3:hover:not(.active-page) {
+.l-2:hover:not(.active-page),
+.l-3:hover:not(.active-page) {
 	background: #f7f7f7;
 }
 
@@ -167,14 +172,13 @@ ul.file-headers {
 }
 
 .active-page .link {
-	color: white;
+	color: #ffffff;
 	font-weight: bold;
 }
 
-/* Don't add a top margin to the first li element when the active-page class it on. */
+// Don't add a top margin to the first li element has the active-page.
 
-.menu-section-cont li:first-child.l-2.active-page {
-}
+// .menu-section-cont li:first-child.l-2.active-page {}
 
 .file-headers.headings-cont li:first-child.l-3 {
 	margin-top: 10px;
@@ -189,5 +193,5 @@ ul.file-headers {
 }
 
 .menu-arrow-active {
-	color: white;
+	color: #ffffff;
 }

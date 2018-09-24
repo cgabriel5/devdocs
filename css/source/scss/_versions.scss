@@ -1,31 +1,31 @@
 .version-cont {
 	margin-top: 5px;
 	padding: 5px;
-}
 
-.current-version-cont {
-	display: inline-flex;
-	align-items: center;
+	.current-version-cont {
+		@include flex($dis: inline-flex, $align: center);
+		@include cur;
+	}
 
-	cursor: pointer;
-}
+	.current-version {
+		@include c($c-g-1);
+		@include fsize(13);
+	}
 
-.current-version {
-	color: #999999;
-	font-size: 13px;
-}
-
-.current-version:hover {
-	text-decoration: underline;
+	.current-version:hover {
+		@include underline;
+	}
 }
 
 .versions-list-cont {
+	@include bg($c-w);
+
 	position: absolute;
 
 	margin-top: 5px;
-	box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
+	box-shadow: 0 0 1px rgba(57, 70, 78, 0.3),
+		0 20px 55px -8px rgba(57, 70, 78, 0.4);
 	border-radius: 4px;
-	background: white;
 	padding: 5px 0;
 
 	width: calc(100% - 20px);
@@ -44,53 +44,50 @@
 }
 
 .vlist-padding-top {
-	padding: 5px 0 0 0;
+	padding: 5px 0 0;
 }
 
 .version-latest {
+	@include bg($c-b-1);
+	@include fsize(7);
+	@include c($c-w);
+
 	margin-left: 5px;
 	border-radius: 2px;
-	background: #5885dd;
 	padding: 2px;
 
-	color: white;
-	font-size: 7px;
 	font-weight: bold;
 	text-transform: uppercase;
 }
 
 .version-latest-not {
-	background: #dd6d58;
+	@include bg($c-r-1);
 }
 
 .version-option {
-	display: flex;
-	align-items: center;
-
-	cursor: pointer;
+	@include flex($flow: null, $align: center);
+	@include truncate;
+	@include fsize(13);
+	@include bg($c-w);
+	@include cur;
 
 	border-radius: 3px;
-	background: white;
-	padding: 10px 20px;
-
-	font-size: 13px;
-	@include truncate();
+	padding: 8px 20px;
 }
 
-.version-option:hover, .active-version {
-	cursor: pointer;
-
-	background: #2578f8;
-
-	color: white;
+.version-option:hover,
+.active-version {
+	@include bg($c-b-2);
+	@include c($c-w);
+	@include cur;
 }
 
-.version-option:hover .version-latest, .active-version .version-latest {
-	background: white;
-
-	color: #2578f8;
+.version-option:hover .version-latest,
+.active-version .version-latest {
+	@include c($c-b-2);
+	@include bg($c-w);
 }
 
 .version-option i {
-	font-size: 10px;
+	@include fsize(10);
 }

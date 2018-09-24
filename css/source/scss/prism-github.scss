@@ -1,17 +1,16 @@
-/**
- * GHColors theme by Avi Aryan (http://aviaryan.in)
- * Inspired by Github syntax coloring
- */
+// GHColors theme by Avi Aryan (http://aviaryan.in).
+// Inspired by Github syntax coloring.
 
 code[class*="language-"],
 pre[class*="language-"] {
 	color: #393a34;
-	font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+	font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier,
+		monospace;
 	font-size: 0.95em;
-	    -ms-hyphens: none;
-	   -moz-hyphens: none;
+	-ms-hyphens: none;
+	-moz-hyphens: none;
 	-webkit-hyphens: none;
-	        hyphens: none;
+	hyphens: none;
 	line-height: 1.2em;
 	direction: ltr;
 	text-align: left;
@@ -19,8 +18,8 @@ pre[class*="language-"] {
 	word-break: normal;
 	word-spacing: normal;
 	-moz-tab-size: 4;
-	  -o-tab-size: 4;
-	     tab-size: 4;
+	-o-tab-size: 4;
+	tab-size: 4;
 }
 
 pre[class*="language-"]::-moz-selection,
@@ -33,7 +32,7 @@ code[class*="language-"]::selection {
 	background: #b3d4fc;
 }
 
-/* Code blocks */
+// Code blocks.
 
 pre[class*="language-"] {
 	margin: 0.5em 0;
@@ -44,7 +43,7 @@ pre[class*="language-"] {
 	overflow: auto;
 }
 
-/* Inline code */
+// Inline code.
 
 :not(pre) > code[class*="language-"] {
 	border: 1px solid #dddddd;
@@ -57,7 +56,7 @@ pre[class*="language-"] {
 .token.doctype,
 .token.cdata {
 	color: #999988;
-	/* font-style: italic; */
+	// font-style: italic;
 }
 
 .token.namespace {
@@ -73,7 +72,7 @@ pre[class*="language-"] {
 .token.punctuation,
 .token.operator {
 	color: #393a34;
-	/* no highlight */
+	// No highlight.
 }
 
 .token.entity,
@@ -86,7 +85,8 @@ pre[class*="language-"] {
 .token.property,
 .token.regex,
 .token.inserted {
-	/* color: #36acaa; *//* color: #627E00; */
+	// color: #36acaa;
+	// color: #627E00;
 	color: #aa0c91;
 }
 
@@ -119,7 +119,7 @@ pre[class*="language-"] {
 .token.important,
 .token.function,
 .token.bold {
-	/* font-weight: bold; */
+	// font-weight: bold;
 }
 
 .token.italic {
