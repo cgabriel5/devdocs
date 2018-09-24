@@ -23,8 +23,7 @@
 	position: absolute;
 
 	margin-top: 5px;
-	box-shadow: 0 0 1px rgba(57, 70, 78, 0.3),
-		0 20px 55px -8px rgba(57, 70, 78, 0.4);
+	box-shadow: 0 0 1px $cc1, 0 20px 55px -8px $cc2;
 	border-radius: 4px;
 	padding: 5px 0;
 

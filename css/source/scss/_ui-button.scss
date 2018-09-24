@@ -4,24 +4,23 @@
 // Button UI.
 
 %btn {
+	@include c($c-g-12);
 	@include noselect;
+	// Defaults to a white button.
+	@include bg($c-w);
 
 	transition: box-shadow 0.2s ease-in-out;
 	cursor: pointer;
 
-	border: 1px solid rgba(0, 0, 0, 0.17);
+	border: 1px solid $cc3;
 	border-radius: 4px;
-	// Defaults to a white button.
-	background: #ffffff;
-
-	color: #333333;
 }
 
 .btn {
 	@extend %btn;
 
 	&:hover {
-		box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+		box-shadow: 0 0 0 3px $cc4;
 	}
 
 	&:active {
@@ -29,11 +28,11 @@
 	}
 
 	&-blue {
-		border: 1px solid transparent;
-		border-bottom: 1px solid rgba(0, 0, 0, 0.07);
-		background: #2578f8;
+		@include bg($c-b-2);
+		@include c($c-w);
 
-		color: #ffffff;
+		border: 1px solid $c-tr;
+		border-bottom: 1px solid $cc5;
 	}
 
 	&-home {

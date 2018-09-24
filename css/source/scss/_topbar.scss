@@ -4,14 +4,14 @@
 .topbar {
 	@include flex($flow: null, $align: center, $justify: "space-between");
 	@include translate3d;
+	@include bg($c-g-8);
 
 	display: none;
 
 	z-index: 1;
 	backdrop-filter: blur(10px);
 
-	border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
-	background: #fbfbfb;
+	border-bottom: 1px solid $cc6;
 	padding: 5px 20px;
 
 	width: 100%;
@@ -44,7 +44,7 @@
 	.crumbs {
 		margin-right: -5px;
 		margin-left: -5px;
-		border: 1px solid rgba(0, 0, 0, 0.0975);
+		border: 1px solid $cc6;
 		border-radius: 100px;
 		padding: 4px 8px;
 

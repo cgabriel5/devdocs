@@ -1,16 +1,11 @@
 @media (max-width: 768px) {
-	.md-footer {
-		display: flex;
-		flex-flow: row wrap;
+	.footer {
+		@include flex($flow: "row wrap");
 
 		margin-top: 30px;
 		margin-left: -15px;
-		border-top: 1px solid #eaecef;
-		background: linear-gradient(
-			180deg,
-			#fcfcfc 0%,
-			rgba(255, 255, 255, 1) 100%
-		);
+		border-top: 1px solid $cc22;
+		background: linear-gradient(180deg, $c-g-4 0%, $c-w 100%);
 		padding: 5px;
 
 		width: calc(100% + 30px);
@@ -18,14 +13,16 @@
 }
 
 @media (max-width: 270px) {
-	.arrow-content {
-		width: 75px;
+	.arrownav {
+		.arrow {
+			width: 75px;
+		}
 	}
 }
 
 @media (max-width: 366px) {
 	.codeblock-placeholder .info {
-		font-size: 13px;
+		@include fsize(13);
 	}
 }
 
@@ -55,10 +52,11 @@
 	}
 
 	.search {
+		@include bg($cc25);
+
 		margin-left: 0;
-		border-bottom: 1px solid #ededed;
+		border-bottom: 1px solid $cc16;
 		border-radius: 0;
-		background: #fafafa;
 		padding: 5px;
 
 		.search-ui {
@@ -68,9 +66,9 @@
 			padding: 0 10px 0 5px;
 
 			.icon-clear {
-				padding: 4px 6px;
+				@include c(18);
 
-				font-size: 18px;
+				padding: 4px 6px;
 			}
 
 			.input {
@@ -84,7 +82,7 @@
 	}
 
 	.search-cont-inner-vlist {
-		background: #f7f7f7;
+		@include bg($c-g-3);
 	}
 
 	.logo-spacer {
@@ -120,7 +118,7 @@
 		display: flex;
 		position: fixed;
 
-		background: rgba(255, 255, 255, 0.95);
+		background: $cc25;
 	}
 
 	.sidebar-menu {
@@ -129,6 +127,7 @@
 
 	.sidebar {
 		@include translate3d(-100%);
+		@include bg($c-w);
 
 		position: fixed;
 		top: 0;
@@ -138,8 +137,7 @@
 		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
 		will-change: transform, contents;
 
-		border-right: 1px solid rgba(0, 0, 0, 0.15);
-		background: #ffffff;
+		border-right: 1px solid $cc24;
 
 		width: $sidebar-width-mobile;
 		height: 100%;
@@ -190,10 +188,10 @@
 	}
 
 	.markdown-body {
+		@include fsize(15);
+
 		margin-top: 40px;
 		padding: 15px;
-
-		font-size: 15px;
 	}
 
 	.markdown-body pre code {
@@ -215,6 +213,7 @@
 	.markdown-body h5:not(.ignore-header),
 	.markdown-body h6:not(.ignore-header) {
 		@include ios-smooth-scrolling;
+		@include fsize(18);
 
 		position: sticky !important;
 		top: 42px;
@@ -225,17 +224,16 @@
 		margin-top: 0;
 		margin-bottom: 0;
 		margin-left: -15px;
-		border-bottom: 1px solid #eaecef;
+		border-bottom: 1px solid $cc22;
 		// Full Width Tweak.
 		border-radius: 0 !important;
-		background: rgba(255, 255, 255, 0.95);
+		background: $cc25;
 		padding: 10px 15px;
 
 		width: calc(100% + 30px);
 		overflow-x: auto;
 		overflow-y: hidden;
 
-		font-size: 18px;
 		font-weight: 600;
 		text-overflow: initial;
 		white-space: nowrap;
@@ -248,20 +246,20 @@
 	.markdown-body h5.ignore-header,
 	.markdown-body h6.ignore-header {
 		@include ios-smooth-scrolling;
+		@include fsize(18);
 
 		position: relative;
 
 		margin-top: 10px;
 		margin-bottom: 0;
-		border-bottom: 1px solid #eaecef;
+		border-bottom: 1px solid $cc22;
 		border-radius: 0 !important;
-		background: rgba(255, 255, 255, 0.95);
+		background: $cc25;
 		padding: 10px 15px;
 
 		overflow-x: auto;
 		overflow-y: hidden;
 
-		font-size: 18px;
 		font-weight: 600;
 		text-overflow: initial;
 		white-space: nowrap;

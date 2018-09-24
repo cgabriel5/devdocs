@@ -8,15 +8,8 @@
 	flex-flow: column nowrap;
 	justify-content: space-between;
 
-	border-right: 1px solid #dddddd;
-	background-image: linear-gradient(
-		to right,
-		#ffffff,
-		#ffffff,
-		#ffffff,
-		#ffffff,
-		#fcfcfc
-	);
+	border-right: 1px solid $c-g-7;
+	background-image: linear-gradient(to right, $c-w, $c-w, $c-w, $c-w, $c-g-4);
 
 	width: $sidebar-width-normal;
 	height: 100%;
@@ -57,7 +50,7 @@
 
 .menu-section {
 	margin-left: 20px;
-	border-left: 1px solid #dddddd;
+	border-left: 1px solid $c-g-7;
 }
 
 .sidebar-menu {
@@ -106,24 +99,24 @@
 }
 
 .link-headings-count {
-	display: flex;
+	@include c($cc12);
+	@include fsize(11);
+	@include flex($flow: null);
 
 	transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
 
-	border: 1px solid transparent;
+	border: 1px solid $c-tr;
 	border-radius: 4px;
 	padding: 3px 3px 2px;
 
-	color: #d0d0d0;
-	font-size: 11px;
 	font-weight: bold;
 }
 
 .active-page .link-headings-count {
-	border: 1px solid transparent;
-	background: #ffffff;
+	@include bg($c-w);
+	@include c($cc11);
 
-	color: #666666;
+	border: 1px solid $c-tr;
 }
 
 .l-3 {
@@ -131,22 +124,22 @@
 	@include truncate;
 	@include cur;
 
-	border-right: 2px solid transparent;
+	border-right: 2px solid $c-tr;
 	padding: 5px 20px;
 }
 
 .l-3:hover {
-	border-right: 2px solid #2578f8;
+	border-right: 2px solid $c-b-2;
 }
 
 .l-2:hover:not(.active-page),
 .l-3:hover:not(.active-page) {
-	background: #f7f7f7;
+	@include bg($c-g-3);
 }
 
 ul.file-headers {
 	margin-left: 20px;
-	border-left: 1px solid #dddddd;
+	border-left: 1px solid $c-g-7;
 
 	overflow: hidden;
 }
@@ -160,19 +153,22 @@ ul.file-headers {
 
 .link,
 .link:visited {
+	@include c($c-g-12);
+
 	position: relative;
 
-	color: #333333;
 	text-decoration: none;
 }
 
 .active-page {
+	@include bg($c-b-2);
+
 	margin-left: -1px;
-	background: #2578f8;
 }
 
 .active-page .link {
-	color: #ffffff;
+	@include c($c-w);
+
 	font-weight: bold;
 }
 
@@ -193,5 +189,5 @@ ul.file-headers {
 }
 
 .menu-arrow-active {
-	color: #ffffff;
+	@include c($c-w);
 }

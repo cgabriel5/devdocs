@@ -1,3 +1,7 @@
+// Get main/top-level imports.
+@import "mixins";
+@import "vars";
+
 // Animation resources: [https://www.w3schools.com/cssref/css3_pr_animation.asp]
 
 // .ANIMATION-TEMPLATE {
@@ -109,9 +113,9 @@
 	}
 
 	75% {
-		opacity: 0;
+		@include bg($c-tr);
 
-		background-color: transparent;
+		opacity: 0;
 
 		height: 0;
 	}
@@ -126,24 +130,26 @@
 
 @keyframes animate-header-highlight {
 	0% {
+		@include bg($c-o-3);
+
 		border-radius: 4px;
-		background: #ffc758;
 	}
 
 	50% {
-		background: #ffffff;
+		@include bg($c-w);
 	}
 }
 
 @media (max-width: 768px) {
 	@keyframes animate-header-highlight {
 		0% {
+			@include bg($c-o-3);
+
 			border-radius: 0;
-			background: #ffc758;
 		}
 
 		50% {
-			background: #ffffff;
+			@include bg($c-w);
 		}
 	}
 }

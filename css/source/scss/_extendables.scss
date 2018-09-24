@@ -1,10 +1,9 @@
 // Custom Expandable.
 .dd-expandable {
-	display: flex;
-	flex-flow: column nowrap;
+	@include bg($c-w);
+	@include flex($flow: "column nowrap");
 
-	border: 1px solid transparent;
-	background: #ffffff;
+	border: 1px solid $c-tr;
 
 	&-message {
 		@include cur;
@@ -82,7 +81,7 @@
 
 	margin-top: 5px;
 	margin-right: 5px;
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	border: 1px solid $cc13;
 	border-radius: 3px;
 
 	width: 16px;

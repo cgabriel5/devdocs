@@ -1,15 +1,16 @@
 // [https://www.pexels.com/blog/css-only-loaders/]
 // [https://codepen.io/brunjo/pen/XJmbNz]
 .loader-top {
+	@include bg($c-b-2);
+
 	position: fixed;
 	left: 0;
 
 	opacity: 0;
 	z-index: 3;
-	transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out,
-		background 0.4s ease-in-out;
 
-	background-color: #2578f8;
+	transition: 0.4s ease-in-out;
+	transition-property: height, opacity, background;
 
 	width: 100%;
 	height: 0;

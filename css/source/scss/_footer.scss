@@ -1,39 +1,30 @@
 .mtime {
 	@include flex($flow: null, $justify: "flex-end");
+	@include fsize(11);
 
 	margin-left: 10px;
 	padding-top: 20px;
 
-	font-size: 11px;
-
 	.long {
-		color: #999999 !important;
+		@include c($c-g-1, "!important");
 	}
 }
 
 .arrownav {
-	display: flex;
-	flex-flow: row nowrap;
-	align-items: center;
-	justify-content: space-evenly;
+	@include flex($align: center, $justify: "space-evenly");
 
 	margin-top: 30px;
 	margin-bottom: 10px;
 
 	.arrow {
-		display: flex;
-		flex-flow: row nowrap;
-		flex-grow: 1;
-		flex-shrink: 1;
-		align-items: center;
-		justify-content: center;
+		@include flex($align: center, $justify: center, $grow: "1", $shrink: "1");
+		@include fsize(14);
 
 		margin: 0 5px;
 		padding: 5px;
 
 		width: 120px;
 
-		font-size: 14px;
 		font-weight: bold;
 
 		.arrow span {
@@ -43,19 +34,18 @@
 }
 
 .footer {
-	display: flex;
-	flex-flow: row wrap;
+	@include flex($flow: "row wrap");
 
 	margin-top: 30px;
-	border-top: 1px solid #eaecef;
+	border-top: 1px solid $cc22;
 	padding: 5px;
 
 	.section {
+		@include c($cc23);
+
 		padding: 15px;
 
 		min-width: 150px;
-
-		color: #4a4a4a;
 
 		.title {
 			padding-bottom: 10px;
@@ -67,6 +57,8 @@
 			@include flex($flow: "row wrap", $align: "flex-start", $justify: "flex-start");
 
 			.link {
+				@include c($cc23, "!important");
+
 				// [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items]
 				flex: 1 1 250px;
 
@@ -74,15 +66,13 @@
 				border-radius: 3px;
 				padding: 3px 10px;
 
-				color: #4a4a4a !important;
-
 				&:hover {
-					background: #f7f7f7;
+					@include bg($c-g-3);
 				}
 			}
 
 			.img {
-				background: transparent;
+				@include bg($c-tr);
 
 				width: 15px;
 			}
@@ -92,21 +82,20 @@
 
 .copyright {
 	@include flex($align: center, $justify: center);
+	@include fsize(12);
+	@include c($cc10);
 
 	margin-top: 10px;
 
-	color: #afafaf;
-	font-size: 12px;
-
 	a {
-		border-radius: 100px;
-		background: rgba(0, 0, 0, 0.02);
-		padding: 1px 10px;
+		@include bg($cc7);
+		@include c($cc10);
 
-		color: #afafaf;
+		border-radius: 100px;
+		padding: 1px 10px;
 	}
 
 	i {
-		font-size: 9px;
+		@include fsize(9);
 	}
 }

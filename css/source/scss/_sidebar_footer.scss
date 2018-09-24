@@ -1,13 +1,12 @@
 .sb-footer {
 	@include flex($align: center, $justify: center);
+	@include c($cc10);
+	@include fsize(12);
 
 	filter: grayscale(10);
 
 	margin-bottom: -40px;
 	padding: 50px 0 15px;
-
-	color: #afafaf;
-	font-size: 12px;
 
 	.img {
 		opacity: 0.3;
@@ -23,7 +22,8 @@
 		font-weight: bold;
 
 		a {
-			color: #afafaf;
+			@include c($cc10);
+
 			text-decoration: none;
 
 			&:active {

@@ -4,6 +4,17 @@ $sidebar-width-mobile: 280px;
 $app-width: 1280px;
 
 // Colors.
+
+// reds
+// oranges
+// yellows
+// greens
+// blues
+// purples
+// pinks
+// blacks/grays
+// whites
+
 $c-tr: transparent;
 $c-w: #ffffff;
 $c-w-2: unquote("#ffffffa3");
@@ -32,9 +43,38 @@ $c-y-1: #ffe300;
 $c-o-1: unquote("#ffc10770");
 $c-p-1: unquote("#698cfe20");
 $c-p-2: unquote("#698cfe00");
+$c-o-3: #ffc758;
 $c-p-3: #6f42c1;
 $c-gr-1: #22863a;
 $c-gr-2: #f0fff4;
+
+$cc1: rgba(57, 70, 78, 0.3);
+$cc2: rgba(57, 70, 78, 0.4);
+$cc3: rgba(57, 70, 78, 0.17);
+$cc4: rgba(0, 0, 0, 0.05);
+$cc5: rgba(0, 0, 0, 0.07);
+$cc6: rgba(0, 0, 0, 0.0975);
+$cc7: rgba(0, 0, 0, 0.02);
+$cc8: #d1d1d1;
+$cc9: #699935;
+$cc10: #afafaf;
+$cc11: #666666;
+$cc12: #d0d0d0;
+$cc13: rgba(0, 0, 0, 0.1);
+$cc14: #24292e;
+$cc15: #888888;
+$cc16: #ededed;
+
+$cc17: #444343;
+$cc18: #6d6d6d;
+$cc19: #eaecee;
+$cc20: rgb(207, 207, 207);
+$cc21: unquote("#c8c8c87a");
+$cc22: #eaecef;
+$cc23: #4a4a4a;
+$cc24: rgba(0, 0, 0, 0.15);
+$cc25: #fafafa;
+$cc25: rgba(255, 255, 255, 0.95);
 
 // Build the message colors:
 // [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS]

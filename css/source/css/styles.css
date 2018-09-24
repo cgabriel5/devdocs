@@ -70,8 +70,8 @@ a {
   padding: 0 6px; }
 
 .anchor i {
-  color: #24292e;
-  font-size: 12px; }
+  font-size: 12px;
+  color: #24292e; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -101,14 +101,14 @@ body {
     pointer-events: none; }
 
 .btn {
+  color: #333333;
   user-select: none;
   touch-callout: none;
+  background: #ffffff;
   transition: box-shadow 0.2s ease-in-out;
   cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.17);
-  border-radius: 4px;
-  background: #ffffff;
-  color: #333333; }
+  border: 1px solid rgba(57, 70, 78, 0.17);
+  border-radius: 4px; }
 
 .btn:hover {
   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }
@@ -117,10 +117,10 @@ body {
   opacity: 0.7; }
 
 .btn-blue {
-  border: 1px solid transparent;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
   background: #2578f8;
-  color: #ffffff; }
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
 
 .btn-home {
   padding: 6px 10px;
@@ -128,12 +128,13 @@ body {
   font-weight: bold; }
 
 .loader-top {
+  background: #2578f8;
   position: fixed;
   left: 0;
   opacity: 0;
   z-index: 3;
-  transition: height 0.4s ease-in-out, opacity 0.4s ease-in-out, background 0.4s ease-in-out;
-  background-color: #2578f8;
+  transition: 0.4s ease-in-out;
+  transition-property: height, opacity, background;
   width: 100%;
   height: 0;
   overflow: hidden;
@@ -147,13 +148,13 @@ body {
   height: 100%; }
 
 .main-overlay {
-  z-index: 4;
-  background: transparent; }
+  background: transparent;
+  z-index: 4; }
 
 .sidebar-overlay {
+  background: rgba(0, 0, 0, 0.1);
   z-index: 2;
-  transition: opacity 0.3s ease-in-out;
-  background: rgba(0, 0, 0, 0.1); }
+  transition: opacity 0.3s ease-in-out; }
 
 .sidebar {
   overflow-scrolling: touch;
@@ -212,19 +213,19 @@ body {
   max-width: 180px; }
 
 .link-headings-count {
+  color: #d0d0d0;
+  font-size: 11px;
   display: flex;
   transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
   border: 1px solid transparent;
   border-radius: 4px;
   padding: 3px 3px 2px;
-  color: #d0d0d0;
-  font-size: 11px;
   font-weight: bold; }
 
 .active-page .link-headings-count {
-  border: 1px solid transparent;
   background: #ffffff;
-  color: #666666; }
+  color: #666666;
+  border: 1px solid transparent; }
 
 .l-3 {
   font-size: 15px;
@@ -254,13 +255,13 @@ ul.file-headers {
 
 .link,
 .link:visited {
-  position: relative;
   color: #333333;
+  position: relative;
   text-decoration: none; }
 
 .active-page {
-  margin-left: -1px;
-  background: #2578f8; }
+  background: #2578f8;
+  margin-left: -1px; }
 
 .active-page .link {
   color: #ffffff;
@@ -283,11 +284,11 @@ ul.file-headers {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
+  color: #afafaf;
+  font-size: 12px;
   filter: grayscale(10);
   margin-bottom: -40px;
-  padding: 50px 0 15px;
-  color: #afafaf;
-  font-size: 12px; }
+  padding: 50px 0 15px; }
   .sb-footer .img {
     opacity: 0.3;
     margin-top: -3px; }
@@ -329,23 +330,23 @@ ul.file-headers {
 .error-cont {
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   padding-top: 25px; }
 
 .error-logo-cont {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
   justify-content: space-evenly;
+  align-items: center;
+  background: #888888;
+  font-size: 12px;
   opacity: 0.5;
   margin-bottom: 20px;
   border: 1px solid #ededed;
   border-radius: 100px;
   padding: 2px 6px;
   width: 85px;
-  color: #888888;
-  font-size: 12px;
   font-weight: bold; }
 
 .error-logo {
@@ -358,10 +359,10 @@ ul.file-headers {
   font-weight: bold; }
 
 .error-msg-2 {
-  padding-top: 10px;
-  max-width: 375px;
   color: #6d6d6d;
   font-size: 14px;
+  padding-top: 10px;
+  max-width: 375px;
   text-align: center; }
 
 .error-btn-cont {
@@ -375,11 +376,11 @@ ul.file-headers {
   justify-content: space-between;
   align-items: center;
   transform: translate3d(0, 0, 0);
+  background: #fbfbfb;
   display: none;
   z-index: 1;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
-  background: #fbfbfb;
   padding: 5px 20px;
   width: 100%;
   font-weight: bold; }
@@ -409,12 +410,12 @@ ul.file-headers {
       padding: 0 4px; }
 
 .splash-overlay {
+  background: #ffffff;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 4;
   transition: opacity 0.4s ease-in-out;
-  background: #ffffff;
   width: 100%;
   height: 100%; }
   .splash-overlay .splash {
@@ -430,10 +431,10 @@ ul.file-headers {
       min-width: 70px;
       height: 70px; }
       .splash-overlay .splash .icon .leaf {
+        background: transparent;
         transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, background 0.2s ease-in-out;
         box-shadow: inset 0 3px 0 0 rgba(0, 0, 0, 0.02);
         border-radius: 100px 250px 0;
-        background: transparent;
         width: 100%;
         height: 100%; }
         .splash-overlay .splash .icon .leaf.off {
@@ -453,30 +454,30 @@ ul.file-headers {
 .mtime {
   display: flex;
   justify-content: flex-end;
+  font-size: 11px;
   margin-left: 10px;
-  padding-top: 20px;
-  font-size: 11px; }
+  padding-top: 20px; }
   .mtime .long {
     color: #999999 !important; }
 
 .arrownav {
   display: flex;
   flex-flow: row nowrap;
-  align-items: center;
   justify-content: space-evenly;
+  align-items: center;
   margin-top: 30px;
   margin-bottom: 10px; }
   .arrownav .arrow {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: center;
+    align-items: center;
     flex-grow: 1;
     flex-shrink: 1;
-    align-items: center;
-    justify-content: center;
+    font-size: 14px;
     margin: 0 5px;
     padding: 5px;
     width: 120px;
-    font-size: 14px;
     font-weight: bold; }
     .arrownav .arrow .arrow span {
       max-width: 50%; }
@@ -488,9 +489,9 @@ ul.file-headers {
   border-top: 1px solid #eaecef;
   padding: 5px; }
   .footer .section {
+    color: #4a4a4a;
     padding: 15px;
-    min-width: 150px;
-    color: #4a4a4a; }
+    min-width: 150px; }
     .footer .section .title {
       padding-bottom: 10px;
       font-weight: bold; }
@@ -500,11 +501,11 @@ ul.file-headers {
       justify-content: flex-start;
       align-items: flex-start; }
       .footer .section .content .link {
+        color: #4a4a4a !important;
         flex: 1 1 250px;
         margin: 0 10px 0 -10px;
         border-radius: 3px;
-        padding: 3px 10px;
-        color: #4a4a4a !important; }
+        padding: 3px 10px; }
         .footer .section .content .link:hover {
           background: #f7f7f7; }
       .footer .section .content .img {
@@ -516,14 +517,14 @@ ul.file-headers {
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
-  margin-top: 10px;
+  font-size: 12px;
   color: #afafaf;
-  font-size: 12px; }
+  margin-top: 10px; }
   .copyright a {
-    border-radius: 100px;
     background: rgba(0, 0, 0, 0.02);
-    padding: 1px 10px;
-    color: #afafaf; }
+    color: #afafaf;
+    border-radius: 100px;
+    padding: 1px 10px; }
   .copyright i {
     font-size: 9px; }
 
@@ -694,10 +695,10 @@ ul.file-headers {
   border-color: #ffffffa3 #ffffff #ffffff; }
 
 .dd-expandable {
+  background: #ffffff;
   display: flex;
   flex-flow: column nowrap;
-  border: 1px solid transparent;
-  background: #ffffff; }
+  border: 1px solid transparent; }
   .dd-expandable-message {
     cursor: pointer;
     display: flex;
@@ -961,18 +962,18 @@ ul.file-headers {
   font-size: 10px; }
 
 @media (max-width: 768px) {
-  .md-footer {
+  .footer {
     display: flex;
     flex-flow: row wrap;
     margin-top: 30px;
     margin-left: -15px;
     border-top: 1px solid #eaecef;
-    background: linear-gradient(180deg, #fcfcfc 0%, white 100%);
+    background: linear-gradient(180deg, #fcfcfc 0%, #ffffff 100%);
     padding: 5px;
     width: calc(100% + 30px); } }
 
 @media (max-width: 270px) {
-  .arrow-content {
+  .arrownav .arrow {
     width: 75px; } }
 
 @media (max-width: 366px) {
@@ -995,18 +996,18 @@ ul.file-headers {
   .l-1 {
     padding: 10px 0 10px 15px; }
   .search {
+    background: rgba(255, 255, 255, 0.95);
     margin-left: 0;
     border-bottom: 1px solid #ededed;
     border-radius: 0;
-    background: #fafafa;
     padding: 5px; }
     .search .search-ui {
       font-size: 15px;
       background: transparent;
       padding: 0 10px 0 5px; }
       .search .search-ui .icon-clear {
-        padding: 4px 6px;
-        font-size: 18px; }
+        color: 18;
+        padding: 4px 6px; }
       .search .search-ui .input {
         font-size: 16px; }
         .search .search-ui .input::placeholder {
@@ -1037,6 +1038,7 @@ ul.file-headers {
     margin-top: 10px; }
   .sidebar {
     transform: translate3d(-100%, 0, 0);
+    background: #ffffff;
     position: fixed;
     top: 0;
     left: 0;
@@ -1044,7 +1046,6 @@ ul.file-headers {
     transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
     will-change: transform, contents;
     border-right: 1px solid rgba(0, 0, 0, 0.15);
-    background: #ffffff;
     width: 280px;
     height: 100%; }
   .header-spacer {
@@ -1066,9 +1067,9 @@ ul.file-headers {
   .l-2-link {
     max-width: 160px; }
   .markdown-body {
+    font-size: 15px;
     margin-top: 40px;
-    padding: 15px;
-    font-size: 15px; }
+    padding: 15px; }
   .markdown-body pre code {
     border-radius: 0; }
   .markdown-body .highlight pre,
@@ -1083,6 +1084,7 @@ ul.file-headers {
   .markdown-body h5:not(.ignore-header),
   .markdown-body h6:not(.ignore-header) {
     overflow-scrolling: touch;
+    font-size: 18px;
     position: sticky !important;
     top: 42px;
     z-index: 1;
@@ -1097,7 +1099,6 @@ ul.file-headers {
     width: calc(100% + 30px);
     overflow-x: auto;
     overflow-y: hidden;
-    font-size: 18px;
     font-weight: 600;
     text-overflow: initial;
     white-space: nowrap; }
@@ -1108,6 +1109,7 @@ ul.file-headers {
   .markdown-body h5.ignore-header,
   .markdown-body h6.ignore-header {
     overflow-scrolling: touch;
+    font-size: 18px;
     position: relative;
     margin-top: 10px;
     margin-bottom: 0;
@@ -1117,7 +1119,6 @@ ul.file-headers {
     padding: 10px 15px;
     overflow-x: auto;
     overflow-y: hidden;
-    font-size: 18px;
     font-weight: 600;
     text-overflow: initial;
     white-space: nowrap; } }
