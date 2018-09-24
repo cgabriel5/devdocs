@@ -5,78 +5,83 @@ $app-width: 1280px;
 
 // Colors.
 
-// reds
-// oranges
-// yellows
-// greens
-// blues
-// purples
-// pinks
-// blacks/grays
-// whites
-
-$c-tr: transparent;
-$c-w: #ffffff;
-$c-w-2: unquote("#ffffffa3");
+// Blacks -> Grays -> Whites.
 $c-b: #000000;
-$c-g-1: #999999;
-$c-g-2: #656565;
-$c-g-3: #f7f7f7;
-$c-g-4: #fcfcfc;
-$c-g-5: #e8e8e8;
+$cc14: #24292e;
+$c-g-12: #333333;
+$cc17: #444343;
+$cc23: #4a4a4a;
 $c-g-6: #555555;
-$c-g-7: #dddddd;
-$c-g-8: #fbfbfb;
-$c-g-9: #e3e3e3;
+$cc11: #666666;
+$c-g-2: #656565;
+$cc18: #6d6d6d;
+$cc15: #888888;
+$c-g-1: #999999;
 $c-g-10: #949494;
 $c-g-11: #919191;
-$c-g-12: #333333;
+$cc10: #afafaf;
 $c-g-13: #b4b4b4;
-$c-b-1: #5885dd;
-$c-b-2: #2578f8;
-$c-b-3: #005cc5;
-$c-b-4: #698cfe;
-$c-r-1: #dd6d58;
+$cc20: #cfcfcf;
+$cc12: #d0d0d0;
+$cc8: #d1d1d1;
+$c-g-7: #dddddd;
+$c-g-9: #e3e3e3;
+$c-g-5: #e8e8e8;
+$cc19: #eaecee;
+$cc22: #eaecef;
+$cc16: #ededed;
+$c-g-3: #f7f7f7;
+$cc25: #fafafa;
+$c-g-8: #fbfbfb;
+$c-g-4: #fcfcfc;
+$cc25: rgba(255, 255, 255, 0.95); //#fffffff3
+$c-w-2: rgba(255, 255, 255, 0.639); // #ffffffa3
+$c-w: #ffffff;
+$c-tr: transparent;
+
+// Alpha Grays.
+$cc2: rgba(57, 70, 78, 0.4); //#39464e66
+$cc1: rgba(57, 70, 78, 0.3); //#39464e4c
+$cc3: rgba(57, 70, 78, 0.17); //#39464e2b
+$cc24: rgba(0, 0, 0, 0.15); // #00000026
+$cc13: rgba(0, 0, 0, 0.1); // #00000019
+$cc6: rgba(0, 0, 0, 0.0975); // #00000018
+$cc21: rgba(200, 200, 200, 0.48); // #c8c8c87a
+$cc5: rgba(0, 0, 0, 0.07); // #00000011
+$cc4: rgba(0, 0, 0, 0.05); //#0000000c
+$cc7: rgba(0, 0, 0, 0.02); // #00000005
+
+// Reds.
 $c-r-2: #b31d28;
+$c-r-1: #dd6d58;
 $c-r-3: #ffeef0;
-$c-y-1: #ffe300;
-$c-o-1: unquote("#ffc10770");
-$c-p-1: unquote("#698cfe20");
-$c-p-2: unquote("#698cfe00");
+
+// Oranges/Yellows.
 $c-o-3: #ffc758;
-$c-p-3: #6f42c1;
+$c-y-1: #ffe300;
+$c-o-1: rgba(255, 193, 7, 0.44); // #ffc10770
+
+// Greens.
 $c-gr-1: #22863a;
+$cc9: #699935;
 $c-gr-2: #f0fff4;
 
-$cc1: rgba(57, 70, 78, 0.3);
-$cc2: rgba(57, 70, 78, 0.4);
-$cc3: rgba(57, 70, 78, 0.17);
-$cc4: rgba(0, 0, 0, 0.05);
-$cc5: rgba(0, 0, 0, 0.07);
-$cc6: rgba(0, 0, 0, 0.0975);
-$cc7: rgba(0, 0, 0, 0.02);
-$cc8: #d1d1d1;
-$cc9: #699935;
-$cc10: #afafaf;
-$cc11: #666666;
-$cc12: #d0d0d0;
-$cc13: rgba(0, 0, 0, 0.1);
-$cc14: #24292e;
-$cc15: #888888;
-$cc16: #ededed;
+// Blues.
+$c-b-3: #005cc5;
+$c-b-2: #2578f8;
+$c-b-1: #5885dd;
+$c-b-4: #698cfe;
+$c-p-2: rgba(105, 140, 254, 0); // #698cfe00
+$c-p-1: rgba(105, 140, 254, 0.125); // #698cfe20
 
-$cc17: #444343;
-$cc18: #6d6d6d;
-$cc19: #eaecee;
-$cc20: rgb(207, 207, 207);
-$cc21: unquote("#c8c8c87a");
-$cc22: #eaecef;
-$cc23: #4a4a4a;
-$cc24: rgba(0, 0, 0, 0.15);
-$cc25: #fafafa;
-$cc25: rgba(255, 255, 255, 0.95);
+// Purples.
+$c-p-3: #6f42c1;
 
-// Build the message colors:
+// Pinks.
+
+// ============================================================================
+
+// Build expandable message colors:
 // [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS]
 $colors1: #ed5565 #fc6e51 #fee450 #ffce54 #a0d468 #48cfad #4fc1e9 #5d9cec;
 $colors2: #4894f6 #ac92ec #ec87c0 #e3e3e4 #ccd1d9 #656d78 #5d687b;

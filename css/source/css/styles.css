@@ -601,8 +601,8 @@ ul.file-headers {
   position: absolute;
   margin-top: -26px;
   margin-left: -10px;
-  border-right: 1px solid #c8c8c87a;
-  border-bottom: 1px solid #c8c8c87a;
+  border-right: 1px solid rgba(200, 200, 200, 0.48);
+  border-bottom: 1px solid rgba(200, 200, 200, 0.48);
   border-radius: 3px 0;
   padding: 2px 10px;
   font-weight: bold; }
@@ -653,7 +653,7 @@ ul.file-headers {
 .line-nums {
   color: #919191;
   background: #fbfbfb;
-  border-right: 1px solid #c8c8c87a;
+  border-right: 1px solid rgba(200, 200, 200, 0.48);
   border-radius: 5px 0 0 5px;
   padding: 16px 3px 16px 10px; }
   .line-nums.third {
@@ -666,8 +666,8 @@ ul.file-headers {
     .line-nums .line span {
       padding: 0 10px; }
     .line-nums .line.highlight-l {
-      background: #698cfe20;
-      background: linear-gradient(to right, #698cfe20 85%, #698cfe00);
+      background: rgba(105, 140, 254, 0.125);
+      background: linear-gradient(to right, rgba(105, 140, 254, 0.125) 85%, rgba(105, 140, 254, 0));
       margin-right: 10px;
       border-radius: 4px; }
     .line-nums .line .highlight-n {
@@ -692,7 +692,7 @@ ul.file-headers {
   animation: animate-spin 0.5s linear infinite;
   border: 3px solid;
   border-radius: 50%;
-  border-color: #ffffffa3 #ffffff #ffffff; }
+  border-color: rgba(255, 255, 255, 0.639) #ffffff #ffffff; }
 
 .dd-expandable {
   background: #ffffff;
@@ -873,7 +873,7 @@ ul.file-headers {
   margin: 0 3px; }
 
 .no-matches-cont-inner {
-  background: #ffc10770;
+  background: rgba(255, 193, 7, 0.44);
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;
