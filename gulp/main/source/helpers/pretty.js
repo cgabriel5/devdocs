@@ -202,7 +202,7 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var css_plugins = [perfectionist(PERFECTIONIST)];
 	// Add the sorter plugin for SCSS files.
 	var css_plugins_scss = [
-		perfectionist(Object.assign(PERFECTIONIST, { syntax: "scss" })),
+		// perfectionist(Object.assign(PERFECTIONIST, { syntax: "scss" })),
 		csssorter(CSSSORTER)
 	];
 
@@ -348,6 +348,8 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 			// Prettify CSS files.
 			$.gulpif(extension.iscss, $.postcss(css_plugins)),
 			// Prettify SCSS files.
+			// Use prettier over perfectionist as it better respects SCSS // comments.
+			$.gulpif(extension.isscss, $.prettier(PRETTIER)),
 			// Needs the "postcss-scss" parser.
 			// [https://github.com/postcss/gulp-postcss#passing-additional-options-to-postcss]
 			// [https://github.com/postcss/postcss#options]

@@ -208,6 +208,7 @@ var PRETTIER = get($configs, "prettier", {});
 var JSBEAUTIFY = get($configs, "jsbeautify", {});
 var AUTOPREFIXER = get($configs, "autoprefixer", {});
 var PERFECTIONIST = get($configs, "perfectionist", {});
+var SASSLINT = get($configs, "sasslint", {});
 var CSSSORTER = get($configs, "csssorter", {});
 var REALFAVICONGEN = get($configs, "realfavicongen", {});
 var BROWSERSYNC = get($configs, "browsersync", {});
@@ -452,13 +453,16 @@ function lint_printer(issues, filepath) {
 
 	// Loop over issues to add custom reporter format/styling.
 	issues = issues.map(function(issue) {
+		// Color errors red. Warnings blue.
+		var code_color = issue.length === 5 ? "red" : "blue";
+
 		// Replace the array item with the new styled/highlighted parts.
 		return [
 			"", // Empty space for spacing purposes.
 			// Highlight parts.
 			chalk.gray(`line ${issue[0]}`),
 			chalk.gray(`char ${issue[1]}`),
-			chalk.blue(`(${issue[2]})`),
+			chalk[code_color](`(${issue[2]})`),
 			chalk.yellow(`${issue[3]}.`)
 		];
 	});
@@ -2758,7 +2762,7 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var css_plugins = [perfectionist(PERFECTIONIST)];
 	// Add the sorter plugin for SCSS files.
 	var css_plugins_scss = [
-		perfectionist(Object.assign(PERFECTIONIST, { syntax: "scss" })),
+		// perfectionist(Object.assign(PERFECTIONIST, { syntax: "scss" })),
 		csssorter(CSSSORTER)
 	];
 
@@ -2904,6 +2908,8 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 			// Prettify CSS files.
 			$.gulpif(extension.iscss, $.postcss(css_plugins)),
 			// Prettify SCSS files.
+			// Use prettier over perfectionist as it better respects SCSS // comments.
+			$.gulpif(extension.isscss, $.prettier(PRETTIER)),
 			// Needs the "postcss-scss" parser.
 			// [https://github.com/postcss/gulp-postcss#passing-additional-options-to-postcss]
 			// [https://github.com/postcss/postcss#options]
@@ -4120,7 +4126,7 @@ gulp.task("lintcss", function(done) {
  * -F, --file <array>
  *     The SCSS file to lint.
  *
- * $ gulp lintcss --file ./css/source/scss/styles.scss
+ * $ gulp lintscss --file ./css/source/scss/styles.scss
  *     Lint ./css/source/scss/styles.scss.
  *
  * Notes
@@ -4132,6 +4138,8 @@ gulp.task("lintcss", function(done) {
  *     Linux install: [https://www.thoughtco.com/instal-ruby-on-linux-2908370]
  */
 gulp.task("lintscss", function(done) {
+	var sassLint = require("gulp-sass-lint");
+
 	// Run yargs.
 	var __flags = yargs.option("file", {
 		alias: "F",
@@ -4153,35 +4161,92 @@ gulp.task("lintscss", function(done) {
 				cwd: $paths.basedir
 			}),
 			$.debug({ loader: false }),
-			// $.scsslint(/* $configs.csslint */),
-			$.scsslint({ customReport: function() {} }),
+			// [https://github.com/brigade/scss-lint#notice-consider-other-tools-before-adopting-scss-lint]
+			// scss-lint warns to use sass-lint as the Ruby implementation
+			// might no longer be maintained due to switching development
+			// languages to Dart.
+			sassLint(SASSLINT),
+			// Comment out the following as a custom reporter is used.
+			// sassLint.format(),
+			// sassLint.failOnError(),
 			// Note: Use the custom reporter printer function to be consistent
 			// with the other linters.
 			$.fn(function(file) {
-				// Array will contain the standardized issues.
-				var issues_std = [];
+				if (
+					file.path.includes("github") ||
+					file.path.includes("highlight") ||
+					file.path.includes("prism")
+				) {
+				} else {
+					// Get the attached linter object.
+					var linter = file.sassLint;
 
-				// Only if there were issues found.
-				if (!file.scsslint.success) {
-					// Get the issues.
-					var issues = file.scsslint.issues;
+					// Array will contain the standardized issues.
+					var issues_std = [];
 
-					// Loop over the issues to standardized.
-					issues.forEach(function(issue) {
-						// [https://github.com/juanfran/gulp-scss-lint#results]
-						// Add the standardized issue to the array.
-						issues_std.push([
-							issue.line,
-							issue.column,
-							issue.severity,
-							issue.reason
-						]);
-					});
+					// Only if there were issues found.
+					if (linter && linter[0]) {
+						// Get the actual linter object.
+						linter = file.sassLint[0];
+
+						// Get the issues.
+						var issues = linter.messages;
+						// var error_count = linter.errorCount;
+						// var warning_count = linter.warningCount;
+
+						// Loop over the issues to standardized.
+						issues.forEach(function(issue) {
+							// [https://github.com/juanfran/gulp-scss-lint#results]
+							// Add the standardized issue to the array.
+							var std_object = [
+								issue.line,
+								issue.column,
+								issue.ruleId,
+								issue.message
+							];
+							issues_std.push(std_object);
+
+							// If an error, color the text red.
+							if (issue.ruleId && issue.ruleId === "Fatal") {
+								std_object.push("error");
+							}
+						});
+					}
+
+					// Pretty print the issues.
+					lint_printer(issues_std, file.path);
 				}
-
-				// Pretty print the issues.
-				lint_printer(issues_std, file.path);
 			})
+
+			// // $.scsslint(/* $configs.csslint */),
+			// $.scsslint({ customReport: function() {} }),
+			// // Note: Use the custom reporter printer function to be consistent
+			// // with the other linters.
+			// $.fn(function(file) {
+			// 	// Array will contain the standardized issues.
+			// 	var issues_std = [];
+
+			// 	// Only if there were issues found.
+			// 	if (!file.scsslint.success) {
+			// 		// Get the issues.
+			// 		var issues = file.scsslint.issues;
+
+			// 		// Loop over the issues to standardized.
+			// 		issues.forEach(function(issue) {
+			// 			// [https://github.com/juanfran/gulp-scss-lint#results]
+			// 			// Add the standardized issue to the array.
+			// 			issues_std.push([
+			// 				issue.line,
+			// 				issue.column,
+			// 				issue.severity,
+			// 				issue.reason
+			// 			]);
+			// 		});
+			// 	}
+
+			// 	// Pretty print the issues.
+			// 	lint_printer(issues_std, file.path);
+			// })
 		],
 		done
 	);

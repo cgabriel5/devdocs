@@ -50,6 +50,7 @@
 	"config_$csssorter": "csssorter.cm",
 	"config_$jsbeautify": "jsbeautify",
 	"config_$htmllint": "htmllint.cm",
+	"config_$sasslint": "sasslint.cm",
 	"config_$modernizr": "modernizr",
 	"config_$csslint": "csslint.cm",
 	"config_$prettier": "prettier",

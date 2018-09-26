@@ -183,13 +183,16 @@ function lint_printer(issues, filepath) {
 
 	// Loop over issues to add custom reporter format/styling.
 	issues = issues.map(function(issue) {
+		// Color errors red. Warnings blue.
+		var code_color = issue.length === 5 ? "red" : "blue";
+
 		// Replace the array item with the new styled/highlighted parts.
 		return [
 			"", // Empty space for spacing purposes.
 			// Highlight parts.
 			chalk.gray(`line ${issue[0]}`),
 			chalk.gray(`char ${issue[1]}`),
-			chalk.blue(`(${issue[2]})`),
+			chalk[code_color](`(${issue[2]})`),
 			chalk.yellow(`${issue[3]}.`)
 		];
 	});
