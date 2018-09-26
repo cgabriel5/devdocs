@@ -4,15 +4,15 @@
 // Button UI.
 
 %btn {
-	@include c($c-g-12);
+	@include c($-text-base);
 	@include noselect;
 	// Defaults to a white button.
-	@include bg($c-w);
+	@include bg($c-white);
 
 	transition: box-shadow 0.2s ease-in-out;
 	cursor: pointer;
 
-	border: 1px solid $cc3;
+	border: 1px solid $-border-darker;
 	border-radius: 4px;
 }
 
@@ -20,7 +20,8 @@
 	@extend %btn;
 
 	&:hover {
-		box-shadow: 0 0 0 3px $cc4;
+		box-shadow: 0 0 0 3px $-light-background;
+		border: 1px solid $-brand;
 	}
 
 	&:active {
@@ -28,11 +29,10 @@
 	}
 
 	&-blue {
-		@include bg($c-b-2);
-		@include c($c-w);
+		@include bg($-brand);
+		@include c($-text-white);
 
-		border: 1px solid $c-tr;
-		border-bottom: 1px solid $cc5;
+		border: 1px solid $c-trans;
 	}
 
 	&-home {

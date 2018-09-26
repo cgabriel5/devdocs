@@ -113,7 +113,7 @@
 	}
 
 	75% {
-		@include bg($c-tr);
+		@include bg($c-trans);
 
 		opacity: 0;
 
@@ -130,26 +130,26 @@
 
 @keyframes animate-header-highlight {
 	0% {
-		@include bg($c-o-3);
+		@include bg($-scroll-glow);
 
 		border-radius: 4px;
 	}
 
 	50% {
-		@include bg($c-w);
+		@include bg($c-white);
 	}
 }
 
 @media (max-width: 768px) {
 	@keyframes animate-header-highlight {
 		0% {
-			@include bg($c-o-3);
+			@include bg($-scroll-glow);
 
 			border-radius: 0;
 		}
 
 		50% {
-			@include bg($c-w);
+			@include bg($c-white);
 		}
 	}
 }

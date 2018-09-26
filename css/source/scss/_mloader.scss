@@ -11,9 +11,9 @@
 }
 
 .mloader {
-	@include mloader($c-g-6, $c-g-7, $c-g-7);
+	@include mloader($-text-gray-mid, $-text-gray-lightest, $-text-gray-lightest);
 }
 
 .mloader-white {
-	@include mloader($c-w-2, $c-w, $c-w);
+	@include mloader($-white-mloader, $c-white, $c-white);
 }

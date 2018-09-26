@@ -9,7 +9,7 @@
 
 .main-overlay {
 	@extend %overlay;
-	@include bg($c-tr);
+	@include bg($c-trans);
 
 	// The highest z-index used.
 	z-index: 4;
@@ -17,7 +17,7 @@
 
 .sidebar-overlay {
 	@extend %overlay;
-	@include bg($cc13);
+	@include bg($-trans-black);
 
 	z-index: 2;
 	transition: opacity 0.3s ease-in-out;

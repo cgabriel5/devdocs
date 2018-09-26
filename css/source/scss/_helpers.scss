@@ -89,5 +89,5 @@
 
 .anchor i {
 	@include fsize(12);
-	@include c($cc14);
+	@include c($-text-markdown);
 }

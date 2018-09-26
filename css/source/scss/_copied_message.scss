@@ -6,14 +6,14 @@
 	z-index: 10;
 	transition: opacity 0.2s ease-in-out;
 
-	padding: 10px;
+	padding: 5px;
 
 	width: 100%;
 
 	span {
-		@include c($c-w);
-		@include bg($c-b-2);
-		@include fsize(14);
+		@include c($-text-white);
+		@include bg($-brand);
+		@include fsize(12);
 
 		border-radius: 4px;
 		padding: 10px;
@@ -23,6 +23,6 @@
 	}
 
 	i {
-		@include fsize(12);
+		@include fsize(10);
 	}
 }

@@ -6,12 +6,19 @@
 
 	border-right: 0;
 	border-radius: 0 0 0 4px;
-	background: linear-gradient(to right, $c-w, $c-w, $c-w, $c-w, $c-g-4);
+	background: linear-gradient(
+		to right,
+		$c-white,
+		$c-white,
+		$c-white,
+		$c-white,
+		$-sidebar-bg-gray
+	);
 	padding: 10px;
 
 	.search-ui {
 		@include fsize(13);
-		@include bg($c-g-3);
+		@include bg($-light-background);
 		@include flex($justify: space-around, $align: center);
 
 		border-radius: 5px;
@@ -22,7 +29,7 @@
 		// The icons (magnifying glass/clear-reset).
 		.icon-search,
 		.icon-clear {
-			@include c($c-g-2);
+			@include c($-text-gray-mid);
 		}
 
 		.icon-clear {
@@ -33,7 +40,7 @@
 		}
 
 		.icon-clear:hover {
-			@include c($c-b-2, "!imporant");
+			@include c($-brand, "!imporant");
 		}
 
 		.icon-clear:active {
@@ -53,7 +60,7 @@
 		}
 
 		.input::placeholder {
-			@include c($c-g-1);
+			@include c($-text-gray);
 			@include fsize(14);
 		}
 	}
@@ -64,7 +71,7 @@
 }
 
 .no-matches-cont-inner {
-	@include bg($c-o-1);
+	@include bg($-no-matches);
 	@include flex($justify: flex-start, $align: center);
 
 	border-radius: 5px;
@@ -77,6 +84,6 @@
 
 // The highlighted text colors.
 .search-highlight {
-	@include c($c-b);
-	@include bg($c-y-1);
+	@include c($-text-black);
+	@include bg($-search-highlight);
 }

@@ -8,7 +8,7 @@
 	}
 
 	.current-version {
-		@include c($c-g-1);
+		@include c($-text-gray);
 		@include fsize(13);
 	}
 
@@ -18,12 +18,12 @@
 }
 
 .versions-list-cont {
-	@include bg($c-w);
+	@include bg($c-white);
 
 	position: absolute;
 
 	margin-top: 5px;
-	box-shadow: 0 0 1px $cc1, 0 20px 55px -8px $cc2;
+	box-shadow: 0 0 1px $-shadow-border, 0 20px 55px -8px $-shadow;
 	border-radius: 4px;
 	padding: 5px 0;
 
@@ -47,9 +47,9 @@
 }
 
 .version-latest {
-	@include bg($c-b-1);
+	@include bg($-version-latest);
 	@include fsize(7);
-	@include c($c-w);
+	@include c($-text-white);
 
 	margin-left: 5px;
 	border-radius: 2px;
@@ -60,14 +60,14 @@
 }
 
 .version-latest-not {
-	@include bg($c-r-1);
+	@include bg($-version-outdated);
 }
 
 .version-option {
 	@include flex($flow: null, $align: center);
 	@include truncate;
 	@include fsize(13);
-	@include bg($c-w);
+	@include bg($c-white);
 	@include cur;
 
 	border-radius: 3px;
@@ -76,15 +76,15 @@
 
 .version-option:hover,
 .active-version {
-	@include bg($c-b-2);
-	@include c($c-w);
+	@include bg($-brand);
+	@include c($-text-white);
 	@include cur;
 }
 
 .version-option:hover .version-latest,
 .active-version .version-latest {
-	@include c($c-b-2);
-	@include bg($c-w);
+	@include c($-brand);
+	@include bg($c-white);
 }
 
 .version-option i {

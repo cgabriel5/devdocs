@@ -1,6 +1,6 @@
 .sb-footer {
 	@include flex($align: center, $justify: center);
-	@include c($cc10);
+	@include c($-text-gray-light);
 	@include fsize(12);
 
 	filter: grayscale(10);
@@ -22,7 +22,7 @@
 		font-weight: bold;
 
 		a {
-			@include c($cc10);
+			@include c($-text-gray-light);
 
 			text-decoration: none;
 

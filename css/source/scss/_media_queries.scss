@@ -4,8 +4,12 @@
 
 		margin-top: 30px;
 		margin-left: -15px;
-		border-top: 1px solid $cc22;
-		background: linear-gradient(180deg, $c-g-4 0%, $c-w 100%);
+		border-top: 1px solid $-border;
+		background: linear-gradient(
+			180deg,
+			$-sidebar-bg-gray 0%,
+			$c-white 100%
+		);
 		padding: 5px;
 
 		width: calc(100% + 30px);
@@ -52,10 +56,10 @@
 	}
 
 	.search {
-		@include bg($cc25);
+		@include bg($-lighter-background);
 
 		margin-left: 0;
-		border-bottom: 1px solid $cc16;
+		border-bottom: 1px solid $-border;
 		border-radius: 0;
 		padding: 5px;
 
@@ -79,10 +83,10 @@
 				}
 			}
 		}
-	}
 
-	.search-cont-inner-vlist {
-		@include bg($c-g-3);
+		.search-versions {
+			@include bg($-light-background);
+		}
 	}
 
 	.logo-spacer {
@@ -118,7 +122,7 @@
 		display: flex;
 		position: fixed;
 
-		background: $cc25;
+		background: $-trans-white;
 	}
 
 	.sidebar-menu {
@@ -127,7 +131,7 @@
 
 	.sidebar {
 		@include translate3d(-100%);
-		@include bg($c-w);
+		@include bg($c-white);
 
 		position: fixed;
 		top: 0;
@@ -137,7 +141,7 @@
 		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
 		will-change: transform, contents;
 
-		border-right: 1px solid $cc24;
+		border-right: 1px solid $-trans-black;
 
 		width: $sidebar-width-mobile;
 		height: 100%;
@@ -224,10 +228,10 @@
 		margin-top: 0;
 		margin-bottom: 0;
 		margin-left: -15px;
-		border-bottom: 1px solid $cc22;
+		border-bottom: 1px solid $-border;
 		// Full Width Tweak.
 		border-radius: 0 !important;
-		background: $cc25;
+		background: $-trans-white;
 		padding: 10px 15px;
 
 		width: calc(100% + 30px);
@@ -252,9 +256,9 @@
 
 		margin-top: 10px;
 		margin-bottom: 0;
-		border-bottom: 1px solid $cc22;
+		border-bottom: 1px solid $-border;
 		border-radius: 0 !important;
-		background: $cc25;
+		background: $-trans-white;
 		padding: 10px 15px;
 
 		overflow-x: auto;

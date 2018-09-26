@@ -6,13 +6,13 @@
 
 .error-logo-cont {
 	@include flex($align: center, $justify: "space-evenly");
-	@include bg($cc15);
+	@include bg($-text-gray);
 	@include fsize(12);
 
 	opacity: 0.5;
 
 	margin-bottom: 20px;
-	border: 1px solid $cc16;
+	border: 1px solid $-border;
 	border-radius: 100px;
 	padding: 2px 6px;
 
@@ -28,14 +28,14 @@
 }
 
 .error-msg-1 {
-	@include c($cc17);
+	@include c($-text-gray-dark);
 	@include fsize(20);
 
 	font-weight: bold;
 }
 
 .error-msg-2 {
-	@include c($cc18);
+	@include c($-text-gray-mid);
 	@include fsize(14);
 
 	padding-top: 10px;

@@ -1,7 +1,7 @@
 // [https://www.pexels.com/blog/css-only-loaders/]
 // [https://codepen.io/brunjo/pen/XJmbNz]
 .loader-top {
-	@include bg($c-b-2);
+	@include bg($-brand);
 
 	position: fixed;
 	left: 0;

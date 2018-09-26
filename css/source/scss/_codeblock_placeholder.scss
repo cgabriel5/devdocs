@@ -1,10 +1,10 @@
 .codeblock-placeholder {
 	@include cur;
-	@include bg($c-g-8);
+	@include bg($-lighter-background);
 	@include flex($flow: null);
 
 	margin-bottom: 15px;
-	border: 1px solid $cc19;
+	border: 1px solid $-border;
 	border-radius: 3px;
 	background-clip: padding-box;
 
@@ -27,7 +27,7 @@
 		}
 
 		.block {
-			@include bg($c-g-9);
+			@include bg($-border);
 
 			margin: 3px 10px 3px 0;
 			border-radius: 3px;
@@ -56,19 +56,19 @@
 		}
 
 		.details {
-			@include c($c-g-1);
+			@include c($-text-gray);
 			@include fsize(12);
 
 			margin-top: 5px;
 		}
 
 		.lang {
-			@include bg($c-w);
+			@include bg($c-white);
 			@include fsize(10);
-			@include c($c-g-10);
+			@include c($-text-gray);
 
 			margin-left: 5px;
-			border: 1px solid $cc20;
+			border: 1px solid $-border;
 			border-radius: 3px;
 			padding: 4px;
 
@@ -79,30 +79,30 @@
 
 	&:active span,
 	&:hover span {
-		@include c($c-b-2, "!important");
+		@include c($-brand, "!important");
 	}
 
 	&:active,
 	&:hover,
 	&:active .lang,
 	&:hover .lang {
-		border: 1px solid $c-b-2 !important;
+		border: 1px solid $-brand !important;
 	}
 }
 
 // The name of the code block (i.e. "untitled.js").
 .codeblock-name {
 	@include fsize(11);
-	@include c($c-g-13);
-	@include bg($c-g-8);
+	@include c($-text-gray-light);
+	@include bg($-lighter-background);
 	@include def-font;
 
 	position: absolute;
 
 	margin-top: -26px;
 	margin-left: -10px;
-	border-right: 1px solid $cc21;
-	border-bottom: 1px solid $cc21;
+	border-right: 1px solid $-border;
+	border-bottom: 1px solid $-border;
 	border-radius: 3px 0;
 	padding: 2px 10px;
 
@@ -110,23 +110,28 @@
 }
 
 %action {
-	@include c($c-g-1);
+	@include c($-text-gray);
 	@include fsize(13);
 
 	opacity: 0.4;
 
 	margin-left: 10px;
-	box-shadow: none;
-	border: 1px solid $cc13;
+	// box-shadow: none;
+	border: 1px solid $-border-darker;
 	padding: 3px 10px;
 
 	font-weight: bold;
 
-	&:hover,
-	&:active {
-		@include c($c-g-12);
+	&:hover {
+		@include c($-text-base);
 
 		opacity: 1;
+
+		border: 1px solid $-brand;
+	}
+
+	&:active {
+		opacity: 0.7;
 	}
 }
 
@@ -168,7 +173,7 @@
 
 		.tab {
 			@include cur;
-			@include c($c-g-1);
+			@include c($-text-gray);
 			@include fsize(13);
 
 			border-radius: 3px;
@@ -178,22 +183,22 @@
 			white-space: pre;
 
 			&.activetab {
-				@include c($c-g-12);
+				@include c($-text-base);
 			}
 		}
 	}
 }
 
 .line-nums {
-	@include c($c-g-11);
-	@include bg($c-g-8);
+	@include c($-text-gray-light);
+	@include bg($-lighter-background);
 
-	border-right: 1px solid $cc21;
+	border-right: 1px solid $-border;
 	border-radius: 5px 0 0 5px;
 	padding: 16px 3px 16px 10px;
 
 	&.third {
-		@include bg($c-tr);
+		@include bg($c-trans);
 
 		position: absolute;
 
@@ -210,8 +215,8 @@
 		}
 
 		&.highlight-l {
-			@include bg($c-p-1);
-			@include bg(linear-gradient(to right, $c-p-1 85%, $c-p-2));
+			@include bg($-cb-linehighlight-line);
+			@include bg(linear-gradient(to right, $-cb-linehighlight-line 85%, $c-trans));
 
 			// Line highlight.
 			margin-right: 10px;
@@ -219,10 +224,10 @@
 		}
 
 		.highlight-n {
-			@include c($c-w) @include bg($c-b-4);
+			@include c($-text-white) @include bg($-cb-linehighlight-number);
 
 			// Line number highlight.
-			box-shadow: 0 -3px 0 0 $c-b-4;
+			box-shadow: 0 -3px 0 0 $-cb-linehighlight-number;
 			border-radius: 3px;
 
 			font-weight: bold;

@@ -3,81 +3,132 @@ $sidebar-width-normal: 300px;
 $sidebar-width-mobile: 280px;
 $app-width: 1280px;
 
-// Colors.
+// Descriptive colors names.
 
-// Blacks -> Grays -> Whites.
-$c-b: #000000;
-$cc14: #24292e;
-$c-g-12: #333333;
-$cc17: #444343;
-$cc23: #4a4a4a;
-$c-g-6: #555555;
-$cc11: #666666;
-$c-g-2: #656565;
-$cc18: #6d6d6d;
-$cc15: #888888;
-$c-g-1: #999999;
-$c-g-10: #949494;
-$c-g-11: #919191;
-$cc10: #afafaf;
-$c-g-13: #b4b4b4;
-$cc20: #cfcfcf;
-$cc12: #d0d0d0;
-$cc8: #d1d1d1;
-$c-g-7: #dddddd;
-$c-g-9: #e3e3e3;
-$c-g-5: #e8e8e8;
-$cc19: #eaecee;
-$cc22: #eaecef;
-$cc16: #ededed;
-$c-g-3: #f7f7f7;
-$cc25: #fafafa;
-$c-g-8: #fbfbfb;
-$c-g-4: #fcfcfc;
-$cc25: rgba(255, 255, 255, 0.95); //#fffffff3
-$c-w-2: rgba(255, 255, 255, 0.639); // #ffffffa3
-$c-w: #ffffff;
-$c-tr: transparent;
+// Blacks > Grays > Whites.
+$c-black: #000000;
+$c-mine-shaft: #333333;
+$c-cinder: #24292e;
+$c-iron: #dfe2e5;
+$c-iron-darker-07: darken($c-iron, 7%);
+$c-haze: #f7f7f7;
+$c-alabaster: #fbfbfb;
+$c-romance: #fcfcfc;
+$c-white: #ffffff;
+$c-trans: transparent;
 
-// Alpha Grays.
-$cc2: rgba(57, 70, 78, 0.4); //#39464e66
-$cc1: rgba(57, 70, 78, 0.3); //#39464e4c
-$cc3: rgba(57, 70, 78, 0.17); //#39464e2b
-$cc24: rgba(0, 0, 0, 0.15); // #00000026
-$cc13: rgba(0, 0, 0, 0.1); // #00000019
-$cc6: rgba(0, 0, 0, 0.0975); // #00000018
-$cc21: rgba(200, 200, 200, 0.48); // #c8c8c87a
-$cc5: rgba(0, 0, 0, 0.07); // #00000011
-$cc4: rgba(0, 0, 0, 0.05); //#0000000c
-$cc7: rgba(0, 0, 0, 0.02); // #00000005
+// Alpha grays.
+$c-limed-spruce: #39464e;
+$c-limed-spruce-40: rgba($c-limed-spruce, 0.4); //#39464e66
+$c-limed-spruce-30: rgba($c-limed-spruce, 0.3); //#39464e4c
+
+$c-black-1: rgba($c-black, 0.1);
+$c-black-02: rgba($c-black, 0.02);
+
+$c-white-95: rgba($c-white, 0.95); //#fffffff3
+$c-white-65: rgba($c-white, 0.65); // #ffffffa3
 
 // Reds.
-$c-r-2: #b31d28;
-$c-r-1: #dd6d58;
-$c-r-3: #ffeef0;
+$c-cardinal: #b31d28;
+$c-flamingo: #dd6d58;
+$c-light-red: #ffeef0;
 
 // Oranges/Yellows.
-$c-o-3: #ffc758;
-$c-y-1: #ffe300;
-$c-o-1: rgba(255, 193, 7, 0.44); // #ffc10770
+$c-sunglow: #ffc758;
+$c-turbo: #ffe300;
+$c-sweet-corn: rgba(255, 193, 7, 0.44); // #ffc10770
 
 // Greens.
-$c-gr-1: #22863a;
-$cc9: #699935;
-$c-gr-2: #f0fff4;
+$c-forest-green: #22863a;
+$c-limeade: #699935;
+$c-honey-dew: #f0fff4;
 
 // Blues.
-$c-b-3: #005cc5;
-$c-b-2: #2578f8;
-$c-b-1: #5885dd;
-$c-b-4: #698cfe;
-$c-p-2: rgba(105, 140, 254, 0); // #698cfe00
-$c-p-1: rgba(105, 140, 254, 0.125); // #698cfe20
+$c-navy-blue: #005cc5;
+$c-dodger-blue: #2578f8;
+$c-havelock-blue: #5885dd;
+$c-cornflower-blue: #698cfe;
+$c-cornflower-blue-12: rgba($c-cornflower-blue, 0.12); // #698cfe20
 
 // Purples.
-$c-p-3: #6f42c1;
+$c-purple-heart: #6f42c1;
 
 // Pinks.
+
+// ============================================================================
+
+// Functional color names.
+
+// Brand.
+$-brand: $c-dodger-blue;
+
+// Text colors.
+$-text-base: $c-mine-shaft; // #333333
+$-text-black: darken($-text-base, 20%); // #000000
+$-text-gray-dark: lighten($-text-base, 10%); // #4d4d4d
+$-text-gray-mid: lighten($-text-base, 20%); // #666666
+$-text-gray: lighten($-text-base, 40%); // #999999
+$-text-gray-light: lighten($-text-base, 50%); // #b3b3b3
+$-text-gray-lightest: lighten($-text-base, 62%); // #d1d1d1
+$-text-white: lighten($-text-base, 80%); // #ffffff
+// Special text colors.
+$-text-markdown: $c-cinder;
+
+// Sidebar.
+$-sidebar-bg-gray: $c-romance;
+
+// Versions
+// - Labels:
+$-version-latest: $c-havelock-blue;
+$-version-outdated: $c-flamingo;
+
+// Diff.
+$-diff-diffline-c: $c-navy-blue;
+$-diff-deletion-bg: $c-light-red;
+$-diff-deletion-c: $c-cardinal;
+$-diff-addition-bg: $c-honey-dew;
+$-diff-addition-c: $c-forest-green;
+$-diff-coordinate-c: $c-purple-heart;
+
+// Splash-screen.
+$-leaf-active: $c-limeade;
+$-leaf-inactive: $c-iron;
+$-leaf-highlight: $c-black-02;
+
+// Code blocks.
+// - Number/line highlight:
+$-cb-linehighlight-number: $c-cornflower-blue;
+$-cb-linehighlight-line: $c-cornflower-blue-12;
+
+// Search.
+// - No matches warning.
+$-no-matches: $c-sweet-corn;
+// - Highlighted text/needle.
+$-search-highlight: $c-turbo;
+
+// Headers.
+// - Header scroll glow.
+$-scroll-glow: $c-sunglow;
+$-trans-white: $c-white-95;
+
+// Loaders.
+// - White mLoader.
+$-white-mloader: $c-white-65;
+
+// Borders.
+$-border: $c-iron;
+$-border-darker: $c-iron-darker-07;
+
+// Overlays.
+$-trans-black: $c-black-1;
+
+// Box-shadows:
+$-shadow-border: $c-limed-spruce-30;
+$-shadow: $c-limed-spruce-40;
+
+// Backgrounds.
+$-light-background: $c-haze;
+$-lighter-background: $c-alabaster;
 
 // ============================================================================
 

@@ -8,8 +8,15 @@
 	flex-flow: column nowrap;
 	justify-content: space-between;
 
-	border-right: 1px solid $c-g-7;
-	background-image: linear-gradient(to right, $c-w, $c-w, $c-w, $c-w, $c-g-4);
+	border-right: 1px solid $-border;
+	background-image: linear-gradient(
+		to right,
+		$c-white,
+		$c-white,
+		$c-white,
+		$c-white,
+		$-sidebar-bg-gray
+	);
 
 	width: $sidebar-width-normal;
 	height: 100%;
@@ -50,7 +57,7 @@
 
 .menu-section {
 	margin-left: 20px;
-	border-left: 1px solid $c-g-7;
+	border-left: 1px solid $-border;
 }
 
 .sidebar-menu {
@@ -99,13 +106,13 @@
 }
 
 .link-headings-count {
-	@include c($cc12);
+	@include c($-text-gray-lightest);
 	@include fsize(11);
 	@include flex($flow: null);
 
 	transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
 
-	border: 1px solid $c-tr;
+	border: 1px solid $c-trans;
 	border-radius: 4px;
 	padding: 3px 3px 2px;
 
@@ -113,10 +120,10 @@
 }
 
 .active-page .link-headings-count {
-	@include bg($c-w);
-	@include c($cc11);
+	@include bg($c-white);
+	@include c($-text-gray-mid);
 
-	border: 1px solid $c-tr;
+	border: 1px solid $c-trans;
 }
 
 .l-3 {
@@ -124,22 +131,22 @@
 	@include truncate;
 	@include cur;
 
-	border-right: 2px solid $c-tr;
+	border-right: 2px solid $c-trans;
 	padding: 5px 20px;
 }
 
 .l-3:hover {
-	border-right: 2px solid $c-b-2;
+	border-right: 2px solid $-brand;
 }
 
 .l-2:hover:not(.active-page),
 .l-3:hover:not(.active-page) {
-	@include bg($c-g-3);
+	@include bg($-light-background);
 }
 
 ul.file-headers {
 	margin-left: 20px;
-	border-left: 1px solid $c-g-7;
+	border-left: 1px solid $-border;
 
 	overflow: hidden;
 }
@@ -153,7 +160,7 @@ ul.file-headers {
 
 .link,
 .link:visited {
-	@include c($c-g-12);
+	@include c($-text-base);
 
 	position: relative;
 
@@ -161,13 +168,13 @@ ul.file-headers {
 }
 
 .active-page {
-	@include bg($c-b-2);
+	@include bg($-brand);
 
 	margin-left: -1px;
 }
 
 .active-page .link {
-	@include c($c-w);
+	@include c($-text-white);
 
 	font-weight: bold;
 }
@@ -189,5 +196,5 @@ ul.file-headers {
 }
 
 .menu-arrow-active {
-	@include c($c-w);
+	@include c($-text-white);
 }

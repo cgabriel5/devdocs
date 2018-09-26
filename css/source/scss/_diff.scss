@@ -1,21 +1,21 @@
 .diff {
 	&-deletion {
-		@include bg($c-r-3);
-		@include c($c-r-2);
+		@include bg($-diff-deletion-bg);
+		@include c($-diff-deletion-c);
 	}
 
 	&-addition {
-		@include bg($c-gr-2);
-		@include c($c-gr-1);
+		@include bg($-diff-addition-bg);
+		@include c($-diff-addition-c);
 	}
 
 	&-coordinate {
-		@include c($c-p-3);
+		@include c($-diff-coordinate-c);
 
 		font-weight: bold;
 	}
 
 	&-diffline {
-		@include c($c-b-3);
+		@include c($-diff-diffline-c);
 	}
 }

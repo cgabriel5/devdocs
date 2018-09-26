@@ -6,7 +6,7 @@
 	padding-top: 20px;
 
 	.long {
-		@include c($c-g-1, "!important");
+		@include c($-text-gray, "!important");
 	}
 }
 
@@ -37,11 +37,11 @@
 	@include flex($flow: "row wrap");
 
 	margin-top: 30px;
-	border-top: 1px solid $cc22;
+	border-top: 1px solid $-border;
 	padding: 5px;
 
 	.section {
-		@include c($cc23);
+		@include c($-text-gray-dark);
 
 		padding: 15px;
 
@@ -57,7 +57,7 @@
 			@include flex($flow: "row wrap", $align: "flex-start", $justify: "flex-start");
 
 			.link {
-				@include c($cc23, "!important");
+				@include c($-text-gray-dark, "!important");
 
 				// [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items]
 				flex: 1 1 250px;
@@ -67,12 +67,12 @@
 				padding: 3px 10px;
 
 				&:hover {
-					@include bg($c-g-3);
+					@include bg($-light-background);
 				}
 			}
 
 			.img {
-				@include bg($c-tr);
+				@include bg($c-trans);
 
 				width: 15px;
 			}
@@ -83,13 +83,13 @@
 .copyright {
 	@include flex($align: center, $justify: center);
 	@include fsize(12);
-	@include c($cc10);
+	@include c($-text-gray-light);
 
 	margin-top: 10px;
 
 	a {
-		@include bg($cc7);
-		@include c($cc10);
+		@include bg($-lighter-background);
+		@include c($-text-gray-light);
 
 		border-radius: 100px;
 		padding: 1px 10px;
