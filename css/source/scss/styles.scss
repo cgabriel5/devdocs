@@ -1,31 +1,35 @@
 // Get main/top-level imports.
-@import "vars";
-@import "reset";
-@import "mixins";
-@import "helpers";
+@import "base/vars";
+@import "base/reset";
+@import "base/mixins";
+@import "base/helpers";
 
 // Wrappers.
-@import "body_wrapper";
-@import "app_wrapper";
-@import "markdown_wrapper";
+@import "wrappers/body";
+@import "wrappers/app";
+@import "wrappers/markdown";
+
+// UI.
+@import "ui/button";
 
 // Components.
-@import "ui-button";
-@import "loader_top";
-@import "overlays";
-@import "sidebar";
-@import "sidebar_footer";
-@import "logo_branding";
-@import "error_pages";
-@import "topbar";
-@import "splash_screen";
-@import "emoji";
-@import "footer";
-@import "codeblock_placeholder";
-@import "mloader";
-@import "extendables";
-@import "copied_message";
-@import "diff";
-@import "search";
-@import "versions";
-@import "media_queries";
+@import "component/loader_top";
+@import "component/overlays";
+@import "component/sidebar";
+@import "component/sidebar_footer";
+@import "component/logo_branding";
+@import "component/error_pages";
+@import "component/topbar";
+@import "component/splash_screen";
+@import "component/emoji";
+@import "component/footer";
+@import "component/codeblock_placeholder";
+@import "component/mloader";
+@import "component/extendables";
+@import "component/copied_message";
+@import "component/diff";
+@import "component/search";
+@import "component/versions";
+
+// Media queries.
+@import "media/all";

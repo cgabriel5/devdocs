@@ -1,5 +1,5 @@
-// Get main/top-level imports.
-@import "mixins";
+// Get top-level imports.
+// @import "../base/mixins";
 
 .topbar {
 	@include flex($flow: null, $align: center, $justify: "space-between");
