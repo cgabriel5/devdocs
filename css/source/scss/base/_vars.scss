@@ -10,7 +10,6 @@ $c-black: #000000;
 $c-mine-shaft: #333333;
 $c-cinder: #24292e;
 $c-iron: #dfe2e5;
-$c-iron-darker-07: darken($c-iron, 7%);
 $c-haze: #f7f7f7;
 $c-alabaster: #fbfbfb;
 $c-romance: #fcfcfc;
@@ -117,7 +116,6 @@ $-white-mloader: $c-white-65;
 
 // Borders.
 $-border: $c-iron;
-$-border-darker: $c-iron-darker-07;
 
 // Overlays.
 $-trans-black: $c-black-1;

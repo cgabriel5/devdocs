@@ -107,7 +107,7 @@ body {
   background: #ffffff;
   transition: box-shadow 0.2s ease-in-out;
   cursor: pointer;
-  border: 1px solid #cbd0d5;
+  border: 1px solid #dfe2e5;
   border-radius: 4px; }
 
 .btn:hover {
@@ -612,7 +612,7 @@ ul.file-headers {
   font-size: 13px;
   opacity: 0.4;
   margin-left: 10px;
-  border: 1px solid #cbd0d5;
+  border: 1px solid #dfe2e5;
   padding: 3px 10px;
   font-weight: bold; }
   .codeblock-actions .action:hover, .codeblock-actions-group .action:hover {
