@@ -2373,7 +2373,7 @@ document.onreadystatechange = function() {
 						prev_html = `<div class="arrow aleft btn noselect" data-refid="${
 							$prev_el.id
 						}"><i class="fas fa-arrow-alt-circle-left mr5"></i> <span class="truncate">${$prev_el.getAttribute(
-							"title"
+							"data-title"
 						)}</span></div>`;
 					}
 
@@ -2402,7 +2402,7 @@ document.onreadystatechange = function() {
 						next_html = `<div class="arrow aright btn noselect" data-refid="${
 							$next_el.id
 						}"><span class="mr5 truncate">${$next_el.getAttribute(
-							"title"
+							"data-title"
 						)}</span><i class="fas fa-arrow-alt-circle-right"></i></div>`;
 					}
 
@@ -3457,19 +3457,16 @@ document.onreadystatechange = function() {
 							let coors = $target.getBoundingClientRect();
 							let yoffset = window.pageYOffset;
 							let xoffset = window.pageXOffset;
-							let _top =
-								coors.top + yoffset + (is_active ? -5 : 0);
+							let _top = coors.top + yoffset;
 							let _left =
-								coors.left + xoffset + (is_active ? -3 : 0);
+								coors.left + xoffset + (is_active ? 1 : 0);
 
-							var radius = !is_active
-								? "border-radius: 0 4px 4px 0;"
-								: "";
+							var bg = !is_active ? "background: #f4f4f4;" : "";
 
 							// Add the coordinates to the clone.
 							$clone.setAttribute(
 								"style",
-								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute !important;${radius}background: #f4f4f4;font-size:15px;`
+								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute !important;${bg}border-radius: 0 4px 4px 0;font-size:15px;box-shadow: 0px 1px 1px rgba(57,70,78, 0.2), 1px 0px 0px rgba(57,70,78, 0.1);`
 							);
 
 							// Add clone to page.
@@ -3528,7 +3525,7 @@ document.onreadystatechange = function() {
 							// Add the coordinates to the clone.
 							$clone.setAttribute(
 								"style",
-								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute;border-right: 2px solid #2578f8;background: #f4f4f4;overflow: unset;`
+								`transition: none;top: ${_top}px;left: ${_left}px;z-index: 2;position: absolute;border-right: 2px solid #2578f8;background: #f4f4f4;overflow: unset;box-shadow: 0px 1px 1px rgba(57,70,78, 0.2), 1px 0px 0px rgba(57,70,78, 0.1);`
 							);
 
 							// Add clone to page.
@@ -3819,7 +3816,9 @@ document.onreadystatechange = function() {
 										i++
 									) {
 										var item = $l_2[i];
-										var title = item.getAttribute("title");
+										var title = item.getAttribute(
+											"data-title"
+										);
 
 										if (
 											title
@@ -3937,7 +3936,7 @@ document.onreadystatechange = function() {
 										)[0];
 										// Insert original title.
 										$anchor.innerHTML = item.getAttribute(
-											"title"
+											"data-title"
 										);
 
 										// Show the UL

@@ -1270,7 +1270,7 @@ versions.forEach(function(vdata) {
 			__file.name = file;
 			__file.alias = alias_file;
 			__file.html = `<div id="parent-menu-file-${counter_dir}.${counter_file}" class="l-2-parent">
-			<li class="l-2 L2--" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" title="${alias_file}">
+			<li class="l-2 L2--" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" data-title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 			<div class="flex l-2-main-cont">
 				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
@@ -1749,7 +1749,7 @@ versions.forEach(function(vdata) {
 
 									// Add the second level menu template string.
 									headings.push(
-										`<li class="l-3" title="${value}"><a class="link link-heading" href="#${dehashify(
+										`<li class="l-3" data-title="${value}"><a class="link link-heading" href="#${dehashify(
 											id
 										)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
 									);
