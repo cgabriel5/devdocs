@@ -100,7 +100,7 @@
 
 .animate-loading {
 	animation-name: animate-loading;
-	animation-duration: 0.8s;
+	animation-duration: 1s;
 	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 }
@@ -109,7 +109,7 @@
 	25% {
 		opacity: 0.5;
 
-		height: 2px;
+		margin-top: -3px;
 	}
 
 	75% {
