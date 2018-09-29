@@ -2542,10 +2542,10 @@ gulp.task("css:app", ["css:sass"], function(done) {
 		// `${css_path_source}helpers.css`,
 		`${css_path_source}styles.css`
 	);
-	// Add CSS animations if wanted.
-	if (animations) {
-		css_source_files.push(`${css_path_source}animations.css`);
-	}
+	// // Add CSS animations if wanted.
+	// if (animations) {
+	// 	css_source_files.push(`${css_path_source}animations.css`);
+	// }
 
 	// Make the paths absolute to the devdocs module. Not the user's dir.
 	css_source_files = css_source_files.map(function(__path) {
