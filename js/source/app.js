@@ -3190,6 +3190,9 @@ document.onreadystatechange = function() {
 						// Reset the target.
 						$target = is_target_el($target, "version-option");
 
+						// Toggle sidebar elements mouse events.
+						toggle_sb_elements(false);
+
 						// Get the version.
 						var version = $target.getAttribute("data-v");
 
