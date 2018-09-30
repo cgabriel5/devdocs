@@ -645,7 +645,7 @@ ul.file-headers {
     overflow-y: hide; }
     .codeblock-actions-group .tabs .tab {
       cursor: pointer;
-      color: #999999;
+      color: #b3b3b3;
       font-size: 13px;
       border-radius: 3px;
       padding: 5px 13px;

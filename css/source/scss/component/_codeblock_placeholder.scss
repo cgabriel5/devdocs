@@ -173,7 +173,7 @@
 
 		.tab {
 			@include cur;
-			@include c($-text-gray);
+			@include c($-text-gray-light);
 			@include fsize(13);
 
 			border-radius: 3px;
