@@ -401,15 +401,24 @@ ul.file-headers {
       .topbar .left .menu .loader {
         margin: 0 15px 0 5px; }
   .topbar .crumbs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-right: -5px;
     margin-left: -5px;
     border: 1px solid #dfe2e5;
     border-radius: 100px;
     padding: 4px 8px;
     font-size: 12px; }
-    .topbar .crumbs .icon-middle-fix {
-      margin-top: 1px;
+    .topbar .crumbs .sep {
       padding: 0 4px; }
+    .topbar .crumbs .folder,
+    .topbar .crumbs .file {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap; }
+    .topbar .crumbs .folder, .topbar .crumbs .file, .topbar .crumbs .sep {
+      display: flex; }
 
 .splash-overlay {
   background: #ffffff;

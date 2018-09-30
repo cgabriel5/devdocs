@@ -33,7 +33,8 @@ document.onreadystatechange = function() {
 		var $splash = document.getElementById("splash-overlay");
 		var $splash_icon = document.getElementById("leaf");
 		var $crumbs_folder = document.getElementById("crumbs-folder");
-		var $crumbs_filename = document.getElementById("crumbs-filename");
+		var $crumbs_file = document.getElementById("crumbs-file");
+		var $crumbs_sep = document.getElementById("crumbs-sep");
 		var $tb_loader = document.getElementById("tb-loader");
 		var $copied_message = document.getElementById("copied-message");
 		var $search_cont = document.getElementById("search");
@@ -1901,18 +1902,14 @@ document.onreadystatechange = function() {
 						}
 					}
 
-					// Get the needed element.
-					var $scroll_tb_file_cont = document.getElementById(
-						"crumbs-file"
-					);
-
 					// If a file name exists, set it.
 					if (filename) {
-						classes($scroll_tb_file_cont, "!none");
-						$crumbs_filename.textContent = filename;
+						classes($crumbs_sep, "!none");
+						classes($crumbs_file, "!none");
+						$crumbs_file.textContent = filename;
 					} else {
 						// Else, hide the element.
-						classes($scroll_tb_file_cont, "none");
+						classes($crumbs_file, "none");
 					}
 				}
 
