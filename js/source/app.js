@@ -396,9 +396,9 @@ document.onreadystatechange = function() {
 					}
 				} else if (classname) {
 					// Get the classes.
-					var classes = parent.classList;
+					var clist = parent.classList;
 					// Check if the parent contains the provided class.
-					if (classes && classes.contains(classname)) {
+					if (clist && clist.contains(classname)) {
 						return parent;
 					}
 				}
@@ -1049,7 +1049,7 @@ document.onreadystatechange = function() {
 		// ------------------------------------------------------------
 
 		// Start the logo/splash animations.
-		$splash_icon.classList.add("off");
+		classes($splash_icon, "off");
 
 		var __data;
 
@@ -1124,8 +1124,8 @@ document.onreadystatechange = function() {
 					// version file HTML content.
 
 					// Hide the splash screen, side bar elements.
-					$splash.classList.add("none");
-					$search_cont.classList.add("none");
+					classes($splash, "none");
+					classes($search_cont, "none");
 
 					// Get the version.
 					let version = parameters().v;
@@ -1150,9 +1150,10 @@ document.onreadystatechange = function() {
 						);
 
 						// Show the versions list if versions exists.
-						document
-							.getElementById("existing-versions-cont")
-							.classList.remove("none");
+						classes(
+							document.getElementById("existing-versions-cont"),
+							"!none"
+						);
 						// Add the message.
 						document
 							.getElementsByClassName("error-msg-2")[0]
@@ -1217,7 +1218,7 @@ document.onreadystatechange = function() {
 
 				setTimeout(function() {
 					// Turn the logo green.
-					$splash_icon.classList.add("on");
+					classes($splash_icon, "on");
 				}, 100);
 
 				// Set the title if provided.
@@ -1281,7 +1282,7 @@ document.onreadystatechange = function() {
 				// console.log(data);
 
 				// Animate the logo.
-				$splash_icon.classList.add("animate-pulse");
+				classes($splash_icon, "animate-pulse");
 
 				// Variables:Scoped:Inner //
 
@@ -1313,25 +1314,25 @@ document.onreadystatechange = function() {
 
 				function show_tb_loader() {
 					// Show the topbar loader.
-					$loadertop.classList.remove("none");
+					classes($loadertop, "!none");
 
 					// Show the main overlay.
-					$moverlay.classList.remove("none");
+					classes($moverlay, "!none");
 
 					// Show the topbar loader.
 					$tb_loader.innerHTML = cssloader(15);
-					$tb_loader.classList.remove("none");
+					classes($tb_loader, "!none");
 				}
 
 				function hide_tb_loader() {
 					// Show the topbar loader.
-					$loadertop.classList.add("none");
+					classes($loadertop, "none");
 
 					// Show the main overlay.
-					$moverlay.classList.add("none");
+					classes($moverlay, "none");
 
 					// Hide the topbar loader.
-					$tb_loader.classList.remove("add");
+					classes($tb_loader, "!add");
 					$tb_loader.innerHTML = "";
 				}
 
@@ -1349,13 +1350,13 @@ document.onreadystatechange = function() {
 
 					// Show the sidebar loader next to filename.
 					// Hide the arrow element.
-					$el.children[0].classList.add("none");
+					classes($el.children[0], "none");
 					// Add the loader.
 					$el.children[0].insertAdjacentHTML(
 						"afterend",
 						cssloader(10, true)
 					);
-					$el.children[1].classList.add("mr5");
+					classes($el.children[1], "mr5");
 
 					// Set the flag.
 					sb_active_el_loader = $el;
@@ -1371,7 +1372,7 @@ document.onreadystatechange = function() {
 						// Add the loader.
 						$el.removeChild($el.childNodes[1]);
 						// Hide the arrow element.
-						$el.children[0].classList.remove("none");
+						classes($el.children[0], "!none");
 
 						return;
 					} else {
@@ -1384,7 +1385,7 @@ document.onreadystatechange = function() {
 						// Add the loader.
 						$el.removeChild($el.childNodes[1]);
 						// Hide the arrow element.
-						$el.children[0].classList.remove("none");
+						classes($el.children[0], "!none");
 					}
 				}
 
@@ -1907,11 +1908,11 @@ document.onreadystatechange = function() {
 
 					// If a file name exists, set it.
 					if (filename) {
-						$scroll_tb_file_cont.classList.remove("none");
+						classes($scroll_tb_file_cont, "!none");
 						$crumbs_filename.textContent = filename;
 					} else {
 						// Else, hide the element.
-						$scroll_tb_file_cont.classList.add("none");
+						classes($scroll_tb_file_cont, "none");
 					}
 				}
 
@@ -1938,9 +1939,7 @@ document.onreadystatechange = function() {
 							if ($parent) {
 								// Remove the class to make sure the highlight
 								// works.
-								$parent.classList.remove(
-									"animate-header-highlight"
-								);
+								classes($parent, "!animate-header-highlight");
 								// Scroll to the position. Don't use an animation
 								// as alt + (<-- or -->) needs to be done and
 								// felt very quick.
@@ -1948,7 +1947,8 @@ document.onreadystatechange = function() {
 									// Instantly scroll to position.
 									$sroot.scrollTop = scroll.offset($parent);
 
-									$parent.classList.add(
+									classes(
+										$parent,
 										"animate-header-highlight"
 									);
 								}, 0);
@@ -2003,12 +2003,12 @@ document.onreadystatechange = function() {
 					}
 
 					// Disable mouse events.
-					$markdown.classList.add("pnone");
+					classes($markdown, "pnone");
 
 					show_loader($new_current);
 
 					// Add the loading content class.
-					$markdown.classList.add("loading-content");
+					classes($markdown, "loading-content");
 
 					// Default to the first file when one does not exist.
 					if (!current_file) {
@@ -2042,7 +2042,7 @@ document.onreadystatechange = function() {
 						// If no UL list exist then skip the animation.
 						if ($ul) {
 							// // Reset the stying to hide the scrollbar.
-							// $ul.classList.remove("file-headers-active");
+							// classes($ul, "!file-headers-active");
 
 							// Animate menu height closing.
 							animate({
@@ -2172,9 +2172,7 @@ document.onreadystatechange = function() {
 								onComplete: function() {
 									// if (_max_height) {
 									// 	// Reset the stying to hide the scrollbar.
-									// 	$ul.classList.add(
-									// 		"file-headers-active"
-									// 	);
+									// 	classes($ul, "file-headers-active");
 									// }
 
 									// Cancel any current sidebar menu scroll.
@@ -2240,8 +2238,9 @@ document.onreadystatechange = function() {
 												if ($parent) {
 													// Remove the class to make sure the highlight
 													// works.
-													$parent.classList.remove(
-														"animate-header-highlight"
+													classes(
+														$parent,
+														"!animate-header-highlight"
 													);
 
 													// Let browser know to optimize scrolling.
@@ -2260,7 +2259,8 @@ document.onreadystatechange = function() {
 															function() {
 																// console.log("C");
 
-																$parent.classList.add(
+																classes(
+																	$parent,
 																	"animate-header-highlight"
 																);
 
@@ -2298,9 +2298,7 @@ document.onreadystatechange = function() {
 							if ($parent) {
 								// Remove the class to make sure the highlight
 								// works.
-								$parent.classList.remove(
-									"animate-header-highlight"
-								);
+								classes($parent, "!animate-header-highlight");
 
 								// Let browser know to optimize scrolling.
 								perf_hint($sroot, "scroll-position");
@@ -2313,7 +2311,8 @@ document.onreadystatechange = function() {
 									scroll($parent, function() {
 										// console.log("D");
 
-										$parent.classList.add(
+										classes(
+											$parent,
 											"animate-header-highlight"
 										);
 
@@ -2487,7 +2486,7 @@ document.onreadystatechange = function() {
 				function show_sidebar() {
 					request_aframe(function() {
 						// Show the sidebar.
-						$sidebar.classList.add("sidebar-show");
+						classes($sidebar, "sidebar-show");
 
 						// Show the overlay.
 						var classes_overlay = $soverlay.classList;
@@ -2661,7 +2660,7 @@ document.onreadystatechange = function() {
 								"LOGO--"
 							);
 							for (let i = 0, l = $els.length; i < l; i++) {
-								$els[i].classList.remove("none");
+								classes($els[i], "!none");
 							}
 						}, 200);
 					}
@@ -2672,7 +2671,7 @@ document.onreadystatechange = function() {
 					var version = params.v || data.latest;
 
 					// Show the versions container.
-					$version_cont.classList.remove("none");
+					classes($version_cont, "!none");
 					// Add the versions.
 					var versions = data.versions;
 					var latest = data.latest;
@@ -2721,10 +2720,10 @@ document.onreadystatechange = function() {
 					);
 
 					// Animate the entire menu.
-					$sb_menu.classList.add("animate-fadein");
+					classes($sb_menu, "animate-fadein");
 
 					// Show the sidebar footer.
-					$sb_footer.classList.remove("none");
+					classes($sb_footer, "!none");
 
 					// Inject the file contents to the page. Provide the
 					// inject function the page parameter or default to the
@@ -2845,8 +2844,7 @@ document.onreadystatechange = function() {
 							cb.destroy();
 
 							// Show the message.
-							$copied_message.classList.remove("opa0");
-							$copied_message.classList.remove("none");
+							classes($copied_message, "!opa0", "!none");
 
 							// Select the text.
 							selection($el);
@@ -2858,13 +2856,13 @@ document.onreadystatechange = function() {
 								clearTimeout(window.copy_timer);
 							}
 							window.copy_timer = setTimeout(function() {
-								$copied_message.classList.add("opa0");
+								classes($copied_message, "opa0");
 								window.copy_timer = setTimeout(function() {
 									clearTimeout(window.copy_timer);
 									window.copy_timer = null;
 									delete window.copy_timer;
 
-									$copied_message.classList.add("none");
+									classes($copied_message, "none");
 								}, 2000);
 							}, 2000);
 						});
@@ -2900,17 +2898,17 @@ document.onreadystatechange = function() {
 					// Get the target element.
 					var $target = e.target;
 					var filename;
-					var classes = $target.classList;
+					var clist = $target.classList;
 
 					// Unfocus the search input.
-					$search_cont.classList.remove("sinput-focused");
+					classes($search_cont, "!sinput-focused");
 
 					// Hide the versions container.
 					if (
 						!$versions_cont.classList.contains("none") &&
 						!$versions_cont.contains($target)
 					) {
-						$versions_cont.classList.add("none");
+						classes($versions_cont, "none");
 
 						// Toggle sidebar elements mouse events.
 						toggle_sb_elements(false);
@@ -2952,7 +2950,7 @@ document.onreadystatechange = function() {
 						let $header = get_header(href);
 
 						// Remove the class before adding.
-						$header.classList.remove("animate-header-highlight");
+						classes($header, "!animate-header-highlight");
 
 						// Let browser know to optimize scrolling.
 						perf_hint($sroot, "scroll-position");
@@ -2976,9 +2974,7 @@ document.onreadystatechange = function() {
 								// console.log("A:Desktop");
 
 								// Highlight the header.
-								$header.classList.add(
-									"animate-header-highlight"
-								);
+								classes($header, "animate-header-highlight");
 
 								// Remove optimization.
 								perf_unhint($sroot);
@@ -2993,7 +2989,7 @@ document.onreadystatechange = function() {
 
 						return;
 					} else if (
-						classes.contains("hamburger") &&
+						clist.contains("hamburger") &&
 						$soverlay.style.display !== "block"
 					) {
 						// The hamburger menu was clicked OR the allowed area
@@ -3004,7 +3000,7 @@ document.onreadystatechange = function() {
 						show_sidebar();
 
 						return;
-					} else if (classes.contains("sidebar-overlay")) {
+					} else if (clist.contains("sidebar-overlay")) {
 						sb_animation = true;
 
 						// Hide the sidebar.
@@ -3019,11 +3015,12 @@ document.onreadystatechange = function() {
 						);
 
 						// Hide the element.
-						$target.classList.add("none");
+						classes($target, "none");
 						// Show the buttons and the pre element.
-						$target.nextElementSibling.classList.remove("none");
-						$target.nextElementSibling.nextElementSibling.classList.remove(
-							"none"
+						classes($target.nextElementSibling, "!none");
+						classes(
+							$target.nextElementSibling.nextElementSibling,
+							"!none"
 						);
 
 						return;
@@ -3033,10 +3030,10 @@ document.onreadystatechange = function() {
 							.parentNode;
 
 						// Hide itself and the pre element.
-						$target.classList.add("none");
-						$target.nextElementSibling.classList.add("none");
+						classes($target, "none");
+						classes($target.nextElementSibling, "none");
 						// Show the show element.
-						$target.previousElementSibling.classList.remove("none");
+						classes($target.previousElementSibling, "!none");
 
 						return;
 					} else if (is_target_el($target, "dd-expandable-message")) {
@@ -3056,25 +3053,20 @@ document.onreadystatechange = function() {
 							)
 						) {
 							// Add the active class.
-							$target.classList.add(
-								"dd-expandable-message-active"
-							);
+							classes($target, "dd-expandable-message-active");
 							// Open the contents.
-							$target.nextElementSibling.classList.remove("none");
+							classes($target.nextElementSibling, "!none");
 							// Rotate the icon.
-							$icon.classList.add(
-								"dd-expandable-message-icon-active"
-							);
+							classes($icon, "dd-expandable-message-icon-active");
 						} else {
 							// Close the contents.
-							$target.nextElementSibling.classList.add("none");
+							classes($target.nextElementSibling, "none");
 							// Add the active class.
-							$target.classList.remove(
-								"dd-expandable-message-active"
-							);
+							classes($target, "!dd-expandable-message-active");
 							// Rotate the icon.
-							$icon.classList.remove(
-								"dd-expandable-message-icon-active"
+							classes(
+								$icon,
+								"!dd-expandable-message-icon-active"
 							);
 						}
 
@@ -3117,10 +3109,10 @@ document.onreadystatechange = function() {
 
 						// Remove the active class.
 						for (let i = 0, l = $tabs.length; i < l; i++) {
-							$tabs[i].classList.remove("activetab");
+							classes($tabs[i], "!activetab");
 						}
 						// Highlight the clicked tab element.
-						$target.classList.add("activetab");
+						classes($target, "activetab");
 
 						// Hide all the children except the one that matches
 						// the tab index.
@@ -3150,7 +3142,7 @@ document.onreadystatechange = function() {
 							trigger_sinput(null, $input);
 						}
 
-						$search_cont.classList.add("sinput-focused");
+						classes($search_cont, "sinput-focused");
 						$input.focus();
 
 						return;
@@ -3159,7 +3151,7 @@ document.onreadystatechange = function() {
 						// $target = is_target_el($target, "current-version-cont");
 
 						// Show the versions container.
-						$versions_cont.classList.remove("none");
+						classes($versions_cont, "!none");
 
 						// Toggle sidebar elements mouse events.
 						toggle_sb_elements(true);
@@ -3167,7 +3159,7 @@ document.onreadystatechange = function() {
 						// Un-highlight current last highlighted version.
 						var $last = document.querySelector(`.active-version`);
 						if ($last) {
-							$last.classList.remove("active-version");
+							classes($last, "!active-version");
 						}
 						// Highlight the current
 						var $cur = document.querySelector(
@@ -3176,7 +3168,7 @@ document.onreadystatechange = function() {
 							)}']`
 						);
 						if ($cur) {
-							$cur.classList.add("active-version");
+							classes($cur, "active-version");
 
 							// Update the scroll-y position.
 							$vlist.scrollTop = $cur.offsetTop;
@@ -3207,7 +3199,7 @@ document.onreadystatechange = function() {
 						// Return if the version is the current version.
 						if (version === current_version) {
 							// Hide the versions container.
-							$versions_cont.classList.add("none");
+							classes($versions_cont, "none");
 
 							e.preventDefault();
 							return;
@@ -3243,9 +3235,7 @@ document.onreadystatechange = function() {
 
 						// Scroll to the header.
 						if ($header) {
-							$header.classList.remove(
-								"animate-header-highlight"
-							);
+							classes($header, "!animate-header-highlight");
 
 							// Let browser know to optimize scrolling.
 							perf_hint($sroot, "scroll-position");
@@ -3257,7 +3247,8 @@ document.onreadystatechange = function() {
 									// console.log("B");
 
 									// Highlight the header.
-									$header.classList.add(
+									classes(
+										$header,
 										"animate-header-highlight"
 									);
 
@@ -3312,7 +3303,7 @@ document.onreadystatechange = function() {
 						filename = $target.children[0].getAttribute(
 							"data-file"
 						);
-					} else if (classes.contains("link-doc")) {
+					} else if (clist.contains("link-doc")) {
 						// Get the data-attribute.
 						filename = $target.getAttribute("data-file");
 
@@ -3321,7 +3312,7 @@ document.onreadystatechange = function() {
 						$target = document.querySelector(
 							`a.link[data-file='${filename}']`
 						).parentNode.parentNode;
-					} else if (classes.contains("btn-home")) {
+					} else if (clist.contains("btn-home")) {
 						// Get the data-attribute.
 						filename = data.first_file;
 
@@ -3409,11 +3400,12 @@ document.onreadystatechange = function() {
 
 						// Remove the highlight class from the
 						// currently active container.
-						document
-							.querySelector(".active-version")
-							.classList.remove("active-version");
+						classes(
+							document.querySelector(".active-version"),
+							"!active-version"
+						);
 
-						$target.classList.add("active-version");
+						classes($target, "active-version");
 
 						return;
 					}
@@ -3442,14 +3434,10 @@ document.onreadystatechange = function() {
 							)[0];
 
 							// Add clone identifier class.
-							$clone.classList.add("clone-true-l2");
-							$clone.classList.add("pnone");
+							classes($clone, "clone-true-l2", "pnone");
 
-							// Remove the classes.
-							$anchor.classList.remove("l-2-link");
-							$anchor.classList.remove("truncate");
-							// Add right padding to anchor.
-							$anchor.classList.add("mr5");
+							// Remove/add classes.
+							classes($anchor, "!l-2-link", "!truncate", "mr5");
 
 							// Check if active.
 							var is_active = $target.classList.contains(
@@ -3481,7 +3469,7 @@ document.onreadystatechange = function() {
 							// Get the clone width.
 							let cwidth = $clone.getBoundingClientRect().width;
 							// Hide the element.
-							$clone.classList.add("none");
+							classes($clone, "none");
 
 							// If the clone is longer than the original target
 							// inject the clone.
@@ -3489,7 +3477,7 @@ document.onreadystatechange = function() {
 								moused_el2_inserts.push($clone);
 
 								// Hide the element.
-								$clone.classList.remove("none");
+								classes($clone, "!none");
 							} else {
 								// Remove the element.
 								$clone.parentNode.removeChild($clone);
@@ -3515,8 +3503,8 @@ document.onreadystatechange = function() {
 							let $clone = $target.cloneNode(true);
 
 							// Add clone identifier class.
-							// $clone.classList.add("clone-true-l3");
-							$clone.classList.add("pnone");
+							// classes($clone, "clone-true-l3");
+							classes($clone, "pnone");
 
 							// Get the position of the element on the page.
 							let coors = $target.getBoundingClientRect();
@@ -3545,8 +3533,7 @@ document.onreadystatechange = function() {
 								"margin: 0;padding: 0;list-style: none;"
 							);
 
-							$wrapper.classList.add("clone-true-l3");
-							$wrapper.classList.add("pnone");
+							classes($wrapper, "clone-true-l3", "pnone");
 
 							// insert wrapper before el in the DOM tree
 							$clone.parentNode.insertBefore($wrapper, $clone);
@@ -3559,7 +3546,7 @@ document.onreadystatechange = function() {
 							// Get the clone width.
 							let cwidth = $clone.getBoundingClientRect().width;
 							// Hide the element.
-							$wrapper.classList.add("none");
+							classes($wrapper, "none");
 
 							// If the clone is longer than the original target
 							// inject the clone.
@@ -3567,7 +3554,7 @@ document.onreadystatechange = function() {
 								moused_el2_inserts.push($wrapper);
 
 								// Hide the element.
-								$wrapper.classList.remove("none");
+								classes($wrapper, "!none");
 							} else {
 								// Remove the element.
 								$wrapper.parentNode.removeChild($wrapper);
@@ -3590,7 +3577,7 @@ document.onreadystatechange = function() {
 					"blur",
 					function() {
 						// Remove the active class.
-						$search_cont.classList.remove("sinput-focused");
+						classes($search_cont, "!sinput-focused");
 					},
 					false
 				);
@@ -3601,7 +3588,7 @@ document.onreadystatechange = function() {
 					if (e.keyCode === 27) {
 						// Hide the versions container.
 						if (!$versions_cont.classList.contains("none")) {
-							$versions_cont.classList.add("none");
+							classes($versions_cont, "none");
 
 							// Toggle sidebar elements mouse events.
 							toggle_sb_elements(false);
@@ -3613,7 +3600,7 @@ document.onreadystatechange = function() {
 						// Skip when the element already has focus.
 						let $active = document.activeElement;
 						if ($active && $active.classList.contains("SINPUT--")) {
-							// $search_cont.classList.remove("sinput-focused");
+							// classes($search_cont, "!sinput-focused");
 							$sinput.blur();
 							e.preventDefault();
 							return;
@@ -3647,7 +3634,7 @@ document.onreadystatechange = function() {
 							return;
 						}
 
-						// $search.classList.add("sinput-focused");
+						// classes($search, "sinput-focused");
 						$sinput.focus();
 						e.preventDefault();
 					}
@@ -3685,9 +3672,9 @@ document.onreadystatechange = function() {
 								if ($prev) {
 									// Remove the highlight class from the
 									// currently active container.
-									$cur.classList.remove("active-version");
+									classes($cur, "!active-version");
 
-									$prev.classList.add("active-version");
+									classes($prev, "active-version");
 
 									// Update the scroll-y position.
 									if (!is_in_view($vlist, $prev).complete) {
@@ -3728,9 +3715,9 @@ document.onreadystatechange = function() {
 								if ($next) {
 									// Remove the highlight class from the
 									// currently active container.
-									$cur.classList.remove("active-version");
+									classes($cur, "!active-version");
 
-									$next.classList.add("active-version");
+									classes($next, "active-version");
 
 									// Update the scroll-y position.
 									if (!is_in_view($vlist, $next).complete) {
@@ -3808,7 +3795,7 @@ document.onreadystatechange = function() {
 
 								if (text !== "") {
 									// Show the clear button.
-									$clear_search.classList.remove("none");
+									classes($clear_search, "!none");
 
 									var at_least_one = false;
 
@@ -3913,10 +3900,10 @@ document.onreadystatechange = function() {
 									]("none");
 								} else {
 									// Hide the clear button.
-									$clear_search.classList.add("none");
+									classes($clear_search, "none");
 
 									// Hide the no matches container.
-									$no_matches_cont.classList.add("none");
+									classes($no_matches_cont, "none");
 
 									// Unhide them all.
 
@@ -4008,12 +3995,12 @@ document.onreadystatechange = function() {
 									".active-version"
 								);
 								if ($cur) {
-									$cur.classList.remove("active-version");
+									classes($cur, "!active-version");
 								}
 
 								if (text !== "") {
 									// Show the clear button.
-									$clear_search.classList.remove("none");
+									classes($clear_search, "!none");
 
 									let at_least_one = false;
 
@@ -4035,9 +4022,7 @@ document.onreadystatechange = function() {
 											if (!first_v) {
 												first_v = true;
 
-												item.classList.add(
-													"active-version"
-												);
+												classes(item, "active-version");
 											}
 
 											// Switch the flag since there was a
@@ -4074,10 +4059,10 @@ document.onreadystatechange = function() {
 									]("none");
 								} else {
 									// Hide the clear button.
-									$clear_search.classList.add("none");
+									classes($clear_search, "none");
 
 									// Hide the no matches container.
-									$no_matches_cont_v.classList.add("none");
+									classes($no_matches_cont_v, "none");
 
 									// Unhide them all.
 
@@ -4112,9 +4097,10 @@ document.onreadystatechange = function() {
 										".active-version"
 									);
 									if ($cur) {
-										$cur.classList.remove("active-version");
+										classes($cur, "!active-version");
 									}
-									$vlist.firstChild.classList.add(
+									classes(
+										$vlist.firstChild,
 										"active-version"
 									);
 								}
@@ -4201,7 +4187,7 @@ document.onreadystatechange = function() {
 
 										// Reset the element.
 										// Remove the link-doc class.
-										$link.classList.remove("link-doc");
+										classes($link, "!link-doc");
 										// Reset/set attributes.
 										$link.setAttribute("href", furl);
 										$link.setAttribute("target", "_blank");
@@ -4273,20 +4259,19 @@ document.onreadystatechange = function() {
 
 							clipboardjs_instance.on("success", function(/*e*/) {
 								// Show the message.
-								$copied_message.classList.remove("opa0");
-								$copied_message.classList.remove("none");
+								classes($copied_message, "!opa0", "!none");
 
 								if (window.copy_timer) {
 									clearTimeout(window.copy_timer);
 								}
 								window.copy_timer = setTimeout(function() {
-									$copied_message.classList.add("opa0");
+									classes($copied_message, "opa0");
 									window.copy_timer = setTimeout(function() {
 										clearTimeout(window.copy_timer);
 										window.copy_timer = null;
 										delete window.copy_timer;
 
-										$copied_message.classList.add("none");
+										classes($copied_message, "none");
 									}, 2000);
 								}, 2000);
 							});
@@ -4305,11 +4290,8 @@ document.onreadystatechange = function() {
 							// Add the bottom nav UI elements.
 							bottom_nav();
 
-							// Add the loading content class.
-							$markdown.classList.remove("loading-content");
-
-							// Enable mouse events again.
-							$markdown.classList.remove("pnone");
+							// Add loading class and enable mouse events.
+							classes($markdown, "!loading-content", "!pnone");
 
 							// Calculate the time ago times.
 							var mtime_update = function() {
@@ -4335,7 +4317,7 @@ document.onreadystatechange = function() {
 									);
 
 									// Finally, show the element.
-									$mtime.classList.remove("none");
+									classes($mtime, "!none");
 								}
 							};
 
@@ -4390,9 +4372,7 @@ document.onreadystatechange = function() {
 						// Remove the animation class once completed.
 						if (name === "animate-header-highlight") {
 							// Remove the animation class.
-							$target.classList.remove(
-								"animate-header-highlight"
-							);
+							classes($target, "!animate-header-highlight");
 						}
 					}
 				);
@@ -4411,7 +4391,7 @@ document.onreadystatechange = function() {
 							$target.classList.contains("splash-overlay") &&
 							pname === "opacity"
 						) {
-							$splash.classList.add("none");
+							classes($splash, "none");
 						}
 
 						///////////////////////////
@@ -4450,7 +4430,8 @@ document.onreadystatechange = function() {
 										// console.log("A:Mobile");
 
 										// Highlight the header.
-										$sb_animation_header.classList.add(
+										classes(
+											$sb_animation_header,
 											"animate-header-highlight"
 										);
 
@@ -4490,7 +4471,7 @@ document.onreadystatechange = function() {
 
 							// Get the target element.
 							var $target = e.target;
-							var classes = $target.classList;
+							var clist = $target.classList;
 
 							if (tapLength < taptime && tapLength > 0) {
 								var $el = is_target_el(
@@ -4558,7 +4539,7 @@ document.onreadystatechange = function() {
 									// The hamburger menu was clicked OR the allowed area
 									// range was touched.
 									if (
-										classes.contains("hamburger") ||
+										clist.contains("hamburger") ||
 										(x <= range &&
 											y <= range &&
 											$soverlay.style.display !== "block")
@@ -4574,8 +4555,7 @@ document.onreadystatechange = function() {
 										// the sidebar is not visible but still
 										// useable. Hiding/showing the sidebar fixes
 										// this.
-										$sidebar.classList.add("none");
-										$sidebar.classList.remove("none");
+										classes($sidebar, "none", "!none");
 
 										sb_animation = true;
 
@@ -4588,7 +4568,7 @@ document.onreadystatechange = function() {
 										// [https://stackoverflow.com/a/41289160]
 										e.preventDefault();
 									} else if (
-										classes.contains("sidebar-overlay")
+										clist.contains("sidebar-overlay")
 									) {
 										sb_animation = true;
 
