@@ -97,3 +97,71 @@
 	// when the sidebar gets slid into view.
 	transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
+
+// Create an animation:
+@mixin animation($name: null, $meta: null, $frames: null, $media: null) {
+	// Animation resources: [https://www.w3schools.com/cssref/css3_pr_animation.asp]
+	// @content: [http://krasimirtsonev.com/blog/article/SASS-content-directive-is-a-wonderful-thing]
+	// @content: [https://robots.thoughtbot.com/sasss-content-directive]
+	// maps: [https://www.phase2technology.com/blog/exploring-maps-sass-33-part-1]
+	// maps: [https://css-tricks.com/snippets/sass/deep-getset-maps/]
+	// maps: [https://www.viget.com/articles/sass-maps-are-awesome/]
+	// maps: [https://www.sitepoint.com/using-sass-maps/]
+	// maps: [https://webdesign.tutsplus.com/tutorials/an-introduction-to-sass-maps-usage-and-examples--cms-22184]
+	// maps: [https://frontstuff.io/generate-all-your-utility-classes-with-sass-maps]
+	// functions: [http://thesassway.com/advanced/pure-sass-functions]
+
+	@if $name {
+		$name: unquote($name);
+
+		// Create the animation class with its properties.
+		// [https://css-tricks.com/snippets/css/keyframe-animation-syntax/#article-header-id-2]
+		@if $meta {
+			.#{$name} {
+				// Add the name by default.
+				animation-name: #{$name};
+				@each $key, $value in $meta {
+					animation-#{$key}: $value;
+				}
+			}
+		}
+
+		// Create any keyframes.
+		@if $frames {
+			@keyframes #{$name} {
+				// Loop over each frame map.
+				@each $percent, $properties_map in $frames {
+					#{$percent}% {
+						// Loop over each property.
+						@each $prop, $value in $properties_map {
+							#{$prop}: $value;
+						}
+					}
+				}
+			}
+		}
+
+		// Create any media keyframes.
+		@if $media {
+			// Loop over each media query.
+			@each $query, $frames in $media {
+				// Media query syntax.
+				@media (#{$query}) {
+					// Set the keyframe syntax.
+					@keyframes #{$name} {
+						// Loop over the frames.
+						@each $percent, $properties_map in $frames {
+							// Set the frame syntax.
+							#{$percent}% {
+								// Loop over each property.
+								@each $prop, $value in $properties_map {
+									#{$prop}: $value;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

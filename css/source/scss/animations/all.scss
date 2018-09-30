@@ -2,21 +2,7 @@
 @import "../base/mixins";
 @import "../base/vars";
 
-// Animation resources: [https://www.w3schools.com/cssref/css3_pr_animation.asp]
-
-// .ANIMATION-TEMPLATE {
-// 	animation-name: ANIMATION-TEMPLATE;
-// 	animation-duration: 0.2s;
-// 	animation-timing-function: ease-in-out;
-// 	animation-iteration-count: 1;
-// }
-
-// @keyframes ANIMATION-TEMPLATE {
-// 	0% {}
-// }
-
 // .animate-fadein-y {
-// 	animation-name: animate-fadein-y;
 // 	animation-duration: 0.3s;
 // 	animation-timing-function: ease-in-out;
 // 	animation-iteration-count: 1;
@@ -34,122 +20,91 @@
 // 	}
 // }
 
-.animate-fadein {
-	animation-name: animate-fadein;
-	animation-duration: 0.2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
+@include animation("animate-fadein", (
+	duration: 0.2s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	0: (
+		opacity: 0
+	),
+	100: (
+		opacity: 1
+	)
+));
 
-@keyframes animate-fadein {
-	0% {
-		opacity: 0;
-	}
+@include animation("animate-spin", (
+	duration: 0.5s,
+	timing-function: linear,
+	iteration-count: infinite
+), (
+	0: (
+		transform: rotate(0deg)
+	),
+	100: (
+		transform: rotate(360deg)
+	)
+));
 
-	100% {
-		opacity: 1;
-	}
-}
+@include animation("animate-pulse", (
+	duration: 0.6s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	40: (
+		transform: translate3d(0, 0, 0) scale(0.5)
+	)
+));
 
-.animate-spin {
-	animation-name: animate-spin;
-	animation-duration: 0.5s;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
-}
+@include animation("animate-logo", (
+	duration: 0.4s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	0: (
+		transform: translate3d(0, 0, 0) scale(0)
+	),
+	50: (
+		transform: translate3d(0, 0, 0) scale(1)
+	)
+));
 
-@keyframes animate-spin {
-	0% {
-		transform: rotate(0deg);
-	}
+@include animation("animate-loading", (
+	duration: 1s,
+	timing-function: linear,
+	iteration-count: infinite
+), (
+	25: (
+		opacity: 0.5,
+		margin-top: -3px
+	),
+	75: (
+		background: $c-trans,
+		opacity: 0,
+		height: 0
+	)
+));
 
-	100% {
-		transform: rotate(360deg);
-	}
-}
-
-.animate-pulse {
-	animation-name: animate-pulse;
-	animation-duration: 0.6s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes animate-pulse {
-	40% {
-		transform: translate3d(0, 0, 0) scale(0.5);
-	}
-}
-
-.animate-logo {
-	animation-name: animate-logo;
-	animation-duration: 0.4s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes animate-logo {
-	0% {
-		transform: translate3d(0, 0, 0) scale(0);
-	}
-
-	50% {
-		transform: translate3d(0, 0, 0) scale(1);
-	}
-}
-
-.animate-loading {
-	animation-name: animate-loading;
-	animation-duration: 1s;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
-}
-
-@keyframes animate-loading {
-	25% {
-		opacity: 0.5;
-
-		margin-top: -3px;
-	}
-
-	75% {
-		@include bg($c-trans);
-
-		opacity: 0;
-
-		height: 0;
-	}
-}
-
-.animate-header-highlight {
-	animation-name: animate-header-highlight;
-	animation-duration: 2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: 1;
-}
-
-@keyframes animate-header-highlight {
-	0% {
-		@include bg($-scroll-glow);
-
-		border-radius: 4px;
-	}
-
-	50% {
-		@include bg($c-white);
-	}
-}
-
-@media (max-width: 768px) {
-	@keyframes animate-header-highlight {
-		0% {
-			@include bg($-scroll-glow);
-
-			border-radius: 0;
-		}
-
-		50% {
-			@include bg($c-white);
-		}
-	}
-}
+@include animation("animate-header-highlight", (
+	duration: 2s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	0: (
+		background: $-scroll-glow,
+		border-radius: 4px
+	),
+	50: (
+		background: $c-white
+	)
+), (
+	"max-width: 768px": (
+		0: (
+			background: $-scroll-glow,
+			border-radius: 0
+		),
+		50: (
+			background: $c-white
+		),
+	)
+));
