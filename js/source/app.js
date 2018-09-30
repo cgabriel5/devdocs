@@ -2370,7 +2370,7 @@ document.onreadystatechange = function() {
 
 					// If a prev element exists, build the HTML.
 					if ($prev_el) {
-						prev_html = `<div class="arrow aleft btn noselect" data-refid="${
+						prev_html = `<div class="arrow aleft btn" data-refid="${
 							$prev_el.id
 						}"><i class="fas fa-arrow-alt-circle-left mr5"></i> <span class="truncate">${$prev_el.getAttribute(
 							"data-title"
@@ -2399,7 +2399,7 @@ document.onreadystatechange = function() {
 
 					// If a next element exists, build the HTML.
 					if ($next_el) {
-						next_html = `<div class="arrow aright btn noselect" data-refid="${
+						next_html = `<div class="arrow aright btn" data-refid="${
 							$next_el.id
 						}"><span class="mr5 truncate">${$next_el.getAttribute(
 							"data-title"
