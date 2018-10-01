@@ -2986,11 +2986,10 @@ document.onreadystatechange = function() {
 
 						return;
 					} else if (
-						clist.contains("hamburger") &&
+						is_target_el($target, "hamburger") &&
 						$soverlay.style.display !== "block"
 					) {
-						// The hamburger menu was clicked OR the allowed area
-						// range was touched.
+						// The menu was interacted with.
 						sb_animation = true;
 
 						// Show the sidebar.
@@ -4533,10 +4532,9 @@ document.onreadystatechange = function() {
 											1 -
 										1;
 
-									// The hamburger menu was clicked OR the allowed area
-									// range was touched.
+									// The menu was interacted with.
 									if (
-										clist.contains("hamburger") ||
+										is_target_el($target, "hamburger") ||
 										(x <= range &&
 											y <= range &&
 											$soverlay.style.display !== "block")

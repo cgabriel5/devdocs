@@ -21,7 +21,7 @@
 	.left {
 		@include flex($flow: null, $align: center, $justify: center);
 
-		.menu {
+		.hamburger {
 			@include flex($flow: null);
 			@include cur;
 
@@ -61,7 +61,9 @@
 			@include truncate;
 		}
 
-		.folder, .file, .sep {
+		.folder,
+		.file,
+		.sep {
 			@include flex($flow: null);
 		}
 	}
