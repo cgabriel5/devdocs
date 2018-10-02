@@ -293,7 +293,7 @@ ul.file-headers {
   padding: 50px 0 15px; }
   .sb-footer .img {
     opacity: 0.3;
-    margin-top: -3px; }
+    margin: -3px 5px 0 0; }
     .sb-footer .img img {
       width: 13px; }
   .sb-footer .name {
