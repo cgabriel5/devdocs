@@ -21,10 +21,19 @@
 		@include bg($-light-background);
 		@include flex($justify: space-around, $align: center);
 
+		transition: 0.1s ease-in-out;
+		transition-property: box-shadow;
+
+		box-shadow: none;
+
 		border-radius: 5px;
 		padding: 0 10px;
 
 		width: 100%;
+
+		&.matchless {
+			box-shadow: inset 0 0 0 2px $-search-error;
+		}
 
 		// The icons (magnifying glass/clear-reset).
 		.icon-search,
@@ -64,22 +73,6 @@
 			@include fsize(14);
 		}
 	}
-}
-
-.no-matches-cont {
-	margin: 0 3px;
-}
-
-.no-matches-cont-inner {
-	@include bg($-no-matches);
-	@include flex($justify: flex-start, $align: center);
-
-	border-radius: 5px;
-	padding: 8px 10px 8px 20px;
-
-	height: 31.67px;
-
-	font-weight: bold;
 }
 
 // The highlighted text colors.

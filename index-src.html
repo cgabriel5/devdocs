@@ -41,20 +41,21 @@
 					<input id="sinput" type="text" placeholder="Filter..." class="input SINPUT-- sinput-main">
 					<div class="icon-clear SCLEAR-- none"><i class="fas fa-times-circle"></i></div>
 				</div>
-				<div id="version-cont" class="version-cont none">
-					<div class="current-version-cont"><span id="current-version" class="current-version"></span></div>
-					<div id="versions-list-cont" class="versions-list-cont none">
-						<div class="vlist-padding">
-							<div class="search-ui search-versions">
-								<div class="icon-search"><i class="fas fa-search"></i></div>
-								<input type="text" placeholder="Filter..." class="input SINPUT-- sinput-vlist">
-								<div class="icon-clear SCLEAR-- none"><i class="fas fa-times-circle"></i></div>
+				<div id="versions" class="versions none">
+					<div class="version-loaded">
+						<span id="version" class="version"></span>
+					</div>
+					<div id="version-options" class="version-options none">
+						<div class="search-ui search-versions">
+							<div class="icon-search">
+								<i class="fas fa-search"></i>
 							</div>
-							<div class="vlist-padding-top">
-								<div id="no-matches-cont-v" class="no-matches-cont-inner none"><i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span></div>
-								<div id="v-list-wrapper" class="v-list-wrapper"></div>
+							<input type="text" placeholder="Filter..." class="input SINPUT-- sinput-vlist">
+							<div class="icon-clear SCLEAR-- none">
+								<i class="fas fa-times-circle"></i>
 							</div>
 						</div>
+						<div id="voptions-list" class="voptions-list"></div>
 					</div>
 				</div>
 			</div>

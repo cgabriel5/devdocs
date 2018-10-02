@@ -1,23 +1,23 @@
-.version-cont {
+.versions {
 	margin-top: 5px;
 	padding: 5px;
 
-	.current-version-cont {
+	.version-loaded {
 		@include flex($dis: inline-flex, $align: center);
 		@include cur;
 	}
 
-	.current-version {
+	.version {
 		@include c($-text-gray);
 		@include fsize(13);
 	}
 
-	.current-version:hover {
+	.version:hover {
 		@include underline;
 	}
 }
 
-.versions-list-cont {
+.version-options {
 	@include bg($c-white);
 
 	position: absolute;
@@ -25,25 +25,17 @@
 	margin-top: 5px;
 	box-shadow: 0 0 1px $-shadow-border, 0 20px 55px -8px $-shadow;
 	border-radius: 4px;
-	padding: 5px 0;
+	padding: 5px;
 
 	width: calc(100% - 20px);
 	pointer-events: all;
 }
 
-.v-list-wrapper {
+.voptions-list {
 	position: relative;
 
 	max-height: 175px;
 	overflow-y: auto;
-}
-
-.vlist-padding {
-	padding: 0 5px;
-}
-
-.vlist-padding-top {
-	padding: 5px 0 0;
 }
 
 .version-latest {

@@ -858,9 +858,14 @@ ul.file-headers {
     flex-flow: row nowrap;
     justify-content: space-around;
     align-items: center;
+    transition: 0.1s ease-in-out;
+    transition-property: box-shadow;
+    box-shadow: none;
     border-radius: 5px;
     padding: 0 10px;
     width: 100%; }
+    .search .search-ui.matchless {
+      box-shadow: inset 0 0 0 2px #e04747; }
     .search .search-ui .icon-search,
     .search .search-ui .icon-clear {
       color: #666666; }
@@ -884,58 +889,38 @@ ul.file-headers {
       color: #999999;
       font-size: 14px; }
 
-.no-matches-cont {
-  margin: 0 3px; }
-
-.no-matches-cont-inner {
-  background: rgba(255, 193, 7, 0.44);
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  border-radius: 5px;
-  padding: 8px 10px 8px 20px;
-  height: 31.67px;
-  font-weight: bold; }
-
 .search-highlight {
   color: black;
   background: #ffe300; }
 
-.version-cont {
+.versions {
   margin-top: 5px;
   padding: 5px; }
-  .version-cont .current-version-cont {
+  .versions .version-loaded {
     display: inline-flex;
     flex-flow: row nowrap;
     align-items: center;
     cursor: pointer; }
-  .version-cont .current-version {
+  .versions .version {
     color: #999999;
     font-size: 13px; }
-  .version-cont .current-version:hover {
+  .versions .version:hover {
     text-decoration: underline; }
 
-.versions-list-cont {
+.version-options {
   background: #ffffff;
   position: absolute;
   margin-top: 5px;
   box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
   border-radius: 4px;
-  padding: 5px 0;
+  padding: 5px;
   width: calc(100% - 20px);
   pointer-events: all; }
 
-.v-list-wrapper {
+.voptions-list {
   position: relative;
   max-height: 175px;
   overflow-y: auto; }
-
-.vlist-padding {
-  padding: 0 5px; }
-
-.vlist-padding-top {
-  padding: 5px 0 0; }
 
 .version-latest {
   background: #5885dd;

@@ -2870,11 +2870,6 @@ gulp.task("json-data:app", function(done) {
 						${directory.html}
 						<li>
 							<div class="menu-section" data-dir="${index}">
-								<div id="no-matches-cont" class="no-matches-cont none">
-									<div class="no-matches-cont-inner">
-										<i class="fas fa-exclamation-circle mr5"></i> <span>No matches</span>
-									</div>
-								</div>
 								<ul id="submenu-inner-${index + 1}">
 									${html.join("")}
 								</ul>

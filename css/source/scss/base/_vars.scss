@@ -28,6 +28,7 @@ $c-white-95: rgba($c-white, 0.95); //#fffffff3
 $c-white-65: rgba($c-white, 0.65); // #ffffffa3
 
 // Reds.
+$c-fire-red: #e04747;
 $c-cardinal: #b31d28;
 $c-flamingo: #dd6d58;
 $c-light-red: #ffeef0;
@@ -35,7 +36,7 @@ $c-light-red: #ffeef0;
 // Oranges/Yellows.
 $c-sunglow: #ffc758;
 $c-turbo: #ffe300;
-$c-sweet-corn: rgba(255, 193, 7, 0.44); // #ffc10770
+// $c-sweet-corn: rgba(255, 193, 7, 0.44); // #ffc10770
 
 // Greens.
 $c-forest-green: #22863a;
@@ -100,8 +101,9 @@ $-cb-linehighlight-number: $c-cornflower-blue;
 $-cb-linehighlight-line: $c-cornflower-blue-12;
 
 // Search.
-// - No matches warning.
-$-no-matches: $c-sweet-corn;
+// // - No matches warning.
+// $-no-matches: $c-sweet-corn;
+$-search-error: $c-fire-red;
 // - Highlighted text/needle.
 $-search-highlight: $c-turbo;
 

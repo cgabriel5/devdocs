@@ -39,12 +39,11 @@ document.onreadystatechange = function() {
 		var $copied_message = document.getElementById("copied-message");
 		var $search_cont = document.getElementById("search");
 		var $sinput = document.getElementById("sinput");
-		var $no_matches_cont;
-		var $no_matches_cont_v = document.getElementById("no-matches-cont-v");
-		var $versions_cont = document.getElementById("versions-list-cont");
-		var $version_cont = document.getElementById("version-cont");
-		var $vlist = document.getElementById("v-list-wrapper");
-		var $current_version = document.getElementById("current-version");
+		var $versions = document.getElementById("versions");
+		var $version_options = document.getElementById("version-options");
+		var $vlist = document.getElementById("voptions-list");
+		var $version = document.getElementById("version");
+
 		var $sb_menu = document.getElementById("sidebar-menu");
 		var $sb_footer = document.getElementById("sb-footer");
 
@@ -2066,7 +2065,7 @@ document.onreadystatechange = function() {
 										)[0] *
 											1 -
 											1}']`
-									).children[1];
+									).children[0];
 
 									// Remove the UL if it exists.
 									if ($ul && $ulp.contains($ul)) {
@@ -2668,7 +2667,7 @@ document.onreadystatechange = function() {
 					var version = params.v || data.latest;
 
 					// Show the versions container.
-					classes($version_cont, "!none");
+					classes($versions, "!none");
 					// Add the versions.
 					var versions = data.versions;
 					var latest = data.latest;
@@ -2689,14 +2688,14 @@ document.onreadystatechange = function() {
 					// Inject the versions list.
 					$vlist.innerHTML = versions_html.join("");
 					// Set the current version.
-					$current_version.innerHTML = `<i class="fas fa-layer-group mr2"></i> v${version}`; // +
-					$current_version.insertAdjacentHTML(
+					$version.innerHTML = `<i class="fas fa-layer-group mr2"></i> v${version}`; // +
+					$version.insertAdjacentHTML(
 						"afterend",
 						version === latest
 							? '<span class="version-latest">latest</span>'
 							: '<span class="version-latest version-latest-not">not latest</span>'
 					);
-					$current_version.setAttribute("data-v", version);
+					$version.setAttribute("data-v", version);
 
 					// Inject the needed sidebar menu item tops CSS.
 					inject_sidebae_tops_css();
@@ -2709,11 +2708,6 @@ document.onreadystatechange = function() {
 					// [https://davidwalsh.name/nodelist-array]
 					$l_2 = Array.prototype.slice.call(
 						document.getElementsByClassName("L2--")
-					);
-
-					// Get the no matches container.
-					$no_matches_cont = document.getElementById(
-						"no-matches-cont"
 					);
 
 					// Animate the entire menu.
@@ -2902,10 +2896,10 @@ document.onreadystatechange = function() {
 
 					// Hide the versions container.
 					if (
-						!$versions_cont.classList.contains("none") &&
-						!$versions_cont.contains($target)
+						!$version_options.classList.contains("none") &&
+						!$version_options.contains($target)
 					) {
-						classes($versions_cont, "none");
+						classes($version_options, "none");
 
 						// Toggle sidebar elements mouse events.
 						toggle_sb_elements(false);
@@ -3142,12 +3136,9 @@ document.onreadystatechange = function() {
 						$input.focus();
 
 						return;
-					} else if (is_target_el($target, "current-version-cont")) {
-						// Reset the target.
-						// $target = is_target_el($target, "current-version-cont");
-
+					} else if (is_target_el($target, "version-loaded")) {
 						// Show the versions container.
-						classes($versions_cont, "!none");
+						classes($version_options, "!none");
 
 						// Toggle sidebar elements mouse events.
 						toggle_sb_elements(true);
@@ -3159,7 +3150,7 @@ document.onreadystatechange = function() {
 						}
 						// Highlight the current
 						var $cur = document.querySelector(
-							`.version-option[data-v='${$current_version.getAttribute(
+							`.version-option[data-v='${$version.getAttribute(
 								"data-v"
 							)}']`
 						);
@@ -3171,7 +3162,9 @@ document.onreadystatechange = function() {
 						}
 
 						// Focus on the input.
-						$versions_cont.getElementsByTagName("input")[0].focus();
+						$version_options
+							.getElementsByTagName("input")[0]
+							.focus();
 
 						return;
 					} else if (is_target_el($target, "version-option")) {
@@ -3188,14 +3181,12 @@ document.onreadystatechange = function() {
 						var params = parameters();
 
 						// Get the current version.
-						var current_version = $current_version.getAttribute(
-							"data-v"
-						);
+						var current_version = $version.getAttribute("data-v");
 
 						// Return if the version is the current version.
 						if (version === current_version) {
 							// Hide the versions container.
-							classes($versions_cont, "none");
+							classes($version_options, "none");
 
 							e.preventDefault();
 							return;
@@ -3583,8 +3574,8 @@ document.onreadystatechange = function() {
 					// Focus on the search input.
 					if (e.keyCode === 27) {
 						// Hide the versions container.
-						if (!$versions_cont.classList.contains("none")) {
-							classes($versions_cont, "none");
+						if (!$version_options.classList.contains("none")) {
+							classes($version_options, "none");
 
 							// Toggle sidebar elements mouse events.
 							toggle_sb_elements(false);
@@ -3611,9 +3602,9 @@ document.onreadystatechange = function() {
 						}
 
 						// Hide the versions container.
-						if ($versions_cont.classList.contains("none")) {
+						if ($version_options.classList.contains("none")) {
 							// Show version container by triggering the element.
-							$current_version.click();
+							$version.click();
 							e.preventDefault();
 							return;
 						}
@@ -3641,7 +3632,7 @@ document.onreadystatechange = function() {
 					// Go up.
 					if (e.keyCode === 38) {
 						// Only when the popup is visible.
-						if (!$versions_cont.classList.contains("none")) {
+						if (!$version_options.classList.contains("none")) {
 							// Check what is being focused on.
 							// - either a version container
 							// - or the input itself
@@ -3684,7 +3675,7 @@ document.onreadystatechange = function() {
 						}
 					} else if (e.keyCode === 40) {
 						// Only when the popup is visible.
-						if (!$versions_cont.classList.contains("none")) {
+						if (!$version_options.classList.contains("none")) {
 							// Check what is being focused on.
 							// - either a version container
 							// - or the input itself
@@ -3748,8 +3739,11 @@ document.onreadystatechange = function() {
 								// Get the text.
 								var text = $target.value.trim();
 
+								// Get the parent element.
+								var $parent = $target.parentNode;
+
 								// Get the clear element.
-								var $clear_search = $target.parentNode.getElementsByClassName(
+								var $clear_search = $parent.getElementsByClassName(
 									"SCLEAR--"
 								)[0];
 
@@ -3889,17 +3883,16 @@ document.onreadystatechange = function() {
 										}
 									}
 
-									// Show no results message when nothing no
-									// matches were returned.
-									$no_matches_cont.classList[
-										at_least_one ? "add" : "remove"
-									]("none");
+									// No results, highlight search-ui.
+									if (!at_least_one) {
+										classes($parent, "matchless");
+									}
 								} else {
 									// Hide the clear button.
 									classes($clear_search, "none");
 
-									// Hide the no matches container.
-									classes($no_matches_cont, "none");
+									// Restore search-ui highlight.
+									classes($parent, "!matchless");
 
 									// Unhide them all.
 
@@ -3963,8 +3956,11 @@ document.onreadystatechange = function() {
 								// Get the text.
 								let text = $target.value.trim();
 
+								// Get the parent element.
+								var $parent = $target.parentNode;
+
 								// Get the clear element.
-								let $clear_search = $target.parentNode.getElementsByClassName(
+								let $clear_search = $parent.getElementsByClassName(
 									"SCLEAR--"
 								)[0];
 
@@ -4048,17 +4044,16 @@ document.onreadystatechange = function() {
 										}
 									}
 
-									// Show no results message when nothing no
-									// matches were returned.
-									$no_matches_cont_v.classList[
-										at_least_one ? "add" : "remove"
-									]("none");
+									// No results, highlight search-ui.
+									if (!at_least_one) {
+										classes($parent, "matchless");
+									}
 								} else {
 									// Hide the clear button.
 									classes($clear_search, "none");
 
-									// Hide the no matches container.
-									classes($no_matches_cont_v, "none");
+									// Restore search-ui highlight.
+									classes($parent, "!matchless");
 
 									// Unhide them all.
 
