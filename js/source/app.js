@@ -3881,10 +3881,12 @@ document.onreadystatechange = function() {
 										}
 									}
 
-									// No results, highlight search-ui.
-									if (!at_least_one) {
-										classes($parent, "matchless");
-									}
+									// Depending on whether there are results,
+									// add/remove the search-ui highlight.
+									classes(
+										$parent,
+										(!at_least_one ? "" : "!") + "matchless"
+									);
 								} else {
 									// Hide the clear button.
 									classes($clear_search, "none");
@@ -4042,10 +4044,12 @@ document.onreadystatechange = function() {
 										}
 									}
 
-									// No results, highlight search-ui.
-									if (!at_least_one) {
-										classes($parent, "matchless");
-									}
+									// Depending on whether there are results,
+									// add/remove the search-ui highlight.
+									classes(
+										$parent,
+										(!at_least_one ? "" : "!") + "matchless"
+									);
 								} else {
 									// Hide the clear button.
 									classes($clear_search, "none");
