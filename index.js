@@ -660,7 +660,7 @@ function expand_ctags(text) {
 			return `\n\n<div class="codeblock-actions-group animate-fadein" data-cgroup-id="${uid}">
 			<div class="tabs flex noselect">${tabs_html.join("")}</div>
 			<div class="flex flex-center mr5">
-				<span class="flex flex-center btn noselect action BTN-COPY--"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+				<span class="flex flex-center btn noselect action action-copy"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
 			</div>
 		</div>
 		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
@@ -1338,7 +1338,7 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none ts MTIME-TS-- animate-fadein" data-ts="${mtime}"></span> <span class="long">(${timedate(
+						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none ts mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="long">(${timedate(
 							mtime
 						)})</span></div></div></div>`;
 
@@ -1656,7 +1656,7 @@ versions.forEach(function(vdata) {
 									);
 									// Copy GitHub anchor SVG. The SVG was lifted from GitHub.
 									$el.append(
-										`<div>${html}</div><a href="#${escaped_text}" aria-hidden="true" class="anchor ANCHOR--" name="${escaped_text}" id="${escaped_text}"><i class="fas fa-link"></i></a>`
+										`<div>${html}</div><a href="#${escaped_text}" aria-hidden="true" class="anchor" name="${escaped_text}" id="${escaped_text}"><i class="fas fa-link"></i></a>`
 									);
 									// <svg aria-hidden="true" class="octicon octicon-link" height="16" version="1.1" viewBox="0 0 16 16" width="16">
 									// 	<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
@@ -1666,9 +1666,7 @@ versions.forEach(function(vdata) {
 
 							// Get all headings in the HTML.
 							var __headings = {};
-							$(
-								"h1 a.ANCHOR--, h2 a.ANCHOR--, h3 a.ANCHOR--, h4 a.ANCHOR--, h5 a.ANCHOR--, h6 a.ANCHOR--"
-							)
+							$("h1 a, h2 a, h3 a, h4 a, h5 a, h6 a")
 								.filter(function(/*i, el*/) {
 									return !$(this)
 										.parents()
@@ -1917,7 +1915,7 @@ versions.forEach(function(vdata) {
 										if (!is_partof_codegroup) {
 											// Add the action buttons
 											$parent.before(`<div class="codeblock-actions def-font none animate-fadein">
-												<span class="flex flex-center btn noselect action BTN-COPY--" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+												<span class="flex flex-center btn noselect action action-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
 												<span class="flex flex-center btn noselect action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr5"></i><span>collapse</span></span>
 							</div>`);
 										}
@@ -1929,7 +1927,7 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											$parent.before(
-												`<div class="codeblock-actions def-font animate-fadein"><span class="flex flex-center btn noselect action BTN-COPY--" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
+												`<div class="codeblock-actions def-font animate-fadein"><span class="flex flex-center btn noselect action action-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
 											);
 										}
 									}

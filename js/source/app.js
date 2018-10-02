@@ -2030,7 +2030,7 @@ document.onreadystatechange = function() {
 					if ($current) {
 						let $parent = $current.parentNode;
 						// Remove the highlight.
-						classes($parent, "!active-page", "!ACTIVE-PAGE--");
+						classes($parent, "!active-page");
 
 						var id = $parent.id.replace(/[a-z\-]/g, "");
 						var $ul = document.getElementById(`menu-headers-${id}`);
@@ -2100,7 +2100,7 @@ document.onreadystatechange = function() {
 						let $menu_arrow = $new_current.children[0];
 
 						// Change text color to blue.
-						classes($new_current, "active-page", "ACTIVE-PAGE--");
+						classes($new_current, "active-page");
 						// Change the menu arrow to be active (blue/down).
 						classes(
 							$menu_arrow,
@@ -2332,7 +2332,7 @@ document.onreadystatechange = function() {
 				function bottom_nav() {
 					// Get the current active sidebar menu item.
 					var $active = document.getElementsByClassName(
-						"ACTIVE-PAGE--"
+						"active-page"
 					)[0];
 
 					// If no active page element skip function logic.
@@ -2620,7 +2620,7 @@ document.onreadystatechange = function() {
 						var img_html = !logo.data
 							? `<img src="${logo.src}">`
 							: logo.data;
-						var logo_html = `<div class="none animate-fadein animate-logo logo LOGO-- ${
+						var logo_html = `<div class="none animate-fadein animate-logo logo ${
 							logo.type
 						} mr5">${link_start}${img_html}${link_end}</div>`;
 
@@ -2652,9 +2652,7 @@ document.onreadystatechange = function() {
 
 						// Show logos after some time.
 						setTimeout(function() {
-							var $els = document.getElementsByClassName(
-								"LOGO--"
-							);
+							var $els = document.getElementsByClassName("logo");
 							for (let i = 0, l = $els.length; i < l; i++) {
 								classes($els[i], "!none");
 							}
@@ -2678,7 +2676,7 @@ document.onreadystatechange = function() {
 								(v === version
 									? '<i class="fa-check fas mr5"></i>'
 									: "") +
-								`<span class="VTEXT-- truncate">${v}</span>` +
+								`<span class="vtext truncate">${v}</span>` +
 								(v === latest
 									? '<span class="version-latest">latest</span>'
 									: "") +
@@ -3125,10 +3123,10 @@ document.onreadystatechange = function() {
 						$target = is_target_el($target, "search-ui");
 
 						var $input = $target.parentNode.getElementsByClassName(
-							"SINPUT--"
+							"input"
 						)[0];
 
-						if (is_target_el($tar, "SCLEAR--")) {
+						if (is_target_el($tar, "icon-clear")) {
 							trigger_sinput(null, $input);
 						}
 
@@ -3247,7 +3245,7 @@ document.onreadystatechange = function() {
 
 							// Get the anchor href.
 							let href = $header
-								.getElementsByClassName("ANCHOR--")[0]
+								.getElementsByClassName("anchor")[0]
 								.getAttribute("href");
 
 							// Don't store the same hash. Only store if the hash
@@ -3428,7 +3426,7 @@ document.onreadystatechange = function() {
 
 							// Check if active.
 							var is_active = $target.classList.contains(
-								"ACTIVE-PAGE--"
+								"active-page"
 							);
 
 							// Get the position of the element on the page.
@@ -3586,7 +3584,7 @@ document.onreadystatechange = function() {
 
 						// Skip when the element already has focus.
 						let $active = document.activeElement;
-						if ($active && $active.classList.contains("SINPUT--")) {
+						if ($active && $active.classList.contains("input")) {
 							// classes($search_cont, "!sinput-focused");
 							$sinput.blur();
 							e.preventDefault();
@@ -3596,7 +3594,7 @@ document.onreadystatechange = function() {
 						// If an input is focused return.
 						// Skip when the element already has focus.
 						let $active = document.activeElement;
-						if ($active && $active.classList.contains("SINPUT--")) {
+						if ($active && $active.classList.contains("input")) {
 							// e.preventDefault();
 							return;
 						}
@@ -3617,7 +3615,7 @@ document.onreadystatechange = function() {
 					if (e.keyCode === 47) {
 						// Skip when the element already has focus.
 						var $active = document.activeElement;
-						if ($active && $active.classList.contains("SINPUT--")) {
+						if ($active && $active.classList.contains("input")) {
 							return;
 						}
 
@@ -3734,7 +3732,7 @@ document.onreadystatechange = function() {
 					function(e) {
 						var $target = e.target;
 
-						if ($target.classList.contains("SINPUT--")) {
+						if ($target.classList.contains("input")) {
 							if ($target.classList.contains("sinput-main")) {
 								// Get the text.
 								var text = $target.value.trim();
@@ -3744,7 +3742,7 @@ document.onreadystatechange = function() {
 
 								// Get the clear element.
 								var $clear_search = $parent.getElementsByClassName(
-									"SCLEAR--"
+									"icon-clear"
 								)[0];
 
 								// Store the scrollTop position of the sidebar
@@ -3961,7 +3959,7 @@ document.onreadystatechange = function() {
 
 								// Get the clear element.
 								let $clear_search = $parent.getElementsByClassName(
-									"SCLEAR--"
+									"icon-clear"
 								)[0];
 
 								// Store the scrollTop position of the vlist
@@ -4036,7 +4034,7 @@ document.onreadystatechange = function() {
 											);
 											// Insert the highlighted needle(s).
 											item.getElementsByClassName(
-												"VTEXT--"
+												"vtext"
 											)[0].innerHTML = highlight_title;
 										} else {
 											// Hide it.
@@ -4070,7 +4068,7 @@ document.onreadystatechange = function() {
 
 										// Insert original title.
 										item.getElementsByClassName(
-											"VTEXT--"
+											"vtext"
 										)[0].innerHTML = item.getAttribute(
 											"data-v"
 										);
@@ -4202,7 +4200,7 @@ document.onreadystatechange = function() {
 							}
 							// Set up the clipboardjs listeners.
 							clipboardjs_instance = new ClipboardJS(
-								".BTN-COPY--",
+								".action-copy",
 								{
 									text: function(trigger) {
 										// Check whether the button is part of
@@ -4288,7 +4286,7 @@ document.onreadystatechange = function() {
 							var mtime_update = function() {
 								// Get the needed elements.
 								var $mtimes = document.getElementsByClassName(
-									"MTIME-TS--"
+									"mtime-ts"
 								);
 
 								for (
@@ -4497,7 +4495,7 @@ document.onreadystatechange = function() {
 
 										$el_
 											.getElementsByClassName(
-												"BTN-COPY--"
+												"action-copy"
 											)[0]
 											.click();
 									}, 1);
