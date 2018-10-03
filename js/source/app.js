@@ -1838,9 +1838,7 @@ document.onreadystatechange = function() {
 					}</div>`;
 
 					// Inject the clone to the DOM.
-					document
-						.getElementsByTagName("body")[0]
-						.insertAdjacentHTML("afterbegin", html);
+					document.body.insertAdjacentHTML("afterbegin", html);
 
 					// Get the virtual element.
 					var $vel = document.getElementById(
@@ -2706,7 +2704,7 @@ document.onreadystatechange = function() {
 
 					// [https://davidwalsh.name/nodelist-array]
 					$l_2 = Array.prototype.slice.call(
-						document.getElementsByClassName("L2--")
+						document.getElementsByClassName("l-2")
 					);
 
 					// Animate the entire menu.
@@ -3162,7 +3160,7 @@ document.onreadystatechange = function() {
 
 						// Focus on the input.
 						$version_options
-							.getElementsByTagName("input")[0]
+							.getElementsByClassName("input")[0]
 							.focus();
 
 						return;
@@ -3814,8 +3812,8 @@ document.onreadystatechange = function() {
 											let $next = item.nextElementSibling;
 
 											// Highlight the search needle.
-											var $anchor = item.getElementsByTagName(
-												"a"
+											var $anchor = item.getElementsByClassName(
+												"l-2-link"
 											)[0];
 											var highlight_title = title.replace(
 												new RegExp(
@@ -3841,8 +3839,8 @@ document.onreadystatechange = function() {
 												if (
 													current_file ===
 													item
-														.getElementsByTagName(
-															"i"
+														.getElementsByClassName(
+															"menu-arrow"
 														)[0]
 														.getAttribute(
 															"data-file"
@@ -3911,8 +3909,8 @@ document.onreadystatechange = function() {
 										var $next = item.nextElementSibling;
 
 										// Un-highlight the search needle.
-										let $anchor = item.getElementsByTagName(
-											"a"
+										let $anchor = item.getElementsByClassName(
+											"l-2-link"
 										)[0];
 										// Insert original title.
 										$anchor.innerHTML = item.getAttribute(
@@ -3929,8 +3927,8 @@ document.onreadystatechange = function() {
 											if (
 												current_file ===
 												item
-													.getElementsByTagName(
-														"i"
+													.getElementsByClassName(
+														"menu-arrow"
 													)[0]
 													.getAttribute("data-file")
 											) {

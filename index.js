@@ -1272,7 +1272,7 @@ versions.forEach(function(vdata) {
 			__file.name = file;
 			__file.alias = alias_file;
 			__file.html = `<div id="parent-menu-file-${counter_dir}.${counter_file}" class="l-2-parent">
-			<li class="l-2 L2--" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" data-title="${alias_file}">
+			<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" data-title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
 			<div class="flex l-2-main-cont">
 				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
