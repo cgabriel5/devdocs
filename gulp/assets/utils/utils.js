@@ -220,7 +220,8 @@ var uri = function(params) {
 var format = function(template, data) {
 	return template.replace(/\{\{\#(.*?)\}\}/g, function(match) {
 		match = match.replace(/^\{\{\#|\}\}$/g, "");
-		return data[match] ? data[match] : match;
+		// If a replacement does not exist, leave the placeholder as is.
+		return data[match] ? data[match] : `{{#${match}}}`;
 	});
 };
 
