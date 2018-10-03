@@ -1140,7 +1140,7 @@ document.onreadystatechange = function() {
 							__data.files.internal._404_version,
 							{
 								version: `<code>v${version}</code>`,
-								version_html: versions.length
+								versions: versions.length
 									? versions
 											.map(function(item) {
 												return `<div class="found-versions-cont"><a href="?v=${item}"><code class="found-versions flex flex-center"><i class="fas fa-external-link-square-alt mr5"></i>v${item}</code></a></div>`;
@@ -1157,7 +1157,7 @@ document.onreadystatechange = function() {
 						);
 						// Add the message.
 						document
-							.getElementsByClassName("error-msg-2")[0]
+							.querySelectorAll(".error .message")[0]
 							.insertAdjacentHTML(
 								"beforeend",
 								versions.length

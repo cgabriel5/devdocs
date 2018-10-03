@@ -329,49 +329,43 @@ ul.file-headers {
   .logo .topbar-fix {
     vertical-align: unset; }
 
-.error-cont {
+.error {
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   padding-top: 25px; }
-
-.error-logo-cont {
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-evenly;
-  align-items: center;
-  background: #999999;
-  font-size: 12px;
-  opacity: 0.5;
-  margin-bottom: 20px;
-  border: 1px solid #dfe2e5;
-  border-radius: 100px;
-  padding: 2px 6px;
-  width: 85px;
-  font-weight: bold; }
-
-.error-logo {
-  filter: grayscale(1);
-  width: 10px; }
-
-.error-msg-1 {
-  color: #4d4d4d;
-  font-size: 20px;
-  font-weight: bold; }
-
-.error-msg-2 {
-  color: #666666;
-  font-size: 14px;
-  padding-top: 10px;
-  max-width: 375px;
-  text-align: center; }
-
-.error-btn-cont {
-  margin-top: 15px; }
-
-.found-versions-cont {
-  padding: 3px 0; }
+  .error .error-logo {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    background: #999999;
+    font-size: 12px;
+    opacity: 0.5;
+    margin-bottom: 20px;
+    border: 1px solid #dfe2e5;
+    border-radius: 100px;
+    padding: 2px 6px;
+    width: 85px;
+    font-weight: bold; }
+  .error .img {
+    filter: grayscale(1);
+    width: 10px; }
+  .error .title {
+    color: #4d4d4d;
+    font-size: 20px;
+    font-weight: bold; }
+  .error .message {
+    color: #666666;
+    font-size: 14px;
+    padding-top: 10px;
+    max-width: 375px;
+    text-align: center; }
+  .error .error-btn-cont {
+    margin-top: 15px; }
+  .error .found-versions-cont {
+    padding: 3px 0; }
 
 .topbar {
   display: flex;

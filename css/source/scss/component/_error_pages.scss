@@ -1,54 +1,56 @@
-.error-cont {
+.error {
 	@include flex($flow: "column nowrap", $align: center, $justify: center);
 
 	padding-top: 25px;
-}
 
-.error-logo-cont {
-	@include flex($align: center, $justify: "space-evenly");
-	@include bg($-text-gray);
-	@include fsize(12);
+	.error-logo {
+		@include flex($align: center, $justify: "space-evenly");
+		@include bg($-text-gray);
+		@include fsize(12);
 
-	opacity: 0.5;
+		opacity: 0.5;
 
-	margin-bottom: 20px;
-	border: 1px solid $-border;
-	border-radius: 100px;
-	padding: 2px 6px;
+		margin-bottom: 20px;
+		border: 1px solid $-border;
+		border-radius: 100px;
+		padding: 2px 6px;
 
-	width: 85px;
+		width: 85px;
 
-	font-weight: bold;
-}
+		font-weight: bold;
+	}
 
-.error-logo {
-	filter: grayscale(1);
+	.img {
+		filter: grayscale(1);
 
-	width: 10px;
-}
+		width: 10px;
+	}
 
-.error-msg-1 {
-	@include c($-text-gray-dark);
-	@include fsize(20);
+	.title {
+		@include c($-text-gray-dark);
+		@include fsize(20);
 
-	font-weight: bold;
-}
+		font-weight: bold;
+	}
 
-.error-msg-2 {
-	@include c($-text-gray-mid);
-	@include fsize(14);
+	.message {
+		@include c($-text-gray-mid);
+		@include fsize(14);
 
-	padding-top: 10px;
+		padding-top: 10px;
 
-	max-width: 375px;
+		max-width: 375px;
 
-	text-align: center;
-}
+		text-align: center;
+	}
 
-.error-btn-cont {
-	margin-top: 15px;
-}
+	// Custom error content for errors.
 
-.found-versions-cont {
-	padding: 3px 0;
+	.error-btn-cont {
+		margin-top: 15px;
+	}
+
+	.found-versions-cont {
+		padding: 3px 0;
+	}
 }

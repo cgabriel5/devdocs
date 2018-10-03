@@ -182,6 +182,7 @@ let utils = require(apath("./gulp/assets/utils/utils.js"));
 let print = utils.print;
 let notify = utils.notify;
 let gulp = utils.gulp;
+let format = utils.format;
 // let uri = utils.uri;
 // let browser = utils.browser;
 // let bangify = utils.bangify;
@@ -794,39 +795,40 @@ let logo = config.logo;
 debug = typeof debug === "boolean" ? debug : get(config, "debug", false);
 let animations = config.animations;
 let modifier = config.modifier;
-// Add an object to store the converted Markdown to HTML content.
-config.files = {
-	internal: {},
-	user: {}
-};
-// Add the default 404 HTML file markup.
-config.files.internal._404 = remove_space(
+
+// The 404 error HTML template.
+var error_template = remove_space(
 	`<div class="markdown-body animate-fadein">
-	<div class="error-cont">
-		<div class="error-logo-cont none"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png"> devdocs</div>
-		<div class="error-msg-1">Page Not Found</div>
-		<div class="error-msg-2">The page trying to be viewed does not exist.</div>
-		<div class="error-btn-cont">
-			<span class="btn btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span>
-		</div>
+	<div class="error">
+		<div class="error-logo none"><img alt="logo-leaf" class="img" src="{{#dir_path}}/img/leaf-216.png"> devdocs</div>
+		<div class="title">{{#title}}</div>
+		<div class="message">{{#message}}</div>
+		{{#content}}
 	</div>
 </div>`
 );
-config.files.internal._404_version = remove_space(`<div class="markdown-body animate-fadein">
-	<div class="error-cont">
-		<div class="error-logo-cont none"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png"> devdocs</div>
-		<div class="error-msg-1">Version Not Found</div>
-		<div class="error-msg-2">{{#version}} doesn't exist.</div>
-		<div class="error-btn-cont none" id="existing-versions-cont">{{#version_html}}</div>
-	</div>
-</div>`);
-config.files.internal._404_missing_docs = remove_space(`<div class="markdown-body animate-fadein">
-	<div class="error-cont">
-		<div class="error-logo-cont none"><img alt="logo-leaf" class="error-logo" src="\${dir_path}/img/leaf-216.png"> devdocs</div>
-		<div class="error-msg-1">Docs Not Found</div>
-		<div class="error-msg-2">No docs exist.</div>
-	</div>
-</div>`);
+// Add an object to store the converted Markdown to HTML content.
+config.files = {
+	internal: {
+		// Add needed 404 errors.
+		_404: format(error_template, {
+			title: "Page Not Found",
+			message: "The page trying to be viewed does not exist.",
+			content: `<div class="error-btn-cont"><span class="btn btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span></div>`
+		}),
+		_404_version: format(error_template, {
+			title: "Version Not Found",
+			message: "{{#version}} doesn't exist.",
+			content: `<div class="error-btn-cont none" id="existing-versions-cont">{{#versions}}</div>`
+		}),
+		_404_missing_docs: format(error_template, {
+			title: "Docs Not Found",
+			message: "No docs exist.",
+			content: null
+		})
+	},
+	user: {}
+};
 
 // Add an object to store HTML structures.
 config.html = {};
@@ -2657,17 +2659,16 @@ gulp.task("html:app", function(done) {
 	let __path = outputpath.replace(/^[\.\/]+|\/$/g, "");
 
 	// Replace the paths in the error template.
-	config.files.internal._404 = config.files.internal._404.replace(
-		/\$\{dir_path\}/g,
-		__path
+	config.files.internal._404 = format(config.files.internal._404, {
+		dir_path: __path
+	});
+	config.files.internal._404_version = format(
+		config.files.internal._404_version,
+		{ dir_path: __path }
 	);
-	config.files.internal._404_version = config.files.internal._404_version.replace(
-		/\$\{dir_path\}/g,
-		__path
-	);
-	config.files.internal._404_missing_docs = config.files.internal._404_missing_docs.replace(
-		/\$\{dir_path\}/g,
-		__path
+	config.files.internal._404_missing_docs = format(
+		config.files.internal._404_missing_docs,
+		{ dir_path: __path }
 	);
 
 	// Skip task logic if initial flag is not set.
