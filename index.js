@@ -814,12 +814,12 @@ config.files = {
 		_404: format(error_template, {
 			title: "Page Not Found",
 			message: "The page trying to be viewed does not exist.",
-			content: `<div class="error-btn-cont"><span class="btn btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span></div>`
+			content: `<div class="content"><span class="btn btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span></div>`
 		}),
 		_404_version: format(error_template, {
 			title: "Version Not Found",
 			message: "{{#version}} doesn't exist.",
-			content: `<div class="error-btn-cont none" id="existing-versions-cont">{{#versions}}</div>`
+			content: `<div class="content none" id="error-content">{{#versions}}</div>`
 		}),
 		_404_missing_docs: format(error_template, {
 			title: "Docs Not Found",

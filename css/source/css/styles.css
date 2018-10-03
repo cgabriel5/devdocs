@@ -362,10 +362,14 @@ ul.file-headers {
     padding-top: 10px;
     max-width: 375px;
     text-align: center; }
-  .error .error-btn-cont {
+  .error .content {
     margin-top: 15px; }
-  .error .found-versions-cont {
+  .error .found-versions {
     padding: 3px 0; }
+    .error .found-versions .found-version {
+      display: flex;
+      justify-content: center;
+      align-items: center; }
 
 .topbar {
   display: flex;

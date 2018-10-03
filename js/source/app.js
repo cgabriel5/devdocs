@@ -1143,7 +1143,7 @@ document.onreadystatechange = function() {
 								versions: versions.length
 									? versions
 											.map(function(item) {
-												return `<div class="found-versions-cont"><a href="?v=${item}"><code class="found-versions flex flex-center"><i class="fas fa-external-link-square-alt mr5"></i>v${item}</code></a></div>`;
+												return `<div class="found-versions"><a href="?v=${item}"><code class="found-version"><i class="fas fa-external-link-square-alt mr5"></i>v${item}</code></a></div>`;
 											})
 											.join("")
 									: ""
@@ -1152,7 +1152,7 @@ document.onreadystatechange = function() {
 
 						// Show the versions list if versions exists.
 						classes(
-							document.getElementById("existing-versions-cont"),
+							document.getElementById("error-content"),
 							"!none"
 						);
 						// Add the message.

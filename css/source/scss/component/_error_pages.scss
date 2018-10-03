@@ -46,11 +46,15 @@
 
 	// Custom error content for errors.
 
-	.error-btn-cont {
+	.content {
 		margin-top: 15px;
 	}
 
-	.found-versions-cont {
+	.found-versions {
 		padding: 3px 0;
+
+		.found-version {
+			@include flex($flow: null, $align: center, $justify: center);
+		}
 	}
 }
