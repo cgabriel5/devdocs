@@ -420,7 +420,6 @@ document.onreadystatechange = function() {
 					parent.tagName === "CODE" &&
 					/\slang-.*\s/.test(" " + (parent.className || "") + " ")) ||
 				(parent.classList && parent.tagName === "PRE")
-				// && parent.children.length === 2
 			) {
 				// If the element is the code element reset
 				// the element to the parent element.
@@ -1310,9 +1309,14 @@ document.onreadystatechange = function() {
 				function cssloader(size, light) {
 					return `<div class="mloader${
 						light ? "-white" : ""
-					} animate-spin" style="min-width:${size}px;min-height:${size}px;"></div>`;
+					} animate-spin" style="margin-right:4px;min-width:${size}px;min-height:${size}px;"></div>`;
 				}
 
+				/**
+				 * Show the topbar loader.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
 				function show_tb_loader() {
 					// Show the topbar loader.
 					classes($loadertop, "!none");
@@ -1325,6 +1329,11 @@ document.onreadystatechange = function() {
 					classes($tb_loader, "!none");
 				}
 
+				/**
+				 * Hide the topbar loader.
+				 *
+				 * @return {undefined} - Nothing.
+				 */
 				function hide_tb_loader() {
 					// Show the topbar loader.
 					classes($loadertop, "none");
@@ -1337,7 +1346,15 @@ document.onreadystatechange = function() {
 					$tb_loader.innerHTML = "";
 				}
 
+				/**
+				 * Show the sidebar menu item loader.
+				 *
+				 * @param  {htmlelement} $el - The sidebar element to inject
+				 *     the loader into.
+				 * @return {undefined} - Nothing.
+				 */
 				function show_loader($el) {
+					// Skip logic if no sidebar menu element is provided.
 					if (!$el) {
 						return;
 					}
@@ -1347,47 +1364,59 @@ document.onreadystatechange = function() {
 						hide_loader(sb_active_el_loader, true);
 					}
 
+					// Show the topbar loader.
 					show_tb_loader();
 
-					// Show the sidebar loader next to filename.
+					// Get the arrow icon element.
+					var $arrow = $el.getElementsByClassName("menu-arrow")[0];
+
 					// Hide the arrow element.
-					classes($el.children[0], "none");
-					// Add the loader.
-					$el.children[0].insertAdjacentHTML(
-						"afterend",
-						cssloader(10, true)
-					);
-					classes($el.children[1], "mr5");
+					classes($arrow, "none");
+					// Show the sidebar loader next to filename.
+					$arrow.insertAdjacentHTML("afterend", cssloader(10, true));
 
 					// Set the flag.
 					sb_active_el_loader = $el;
 				}
 
+				/**
+				 * Hide the sidebar menu item loader.
+				 *
+				 * @param  {htmlelement} $el - The sidebar element to remove
+				 *     the loader from.
+				 * @param  {boolean} skip - Flag indicating whether to remove
+				 *     the previous loader.
+				 * @return {undefined} - Nothing.
+				 */
 				function hide_loader($el, skip) {
+					// Skip logic if no sidebar menu element is provided.
 					if (!$el) {
 						return;
 					}
 
-					if (skip) {
-						// Hide the sidebar loader next to filename.
-						// Add the loader.
-						$el.removeChild($el.childNodes[1]);
-						// Hide the arrow element.
-						classes($el.children[0], "!none");
+					// Get the loader element.
+					var $mloader = $el.getElementsByClassName(
+						"mloader-white"
+					)[0];
 
-						return;
-					} else {
+					// In the case there is an active mloader, remove it.
+					// This might happen when clicking many sidebar menu
+					// elements in rapid succession. Leading to un-removed
+					// loaders.
+					if (!skip) {
 						hide_tb_loader();
 
 						// Reset the flag.
 						sb_active_el_loader = null;
-
-						// Hide the sidebar loader next to filename.
-						// Add the loader.
-						$el.removeChild($el.childNodes[1]);
-						// Hide the arrow element.
-						classes($el.children[0], "!none");
 					}
+
+					// Remove the loader.
+					$el.removeChild($mloader);
+					// Show the arrow element.
+					classes(
+						$el.getElementsByClassName("menu-arrow")[0],
+						"!none"
+					);
 				}
 
 				/**
