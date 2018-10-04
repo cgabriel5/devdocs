@@ -94,7 +94,7 @@ document.onreadystatechange = function() {
 			// Lowercase type.
 			type = type.toLowerCase();
 
-			var el = document.createElement("div"),
+			var $el = document.createElement("div"),
 				transitions = {
 					transition: "transition",
 					// Opera prefix info:
@@ -107,7 +107,7 @@ document.onreadystatechange = function() {
 				};
 
 			for (var transition in transitions) {
-				if (el.style[transition] !== undefined) {
+				if ($el.style[transition] !== undefined) {
 					// Cache value.
 					var value = transitions[transition];
 
@@ -136,7 +136,7 @@ document.onreadystatechange = function() {
 		var which_animation_event = function(type) {
 			// Lowercase type.
 			type = type.toLowerCase();
-			var el = document.createElement("div"),
+			var $el = document.createElement("div"),
 				animations = {
 					animation: "animation",
 					OAnimation: "oAnimation",
@@ -146,7 +146,7 @@ document.onreadystatechange = function() {
 					MSAnimation: "MSAnimation"
 				};
 			for (var animation in animations) {
-				if (el.style[animation] !== undefined) {
+				if ($el.style[animation] !== undefined) {
 					// Cache value.
 					var value = animations[animation];
 
@@ -339,7 +339,7 @@ document.onreadystatechange = function() {
 		 */
 		var build_path = function(event) {
 			// Cache target element.
-			var element = event.target;
+			var $element = event.target;
 
 			// There must be a target element...else return empty path.
 			if (!event.target) {
@@ -347,19 +347,19 @@ document.onreadystatechange = function() {
 			}
 
 			// Start building path.
-			var parents = [element];
+			var $parents = [$element];
 
-			while (element) {
+			while ($element) {
 				// The current parent element.
-				element = element.parentNode;
+				$element = $element.parentNode;
 				// If parent exists add to array.
-				if (element) {
-					parents.push(element);
+				if ($element) {
+					$parents.push($element);
 				}
 			}
 
 			// Finally, return the path!
-			return parents;
+			return $parents;
 		};
 
 		/**
@@ -380,26 +380,26 @@ document.onreadystatechange = function() {
 		 */
 		var is_target_el = function($el, classname, cb) {
 			// Get the target element parents.
-			var parents = build_path({ target: $el });
+			var $parents = build_path({ target: $el });
 
 			// Loop over the parents and check if any is a header
 			// element.
-			for (var i = 0, l = parents.length; i < l; i++) {
-				var parent = parents[i];
+			for (var i = 0, l = $parents.length; i < l; i++) {
+				var $parent = $parents[i];
 
 				// If a custom function is provided run it.
 				if (cb) {
 					// Run the function.
-					var result = cb.call(parent, parent, $el, parents);
+					var result = cb.call($parent, $parent, $el, $parents);
 					if (result) {
 						return result;
 					}
 				} else if (classname) {
 					// Get the classes.
-					var clist = parent.classList;
+					var clist = $parent.classList;
 					// Check if the parent contains the provided class.
 					if (clist && clist.contains(classname)) {
-						return parent;
+						return $parent;
 					}
 				}
 			}
@@ -407,7 +407,9 @@ document.onreadystatechange = function() {
 			// Not the element needed.
 			return false;
 		};
-		is_target_el.code_pre_code_element = function(parent /*$el, parents*/) {
+		is_target_el.code_pre_code_element = function(
+			$parent /*$el, $parents*/
+		) {
 			// The parent must be a:
 			// - pre element
 			// - contain only 1 child
@@ -416,18 +418,20 @@ document.onreadystatechange = function() {
 			// The element must either be the code or the
 			// pre element.
 			if (
-				(parent.classList &&
-					parent.tagName === "CODE" &&
-					/\slang-.*\s/.test(" " + (parent.className || "") + " ")) ||
-				(parent.classList && parent.tagName === "PRE")
+				($parent.classList &&
+					$parent.tagName === "CODE" &&
+					/\slang-.*\s/.test(
+						" " + ($parent.className || "") + " "
+					)) ||
+				($parent.classList && $parent.tagName === "PRE")
 			) {
 				// If the element is the code element reset
 				// the element to the parent element.
-				if (parent.tagName === "CODE") {
-					parent = parent.parentNode;
+				if ($parent.tagName === "CODE") {
+					$parent = $parent.parentNode;
 				}
 
-				return parent;
+				return $parent;
 			}
 		};
 
@@ -507,17 +511,19 @@ document.onreadystatechange = function() {
 		 * @resource [https://stackoverflow.com/a/8028584]
 		 */
 		var percent_scrolled = function() {
-			var h = document.documentElement,
-				b = document.body,
+			var $h = document.documentElement,
+				$b = document.body,
 				st = "scrollTop",
 				sh = "scrollHeight";
 
 			// Calculate the percent.
 			var percent =
-				(h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
+				($h[st] || $b[st]) /
+				(($h[sh] || $b[sh]) - $h.clientHeight) *
+				100;
 
 			// If the page is not scrollable reset the percent to 0.
-			if (h.scrollHeight === h.clientHeight) {
+			if ($h.scrollHeight === $h.clientHeight) {
 				percent = 0;
 			}
 
@@ -603,31 +609,31 @@ document.onreadystatechange = function() {
 		 */
 		var stylesheet = function(content, title) {
 			// Create element.
-			var style = document.createElement("style");
+			var $style = document.createElement("style");
 
 			// Set type.
-			style.type = "text/css";
+			$style.type = "text/css";
 
 			// Set the title if provided.
 			if (title) {
-				style.setAttribute("data-title", title);
+				$style.setAttribute("data-title", title);
 			}
 
 			// Add the title marker to the contents.
 			var contents = `/*title:${title}*/\n` + content;
 
 			// Support for IE.
-			if (style.styleSheet) {
-				style.styleSheet.cssText = contents;
+			if ($style.styleSheet) {
+				$style.styleSheet.cssText = contents;
 			} else {
 				// All other browsers.
-				style.appendChild(document.createTextNode(contents));
+				$style.appendChild(document.createTextNode(contents));
 			}
 
 			// Append element to head tag.
-			document.getElementsByTagName("head")[0].appendChild(style);
+			document.getElementsByTagName("head")[0].appendChild($style);
 
-			return style;
+			return $style;
 		};
 
 		/**
@@ -640,14 +646,14 @@ document.onreadystatechange = function() {
 		 */
 		stylesheet.get = function(cb) {
 			// Get the stylesheets.
-			var sheets = document.getElementsByTagName("style");
+			var $sheets = document.getElementsByTagName("style");
 
 			// Loop over and return the sheet with the matching title.
-			for (let i = 0, l = sheets.length; i < l; i++) {
+			for (let i = 0, l = $sheets.length; i < l; i++) {
 				// Cache the sheet.
-				var sheet = sheets[i];
+				var $sheet = $sheets[i];
 
-				cb.apply(sheet, [sheet, sheet.innerHTML, sheets]);
+				cb.apply($sheet, [$sheet, $sheet.innerHTML, $sheets]);
 			}
 
 			return;
@@ -662,16 +668,16 @@ document.onreadystatechange = function() {
 		 */
 		stylesheet.remove = function(cb) {
 			// Get the stylesheets.
-			var sheets = document.getElementsByTagName("style");
+			var $sheets = document.getElementsByTagName("style");
 
 			// Loop backwards and run the remove logic function.
-			for (let i = sheets.length - 1; i > -1; i--) {
+			for (let i = $sheets.length - 1; i > -1; i--) {
 				// Cache the sheet.
-				var sheet = sheets[i];
+				var $sheet = $sheets[i];
 
 				// If callback returns true the sheet gets removed.
-				if (cb.apply(sheet, [sheet, sheet.innerHTML, sheets])) {
-					sheet.parentNode.removeChild(sheet);
+				if (cb.apply($sheet, [$sheet, $sheet.innerHTML, $sheets])) {
+					$sheet.parentNode.removeChild($sheet);
 				}
 			}
 		};
@@ -708,15 +714,15 @@ document.onreadystatechange = function() {
 		 */
 		stylesheet.sheets = function(cb) {
 			// Get the sheets.
-			var sheets = document.styleSheets;
+			var $sheets = document.styleSheets;
 
 			// Loop over and return the sheet with the matching title.
-			for (let i = 0, l = sheets.length; i < l; i++) {
+			for (let i = 0, l = $sheets.length; i < l; i++) {
 				// Cache the sheet.
-				var sheet = sheets[i];
+				var $sheet = $sheets[i];
 
 				// Run the callback.
-				cb.apply(sheet, [sheet, sheets]);
+				cb.apply($sheet, [$sheet, $sheets]);
 			}
 		};
 
@@ -1204,7 +1210,7 @@ document.onreadystatechange = function() {
 					}
 
 					// Create the stylesheet.
-					var sheet = stylesheet(
+					var $sheet = stylesheet(
 						data.html.styles_macos_sb.join(""),
 						"dd/mac-scrollbars"
 					);
@@ -1212,7 +1218,7 @@ document.onreadystatechange = function() {
 					// Only enable MacOS style scrollbars when running Chrome
 					// on a desktop device.
 					if (!is_desktop_webkit()) {
-						sheet.disabled = true;
+						$sheet.disabled = true;
 					}
 				})();
 
@@ -1241,10 +1247,10 @@ document.onreadystatechange = function() {
 							resolve(data);
 						} else {
 							// Create HTMLImageElement instance for non SVG image.
-							var image = new Image();
+							var $image = new Image();
 
 							// Attach event listeners to image instance.
-							image.onload = function() {
+							$image.onload = function() {
 								// Get photo dimensions.
 								var w = this.width;
 								var h = this.height;
@@ -1262,12 +1268,12 @@ document.onreadystatechange = function() {
 
 								resolve(data);
 							};
-							image.onerror = function() {
+							$image.onerror = function() {
 								reject();
 							};
 
 							// Add the image source file.
-							image.src = logo;
+							$image.src = logo;
 						}
 					} else {
 						// If the data object does not contain an image simply
@@ -1475,12 +1481,12 @@ document.onreadystatechange = function() {
 						to: to,
 						duration: scroll_duration(to),
 						onSkip: function() {
-							var de = document.documentElement;
+							var $de = document.documentElement;
 							if (
 								// When the page is not scrollable
 								// (no overflow), skip to immediately invoke
 								// the callback.
-								de.scrollHeight === de.clientHeight ||
+								$de.scrollHeight === $de.clientHeight ||
 								// Skip if the from/to is the same position.
 								Math.floor(to) === Math.floor(from) ||
 								Math.abs(to - from) <= 1
@@ -1780,7 +1786,7 @@ document.onreadystatechange = function() {
 				 */
 				var inject_sidebae_tops_css = function() {
 					// Remove the needed stylesheets.
-					stylesheet.remove(function(sheet, contents) {
+					stylesheet.remove(function($sheet, contents) {
 						// Check if the contents contains the title.
 						return contents.includes(
 							`/*title:dd/sidebar-sticky-tops-`
@@ -1800,7 +1806,7 @@ document.onreadystatechange = function() {
 					];
 
 					// Create the stylesheet.
-					var sheet = stylesheet(
+					stylesheet(
 						definitions.join(""),
 						"dd/sidebar-sticky-tops-desktop"
 					);
@@ -1810,7 +1816,7 @@ document.onreadystatechange = function() {
 						// Viewport >= 1024px.
 						if (window.matchMedia("(min-width: 1024px)").matches) {
 							if (
-								!stylesheet.get(function(sheet, contents) {
+								!stylesheet.get(function($sheet, contents) {
 									// Check if the contents contains the title.
 									return contents.includes(
 										"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
@@ -1825,7 +1831,7 @@ document.onreadystatechange = function() {
 							}
 						} else {
 							if (
-								!stylesheet.get(function(sheet, contents) {
+								!stylesheet.get(function($sheet, contents) {
 									// Check if the contents contains the title.
 									return contents.includes(
 										"/*title:dd/sidebar-sticky-tops-mobile-n1024*/"
@@ -1859,13 +1865,15 @@ document.onreadystatechange = function() {
 					}
 
 					// Create a virtual clone of the element.
-					var clone = $new_current.nextElementSibling.cloneNode(true);
+					var $clone = $new_current.nextElementSibling.cloneNode(
+						true
+					);
 					// Set the height to its normal height.
-					clone.style.height = "auto";
+					$clone.style.height = "auto";
 
 					// Get the height using a virtual dom.
 					var html = `<div id="virtual-height-element">${
-						clone.outerHTML
+						$clone.outerHTML
 					}</div>`;
 
 					// Inject the clone to the DOM.
@@ -1896,9 +1904,9 @@ document.onreadystatechange = function() {
 				 */
 				function replace_html(content) {
 					// [https://ianopolous.github.io/javascript/innerHTML]
-					var clone = $markdown.cloneNode(false);
-					clone.innerHTML = content;
-					$markdown.parentNode.replaceChild(clone, $markdown);
+					var $clone = $markdown.cloneNode(false);
+					$clone.innerHTML = content;
+					$markdown.parentNode.replaceChild($clone, $markdown);
 					// $markdown.innerHTML = content;
 
 					// Re-grab the markdown element.
@@ -2786,16 +2794,16 @@ document.onreadystatechange = function() {
 					"resize",
 					debounce(function() {
 						// If the flag is not set then disable the sheet.
-						var sheet = stylesheet.get(function(sheet, contents) {
+						var $sheet = stylesheet.get(function($sheet, contents) {
 							// Check if the contents contains the title.
 							return contents.includes(
 								"/*title:dd/mac-scrollbars*/"
 							);
 						});
 
-						if (sheet) {
+						if ($sheet) {
 							// Disable the sheet based on user agent condition.
-							sheet.disabled = !is_desktop_webkit();
+							$sheet.disabled = !is_desktop_webkit();
 						}
 
 						// When the window is no longer in a mobile size
@@ -3396,27 +3404,27 @@ document.onreadystatechange = function() {
 					}
 
 					// Remove all expanded menu items.
-					if (moused_el2_inserts.length) {
+					if ($moused_el2_inserts.length) {
 						// Reset everything.
 						$moused_el2 = null;
 						// Remove the elements.
 						for (
-							var i = 0, l = moused_el2_inserts.length;
+							var i = 0, l = $moused_el2_inserts.length;
 							i < l;
 							i++
 						) {
-							$el = moused_el2_inserts[i];
+							$el = $moused_el2_inserts[i];
 							$el.parentNode.removeChild($el);
 						}
 						// Clear the array.
-						moused_el2_inserts.length = 0;
+						$moused_el2_inserts.length = 0;
 					}
 				}
 
 				var $moused_el2;
 				var prevent_mousemove_expanders;
 				// var $moused_el3;
-				var moused_el2_inserts = [];
+				var $moused_el2_inserts = [];
 				// var moused_el3_inserts = [];
 				document.addEventListener("mousemove", function(e) {
 					// Prevent expanders when flag is set.
@@ -3506,7 +3514,7 @@ document.onreadystatechange = function() {
 							// If the clone is longer than the original target
 							// inject the clone.
 							if (cwidth > coors.width) {
-								moused_el2_inserts.push($clone);
+								$moused_el2_inserts.push($clone);
 
 								// Hide the element.
 								classes($clone, "!none");
@@ -3583,7 +3591,7 @@ document.onreadystatechange = function() {
 							// If the clone is longer than the original target
 							// inject the clone.
 							if (cwidth > coors.width) {
-								moused_el2_inserts.push($wrapper);
+								$moused_el2_inserts.push($wrapper);
 
 								// Hide the element.
 								classes($wrapper, "!none");
@@ -3840,8 +3848,8 @@ document.onreadystatechange = function() {
 										i < l;
 										i++
 									) {
-										var item = $l_2[i];
-										var title = item.getAttribute(
+										var $item = $l_2[i];
+										var title = $item.getAttribute(
 											"data-title"
 										);
 
@@ -3855,12 +3863,13 @@ document.onreadystatechange = function() {
 											at_least_one = true;
 
 											// Show it.
-											item.style.display = null;
+											$item.style.display = null;
 											// Also check for a possible UL.
-											let $next = item.nextElementSibling;
+											let $next =
+												$item.nextElementSibling;
 
 											// Highlight the search needle.
-											var $anchor = item.getElementsByClassName(
+											var $anchor = $item.getElementsByClassName(
 												"l-2-link"
 											)[0];
 											var highlight_title = title.replace(
@@ -3886,7 +3895,7 @@ document.onreadystatechange = function() {
 												// Must also match the current file.
 												if (
 													current_file ===
-													item
+													$item
 														.getElementsByClassName(
 															"menu-arrow"
 														)[0]
@@ -3906,9 +3915,10 @@ document.onreadystatechange = function() {
 											}
 										} else {
 											// Hide it.
-											item.style.display = "none";
+											$item.style.display = "none";
 											// Also check for a possible UL.
-											let $next = item.nextElementSibling;
+											let $next =
+												$item.nextElementSibling;
 											if (
 												$next &&
 												$next.tagName === "UL" &&
@@ -3949,19 +3959,19 @@ document.onreadystatechange = function() {
 										i < l;
 										i++
 									) {
-										let item = $l_2[i];
+										let $item = $l_2[i];
 
 										// Show it.
-										item.style.display = null;
+										$item.style.display = null;
 										// Also check for a possible UL.
-										var $next = item.nextElementSibling;
+										var $next = $item.nextElementSibling;
 
 										// Un-highlight the search needle.
-										let $anchor = item.getElementsByClassName(
+										let $anchor = $item.getElementsByClassName(
 											"l-2-link"
 										)[0];
 										// Insert original title.
-										$anchor.innerHTML = item.getAttribute(
+										$anchor.innerHTML = $item.getAttribute(
 											"data-title"
 										);
 
@@ -3974,7 +3984,7 @@ document.onreadystatechange = function() {
 											// Must also match the current file.
 											if (
 												current_file ===
-												item
+												$item
 													.getElementsByClassName(
 														"menu-arrow"
 													)[0]
@@ -4049,8 +4059,10 @@ document.onreadystatechange = function() {
 										i < l;
 										i++
 									) {
-										let item = $els[i];
-										let title = item.getAttribute("data-v");
+										let $item = $els[i];
+										let title = $item.getAttribute(
+											"data-v"
+										);
 
 										if (
 											title
@@ -4061,7 +4073,10 @@ document.onreadystatechange = function() {
 											if (!first_v) {
 												first_v = true;
 
-												classes(item, "active-version");
+												classes(
+													$item,
+													"active-version"
+												);
 											}
 
 											// Switch the flag since there was a
@@ -4069,7 +4084,7 @@ document.onreadystatechange = function() {
 											at_least_one = true;
 
 											// Show it.
-											item.style.display = null;
+											$item.style.display = null;
 
 											// Highlight the search needle.
 											let highlight_title = title.replace(
@@ -4082,12 +4097,12 @@ document.onreadystatechange = function() {
 												"<span class='search-highlight'>$1</span>"
 											);
 											// Insert the highlighted needle(s).
-											item.getElementsByClassName(
+											$item.getElementsByClassName(
 												"vtext"
 											)[0].innerHTML = highlight_title;
 										} else {
 											// Hide it.
-											item.style.display = "none";
+											$item.style.display = "none";
 										}
 									}
 
@@ -4112,15 +4127,15 @@ document.onreadystatechange = function() {
 										i < l;
 										i++
 									) {
-										let item = $els[i];
+										let $item = $els[i];
 
 										// Show it.
-										item.style.display = null;
+										$item.style.display = null;
 
 										// Insert original title.
-										item.getElementsByClassName(
+										$item.getElementsByClassName(
 											"vtext"
-										)[0].innerHTML = item.getAttribute(
+										)[0].innerHTML = $item.getAttribute(
 											"data-v"
 										);
 									}
