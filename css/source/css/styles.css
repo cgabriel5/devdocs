@@ -177,6 +177,11 @@ body {
   .sidebar > * {
     transform: translateZ(0); }
 
+.logo-search-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
 .sidebar-show {
   transform: translate3d(0, 0, 0) !important; }
 
@@ -305,8 +310,10 @@ ul.file-headers {
         text-decoration: underline; }
 
 .logo {
-  align-items: center;
+  display: flex;
   justify-content: flex-start;
+  align-items: center;
+  margin-right: 5px;
   margin-left: 5px;
   padding: 0; }
   .logo.square {

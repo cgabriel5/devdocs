@@ -1,6 +1,6 @@
 .logo {
-	align-items: center;
-	justify-content: flex-start;
+	@include flex($flow: null, $justify: flex-start, $align: center);
+	margin-right: 5px;
 
 	margin-left: 5px;
 	padding: 0;

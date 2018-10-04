@@ -654,17 +654,17 @@ function expand_ctags(text) {
 			tabs.forEach(function(tab, i) {
 				var is_first = i === 0 ? " activetab" : "";
 				tabs_html.push(
-					`<span class="tab${is_first}" data-tab-index="${i}">${tab.trim()}</span>`
+					`<span class="tab${is_first}" data-tab-index="${i}" data-cgroup-id="${uid}">${tab.trim()}</span>`
 				);
 			});
 
 			return `\n\n<div class="codeblock-actions-group animate-fadein" data-cgroup-id="${uid}">
-			<div class="tabs flex noselect">${tabs_html.join("")}</div>
+			<div class="tabs flex noselect" id="cb-tabs-${uid}">${tabs_html.join("")}</div>
 			<div class="flex flex-center mr5">
 				<span class="flex flex-center btn noselect action action-copy"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
 			</div>
 		</div>
-		<div class="code-block-grouped" data-cgroup-id="${uid}">\n\n`;
+		<div class="code-block-grouped" id="cb-group-${uid}">\n\n`;
 		})
 		.replace(/<\/dd-codegroup>/gim, "\n\n</div>");
 
@@ -2869,7 +2869,7 @@ gulp.task("json-data:app", function(done) {
 						${directory.html}
 						<li>
 							<div class="menu-section" data-dir="${index}">
-								<ul id="submenu-inner-${index + 1}">
+								<ul id="submenu-inner-${index + 1}" class="submenu-ul">
 									${html.join("")}
 								</ul>
 							</div>

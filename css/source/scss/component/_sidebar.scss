@@ -49,6 +49,10 @@
 	}
 }
 
+.logo-search-wrapper {
+	@include flex($flow: null, $justify: center, $align: center);
+}
+
 .sidebar-show {
 	// When class is applied the sidebars position will be reset and
 	// therefore "slide back" into view.

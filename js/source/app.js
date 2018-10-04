@@ -1649,7 +1649,9 @@ document.onreadystatechange = function() {
 					// Take that into account the markdown body top margin.
 					var offset =
 						getComputedStyle(
-							$markdown.children[0],
+							$markdown.getElementsByClassName(
+								"markdown-body"
+							)[0],
 							null
 						).marginTop.replace("px", "") * 1;
 
@@ -2086,15 +2088,22 @@ document.onreadystatechange = function() {
 									$ul.style.height = `${val}px`;
 								},
 								onComplete: function() {
-									var $ulp = document.querySelector(
-										`.menu-section[data-dir='${id.split(
-											"."
-										)[0] *
-											1 -
-											1}']`
-									).children[0];
+									// Get the directory id the submenu menu
+									// element belongs to.
+									var dui = id.split(".")[0] * 1 - 1;
+									// Get the submenu menu using the
+									// directory id.
+									var $ulp = document
+										.querySelector(
+											`.menu-section[data-dir='${dui}']`
+										)
+										.getElementsByClassName(
+											"submenu-ul"
+										)[0];
 
-									// Remove the UL if it exists.
+									// Remove the UL (link headers) if they
+									// exist and the UL is part of the its
+									// parent directory.
 									if ($ul && $ulp.contains($ul)) {
 										// $ulp.removeChild($ul);
 										document
@@ -2107,13 +2116,13 @@ document.onreadystatechange = function() {
 							});
 						}
 
-						// Un-highlight the menu arrow and reset to right
-						// position.
-						let menu_arrow = $parent.children[0];
-						let menu_classes = menu_arrow.classList;
-						menu_classes.remove("menu-arrow-active");
-						menu_classes.remove("fa-caret-down");
-						menu_classes.add("fa-caret-right");
+						// Un-highlight menu arrow and reset to right position.
+						classes(
+							$parent.getElementsByClassName("menu-arrow")[0],
+							"!menu-arrow-active",
+							"!fa-caret-down",
+							"fa-caret-right"
+						);
 					}
 
 					// Set the new highlight for the new current element.
@@ -2124,7 +2133,9 @@ document.onreadystatechange = function() {
 					}
 					if (filename !== "_404") {
 						// Get the menu arrow element and its CSS classes.
-						let $menu_arrow = $new_current.children[0];
+						let $menu_arrow = $new_current.getElementsByClassName(
+							"menu-arrow"
+						)[0];
 
 						// Change text color to blue.
 						classes($new_current, "active-page");
@@ -2647,21 +2658,28 @@ document.onreadystatechange = function() {
 						var img_html = !logo.data
 							? `<img src="${logo.src}">`
 							: logo.data;
-						var logo_html = `<div class="none animate-fadein animate-logo logo ${
+						var logo_html = `<div class="animate-fadein animate-logo logo ${
 							logo.type
-						} mr5">${link_start}${img_html}${link_end}</div>`;
+						} none">${link_start}${img_html}${link_end}</div>`;
 
-						// Add the needed sidebar logo HTML.
+						// Since a logo was provided insert a flex wrapper to
+						// allow the logo and search elements to be adjacent.
 						$search.insertAdjacentHTML(
 							"afterbegin",
-							'<div class="flex flex-center"></div>'
+							'<div class="logo-search-wrapper" id="logo-search-wrapper"></div>'
 						);
-						// Move around needed child elements.
-						$search.children[0].appendChild(
-							$search.children[1]
+
+						// Get the added element.
+						var $logo_search_wrapper = document.getElementById(
+							"logo-search-wrapper"
 						);
-						// Embed the sidebar image.
-						$search.children[0].insertAdjacentHTML(
+
+						// Move search-ui element into the logo search wrapper.
+						$logo_search_wrapper.appendChild(
+							$search.getElementsByClassName("search-ui")[0]
+						);
+						// Embed the sidebar image into the wrapper.
+						$logo_search_wrapper.insertAdjacentHTML(
 							"afterbegin",
 							logo_html
 						);
@@ -2669,12 +2687,10 @@ document.onreadystatechange = function() {
 						// Embed the topbar logo.
 						$tb_loader.insertAdjacentHTML(
 							"beforebegin",
-							logo_html
-								.replace(" logo ", " flex flex-center logo ")
-								.replace(
-									"_blank",
-									'_blank" class="flex flex-center topbar-fix'
-								)
+							logo_html.replace(
+								"_blank",
+								'_blank" class="topbar-fix'
+							)
 						);
 
 						// Show logos after some time.
@@ -2955,9 +2971,13 @@ document.onreadystatechange = function() {
 							is_target_el($target, "link-heading") ||
 							is_target_el($target, "l-3");
 
+						// When the sidebar menu element is clicked (l-3),
+						// reset the target to its child anchor element.
 						if ($target.tagName !== "A") {
 							// Get the anchor child element.
-							$target = $target.children[0];
+							$target = $target.getElementsByClassName(
+								"link-heading"
+							)[0];
 						}
 
 						// Get the href.
@@ -3113,14 +3133,14 @@ document.onreadystatechange = function() {
 
 						// Get the tab index.
 						var tindex = $target.getAttribute("data-tab-index") * 1;
-
-						// Get the codegroup.
-						var $codegroup =
-							$target.parentNode.parentNode.nextElementSibling
-								.children;
-
+						// Get the group id.
+						var gid =
+							"cb-group-" +
+							$target.getAttribute("data-cgroup-id");
+						// Get the codegroups.
+						var $codegroup = document.getElementById(gid).children;
 						// Get the tab elements.
-						var $tabs = $target.parentNode.children;
+						var $tabs = document.getElementById(gid).children;
 
 						// Remove the active class.
 						for (let i = 0, l = $tabs.length; i < l; i++) {
@@ -3299,9 +3319,9 @@ document.onreadystatechange = function() {
 						$target = is_target_el($target, "l-2");
 
 						// Get the data-attribute.
-						filename = $target.children[0].getAttribute(
-							"data-file"
-						);
+						filename = $target
+							.getElementsByClassName("menu-arrow")[0]
+							.getAttribute("data-file");
 					} else if (is_target_el($target, "arrow")) {
 						// Reset the target.
 						$target = is_target_el($target, "arrow");
@@ -3312,9 +3332,9 @@ document.onreadystatechange = function() {
 						);
 
 						// Get the data-attribute.
-						filename = $target.children[0].getAttribute(
-							"data-file"
-						);
+						filename = $target
+							.getElementsByClassName("menu-arrow")[0]
+							.getAttribute("data-file");
 					} else if (clist.contains("link-doc")) {
 						// Get the data-attribute.
 						filename = $target.getAttribute("data-file");
