@@ -37,7 +37,7 @@ document.onreadystatechange = function() {
 		var $crumbs_sep = document.getElementById("crumbs-sep");
 		var $tb_loader = document.getElementById("tb-loader");
 		var $copied_message = document.getElementById("copied-message");
-		var $search_cont = document.getElementById("search");
+		var $search = document.getElementById("search");
 		var $sinput = document.getElementById("sinput");
 		var $versions = document.getElementById("versions");
 		var $version_options = document.getElementById("version-options");
@@ -1125,7 +1125,7 @@ document.onreadystatechange = function() {
 
 					// Hide the splash screen, side bar elements.
 					classes($splash, "none");
-					classes($search_cont, "none");
+					classes($search, "none");
 
 					// Get the version.
 					let version = parameters().v;
@@ -1786,7 +1786,7 @@ document.onreadystatechange = function() {
 					});
 
 					// Get the search container height.
-					var height = Math.floor(coors($search_cont).height); // - 1;
+					var height = Math.floor(coors($search).height); // - 1;
 					if (height >= 79) {
 						height = 78;
 					}
@@ -2000,8 +2000,7 @@ document.onreadystatechange = function() {
 									function(vals) {
 										// Reset needed values.
 										vals.ctop =
-											vals.ctop +
-											$search_cont.clientHeight;
+											vals.ctop + $search.clientHeight;
 										// Return the modified object.
 										return vals;
 									}
@@ -2220,7 +2219,7 @@ document.onreadystatechange = function() {
 													// Reset needed values.
 													vals.ctop =
 														vals.ctop +
-														$search_cont.clientHeight;
+														$search.clientHeight;
 													// Return the modified object.
 													return vals;
 												}
@@ -2460,7 +2459,7 @@ document.onreadystatechange = function() {
 				 */
 				function toggle_sb_elements(state) {
 					// Toggle needed sidebar elements.
-					$search_cont.classList[state ? "add" : "remove"]("pnone");
+					$search.classList[state ? "add" : "remove"]("pnone");
 					$sb_footer.classList[state ? "add" : "remove"]("pnone");
 					$markdown.classList[state ? "add" : "remove"]("pnone");
 					$sb_menu.classList[state ? "add" : "remove"]("pnone");
@@ -2653,16 +2652,16 @@ document.onreadystatechange = function() {
 						} mr5">${link_start}${img_html}${link_end}</div>`;
 
 						// Add the needed sidebar logo HTML.
-						$search_cont.insertAdjacentHTML(
+						$search.insertAdjacentHTML(
 							"afterbegin",
 							'<div class="flex flex-center"></div>'
 						);
 						// Move around needed child elements.
-						$search_cont.children[0].appendChild(
-							$search_cont.children[1]
+						$search.children[0].appendChild(
+							$search.children[1]
 						);
 						// Embed the sidebar image.
-						$search_cont.children[0].insertAdjacentHTML(
+						$search.children[0].insertAdjacentHTML(
 							"afterbegin",
 							logo_html
 						);
@@ -2918,7 +2917,7 @@ document.onreadystatechange = function() {
 					var clist = $target.classList;
 
 					// Unfocus the search input.
-					classes($search_cont, "!sinput-focused");
+					classes($search, "!sinput-focused");
 
 					// Hide the versions container.
 					if (
@@ -3158,7 +3157,7 @@ document.onreadystatechange = function() {
 							trigger_sinput(null, $input);
 						}
 
-						classes($search_cont, "sinput-focused");
+						classes($search, "sinput-focused");
 						$input.focus();
 
 						return;
@@ -3590,7 +3589,7 @@ document.onreadystatechange = function() {
 					"blur",
 					function() {
 						// Remove the active class.
-						classes($search_cont, "!sinput-focused");
+						classes($search, "!sinput-focused");
 					},
 					false
 				);
@@ -3613,7 +3612,7 @@ document.onreadystatechange = function() {
 						// Skip when the element already has focus.
 						let $active = document.activeElement;
 						if ($active && $active.classList.contains("input")) {
-							// classes($search_cont, "!sinput-focused");
+							// classes($search, "!sinput-focused");
 							$sinput.blur();
 							e.preventDefault();
 							return;
