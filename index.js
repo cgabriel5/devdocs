@@ -640,6 +640,9 @@ function expand_ctags(text) {
 				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
 			};
 
+			// Generate a special ID for the pre element.
+			var uid = `exp-${id(12)}`;
+
 			// Get the tabs.
 			var tabs_string = match.match(r("tabs"));
 			tabs_string = tabs_string ? tabs_string[2] : "";
@@ -654,9 +657,6 @@ function expand_ctags(text) {
 					`<span class="tab${is_first}" data-tab-index="${i}">${tab.trim()}</span>`
 				);
 			});
-
-			// Generate a special ID for the pre element.
-			var uid = `exp-${id(25)}`;
 
 			return `\n\n<div class="codeblock-actions-group animate-fadein" data-cgroup-id="${uid}">
 			<div class="tabs flex noselect">${tabs_html.join("")}</div>
@@ -1859,7 +1859,7 @@ versions.forEach(function(vdata) {
 										.filter(".code-block-grouped").length;
 
 									// Generate a special ID for the pre element.
-									var uid = `exp-${id(25)}`;
+									var uid = `exp-${id(12)}`;
 
 									// Get the language.
 									var classes = $el.attr()["class"];
