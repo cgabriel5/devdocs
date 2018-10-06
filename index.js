@@ -434,11 +434,8 @@ var timedate = function(timestamp, format12, delimiter, cb) {
 		return undefined;
 	}
 
-	// Default the delimiter to nothing.
+	// Default delimiter to a space.
 	delimiter = delimiter || " ";
-	if (delimiter.trim() !== "") {
-		delimiter = ` ${delimiter.trim()} `;
-	}
 
 	// Create the date object using the modified timestamp.
 	var date = new Date(timestamp);
@@ -490,7 +487,7 @@ var timedate = function(timestamp, format12, delimiter, cb) {
 };
 
 /**
- * Convert dd-expandable tags, i.e. (<dd-note>) to dd::-ctags placeholders.
+ * Convert dd-exp tags, i.e. (<dd-note>) to dd::-ctags placeholders.
  *
  * @param  {string} text - The text to placeholder.
  * @return {string} - The placeholded text.
@@ -547,7 +544,7 @@ function unwrap_ctags(text) {
 }
 
 /**
- * Expand dd-expandable tags, i.e. (<dd-note>) to their custom HTML.
+ * Expand dd-exp tags, i.e. (<dd-note>) to their custom HTML.
  *
  * @param  {string} text - The text to expand.
  * @return {string} - The expanded text.
@@ -566,12 +563,12 @@ function expand_ctags(text) {
 			title = title ? title : "Expand";
 
 			// Build and return the HTML.
-			return `\n\n<div class="dd-expandable">
-	<div class="dd-expandable-message noselect">
-		<i class="fas fa-chevron-circle-right mr5 mb3 dd-expandable-message-icon"></i>
+			return `\n\n<div class="dd-exp">
+	<div class="dd-exp-message">
+		<i class="fas fa-chevron-circle-right dd-exp-message-icon"></i>
 		<span>${title}</span>
 	</div>
-	<div class="dd-expandable-content none animate-fadein">`;
+	<div class="dd-exp-content animate-fadein none">`;
 		})
 		.replace(/<\/dd-expand>/gim, "</div></div>");
 
@@ -659,9 +656,9 @@ function expand_ctags(text) {
 			});
 
 			return `\n\n<div class="codeblock-actions-group animate-fadein" data-cgroup-id="${uid}">
-			<div class="tabs flex noselect" id="cb-tabs-${uid}">${tabs_html.join("")}</div>
-			<div class="flex flex-center mr5">
-				<span class="flex flex-center btn noselect action action-copy"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
+			<div class="tabs" id="cb-tabs-${uid}">${tabs_html.join("")}</div>
+			<div class="actions-right">
+				<span class="btn action copy"><i class="fas fa-clipboard"></i><span>copy</span></span>
 			</div>
 		</div>
 		<div class="code-block-grouped" id="cb-group-${uid}">\n\n`;
@@ -814,7 +811,7 @@ config.files = {
 		_404: format(error_template, {
 			title: "Page Not Found",
 			message: "The page trying to be viewed does not exist.",
-			content: `<div class="content"><span class="btn btn-home noselect" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span></div>`
+			content: `<div class="content"><span class="btn btn-home" id="btn-home"><i class="fas fa-home mr2"></i> Go home</span></div>`
 		}),
 		_404_version: format(error_template, {
 			title: "Version Not Found",
@@ -1125,14 +1122,14 @@ if (footer.length) {
 
 			// Check whether a social icon was provided or an actual image.
 			icon = !/^\:[\w_]+/.test(icon) // :facebook-icon || ./path/to/icon
-				? `<img src="${icon}" class="img mr5">`
+				? `<img src="${icon}" class="img">`
 				: socials[icon.replace(/^\:/g, "")]
-					? `<i class="${socials[icon.replace(/^\:/g, "")]} mr5"></i>`
+					? `<i class="${socials[icon.replace(/^\:/g, "")]}"></i>`
 					: "";
 
 			// Add the HTML to the collection.
 			link_content.push(
-				`${link_start}<div class="truncate">${icon}<span class="mr5">${text}</span></div>${link_end}`
+				`${link_start}<div class="footer-link">${icon}<span>${text}</span></div>${link_end}`
 			);
 		});
 
@@ -1172,7 +1169,7 @@ var link_start = "",
 
 // Make the link HTML if the GitHub info exists.
 if (uname && pname) {
-	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank" class="truncate">`;
+	link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
 	link_end = "</a>";
 }
 
@@ -1271,11 +1268,11 @@ versions.forEach(function(vdata) {
 			__file.dirname = fpath;
 			__file.name = file;
 			__file.alias = alias_file;
-			__file.html = `<div id="parent-menu-file-${counter_dir}.${counter_file}" class="l-2-parent">
+			__file.html = `<div id="parent-menu-file-${counter_dir}.${counter_file}">
 			<li class="l-2" id="menu-file-${counter_dir}.${counter_file}" data-dir="${counter_dir}" data-title="${alias_file}">
 			<i class="fas fa-caret-right menu-arrow" data-file="${fpath}"></i>
-			<div class="flex l-2-main-cont">
-				<a class="link l-2-link truncate" href="#" data-file="${fpath}">${alias_file}</a>
+			<div class="l-2-link">
+				<a class="link" href="#" data-file="${fpath}">${alias_file}</a>
 				<span class="link-headings-count">$0</span>
 			</div>
 		</li></div>`;
@@ -1340,8 +1337,10 @@ versions.forEach(function(vdata) {
 						var mtime = Math.round(stats.mtimeMs);
 
 						// Build the timeago HTML.
-						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime"><div><span class="bold"><i class="fas fa-edit"></i> Last update:</span> <span class="none ts mtime-ts animate-fadein" data-ts="${mtime}"></span> <span class="long">(${timedate(
-							mtime
+						let timeago_html = `<div id="footer-content-ddwrap"><div class="mtime"><div><span class="label"><i class="fas fa-edit"></i> Last update:</span> <span class="mtime-ts animate-fadein none" data-ts="${mtime}"></span> <span class="long">(${timedate(
+							mtime,
+							false,
+							", "
 						)})</span></div></div></div>`;
 
 						// Remove any HTML comments as having comments close to markup
@@ -1625,7 +1624,7 @@ versions.forEach(function(vdata) {
 								.filter(function(/*i, el*/) {
 									return !$(this)
 										.parents()
-										.filter(".dd-expandable").length;
+										.filter(".dd-exp").length;
 								})
 								.each(function(/*i, el*/) {
 									// Cache the element.
@@ -1672,7 +1671,7 @@ versions.forEach(function(vdata) {
 								.filter(function(/*i, el*/) {
 									return !$(this)
 										.parents()
-										.filter(".dd-expandable").length;
+										.filter(".dd-exp").length;
 								})
 								.each(function(/*i, el*/) {
 									// Cache the element.
@@ -1903,11 +1902,9 @@ versions.forEach(function(vdata) {
 									</div>
 									<div class="info">
 										<div>
-											<div>
-												<span class="bold noselect">Show block ${lang}</span>
-												<div class="details">
-													<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
-												</div>
+											<span class="label">Show block ${lang}</span>
+											<div class="details">
+												<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
 											</div>
 										</div>
 									</div>
@@ -1916,9 +1913,9 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											// Add the action buttons
-											$parent.before(`<div class="codeblock-actions def-font none animate-fadein">
-												<span class="flex flex-center btn noselect action action-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span>
-												<span class="flex flex-center btn noselect action btn-cba-collapse" data-expid="${uid}"><i class="fas fa-minus-square mr5"></i><span>collapse</span></span>
+											$parent.before(`<div class="codeblock-actions animate-fadein none">
+												<span class="btn action copy" data-expid="${uid}"><i class="fas fa-clipboard"></i><span>copy</span></span>
+												<span class="btn action collapse" data-expid="${uid}"><i class="fas fa-minus-square"></i><span>collapse</span></span>
 							</div>`);
 										}
 
@@ -1929,7 +1926,7 @@ versions.forEach(function(vdata) {
 										// Dont't add the buttons when the block is part of a group.
 										if (!is_partof_codegroup) {
 											$parent.before(
-												`<div class="codeblock-actions def-font animate-fadein"><span class="flex flex-center btn noselect action action-copy" data-expid="${uid}"><i class="fas fa-clipboard mr5"></i><span>copy</span></span></div>`
+												`<div class="codeblock-actions animate-fadein"><span class="btn action copy" data-expid="${uid}"><i class="fas fa-clipboard"></i><span>copy</span></span></div>`
 											);
 										}
 									}
@@ -1994,7 +1991,7 @@ versions.forEach(function(vdata) {
 											(__lang !== "" ? "." + __lang : "");
 									}
 
-									blockname_html = `<div class="noselect"><span class="codeblock-name">${blockname}</span></div>`;
+									blockname_html = `<div class="codeblock-name">${blockname}</div>`;
 									top_pad_fix = "padtop-26";
 									$el.addClass(top_pad_fix);
 
@@ -2004,11 +2001,11 @@ versions.forEach(function(vdata) {
 										// second element to be able to be "fixed". This
 										// allows the code element to be properly adjacent
 										// to the fixed element.
-										`<div class="line-nums first noselect pnone hidden ${top_pad_fix}">${line_nums.join(
+										`<div class="line-nums first hidden ${top_pad_fix}">${line_nums.join(
 											""
-										)}</div><div class="line-nums third noselect pnone ${top_pad_fix}">${line_nums2.join(
+										)}</div><div class="line-nums third ${top_pad_fix}">${line_nums2.join(
 											""
-										)}</div><div class="line-nums second noselect pnone fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
+										)}</div><div class="line-nums second fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
 											""
 										)}</div>`
 									);

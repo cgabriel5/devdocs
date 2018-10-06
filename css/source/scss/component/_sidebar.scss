@@ -98,15 +98,25 @@
 	font-weight: bold;
 }
 
-.l-2-main-cont {
-	align-items: center;
-	justify-content: space-between;
+.l-2-link {
+	@include flex($flow: null, $justify: "space-between", $align: center);
 
 	width: 100%;
+
+	a {
+		@include truncate;
+
+		margin-right: 5px;
+
+		max-width: 180px;
+	}
 }
 
-.l-2-link {
-	max-width: 180px;
+// For the mouseover expanders.
+.l-2-link-expanded {
+	a {
+		max-width: 100%;
+	}
 }
 
 .link-headings-count {

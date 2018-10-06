@@ -1148,7 +1148,7 @@ document.onreadystatechange = function() {
 								versions: versions.length
 									? versions
 											.map(function(item) {
-												return `<div class="found-versions"><a href="?v=${item}"><code class="found-version"><i class="fas fa-external-link-square-alt mr5"></i>v${item}</code></a></div>`;
+												return `<div class="found-versions"><a href="?v=${item}"><code class="found-version"><i class="fas fa-external-link-square-alt"></i>v${item}</code></a></div>`;
 											})
 											.join("")
 									: ""
@@ -2413,7 +2413,7 @@ document.onreadystatechange = function() {
 					if ($prev_el) {
 						prev_html = `<div class="arrow aleft btn" data-refid="${
 							$prev_el.id
-						}"><i class="fas fa-arrow-alt-circle-left mr5"></i> <span class="truncate">${$prev_el.getAttribute(
+						}"><i class="fas fa-arrow-alt-circle-left"></i> <span>${$prev_el.getAttribute(
 							"data-title"
 						)}</span></div>`;
 					}
@@ -2442,7 +2442,7 @@ document.onreadystatechange = function() {
 					if ($next_el) {
 						next_html = `<div class="arrow aright btn" data-refid="${
 							$next_el.id
-						}"><span class="mr5 truncate">${$next_el.getAttribute(
+						}"><span>${$next_el.getAttribute(
 							"data-title"
 						)}</span><i class="fas fa-arrow-alt-circle-right"></i></div>`;
 					}
@@ -2725,9 +2725,9 @@ document.onreadystatechange = function() {
 						versions_html.push(
 							`<div class="version-option" data-v="${v}">` +
 								(v === version
-									? '<i class="fa-check fas mr5"></i>'
+									? '<i class="fa-check fas"></i>'
 									: "") +
-								`<span class="vtext truncate">${v}</span>` +
+								`<span class="vtext">${v}</span>` +
 								(v === latest
 									? '<span class="version-latest">latest</span>'
 									: "") +
@@ -2737,12 +2737,12 @@ document.onreadystatechange = function() {
 					// Inject the versions list.
 					$vlist.innerHTML = versions_html.join("");
 					// Set the current version.
-					$version.innerHTML = `<i class="fas fa-layer-group mr2"></i> v${version}`; // +
+					$version.innerHTML = `<i class="fas fa-layer-group"></i> v${version}`; // +
 					$version.insertAdjacentHTML(
 						"afterend",
 						version === latest
 							? '<span class="version-latest">latest</span>'
-							: '<span class="version-latest version-latest-not">not latest</span>'
+							: '<span class="version-latest version-outdated">outdated</span>'
 					);
 					$version.setAttribute("data-v", version);
 
@@ -3067,10 +3067,9 @@ document.onreadystatechange = function() {
 						);
 
 						return;
-					} else if (is_target_el($target, "btn-cba-collapse")) {
+					} else if (is_target_el($target, "collapse")) {
 						// Reset the target.
-						$target = is_target_el($target, "btn-cba-collapse")
-							.parentNode;
+						$target = is_target_el($target, "collapse").parentNode;
 
 						// Hide itself and the pre element.
 						classes($target, "none");
@@ -3079,38 +3078,30 @@ document.onreadystatechange = function() {
 						classes($target.previousElementSibling, "!none");
 
 						return;
-					} else if (is_target_el($target, "dd-expandable-message")) {
+					} else if (is_target_el($target, "dd-exp-message")) {
 						// Reset the target.
-						$target = is_target_el(
-							$target,
-							"dd-expandable-message"
-						);
+						$target = is_target_el($target, "dd-exp-message");
 
 						// Get the icon.
 						var $icon = $target.querySelectorAll("i")[0];
 
 						// Check whether it needs closing or opening.
 						if (
-							!$target.classList.contains(
-								"dd-expandable-message-active"
-							)
+							!$target.classList.contains("dd-exp-message-active")
 						) {
 							// Add the active class.
-							classes($target, "dd-expandable-message-active");
+							classes($target, "dd-exp-message-active");
 							// Open the contents.
 							classes($target.nextElementSibling, "!none");
 							// Rotate the icon.
-							classes($icon, "dd-expandable-message-icon-active");
+							classes($icon, "dd-exp-message-icon-active");
 						} else {
 							// Close the contents.
 							classes($target.nextElementSibling, "none");
 							// Add the active class.
-							classes($target, "!dd-expandable-message-active");
+							classes($target, "!dd-exp-message-active");
 							// Rotate the icon.
-							classes(
-								$icon,
-								"!dd-expandable-message-icon-active"
-							);
+							classes($icon, "!dd-exp-message-icon-active");
 						}
 
 						return;
@@ -3472,14 +3463,14 @@ document.onreadystatechange = function() {
 							// Clone the element.
 							let $clone = $target.cloneNode(true);
 							var $anchor = $clone.getElementsByClassName(
-								"truncate"
+								"l-2-link"
 							)[0];
 
 							// Add clone identifier class.
 							classes($clone, "clone-true-l2", "pnone");
 
-							// Remove/add classes.
-							classes($anchor, "!l-2-link", "!truncate", "mr5");
+							// Add class to allow text to fully expand.
+							classes($anchor, "l-2-link-expanded");
 
 							// Check if active.
 							var is_active = $target.classList.contains(
@@ -3871,8 +3862,8 @@ document.onreadystatechange = function() {
 												$item.nextElementSibling;
 
 											// Highlight the search needle.
-											var $anchor = $item.getElementsByClassName(
-												"l-2-link"
+											var $anchor = $item.querySelectorAll(
+												".l-2-link .link"
 											)[0];
 											var highlight_title = title.replace(
 												new RegExp(
@@ -3969,8 +3960,8 @@ document.onreadystatechange = function() {
 										var $next = $item.nextElementSibling;
 
 										// Un-highlight the search needle.
-										let $anchor = $item.getElementsByClassName(
-											"l-2-link"
+										let $anchor = $item.querySelectorAll(
+											".l-2-link .link"
 										)[0];
 										// Insert original title.
 										$anchor.innerHTML = $item.getAttribute(
@@ -4267,52 +4258,45 @@ document.onreadystatechange = function() {
 								clipboardjs_instance.destroy();
 							}
 							// Set up the clipboardjs listeners.
-							clipboardjs_instance = new ClipboardJS(
-								".action-copy",
-								{
-									text: function(trigger) {
-										// Check whether the button is part of
-										// of a codegroup.
-										if (
-											is_target_el(
-												trigger,
-												"codeblock-actions-group"
-											)
-										) {
-											// Get the container parent.
-											var $cont = is_target_el(
-												trigger,
-												"codeblock-actions-group"
+							clipboardjs_instance = new ClipboardJS(".copy", {
+								text: function(trigger) {
+									// Check whether the button is part of
+									// of a codegroup.
+									if (
+										is_target_el(
+											trigger,
+											"codeblock-actions-group"
+										)
+									) {
+										// Get the container parent.
+										var $cont = is_target_el(
+											trigger,
+											"codeblock-actions-group"
+										);
+
+										// Get the visible code block.
+										var $block = $cont.nextElementSibling.querySelectorAll(
+											"pre:not(.none)"
+										)[0];
+
+										if ($block) {
+											// Set the correct id.
+											trigger.setAttribute(
+												"data-expid",
+												$block.getAttribute("id")
 											);
-
-											// Get the visible code block.
-											var $block = $cont.nextElementSibling.querySelectorAll(
-												"pre:not(.none)"
-											)[0];
-
-											if ($block) {
-												// Set the correct id.
-												trigger.setAttribute(
-													"data-expid",
-													$block.getAttribute("id")
-												);
-											}
 										}
-
-										// Get the text content from the pre element.
-										return document
-											.getElementById(
-												trigger.getAttribute(
-													"data-expid"
-												)
-											)
-											.getElementsByTagName("code")[0]
-											.getAttribute("data-orig-text");
-										// .trim();
-										// .textContent.trim();
 									}
+
+									// Get the text content from the pre element.
+									return document
+										.getElementById(
+											trigger.getAttribute("data-expid")
+										)
+										.getElementsByTagName("code")[0]
+										.getAttribute("data-orig-text");
 								}
-							);
+							});
 
 							clipboardjs_instance.on("success", function(/*e*/) {
 								// Show the message.
@@ -4562,9 +4546,7 @@ document.onreadystatechange = function() {
 										}
 
 										$el_
-											.getElementsByClassName(
-												"action-copy"
-											)[0]
+											.getElementsByClassName("copy")[0]
 											.click();
 									}, 1);
 								}

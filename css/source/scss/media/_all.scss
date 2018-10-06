@@ -192,7 +192,9 @@
 	}
 
 	.l-2-link {
-		max-width: 160px;
+		a {
+			max-width: 160px;
+		}
 	}
 
 	.markdown-body {

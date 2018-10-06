@@ -55,6 +55,10 @@
 
 		.found-version {
 			@include flex($flow: null, $align: center, $justify: center);
+
+			i {
+				margin-right: 5px;
+			}
 		}
 	}
 }

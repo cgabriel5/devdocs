@@ -1,5 +1,5 @@
 // Custom Expandable.
-.dd-expandable {
+.dd-exp {
 	@include bg($c-white);
 	@include flex($flow: "column nowrap");
 
@@ -34,6 +34,15 @@
 				transform: rotate(450deg);
 			}
 		}
+	}
+}
+
+.dd-exp-message {
+	@include noselect;
+
+	.dd-exp-message-icon {
+		margin-right: 5px;
+		margin-bottom: 3px;
 	}
 }
 

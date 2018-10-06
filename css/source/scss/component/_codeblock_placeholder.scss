@@ -55,6 +55,12 @@
 			min-width: 50%;
 		}
 
+		.label {
+			@include noselect;
+
+			font-weight: bold;
+		}
+
 		.details {
 			@include c($-text-gray);
 			@include fsize(12);
@@ -138,6 +144,7 @@
 // Simple actions: copy/collapse.
 .codeblock-actions {
 	@include flex($flow: null, $justify: flex-end);
+	@include def-font;
 
 	padding-bottom: 5px;
 
@@ -145,6 +152,15 @@
 
 	.action {
 		@extend %action;
+
+		&.copy,
+		&.collapse {
+			@include flex($flow: null, $justify: center, $align: center);
+
+			i {
+				margin-right: 5px;
+			}
+		}
 	}
 }
 
@@ -163,6 +179,8 @@
 
 	.tabs {
 		@include ios-smooth-scrolling;
+		@include flex($flow: null);
+		@include noselect;
 
 		position: relative;
 
@@ -186,16 +204,34 @@
 				@include c($-text-base);
 			}
 		}
+
+		.actions-right {
+			@include flex($flow: null, $justify: center, $align: center);
+
+			margin-right: 5px;
+
+			.action {
+				@include flex($flow: null, $justify: center, $align: center);
+				@include noselect;
+			}
+
+			i {
+				margin-right: 5px;
+			}
+		}
 	}
 }
 
 .line-nums {
 	@include c($-text-gray-light);
 	@include bg($-lighter-background);
+	@include noselect;
 
 	border-right: 1px solid $-border;
 	border-radius: 5px 0 0 5px;
 	padding: 16px 3px 16px 10px;
+
+	pointer-events: none;
 
 	&.third {
 		@include bg($c-trans);

@@ -5,6 +5,10 @@
 	margin-left: 10px;
 	padding-top: 20px;
 
+	.label {
+		font-weight: bold;
+	}
+
 	.long {
 		@include c($-text-gray, "!important");
 	}
@@ -27,8 +31,28 @@
 
 		font-weight: bold;
 
-		.arrow span {
+		%span {
+			@include truncate;
+
 			max-width: 50%;
+		}
+
+		&.aleft {
+			i {
+				margin-right: 5px;
+			}
+
+			span {
+				@extend %span;
+			}
+		}
+
+		&.aright {
+			span {
+				@extend %span;
+
+				margin-right: 5px;
+			}
 		}
 	}
 }
@@ -71,8 +95,18 @@
 				}
 			}
 
+			.footer-link {
+				@include truncate;
+
+				span,
+				i {
+					margin-right: 5px;
+				}
+			}
+
 			.img {
 				@include bg($c-trans);
+				margin-right: 5px;
 
 				width: 15px;
 			}
@@ -90,6 +124,7 @@
 	a {
 		@include bg($-lighter-background);
 		@include c($-text-gray-light);
+		@include truncate;
 
 		border-radius: 100px;
 		padding: 1px 10px;
