@@ -3141,14 +3141,16 @@ document.onreadystatechange = function() {
 
 						// Get the tab index.
 						var tindex = $target.getAttribute("data-tab-index") * 1;
-						// Get the group id.
-						var gid =
-							"cb-group-" +
-							$target.getAttribute("data-cgroup-id");
+						// Get the code block group id.
+						var gid = $target.getAttribute("data-cgroup-id");
+
 						// Get the codegroups.
-						var $codegroup = document.getElementById(gid).children;
+						var $codegroup = document.getElementById(
+							`cb-group-${gid}`
+						).children;
 						// Get the tab elements.
-						var $tabs = document.getElementById(gid).children;
+						var $tabs = document.getElementById(`cb-tabs-${gid}`)
+							.children;
 
 						// Remove the active class.
 						for (let i = 0, l = $tabs.length; i < l; i++) {
