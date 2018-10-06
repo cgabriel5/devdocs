@@ -2000,12 +2000,17 @@ versions.forEach(function(vdata) {
 										// Note: Insert a duplicate element to allow the
 										// second element to be able to be "fixed". This
 										// allows the code element to be properly adjacent
-										// to the fixed element.
-										`<div class="line-nums first hidden ${top_pad_fix}">${line_nums.join(
+										// to the fixed element. Since the last item will
+										// be the longest in width since its the last line
+										// number, remove all the other line numbers to reduce
+										// the number of elements in the DOM.
+										`<div class="line-nums hidden-clone ${top_pad_fix}">${line_nums
+											.slice(-1)
+											.join(
+												""
+											)}</div><div class="line-nums lines ${top_pad_fix}">${line_nums2.join(
 											""
-										)}</div><div class="line-nums third ${top_pad_fix}">${line_nums2.join(
-											""
-										)}</div><div class="line-nums second fixed ${top_pad_fix}">${blockname_html}${line_nums.join(
+										)}</div><div class="line-nums numbers ${top_pad_fix}">${blockname_html}${line_nums.join(
 											""
 										)}</div>`
 									);

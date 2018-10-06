@@ -1760,7 +1760,7 @@ document.onreadystatechange = function() {
 						let $block = $blocks[i];
 						let $parent = $blocks[i].parentNode;
 						let $third = $parent.querySelectorAll(
-							".line-nums.third"
+							".line-nums.lines"
 						)[0];
 
 						// Reset the width to get the correct width;

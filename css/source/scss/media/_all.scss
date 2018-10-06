@@ -172,11 +172,11 @@
 	.line-nums {
 		border-radius: 0;
 
-		&.first {
+		&.hidden-clone {
 			display: none;
 		}
 
-		&.second {
+		&.numbers {
 			position: relative;
 		}
 

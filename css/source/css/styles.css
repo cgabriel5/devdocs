@@ -735,11 +735,15 @@ ul.file-headers {
   border-radius: 5px 0 0 5px;
   padding: 16px 3px 16px 10px;
   pointer-events: none; }
-  .line-nums.third {
+  .line-nums.hidden-clone {
+    visibility: hidden; }
+  .line-nums.lines {
     background: transparent;
     position: absolute;
     border-right: 0;
     width: 100%; }
+  .line-nums.numbers {
+    position: fixed; }
   .line-nums .line {
     position: relative; }
     .line-nums .line span {
@@ -1135,9 +1139,9 @@ ul.file-headers {
     color: inherit; }
   .line-nums {
     border-radius: 0; }
-    .line-nums.first {
+    .line-nums.hidden-clone {
       display: none; }
-    .line-nums.second {
+    .line-nums.numbers {
       position: relative; }
     .line-nums .line .highlight-n {
       box-shadow: none; }

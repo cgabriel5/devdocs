@@ -233,7 +233,11 @@
 
 	pointer-events: none;
 
-	&.third {
+	&.hidden-clone {
+		visibility: hidden;
+	}
+
+	&.lines {
 		@include bg($c-trans);
 
 		position: absolute;
@@ -241,6 +245,10 @@
 		border-right: 0;
 
 		width: 100%;
+	}
+
+	&.numbers {
+		position: fixed;
 	}
 
 	.line {
