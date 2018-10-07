@@ -82,7 +82,7 @@ mdzero.renderer.rules.code_block = function(
 	var uid = `tmp-${id(25)}`;
 
 	lookup_codeblocks.push([
-		`<pre data-skip-markdownit="true"><code data-skip-markdownit="true" id="${uid}" class="lang-" data-skip="true" data-orig-text="">${mdzero.utils.escapeHtml(
+		`<pre><code id="${uid}" class="lang-" data-orig-text="">${mdzero.utils.escapeHtml(
 			tokens[idx].content
 		)}</code></pre>`
 	]);
@@ -120,7 +120,7 @@ mdzero.renderer.rules.fence = function(tokens, idx /*, options, env, slf*/) {
 	highlighted = highlight(token.content, lang);
 
 	lookup_codeblocks.push([
-		`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="${lines}" data-block-name="${name}">${highlighted}</code></pre>`
+		`<pre><code id="${uid}" class="lang-${lang}" data-orig-text="" data-highlight-lines="${lines}" data-block-name="${name}">${highlighted}</code></pre>`
 	]);
 	return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 };
@@ -1441,7 +1441,7 @@ versions.forEach(function(vdata) {
 										let uid = `tmp-${id(25)}`;
 
 										lookup_codeblocks.push([
-											`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+											`<pre><code id="${uid}" class="lang-${lang}" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
 										]);
 										return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 									} else {
@@ -1487,7 +1487,7 @@ versions.forEach(function(vdata) {
 										let uid = `tmp-${id(25)}`;
 
 										lookup_codeblocks.push([
-											`<pre><code id="${uid}" class="lang-${lang}" data-skip="true" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+											`<pre><code id="${uid}" class="lang-${lang}" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
 										]);
 										return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 									}
