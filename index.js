@@ -2619,7 +2619,7 @@ gulp.task("css:app", ["css:sass"], function(done) {
 			// Replace the default output path with the provided one.
 			$.replace(
 				/\.\.\/assets\//g,
-				// `${path.join(outputpath).replace(process.cwd() + "/", "")}`
+				// `${path.join(outputpath).replace(cwd + "/", "")}`
 				"../"
 			),
 			$.postcss([
@@ -2683,7 +2683,7 @@ gulp.task("js:app", function(done) {
 				/var\s*REQUEST_PATH\s+=\s*("|')(.*)\1;/i,
 				`var REQUEST_PATH = $1${path
 					.join(outputpath, "zdata", outputpath_filename)
-					.replace(process.cwd() + "/", "")}$1;`
+					.replace(cwd + "/", "")}$1;`
 			),
 			$.gulpif(
 				debug_flist,
