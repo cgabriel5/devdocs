@@ -141,30 +141,7 @@
 	}
 }
 
-// Simple actions: copy/collapse.
-.codeblock-actions {
-	@include flex($flow: null, $justify: flex-end);
-	@include def-font;
-
-	padding-bottom: 5px;
-
-	width: 100%;
-
-	.action {
-		@extend %action;
-
-		&.copy,
-		&.collapse {
-			@include flex($flow: null, $justify: center, $align: center);
-
-			i {
-				margin-right: 5px;
-			}
-		}
-	}
-}
-
-// Simple + Tab actions.
+// Actionb buttons + Tab actions.
 .codeblock-actions-group {
 	@include flex($flow: null, $justify: space-between);
 
@@ -204,20 +181,20 @@
 				@include c($-text-base);
 			}
 		}
+	}
 
-		.actions-right {
+	.actions-right {
+		@include flex($flow: null, $justify: center, $align: center);
+
+		margin-right: 5px;
+
+		.action {
 			@include flex($flow: null, $justify: center, $align: center);
+			@include noselect;
+		}
 
+		i {
 			margin-right: 5px;
-
-			.action {
-				@include flex($flow: null, $justify: center, $align: center);
-				@include noselect;
-			}
-
-			i {
-				margin-right: 5px;
-			}
 		}
 	}
 }
@@ -229,7 +206,7 @@
 
 	border-right: 1px solid $-border;
 	border-radius: 5px 0 0 5px;
-	padding: 16px 3px 16px 10px;
+	padding: 26px 3px 16px 10px;
 
 	pointer-events: none;
 
@@ -277,8 +254,4 @@
 			font-weight: bold;
 		}
 	}
-}
-
-.padtop-26 {
-	padding-top: 26px !important;
 }

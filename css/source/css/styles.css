@@ -658,7 +658,7 @@ ul.file-headers {
   padding: 2px 10px;
   font-weight: bold; }
 
-.codeblock-actions .action, .codeblock-actions-group .action {
+.codeblock-actions-group .action {
   color: #999999;
   font-size: 13px;
   opacity: 0.4;
@@ -666,25 +666,12 @@ ul.file-headers {
   border: 1px solid #dfe2e5;
   padding: 3px 10px;
   font-weight: bold; }
-  .codeblock-actions .action:hover, .codeblock-actions-group .action:hover {
+  .codeblock-actions-group .action:hover {
     color: #333333;
     opacity: 1;
     border: 1px solid #2578f8; }
-  .codeblock-actions .action:active, .codeblock-actions-group .action:active {
+  .codeblock-actions-group .action:active {
     opacity: 0.7; }
-
-.codeblock-actions {
-  display: flex;
-  justify-content: flex-end;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  padding-bottom: 5px;
-  width: 100%; }
-  .codeblock-actions .action.copy, .codeblock-actions .action.collapse {
-    display: flex;
-    justify-content: center;
-    align-items: center; }
-    .codeblock-actions .action.copy i, .codeblock-actions .action.collapse i {
-      margin-right: 5px; }
 
 .codeblock-actions-group {
   display: flex;
@@ -712,19 +699,19 @@ ul.file-headers {
       white-space: pre; }
       .codeblock-actions-group .tabs .tab.activetab {
         color: #333333; }
-    .codeblock-actions-group .tabs .actions-right {
+  .codeblock-actions-group .actions-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px; }
+    .codeblock-actions-group .actions-right .action {
       display: flex;
       justify-content: center;
       align-items: center;
+      user-select: none;
+      touch-callout: none; }
+    .codeblock-actions-group .actions-right i {
       margin-right: 5px; }
-      .codeblock-actions-group .tabs .actions-right .action {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        user-select: none;
-        touch-callout: none; }
-      .codeblock-actions-group .tabs .actions-right i {
-        margin-right: 5px; }
 
 .line-nums {
   color: #b3b3b3;
@@ -733,7 +720,7 @@ ul.file-headers {
   touch-callout: none;
   border-right: 1px solid #dfe2e5;
   border-radius: 5px 0 0 5px;
-  padding: 16px 3px 16px 10px;
+  padding: 26px 3px 16px 10px;
   pointer-events: none; }
   .line-nums.hidden-clone {
     visibility: hidden; }
@@ -759,9 +746,6 @@ ul.file-headers {
       box-shadow: 0 -3px 0 0 #698cfe;
       border-radius: 3px;
       font-weight: bold; }
-
-.padtop-26 {
-  padding-top: 26px !important; }
 
 .mloader {
   position: relative;

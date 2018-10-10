@@ -78,11 +78,8 @@ mdzero.renderer.rules.code_block = function(
 	tokens,
 	idx /*, options, env, slf*/
 ) {
-	// Generate a special ID for the pre element.
-	var uid = `tmp-${id(25)}`;
-
 	lookup_codeblocks.push([
-		`<pre><code id="${uid}" class="lang-" data-orig-text="">${mdzero.utils.escapeHtml(
+		`<pre><code class="lang-">${mdzero.utils.escapeHtml(
 			tokens[idx].content
 		)}</code></pre>`
 	]);
@@ -113,14 +110,11 @@ mdzero.renderer.rules.fence = function(tokens, idx /*, options, env, slf*/) {
 	}
 	// CUSTOM LOGIC ---------- NOT MarkdownIt ---------- |
 
-	// Generate a special ID for the pre element.
-	var uid = `tmp-${id(25)}`;
-
 	// Highlight the code.
 	highlighted = highlight(token.content, lang);
 
 	lookup_codeblocks.push([
-		`<pre><code id="${uid}" class="lang-${lang}" data-orig-text="" data-highlight-lines="${lines}" data-block-name="${name}">${highlighted}</code></pre>`
+		`<pre><code class="lang-${lang}" data-highlight-lines="${lines}" data-block-name="${name}">${highlighted}</code></pre>`
 	]);
 	return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 };
@@ -637,33 +631,15 @@ function expand_ctags(text) {
 				return new RegExp(`${attr}\=('|\")(.*?)\\1`, "im");
 			};
 
-			// Generate a special ID for the pre element.
-			var uid = `exp-${id(12)}`;
-
 			// Get the tabs.
 			var tabs_string = match.match(r("tabs"));
 			tabs_string = tabs_string ? tabs_string[2] : "";
 			tabs_string = tabs_string ? tabs_string : "";
 
-			// Build the tabs HTML.
-			var tabs = tabs_string.split(";");
-			var tabs_html = [];
-			tabs.forEach(function(tab, i) {
-				var is_first = i === 0 ? " activetab" : "";
-				tabs_html.push(
-					`<span class="tab${is_first}" data-tab-index="${i}" data-cgroup-id="${uid}">${tab.trim()}</span>`
-				);
-			});
-
-			return `\n\n<div class="codeblock-actions-group animate-fadein" data-cgroup-id="${uid}">
-			<div class="tabs" id="cb-tabs-${uid}">${tabs_html.join("")}</div>
-			<div class="actions-right">
-				<span class="btn action copy"><i class="fas fa-clipboard"></i><span>copy</span></span>
-			</div>
-		</div>
-		<div class="code-block-grouped" id="cb-group-${uid}">\n\n`;
+			return `\n\n<div class="cb-group"><div class="codeblock-actions-group animate-fadein" data-tabs="${tabs_string.trim()}"></div>
+		<div class="code-block-grouped">\n\n`;
 		})
-		.replace(/<\/dd-codegroup>/gim, "\n\n</div>");
+		.replace(/<\/dd-codegroup>/gim, "\n\n</div></div>");
 
 	return text;
 }
@@ -1186,6 +1162,10 @@ footer_html.push(
 // Store the versions.
 config.versions = [];
 
+// Store the original code blocks' text.
+var cb_orig_text = {};
+config.cb_orig_text = cb_orig_text;
+
 // Loop over Table-Of-Contents key to generate the HTML files from Markdown.
 versions.forEach(function(vdata) {
 	// Get the directories.
@@ -1263,6 +1243,13 @@ versions.forEach(function(vdata) {
 
 			// Build the file path.
 			let fpath = `${dirname}/${file}`;
+
+			// Store file path in object.
+			if (!cb_orig_text[fpath]) {
+				// If the file path does not exist, add it. Object will
+				// contain all original code block text.
+				cb_orig_text[fpath] = {};
+			}
 
 			// Store the file information.
 			__file.dirname = fpath;
@@ -1437,11 +1424,8 @@ versions.forEach(function(vdata) {
 											lang
 										);
 
-										// Generate a special ID for the pre element.
-										let uid = `tmp-${id(25)}`;
-
 										lookup_codeblocks.push([
-											`<pre><code id="${uid}" class="lang-${lang}" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+											`<pre><code class="lang-${lang}" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
 										]);
 										return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 									} else {
@@ -1483,11 +1467,8 @@ versions.forEach(function(vdata) {
 											lang
 										);
 
-										// Generate a special ID for the pre element.
-										let uid = `tmp-${id(25)}`;
-
 										lookup_codeblocks.push([
-											`<pre><code id="${uid}" class="lang-${lang}" data-orig-text="" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
+											`<pre><code class="lang-${lang}" data-highlight-lines="" data-block-name="">${highlighted}</code></pre>`
 										]);
 										return `[dd::-codeblock-placeholder-${++lookup_codeblocks_count}]\n`;
 									}
@@ -1815,72 +1796,162 @@ versions.forEach(function(vdata) {
 								}
 							);
 
-							// Hide all but the first code block.
-							$(".code-block-grouped").each(function(/*i, el*/) {
-								// Cache the element.
-								let $el = $(this);
-
-								// Get the code blocks.
-								let $blocks = $el.find("pre");
-
-								// Hide all the blocks except the first.
-								if ($blocks.length) {
-									// The remaining code blocks.
-									$blocks = $blocks
-										.filter(function(i /*, el*/) {
-											return i !== 0;
-										})
-										.attr("class", "none");
-								}
-							});
-
-							// Hide code blocks that are too big.
+							// Normalize single code blocks (non-group). This
+							// will wrap the block to mimic that of grouped
+							// blocks to manage all blocks in the same manner.
 							$("pre code[class^='lang']").each(
 								function(/*i, el*/) {
 									// Cache the element.
 									let $el = $(this);
-
-									// Get text (code) and file stats.
-									let text = $el.text().trim();
-									let line_count = text.split("\n").length;
-									let lines = add_commas_to_num(line_count);
-									let chars = add_commas_to_num(
-										text.split("").length
-									);
-
-									// Get the parent element.
+									// Get the parent.
 									let $parent = $el.parent();
 
-									// Note: Skip this entirely for codegroups.
-									// Check whether it's part of a codegroup.
-									var is_partof_codegroup = $el
-										.parents()
-										.filter(".code-block-grouped").length;
-
-									// Generate a special ID for the pre element.
-									var uid = `exp-${id(12)}`;
-
-									// Get the language.
-									var classes = $el.attr()["class"];
-									var lang = " ";
-									var langmatch = "";
-									if (classes) {
-										langmatch =
-											(` ${classes} `.match(
-												/ (lang-.+) /i
-											) || "")[1] || "";
-										if (langmatch) {
-											langmatch = langmatch.replace(
-												/lang-/i,
-												""
-											);
-											lang = ` <span class="lang">${langmatch}</span>`;
-										}
+									// Codeblock cannot be part of a group.
+									if (
+										$el.parents().filter(".cb-group").length
+									) {
+										// It's part of a group, so skip.
+										return;
 									}
 
-									// If the code is more than 40 lines show an code block placeholder.
-									if (line_count >= 40) {
-										$parent.before(`<div class="codeblock-placeholder animate-fadein" data-expid="${uid}">
+									// If not part of a group, continue...
+
+									// Replace the parent with the new HTML content.
+									$parent.replaceWith(`
+									<div class="cb-group" singleton="true">
+										<div class="codeblock-actions-group animate-fadein" data-tabs=""></div>
+										<div class="code-block-grouped">
+											${$.html($parent)}
+										</div>
+									</div>`);
+								}
+							);
+
+							// Create group top ID/UI (tabs/action buttons),
+							// placeholder, store original text, and add line
+							// numbers/highlighted lines/numbers.
+							$(".cb-group").each(function(/*i, el*/) {
+								// Cache the element.
+								let $el = $(this);
+
+								// Generate the id.
+								var uid = `${id(15)}`;
+
+								// Set ID.
+								$el.attr("id", `cb-group-${uid}`);
+
+								// Get singleton indicator.
+								var is_singleton = $el.attr()["singleton"];
+								// Remove the attribute.
+								$el.removeAttr("singleton");
+
+								// === Create the tabs. ===
+								//
+								// Get UI wrapper.
+								var $ui_wrapper = $el
+									.children("[data-tabs]")
+									.first();
+								// Get the tabs string.
+								var tabs_string = $ui_wrapper.attr()[
+									"data-tabs"
+								];
+								// Remove the attr, as it is no longer needed.
+								$ui_wrapper.removeAttr("data-tabs");
+								var tabs = tabs_string.split(";");
+								// Build the tabs HTML.
+								var tabs_html = [];
+								tabs.forEach(function(tab, i) {
+									// Make the first tab be the active tab.
+									var is_first = i === 0 ? " activetab" : "";
+
+									// If a singleton, add a tab but make is
+									// unusable. It is only needed to make the
+									// action buttons stick to the right side.
+									// Or else they side to the left.
+									var disable = is_singleton ? " pnone " : "";
+
+									tabs_html.push(
+										`<span class="tab${is_first}${disable}" data-tab-index="${i}" data-gid="${uid}">${tab.trim() ||
+											" "}</span>`
+									);
+								});
+								// Add tabs HTML to top UI.
+								$ui_wrapper.prepend(
+									`<div class="tabs" id="cb-tabs-${uid}">${tabs_html.join(
+										""
+									)}</div>`
+								);
+
+								// === Create the action button(s). ===
+								//
+								// Create actions HTML and to top UI.
+								$ui_wrapper.append(`<div class="actions-right">
+									<span class="btn action collapse none" data-gid="${uid}">
+										<i class="fas fa-minus-square"></i><span>collapse</span>
+									</span>
+									<span class="btn action copy" data-gid="${uid}">
+										<i class="fas fa-clipboard"></i><span>copy</span>
+									</span>
+								</div>`);
+
+								// Give IDs to children elements.
+								$el
+									.find(".codeblock-actions-group")
+									.first()
+									.attr("id", `tui-${uid}`);
+								$el
+									.find(".code-block-grouped")
+									.first()
+									.attr("id", `cbs-${uid}`);
+
+								// === Loop over blocks. ===
+								$el
+									.find(".code-block-grouped")
+									.children()
+									.each(function(i /*, el*/) {
+										// Cache the element.
+										let $el = $(this);
+
+										// Give ID to pre element.
+										$el.attr("id", `pr-${uid}`);
+										$el.attr("data-block-index", i);
+
+										// Get the code block.
+										let $block = $el.children().first();
+
+										// Give ID to code element.
+										$block.attr("id", `cb-${uid}`);
+										$block.attr("data-block-index", i);
+
+										// Hide all but the first code block.
+										if (i) {
+											$el.addClass("none");
+										}
+
+										// Get text (code) and file stats.
+										let text = $block.text().trim();
+										let line_count = text.split("\n")
+											.length;
+										let lines = add_commas_to_num(
+											line_count
+										);
+										let chars = add_commas_to_num(
+											text.split("").length
+										);
+
+										// Get the class name string.
+										var cstring =
+											" " +
+											($block.attr()["class"] || "") +
+											" ";
+										// Get the language.
+										var lang = (cstring.match(
+											/ (lang\-.*) /
+										) || ["", ""])[1].slice(5);
+
+										// If code is over x lines show placeholder.
+										if (line_count >= 40) {
+											var placeholder_html = `<div class="codeblock-placeholder animate-fadein none" data-block-index="${i}" data-gid="${uid}">
 									<div class="template">
 										<div class="row">
 											<div class="block size-40"></div>
@@ -1902,136 +1973,115 @@ versions.forEach(function(vdata) {
 									</div>
 									<div class="info">
 										<div>
-											<span class="label">Show block ${lang}</span>
+											<span class="label">Show block${
+												lang
+													? ` <span class="lang">${lang}</span>`
+													: ""
+											}</span>
 											<div class="details">
 												<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
 											</div>
 										</div>
 									</div>
-								</div>`);
+								</div>`;
 
-										// Dont't add the buttons when the block is part of a group.
-										if (!is_partof_codegroup) {
-											// Add the action buttons
-											$parent.before(`<div class="codeblock-actions animate-fadein none">
-												<span class="btn action copy" data-expid="${uid}"><i class="fas fa-clipboard"></i><span>copy</span></span>
-												<span class="btn action collapse" data-expid="${uid}"><i class="fas fa-minus-square"></i><span>collapse</span></span>
-							</div>`);
+											// Remove hidden class if it's
+											// the first code bock to show
+											// the placeholder by default.
+											if (!i) {
+												placeholder_html = placeholder_html.replace(
+													" none",
+													""
+												);
+												// Hide the code block.
+												$el.addClass("none");
+											}
+
+											// Add the placeholder before the
+											// pre element.
+											$el.before(placeholder_html);
 										}
 
-										// Finally hide the element.
-										$parent.addClass("none");
-										$parent.addClass("animate-fadein");
-									} else {
-										// Dont't add the buttons when the block is part of a group.
-										if (!is_partof_codegroup) {
-											$parent.before(
-												`<div class="codeblock-actions animate-fadein"><span class="btn action copy" data-expid="${uid}"><i class="fas fa-clipboard"></i><span>copy</span></span></div>`
+										// Set the line numbers.
+
+										// Trim the HTML.
+										var html = $block.html().trim();
+										// Reset the HTML.
+										$block.html(html);
+										// Get the text.
+										text = $block.text();
+										// Get the number of lines.
+										lines = text.split("\n").length;
+
+										// Get the lines to highlight.
+										var hlines = lines_to_highlight($block);
+
+										// Make the "line" highlight HTML.
+										var highlighted_numbers = [];
+										var highlighted_lines = [];
+										for (let i = 0, l = lines; i < l; i++) {
+											// Check whether the line needs to be highlighted.
+											var needs_highlight = hlines.includes(
+												i + 1
+											);
+
+											// Add the highlighted item to the
+											// needed array.
+
+											highlighted_numbers.push(
+												`<div class="line"><span${
+													needs_highlight
+														? " class='highlight-n'"
+														: ""
+												}>${i + 1}</span></div>`
+											);
+											highlighted_lines.push(
+												`<div class="line${
+													needs_highlight
+														? " highlight-l"
+														: ""
+												}"> </div>`
 											);
 										}
-									}
-									$parent.attr("id", uid);
 
-									// Set the line numbers element.
-
-									// Trim the HTML.
-									let html = $el.html().trim();
-									// Reset the HTML.
-									$el.html(html);
-									// Get the text.
-									text = $el.text();
-									// Get the number of lines.
-									lines = text.split("\n").length;
-
-									// Get the lines to highlight.
-									var _lines = lines_to_highlight($el);
-
-									var line_nums = [];
-									for (let i = 0, l = lines; i < l; i++) {
-										// Check whether the line needs to be highlighted.
-										let needs_highlight = _lines.includes(
-											i + 1
-										)
-											? " class='highlight-n'"
-											: "";
-										line_nums.push(
-											`<div class="line"><span${needs_highlight}>${i +
-												1}</span></div>`
-										);
-									}
-
-									// Make the "line" highlight HTML.
-									var line_nums2 = [];
-									for (let i = 0, l = lines; i < l; i++) {
-										// Check whether the line needs to be highlighted.
-										let needs_highlight = _lines.includes(
-											i + 1
-										)
-											? " highlight-l"
-											: "";
-										line_nums2.push(
-											`<div class="line${needs_highlight}"> </div>`
-										);
-									}
-
-									// Add the block code name.
-									var blockname_html = "";
-									var top_pad_fix = "";
-									// Check for line highlight numbers/ranges.
-									var blockname =
-										$el.attr()["data-block-name"] || "";
-									if (!blockname) {
-										var __lang = langmatch.replace(
-											"lang-",
-											""
-										);
-
-										blockname =
+										// Make the block code name HTML.
+										var blockname =
+											$block.attr()["data-block-name"] ||
 											"untitled" +
-											(__lang !== "" ? "." + __lang : "");
-									}
+												(lang !== "" ? "." + lang : "");
+										var blockname_html = `<div class="codeblock-name">${blockname}</div>`;
 
-									blockname_html = `<div class="codeblock-name">${blockname}</div>`;
-									top_pad_fix = "padtop-26";
-									$el.addClass(top_pad_fix);
-
-									// Add the line numbers HTML.
-									$parent.prepend(
-										// Note: Insert a duplicate element to allow the
-										// second element to be able to be "fixed". This
-										// allows the code element to be properly adjacent
-										// to the fixed element. Since the last item will
-										// be the longest in width since its the last line
-										// number, remove all the other line numbers to reduce
-										// the number of elements in the DOM.
-										`<div class="line-nums hidden-clone ${top_pad_fix}">${line_nums
-											.slice(-1)
-											.join(
+										// Add the line numbers HTML.
+										$el.prepend(
+											// Note: Insert a duplicate element to allow the
+											// second element to be able to be "fixed". This
+											// allows the code element to be properly adjacent
+											// to the fixed element. Since the last item will
+											// be the longest in width since its the last line
+											// number, remove all the other line numbers to reduce
+											// the number of elements in the DOM.
+											`<div class="line-nums hidden-clone">${highlighted_numbers
+												.slice(-1)
+												.join(
+													""
+												)}</div><div class="line-nums lines">${highlighted_lines.join(
 												""
-											)}</div><div class="line-nums lines ${top_pad_fix}">${line_nums2.join(
-											""
-										)}</div><div class="line-nums numbers ${top_pad_fix}">${blockname_html}${line_nums.join(
-											""
-										)}</div>`
-									);
-								}
-							);
+											)}</div><div class="line-nums numbers">${blockname_html}${highlighted_numbers.join(
+												""
+											)}</div>`
+										);
 
-							// Hide code blocks that are too big.
-							$("pre code[class^='lang']").each(
-								function(/*i, el*/) {
-									// Cache the element.
-									let $el = $(this);
-
-									// Store the original text.
-									$el.attr(
-										"data-orig-text",
-										entities.decode(
-											$el.text().replace(/\s*$/, "")
-										)
-									);
-								}
-							);
+										// Get the file path object.
+										var obj = cb_orig_text[fpath];
+										// If the group Id does not exist,
+										// create the containing object.
+										if (!obj.hasOwnProperty(uid)) {
+											obj[uid] = {};
+										}
+										// Store block's original content.
+										obj[uid][i] = entities.decode(text);
+									});
+							});
 
 							// Extract and store the details elements' HTML.
 							var details_lookup = [];

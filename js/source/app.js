@@ -2871,10 +2871,21 @@ document.onreadystatechange = function() {
 					// [https://stackoverflow.com/a/46858939]
 					function clipboard($el /*, event*/) {
 						var cb = new ClipboardJS($el, {
-							text: function(/*trigger*/) {
-								return $el
-									.getElementsByTagName("code")[0]
-									.getAttribute("data-orig-text");
+							text: function($trigger) {
+								// Get the group id.
+								var gid = $trigger.id.slice(3);
+
+								// Get the code block's index.
+								var index = $el.getAttribute(
+									"data-block-index"
+								);
+
+								// Get the original code block text.
+								return (
+									__data.cb_orig_text[current_file][gid][
+										index
+									] || ""
+								);
 							}
 						});
 
@@ -3059,23 +3070,42 @@ document.onreadystatechange = function() {
 
 						// Hide the element.
 						classes($target, "none");
-						// Show the buttons and the pre element.
+
+						// Show the pre/code block.
 						classes($target.nextElementSibling, "!none");
-						classes(
-							$target.nextElementSibling.nextElementSibling,
-							"!none"
-						);
+
+						// Get the group id.
+						var gid = $target.getAttribute("data-gid");
+
+						// Get the collapse action button.
+						var $button = document
+							.getElementById(`tui-${gid}`)
+							.getElementsByClassName("collapse")[0];
+
+						// Show button.
+						classes($button, "!none");
 
 						return;
 					} else if (is_target_el($target, "collapse")) {
 						// Reset the target.
-						$target = is_target_el($target, "collapse").parentNode;
+						$target = is_target_el($target, "collapse");
 
-						// Hide itself and the pre element.
+						// Get the group id.
+						var gid = $target.getAttribute("data-gid");
+
+						// Get the visible code block.
+						var $block = document
+							.getElementById(`cbs-${gid}`)
+							.querySelectorAll("pre:not(.none)")[0];
+
+						// Get the placeholder element.
+						var $placeholder = $block.previousElementSibling;
+
+						// Hide the button, code block.
 						classes($target, "none");
-						classes($target.nextElementSibling, "none");
-						// Show the show element.
-						classes($target.previousElementSibling, "!none");
+						classes($block, "none");
+						// Show the placeholder.
+						classes($placeholder, "!none");
 
 						return;
 					} else if (is_target_el($target, "dd-exp-message")) {
@@ -3132,30 +3162,51 @@ document.onreadystatechange = function() {
 
 						// Get the tab index.
 						var tindex = $target.getAttribute("data-tab-index") * 1;
-						// Get the code block group id.
-						var gid = $target.getAttribute("data-cgroup-id");
+						// Get the group id.
+						var gid = $target.getAttribute("data-gid");
 
-						// Get the codegroups.
-						var $codegroup = document.getElementById(
-							`cb-group-${gid}`
-						).children;
+						// Get the code blocks.
+						var $codegroup = document.getElementById(`cbs-${gid}`);
+						var $blocks = $codegroup.children;
 						// Get the tab elements.
 						var $tabs = document.getElementById(`cb-tabs-${gid}`)
 							.children;
 
-						// Remove the active class.
+						// Remove the active class from tabs.
 						for (let i = 0, l = $tabs.length; i < l; i++) {
 							classes($tabs[i], "!activetab");
 						}
 						// Highlight the clicked tab element.
 						classes($target, "activetab");
 
-						// Hide all the children except the one that matches
-						// the tab index.
-						for (let i = 0, l = $codegroup.length; i < l; i++) {
-							$codegroup[i].classList[
-								i === tindex ? "remove" : "add"
-							]("none");
+						// Hide the collapse button.
+						classes(
+							document
+								.getElementById(`tui-${gid}`)
+								.getElementsByClassName("collapse")[0],
+							"none"
+						);
+
+						// Hide all code blocks.
+						for (let i = 0, l = $blocks.length; i < l; i++) {
+							classes($blocks[i], "none");
+						}
+
+						// Finally, show the needed elements.
+						var $block = $codegroup.querySelector(
+							`pre[data-block-index="${tindex}"]`
+						);
+						// If the element has a placeholder, show that instead.
+						var $placeholder = $block.previousElementSibling;
+						if (
+							$placeholder &&
+							$placeholder.classList.contains(
+								"codeblock-placeholder"
+							)
+						) {
+							classes($placeholder, "!none");
+						} else {
+							classes($block, "!none");
 						}
 
 						setTimeout(function() {
@@ -4259,42 +4310,25 @@ document.onreadystatechange = function() {
 							}
 							// Set up the clipboardjs listeners.
 							clipboardjs_instance = new ClipboardJS(".copy", {
-								text: function(trigger) {
-									// Check whether the button is part of
-									// of a codegroup.
-									if (
-										is_target_el(
-											trigger,
-											"codeblock-actions-group"
-										)
-									) {
-										// Get the container parent.
-										var $cont = is_target_el(
-											trigger,
-											"codeblock-actions-group"
-										);
+								text: function($trigger) {
+									// Get the group id.
+									var gid = $trigger.getAttribute("data-gid");
 
-										// Get the visible code block.
-										var $block = $cont.nextElementSibling.querySelectorAll(
-											"pre:not(.none)"
-										)[0];
+									// Get the non-hidden code block.
+									var $block = document
+										.getElementById(`cbs-${gid}`)
+										.querySelectorAll("pre:not(.none)")[0];
+									// Get the code block's index.
+									var index = $block.getAttribute(
+										"data-block-index"
+									);
 
-										if ($block) {
-											// Set the correct id.
-											trigger.setAttribute(
-												"data-expid",
-												$block.getAttribute("id")
-											);
-										}
-									}
-
-									// Get the text content from the pre element.
-									return document
-										.getElementById(
-											trigger.getAttribute("data-expid")
-										)
-										.getElementsByTagName("code")[0]
-										.getAttribute("data-orig-text");
+									// Get the original code block text.
+									return (
+										__data.cb_orig_text[current_file][gid][
+											index
+										] || ""
+									);
 								}
 							});
 
