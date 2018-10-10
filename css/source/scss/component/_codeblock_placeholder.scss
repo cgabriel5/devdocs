@@ -142,7 +142,7 @@
 }
 
 // Actionb buttons + Tab actions.
-.codeblock-actions-group {
+.cb-top-ui {
 	@include flex($flow: null, $justify: space-between);
 
 	margin-bottom: 3px;

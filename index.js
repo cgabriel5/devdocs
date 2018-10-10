@@ -636,8 +636,8 @@ function expand_ctags(text) {
 			tabs_string = tabs_string ? tabs_string[2] : "";
 			tabs_string = tabs_string ? tabs_string : "";
 
-			return `\n\n<div class="cb-group"><div class="codeblock-actions-group animate-fadein" data-tabs="${tabs_string.trim()}"></div>
-		<div class="code-block-grouped">\n\n`;
+			return `\n\n<div class="cb-group"><div class="cb-top-ui animate-fadein" data-tabs="${tabs_string.trim()}"></div>
+		<div class="cb-blocks">\n\n`;
 		})
 		.replace(/<\/dd-codegroup>/gim, "\n\n</div></div>");
 
@@ -1819,8 +1819,8 @@ versions.forEach(function(vdata) {
 									// Replace the parent with the new HTML content.
 									$parent.replaceWith(`
 									<div class="cb-group" singleton="true">
-										<div class="codeblock-actions-group animate-fadein" data-tabs=""></div>
-										<div class="code-block-grouped">
+										<div class="cb-top-ui animate-fadein" data-tabs=""></div>
+										<div class="cb-blocks">
 											${$.html($parent)}
 										</div>
 									</div>`);
@@ -1896,17 +1896,17 @@ versions.forEach(function(vdata) {
 
 								// Give IDs to children elements.
 								$el
-									.find(".codeblock-actions-group")
+									.find(".cb-top-ui")
 									.first()
 									.attr("id", `tui-${uid}`);
 								$el
-									.find(".code-block-grouped")
+									.find(".cb-blocks")
 									.first()
 									.attr("id", `cbs-${uid}`);
 
 								// === Loop over blocks. ===
 								$el
-									.find(".code-block-grouped")
+									.find(".cb-blocks")
 									.children()
 									.each(function(i /*, el*/) {
 										// Cache the element.

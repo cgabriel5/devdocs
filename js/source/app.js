@@ -4566,12 +4566,7 @@ document.onreadystatechange = function() {
 										var $el_;
 
 										// When clicking a codegroup block.
-										if (
-											is_target_el(
-												$el,
-												"code-block-grouped"
-											)
-										) {
+										if (is_target_el($el, "cb-blocks")) {
 											$el_ =
 												$el.parentNode
 													.previousElementSibling;
