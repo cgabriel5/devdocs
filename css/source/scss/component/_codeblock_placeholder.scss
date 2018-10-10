@@ -186,7 +186,7 @@
 	.actions-right {
 		@include flex($flow: null, $justify: center, $align: center);
 
-		margin-right: 5px;
+		margin-bottom: 3px;
 
 		.action {
 			@include flex($flow: null, $justify: center, $align: center);

@@ -703,7 +703,7 @@ ul.file-headers {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 5px; }
+    margin-bottom: 3px; }
     .codeblock-actions-group .actions-right .action {
       display: flex;
       justify-content: center;
