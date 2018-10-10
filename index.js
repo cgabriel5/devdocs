@@ -2710,18 +2710,19 @@ gulp.task("html:app", function(done) {
 	// Modify the output path.
 	let __path = outputpath.replace(/^[\.\/]+|\/$/g, "");
 
-	// Replace the paths in the error template.
-	config.files.internal._404 = format(config.files.internal._404, {
-		dir_path: __path
-	});
-	config.files.internal._404_version = format(
-		config.files.internal._404_version,
-		{ dir_path: __path }
-	);
-	config.files.internal._404_missing_docs = format(
-		config.files.internal._404_missing_docs,
-		{ dir_path: __path }
-	);
+	// Replace paths in error templates.
+	var files = ["", "_version", "_missing_docs"];
+	for (let i = 0, l = files.length; i < l; i++) {
+		// Cache current loop item.
+		var file = `_404${files[i]}`;
+
+		// Get internal files object.
+		var ifiles = config.files.internal;
+		// Format file contents.
+		ifiles[file] = format(ifiles[file], {
+			dir_path: __path
+		});
+	}
 
 	// Skip task logic if initial flag is not set.
 	if (!initial) {
