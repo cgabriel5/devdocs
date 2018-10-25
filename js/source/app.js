@@ -1137,7 +1137,7 @@ document.onreadystatechange = function() {
 					let version = parameters().v;
 
 					// Get the versions array.
-					var versions = __data.versions;
+					var versions = __data.pversions;
 
 					if (versions.length) {
 						// Finally inject the 404 version HTML.
@@ -2718,7 +2718,7 @@ document.onreadystatechange = function() {
 					// Show the versions container.
 					classes($versions, "!none");
 					// Add the versions.
-					var versions = data.versions;
+					var versions = data.pversions;
 					var latest = data.latest;
 					var versions_html = [];
 					versions.forEach(function(v) {
