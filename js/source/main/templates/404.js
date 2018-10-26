@@ -41,7 +41,8 @@ var errors = {
 	_404_missing_docs: format(template, {
 		title: "Docs Not Found",
 		message: "No docs exist.",
-		content: null
+		// Supply a space to keep the entry blank.
+		content: " "
 	})
 };
 
