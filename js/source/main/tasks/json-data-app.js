@@ -17,6 +17,7 @@ module.exports = function(refs) {
 	let remove_space = refs.remove_space;
 	let debug_flist = refs.debug_flist;
 	let outputpath = refs.outputpath;
+	let versions = refs.versions;
 	let config = refs.config;
 	let footer = refs.footer;
 	let debug = refs.debug;
@@ -31,21 +32,41 @@ module.exports = function(refs) {
 
 	// If the latest version is not one of the processed version, throw
 	// an error message.
-	if (debug && !config.pversions.includes(config.latest)) {
-		print.gulp.warn(
-			"The latest version:",
-			chalk.magenta(config.latest),
-			"was not one of the processed versions:"
-		);
+	if (debug) {
+		if (!config.pversions.includes(config.latest)) {
+			print.gulp.warn(
+				"The latest version:",
+				chalk.magenta(config.latest),
+				"was not one of the processed versions:"
+			);
+		}
 
 		// Show processed versions.
 		print.ln();
 		print(chalk.underline("Processed versions"));
 
 		// Log versions.
-		config.pversions.forEach(function(item) {
-			print(`  ${item}`);
-		});
+		if (config.pversions.length) {
+			config.pversions.forEach(function(item) {
+				print(`  ${item}`);
+			});
+		} else {
+			print(` `, chalk.yellow("No versions processed."));
+		}
+
+		// Show skipped versions. If there are versions that were provided
+		// but not processed, give a warning.
+		print.ln();
+		print(chalk.underline("Skipped versions"));
+
+		// Log versions.
+		if (config.sversions.length) {
+			config.sversions.forEach(function(item) {
+				print(`  ${item}`);
+			});
+		} else {
+			print(` `, chalk.yellow("No skipped versions."));
+		}
 
 		print.ln();
 	}

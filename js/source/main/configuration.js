@@ -52,7 +52,8 @@ config.outputpath = outputpath;
 config.outputpath_filename = outputpath_filename;
 
 // Store the versions.
-config.pversions = [];
+config.pversions = []; // Processed versions.
+config.sversions = []; // Skipped versions.
 
 // All processed directory data will be contained in this array.
 config.pdirs = [];

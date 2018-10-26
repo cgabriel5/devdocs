@@ -14,7 +14,6 @@ module.exports = function(refs) {
 	let debug = refs.debug;
 	let print = refs.print;
 	let config = refs.config;
-	let filter = refs.filter;
 	let findup = refs.findup;
 	let marked = refs.marked;
 	let mdzero = refs.mdzero;
@@ -28,6 +27,7 @@ module.exports = function(refs) {
 	let versions = refs.versions;
 	let dehashify = refs.dehashify;
 	let highlight = refs.highlight;
+	let process_versions = refs.process_versions;
 	let cb_orig_text = refs.cb_orig_text;
 	let regexp_index = refs.regexp_index;
 	let line_highlighter = refs.line_highlighter;
@@ -35,24 +35,33 @@ module.exports = function(refs) {
 	let removeHtmlComments = refs.removeHtmlComments;
 	let string_index_insert = refs.string_index_insert;
 
-	// Loop over Table-Of-Contents key to generate the HTML files from Markdown.
+	// Loop over version objects to generate the HTML files from Markdown.
 	versions.forEach(function(vdata) {
-		// Get the directories.
+		// Get version and directories.
 		var version = Object.keys(vdata)[0];
 		var directories = vdata[version];
 
-		// If the filter flag is provided only generate documentation if the
-		// version is in the filters provided. Else skip it and print a
-		// warning for debugging purposes.
-		if (filter && !filter.includes(version)) {
-			if (debug) {
+		// When the process_versions flag is provided only generate docs for
+		// the versions contained within the flag. Otherwise, skip it and
+		// print a warning for debugging purposes.
+		if (debug) {
+			if (process_versions && !process_versions.includes(version)) {
 				print.gulp.warn(
-					"Skipped version",
-					chalk.magenta(version),
-					"(filter)"
+					chalk(
+						`SKIPPING → ${chalk.magenta(
+							version
+						)}. (via 'process_versions' option)`
+					)
+				);
+				// Store skipped version.
+				config.sversions.push(version);
+				return;
+			} else {
+				// Show currently processing version.
+				print.gulp.info(
+					chalk(`PROCESSING → ${chalk.magenta(version)}`)
 				);
 			}
-			return;
 		}
 
 		// Store the version.
@@ -1122,7 +1131,8 @@ module.exports = function(refs) {
 								if (debug) {
 									print.gulp.info(
 										"Processed",
-										chalk.magenta(`${fpath}`)
+										chalk.magenta(fpath),
+										chalk.gray(`(${version})`)
 									);
 								}
 

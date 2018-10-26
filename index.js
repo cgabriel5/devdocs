@@ -30,12 +30,10 @@ let highlighter = (argv.highlighter || argv.h || "p").toLowerCase();
 var debug = argv.debug || argv.d;
 var debug_flist = argv.debugfiles || argv.l || false;
 var initial = argv.initial || argv.i || false;
-var filter = argv.filter || argv.f;
-// Prepare the version filter.
-filter = filter
-	? filter.split(",").map(function(item) {
-			return item.trim();
-		})
+var process_versions = (argv.process || argv.p || "") + "";
+// Prepare the versions to process.
+process_versions = process_versions
+	? process_versions.split(",").map(item => item.trim())
 	: null;
 
 // Node modules.
@@ -125,6 +123,10 @@ let cb_orig_text = config.cb_orig_text;
 let dirs = config.pdirs;
 // If debug flag was not supplied via the CL, look for it in the config file.
 debug = typeof debug === "boolean" ? debug : get(config, "debug", false);
+// If process_versions flag was not supplied via the CL, look for it in the config file.
+process_versions = process_versions
+	? process_versions
+	: get(config, "process_versions", null);
 
 // Custom modules.
 let ctags = require(apath(cmp("custom_tags.js")));
@@ -170,7 +172,7 @@ var refs = {
 	id,
 	root,
 	ctags,
-	filter,
+	process_versions,
 	findup,
 	marked,
 	mdzero,
