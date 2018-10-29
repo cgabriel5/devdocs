@@ -40,17 +40,11 @@ process_versions = process_versions
 	? process_versions.split(",").map(item => item.trim())
 	: null;
 
-// Node modules.
-let fs = require("fs");
-let path = require("path");
-
 // App utils.
 let autils = $app.module("@autils/utils.js");
 let string_index_insert = autils.string_index_insert;
 let slugify = autils.slugify;
 let dehashify = autils.dehashify;
-let range = autils.range;
-let make_unique = autils.make_unique;
 let remove_space = autils.remove_space;
 let add_commas_to_num = autils.add_commas_to_num;
 let id = autils.id;
@@ -66,25 +60,17 @@ let format = gutils.format;
 let globall = gutils.globall;
 
 // Universal modules.
-let del = require("del");
-let pump = require("pump");
 let chalk = require("chalk");
-// let mkdirp = require("mkdirp");
-let fe = require("file-exists");
 let findup = require("find-up");
 let jsonc = require("comment-json");
 let now = require("performance-now");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
-let vfsfake = require("vinyl-fs-fake");
 let cheerio = require("cheerio");
 let Entities = require("html-entities").XmlEntities;
 let entities = new Entities();
-let emoji = require("node-emoji");
-let eunicode = require("emoji-unicode");
-let twemoji = require("twemoji");
 let timeago = require("epoch-timeago").default;
-let removeHtmlComments = require("remove-html-comments");
+let remove_html_comments = require("remove-html-comments");
 
 // App variables.
 // Store performance timestamp to later calculate docs render time.
@@ -117,7 +103,6 @@ let $ = require("gulp-load-plugins")({
 let config = $app.module("@main/configuration.js");
 let root = get(config, "root", "docs/");
 let versions = get(config, "versions", []);
-let logo = config.logo;
 let modifier = config.modifier;
 // let animations = config.animations;
 let outputpath = config.outputpath;
@@ -198,8 +183,8 @@ var refs = {
 	regexp_index,
 	line_highlighter,
 	add_commas_to_num,
-	removeHtmlComments,
-	string_index_insert
+	string_index_insert,
+	remove_html_comments
 };
 
 // Process files to generate documentation.

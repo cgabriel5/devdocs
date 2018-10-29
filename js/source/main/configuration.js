@@ -1,15 +1,11 @@
 "use-strict";
 
-// Node modules.
-var path = require("path");
-
 // Universal modules.
 let mkdirp = require("mkdirp");
 let get = require("object-path-get");
 
 // Get the CLI parameters.
 let argv = require("minimist")(process.argv.slice(2));
-var debug = argv.debug || argv.d;
 let configpath = argv.config || argv.c;
 let outputpath = argv.output || argv.o;
 let outputpath_filename = argv.name || argv.n;
@@ -41,21 +37,16 @@ if (!outputpath_filename) {
 // Set the output path/file information.
 config.outputpath = outputpath;
 config.outputpath_filename = outputpath_filename;
-
 // Store the versions.
 config.pversions = []; // Processed versions.
 config.sversions = []; // Skipped versions.
-
 // All processed directory data will be contained in this array.
 config.pdirs = [];
-
 // Store the original code blocks' text.
 config.cb_orig_text = {};
 
 // Make the output folder structure.
 mkdirp.sync(outputpath);
-
-// console.log(config);
 
 // Exports.
 

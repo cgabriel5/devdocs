@@ -2,44 +2,30 @@
 
 // Node modules.
 let path = require("path");
-let fs = require("fs");
 
 module.exports = function(refs) {
 	// Get needed refs.
-	let id = refs.id;
 	let dirs = refs.dirs;
 	let root = refs.root;
 	let chalk = refs.chalk;
-	let ctags = refs.ctags;
 	let debug = refs.debug;
 	let print = refs.print;
 	let config = refs.config;
 	let findup = refs.findup;
-	let marked = refs.marked;
-	let mdzero = refs.mdzero;
-	let cheerio = refs.cheerio;
-	let slugify = refs.slugify;
-	let entities = refs.entities;
+	let format = refs.format;
 	let modifier = refs.modifier;
 	let promises = refs.promises;
-	let renderer = refs.renderer;
-	let timedate = refs.timedate;
 	let versions = refs.versions;
-	let dehashify = refs.dehashify;
-	let highlight = refs.highlight;
+	let templates = refs.templates;
+	let transformer = refs.transformer;
 	let process_versions = refs.process_versions;
 	let cb_orig_text = refs.cb_orig_text;
-	let regexp_index = refs.regexp_index;
-	let line_highlighter = refs.line_highlighter;
-	let add_commas_to_num = refs.add_commas_to_num;
-	let removeHtmlComments = refs.removeHtmlComments;
-	let string_index_insert = refs.string_index_insert;
 
 	// Loop over version objects to generate the HTML files from Markdown.
 	versions.forEach(function(vdata) {
 		// Get version and directories.
-		var version = Object.keys(vdata)[0];
-		var directories = vdata[version];
+		let version = Object.keys(vdata)[0];
+		let directories = vdata[version];
 
 		// When the process_versions flag is provided only generate docs for
 		// the versions contained within the flag. Otherwise, skip it and
