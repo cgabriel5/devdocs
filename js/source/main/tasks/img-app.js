@@ -15,7 +15,6 @@ module.exports = function(refs) {
 	let outputpath = refs.outputpath;
 	let initial = refs.initial;
 	let globall = refs.globall;
-	let apath = refs.apath;
 	let debug = refs.debug;
 	let print = refs.print;
 	let gulp = refs.gulp;
@@ -33,7 +32,7 @@ module.exports = function(refs) {
 
 	return pump(
 		[
-			gulp.src(apath(globall("./img/"))),
+			gulp.src($app.rpath(globall("./img/"))),
 			$.gulpif(
 				debug_flist,
 				$.debug({ loader: false, title: "copying image files..." })

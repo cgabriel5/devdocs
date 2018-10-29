@@ -7,7 +7,7 @@ let path = require("path");
 let chalk = require("chalk");
 
 // Gulp utils.
-let gutils = require(path.resolve(__APPROOT, "./gulp/assets/utils/utils.js"));
+let gutils = $app.module("@gutils/utils.js");
 let print = gutils.print;
 
 /**
@@ -24,7 +24,7 @@ module.exports = function(issues, filepath) {
 	var strip_ansi = require("strip-ansi");
 
 	// Get the file name.
-	var filename = path.relative(__APPROOT, filepath);
+	var filename = path.relative($app.root, filepath);
 
 	// Print the file name header.
 	print.ln();

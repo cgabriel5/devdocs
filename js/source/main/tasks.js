@@ -2,10 +2,8 @@
 
 module.exports = function(refs) {
 	// Get needed refs.
-	var cmp = refs.cmp;
 	let now = refs.now;
 	var gulp = refs.gulp;
-	var apath = refs.apath;
 	let chalk = refs.chalk;
 	let debug = refs.debug;
 	let print = refs.print;
@@ -46,9 +44,9 @@ module.exports = function(refs) {
 	var gcb = function(done) {
 		return function(done) {
 			// Get and run the task.
-			return require(apath(
-				cmp(`tasks/${this.__wapplr.debug.name}.js`)
-			)).call(this, Object.assign(refs, { cb: done }));
+			return $app
+				.module(`@main/tasks/${this.__wapplr.debug.name}.js`)
+				.call(this, Object.assign(refs, { cb: done }));
 		};
 	};
 
@@ -100,7 +98,7 @@ module.exports = function(refs) {
 						notify(
 							"Documentation generated.",
 							"devdocs",
-							apath("./img/leaf-216.png")
+							$app.rpath("./img/leaf-216.png")
 						);
 					}
 				]);

@@ -1,13 +1,7 @@
 "use strict";
 
-// Node modules.
-var path = require("path");
-
 // App utils.
-let autils = require(path.resolve(
-	__APPROOT,
-	"./js/source/main/utils/utils.js"
-));
+let autils = $app.module("@autils/utils.js");
 let range = autils.range;
 let make_unique = autils.make_unique;
 

@@ -14,7 +14,6 @@ module.exports = function(refs) {
 	let debug_flist = refs.debug_flist;
 	let outputpath = refs.outputpath;
 	let globall = refs.globall;
-	let apath = refs.apath;
 	let debug = refs.debug;
 	let print = refs.print;
 	let gulp = refs.gulp;
@@ -23,7 +22,7 @@ module.exports = function(refs) {
 
 	return pump(
 		[
-			gulp.src(apath(globall("./css/assets/fonts/"))),
+			gulp.src($app.module(globall("./css/assets/fonts/"))),
 			$.gulpif(debug_flist, $.debug({ loader: false })),
 			gulp.dest(path.join(outputpath, "/fonts")),
 			$.gulpif(debug_flist, $.debug.edit({ loader: false }))

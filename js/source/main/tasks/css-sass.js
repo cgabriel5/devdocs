@@ -1,14 +1,8 @@
 "use strict";
 
-// Node modules.
-let path = require("path");
-
 // Universal modules.
 let pump = require("pump");
-let lint_printer = require(path.resolve(
-	__APPROOT,
-	"./js/source/main/lint_printer.js"
-));
+let lint_printer = $app.module("@main/lint_printer.js");
 
 /**
  * Process any SASS files into their CSS equivalents.
@@ -17,7 +11,6 @@ module.exports = function(refs) {
 	// Get needed references.
 	let debug_flist = refs.debug_flist;
 	let initial = refs.initial;
-	let apath = refs.apath;
 	let debug = refs.debug;
 	let print = refs.print;
 	let gulp = refs.gulp;
@@ -40,9 +33,7 @@ module.exports = function(refs) {
 	let scss_source_files = ["css/source/scss/**/[^_]*.*scss"];
 
 	// Make the paths absolute to the devdocs module. Not the user's dir.
-	scss_source_files = scss_source_files.map(function(__path) {
-		return apath(__path);
-	});
+	scss_source_files = scss_source_files.map(path => $app.rpath(path));
 
 	let sass = require("node-sass");
 
@@ -113,7 +104,7 @@ module.exports = function(refs) {
 			// 	// End gulp.
 			// 	this.emit("end");
 			// }),
-			gulp.dest(apath("./css/source/css")),
+			gulp.dest($app.rpath("./css/source/css")),
 			$.gulpif(
 				debug_flist,
 				$.debug.edit({

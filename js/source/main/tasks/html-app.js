@@ -13,7 +13,6 @@ module.exports = function(refs) {
 	let initial = refs.initial;
 	let config = refs.config;
 	let format = refs.format;
-	let apath = refs.apath;
 	let debug = refs.debug;
 	let print = refs.print;
 	let gulp = refs.gulp;
@@ -48,11 +47,11 @@ module.exports = function(refs) {
 	}
 
 	// Get htmlmin configuration.
-	let HTMLMIN = require(apath("./configs/htmlmin.json"));
+	let HTMLMIN = $app.module("./configs/htmlmin.json");
 
 	return pump(
 		[
-			gulp.src(apath("./index-src.html")),
+			gulp.src($app.rpath("./index-src.html")),
 			// Set the path to the favicons...
 			$.replace(/\$\{dir_path\}/g, __path),
 			$.gulpif(

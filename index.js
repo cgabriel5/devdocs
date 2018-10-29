@@ -11,18 +11,22 @@
 
 "use strict";
 
-// NOTE: To keep things simple, use NodeJS's global namespace to define
-// a global variable that references the app's root path. This global will
-// then be easily useable across all project files. However, polluting the
-// global namesapce is viewed down upon, therefore, this to be the only
-// global variable used. [https://stackoverflow.com/a/18721515]
-global.__APPROOT = __dirname;
+// NOTE: To simplify things, specifically imports, use NodeJS's global
+// namespace to define a global object that contains references to path
+// info/functions relative to the main JS file. This global will then be easily
+// accessible across all project files. However, since polluting the global
+// namespace is looked down upon, THIS TO BE THE ONLY GLOBAL VARIABLE USED.
+var mpath = "./js/source/main";
+require(`${mpath}/module.js`)({
+	"@root": __dirname,
+	"@main": mpath,
+	"@autils": "@main/utils/",
+	"@gutils": "./gulp/assets/utils/"
+});
 
 // App variables.
 let promises = [];
 let cwd = process.cwd();
-// Custom module path builder.
-let cmp = p => `./js/source/main/${p}`;
 
 // Get the CLI parameters.
 let argv = require("minimist")(process.argv.slice(2));
@@ -41,7 +45,7 @@ let fs = require("fs");
 let path = require("path");
 
 // App utils.
-let autils = require(path.resolve(__dirname, cmp("utils/utils.js")));
+let autils = $app.module("@autils/utils.js");
 let string_index_insert = autils.string_index_insert;
 let slugify = autils.slugify;
 let dehashify = autils.dehashify;
@@ -49,13 +53,12 @@ let range = autils.range;
 let make_unique = autils.make_unique;
 let remove_space = autils.remove_space;
 let add_commas_to_num = autils.add_commas_to_num;
-let apath = autils.apath;
 let id = autils.id;
 let regexp_index = autils.regexp_index;
 let timedate = autils.timedate;
 
 // Gulp utils.
-let gutils = require(apath("./gulp/assets/utils/utils.js"));
+let gutils = $app.module("@gutils/utils.js");
 let print = gutils.print;
 let notify = gutils.notify;
 let gulp = gutils.gulp;
@@ -111,7 +114,7 @@ let $ = require("gulp-load-plugins")({
 });
 
 // Load/modify configuration.
-let config = require(apath(cmp("configuration.js")));
+let config = $app.module("@main/configuration.js");
 let root = get(config, "root", "docs/");
 let versions = get(config, "versions", []);
 let logo = config.logo;
@@ -129,26 +132,28 @@ process_versions = process_versions
 	: get(config, "process_versions", null);
 
 // Custom modules.
-let ctags = require(apath(cmp("custom_tags.js")));
-let line_highlighter = require(apath(cmp("line_highlighter.js")));
-let markdownit = require(apath(cmp("markdown-it.js")));
+let ctags = $app.module("@main/custom_tags.js");
+let line_highlighter = $app.module("@main/line_highlighter.js");
+let markdownit = $app.module("@main/markdown-it.js");
 let highlight = markdownit.highlight;
 let mdzero = markdownit.mdzero;
-let markedjs = require(apath(cmp("marked.js")))({ outputpath });
+let markedjs = $app.module("@main/marked.js")({ outputpath });
 let marked = markedjs.marked;
 let renderer = markedjs.renderer;
 // Generate site footer.
-let footer = require(apath(cmp("footer.js")))(config);
+let footer = $app.module("@main/footer.js")(config);
+let templates = $app.module("@main/templates/processor.js");
+let transformer = $app.module("@main/transformer.js");
+let preplacements = $app.module("@main/processor_replacements.js");
+let ctransforms = $app.module("@main/cheerio_transforms.js");
 
 // Pass var refs. to tasks instead of including everything over again.
 var refs = {
 	$,
-	cmp,
 	cwd,
 	now,
 	dirs,
 	gulp,
-	apath,
 	chalk,
 	debug,
 	jsonc,
@@ -168,6 +173,10 @@ var refs = {
 	highlighter,
 	remove_space,
 	outputpath_filename,
+	templates,
+	transformer,
+	preplacements,
+	ctransforms,
 	// Processing variables.
 	id,
 	root,
@@ -194,7 +203,7 @@ var refs = {
 };
 
 // Process files to generate documentation.
-require(apath(cmp("processor.js")))(refs);
+$app.module("@main/processor.js")(refs);
 
 // Create and run Gulp tasks.
-require(apath(cmp("tasks.js")))(refs);
+$app.module("@main/tasks.js")(refs);

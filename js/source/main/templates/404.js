@@ -1,18 +1,11 @@
 "use strict";
 
-// Node modules.
-let fs = require("fs");
-let path = require("path");
-
 // App utils.
-let autils = require(path.resolve(
-	__APPROOT,
-	"./js/source/main/utils/utils.js"
-));
+let autils = $app.module("@autils/utils.js");
 let remove_space = autils.remove_space;
 
 // Gulp utils.
-let gutils = require(path.resolve(__APPROOT, "./gulp/assets/utils/utils.js"));
+let gutils = $app.module("@gutils/utils.js");
 let format = gutils.format;
 
 // The 404 error HTML template.

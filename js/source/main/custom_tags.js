@@ -1,11 +1,7 @@
 "use strict";
 
-// Node modules.
-var path = require("path");
-
 // Universal modules.
-let mdzero = require(path.resolve(__APPROOT, "./js/source/main/markdown-it.js"))
-	.mdzero;
+let mdzero = $app.module("@main/markdown-it.js").mdzero;
 
 var ctags = {
 	// Attach an object containing needed module variables to

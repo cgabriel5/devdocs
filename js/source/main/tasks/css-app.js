@@ -15,7 +15,6 @@ module.exports = function(refs) {
 	let highlighter = refs.highlighter;
 	let outputpath = refs.outputpath;
 	let initial = refs.initial;
-	let apath = refs.apath;
 	let debug = refs.debug;
 	let print = refs.print;
 	let gulp = refs.gulp;
@@ -75,13 +74,11 @@ module.exports = function(refs) {
 	// }
 
 	// Make the paths absolute to the devdocs module. Not the user's dir.
-	css_source_files = css_source_files.map(function(__path) {
-		return apath(__path);
-	});
+	css_source_files = css_source_files.map(path => $app.rpath(path));
 
 	// Get the postcss plugins' configurations.
-	let AUTOPREFIXER = require(apath("./configs/autoprefixer.json"));
-	let PERFECTIONIST = require(apath("./configs/perfectionist.json"));
+	let AUTOPREFIXER = $app.module("./configs/autoprefixer.json");
+	let PERFECTIONIST = $app.module("./configs/perfectionist.json");
 
 	return pump(
 		[

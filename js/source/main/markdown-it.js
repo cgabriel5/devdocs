@@ -1,14 +1,7 @@
 "use strict";
 
-// Node modules.
-var path = require("path");
-
 // Universal modules.
-let prism = require("prismjs");
-let highlight = require(path.resolve(
-	__APPROOT,
-	"./js/source/main/syntax_highlighter.js"
-));
+let highlight = $app.module("@main/syntax_highlighter.js");
 
 // Get markdown-it and customize module.
 let mdzero = require("markdown-it")({

@@ -16,7 +16,6 @@ module.exports = function(refs) {
 	let debug_flist = refs.debug_flist;
 	let outputpath = refs.outputpath;
 	let initial = refs.initial;
-	let apath = refs.apath;
 	let debug = refs.debug;
 	let jsonc = refs.jsonc;
 	let print = refs.print;
@@ -36,7 +35,7 @@ module.exports = function(refs) {
 
 	// Get uglify configuration.
 	let UGLIFYCONFIG = jsonc.parse(
-		fs.readFileSync(apath("./configs/uglify.cm.json")).toString(),
+		fs.readFileSync($app.rpath("./configs/uglify.cm.json")).toString(),
 		null,
 		true
 	);
@@ -44,13 +43,13 @@ module.exports = function(refs) {
 	return pump(
 		[
 			gulp.src([
-				apath("./js/vendor/httpjs/http.js"),
-				apath("./js/vendor/fastclick/fastclick.js"),
-				apath("./js/vendor/uaparserjs/uaparser.js"),
-				apath("./js/vendor/clipboardjs/clipboard.js"),
-				// apath("./js/vendor/smoothscrolljs/smoothscroll.js"),
-				// apath("./js/vendor/smoothscrolljs/zenscroll.js"),
-				apath("./js/source/app.js")
+				$app.rpath("./js/vendor/httpjs/http.js"),
+				$app.rpath("./js/vendor/fastclick/fastclick.js"),
+				$app.rpath("./js/vendor/uaparserjs/uaparser.js"),
+				$app.rpath("./js/vendor/clipboardjs/clipboard.js"),
+				// $app.rpath("./js/vendor/smoothscrolljs/smoothscroll.js"),
+				// $app.rpath("./js/vendor/smoothscrolljs/zenscroll.js"),
+				$app.rpath("./js/source/app.js")
 			]),
 			// Replace the default output path with the provided one.
 			$.replace(

@@ -1,13 +1,7 @@
 "use strict";
 
-// Node modules.
-var path = require("path");
-
 // Universal modules.
-let highlight = require(path.resolve(
-	__APPROOT,
-	"./js/source/main/syntax_highlighter.js"
-));
+let highlight = $app.module("@main/syntax_highlighter.js");
 
 // Universal modules.
 let marked = require("marked");
