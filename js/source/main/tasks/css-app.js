@@ -34,7 +34,7 @@ module.exports = function(refs) {
 	let autoprefixer = require("autoprefixer");
 	let perfectionist = require("perfectionist");
 	let shorthand = require("postcss-merge-longhand");
-	let csssorter = require("postcss-sorting");
+	// let csssorter = require("postcss-sorting");
 
 	// The CSS file source path.
 	var css_path_source = "css/source/css/";
