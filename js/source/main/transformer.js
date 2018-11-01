@@ -16,6 +16,7 @@ module.exports = function(refs) {
 	let __dir = refs.__dir;
 	let __file = refs.__file;
 	let __path = refs.__path;
+	let config = refs.config;
 	let cheerio = refs.cheerio;
 	let entities = refs.entities;
 	let version = refs.version;
@@ -300,10 +301,13 @@ module.exports = function(refs) {
 					data = `<div class="markdown-body animate-fadein">${data}${timeago_html}</div>`;
 
 					// Add to the object.
+					// var _placeholder = config.data.versions.files.user[fpath];
 					var _placeholder = __dir.contents[`${fpath}`];
 					if (_placeholder && _placeholder === -1) {
 						// Set the actual contents to the data object.
 						__dir.contents[`${fpath}`] = data;
+						// Store file contents in internal files object.
+						config.data.versions.files.user[fpath] = data;
 					}
 
 					if (debug) {

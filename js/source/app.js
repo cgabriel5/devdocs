@@ -1057,7 +1057,29 @@ document.onreadystatechange = function() {
 		// Start the logo/splash animations.
 		classes($splash_icon, "off");
 
-		var __data;
+		// Store all fetched data.
+		var DATA;
+		// Get needed data.
+		var VERSIONS;
+		var LATEST;
+		var VPROCESSED;
+		var FIRST_FILE;
+		var FILES;
+		var INTERNAL_FILES;
+		var USER_FILES;
+		var CBS_FILES;
+		// ------------
+		var COMPONENTS;
+		var SCROLLBARS;
+		var LOGO;
+		var FOOTER;
+		// ------------
+		var SETTINGS;
+		var TITLE;
+		var GITHUB;
+		// ------------
+		var FETCHED;
+		var DIRS;
 
 		// Create a new HTTP request.
 		var req = new http(REQUEST_PATH);
@@ -1084,8 +1106,27 @@ document.onreadystatechange = function() {
 					);
 				}
 			})
-			.then(function(data) {
-				__data = data;
+			.then(function() {
+				// Store first fetched data.
+				DATA = arguments[0];
+				// Get needed data.
+				VERSIONS = DATA.versions;
+				LATEST = VERSIONS.latest;
+				VPROCESSED = VERSIONS.processed;
+				FIRST_FILE = VERSIONS.first_file;
+				FILES = VERSIONS.files;
+				INTERNAL_FILES = FILES.internal;
+				USER_FILES = FILES.user;
+				CBS_FILES = FILES.cbs;
+				// ------------
+				COMPONENTS = DATA.components;
+				SCROLLBARS = COMPONENTS.scrollbars;
+				LOGO = COMPONENTS.logo;
+				FOOTER = COMPONENTS.footer;
+				// ------------
+				SETTINGS = DATA.settings;
+				TITLE = SETTINGS.title;
+				GITHUB = SETTINGS.github;
 
 				// Get the version.
 				var params = parameters();
@@ -1094,7 +1135,7 @@ document.onreadystatechange = function() {
 				var version = params.v;
 				if (!version) {
 					// Get the latest version.
-					version = data.latest;
+					version = LATEST;
 
 					if (!version) {
 						// Reject if no version supplied.
@@ -1137,12 +1178,12 @@ document.onreadystatechange = function() {
 					let version = parameters().v;
 
 					// Get the versions array.
-					var versions = __data.pversions;
+					var versions = VPROCESSED;
 
 					if (versions.length) {
 						// Finally inject the 404 version HTML.
 						$markdown.innerHTML = format(
-							__data.files.internal._404_version,
+							INTERNAL_FILES._404_version,
 							{
 								version: `<code>v${version}</code>`,
 								versions: versions.length
@@ -1171,8 +1212,7 @@ document.onreadystatechange = function() {
 							);
 					} else {
 						// If there are no docs at all show that specific HTML error.
-						$markdown.innerHTML =
-							__data.files.internal._404_missing_docs;
+						$markdown.innerHTML = INTERNAL_FILES._404_missing_docs;
 					}
 
 					// Throw error to stop further code execution.
@@ -1181,24 +1221,21 @@ document.onreadystatechange = function() {
 					);
 				}
 			})
-			.then(function(data) {
+			.then(function() {
 				// Combine the data sets.
-				__data.dirs = data.dirs;
-				__data.html.menu = data.menu;
-				__data.outputpath = data.outputpath;
+				DATA.fetched = arguments[0];
+				// Get needed data.
+				FETCHED = DATA.fetched;
+				DIRS = FETCHED.dirs;
 
 				// Get the file contents.
 				var contents = {};
-				__data.dirs.forEach(function(dir) {
+				DIRS.forEach(function(dir) {
 					contents = Object.assign(contents, dir.contents);
 				});
-				__data.files.user = contents;
-
+				USER_FILES = contents;
 				// Get the first file.
-				__data.first_file = __data.dirs[0].first_file;
-
-				// Reset the var.
-				data = __data;
+				FIRST_FILE = DIRS[0].first_file;
 
 				/**
 				 * Add MacOS scrollbars style sheet.
@@ -1211,7 +1248,7 @@ document.onreadystatechange = function() {
 
 					// Create the stylesheet.
 					var $sheet = stylesheet(
-						data.html.styles_macos_sb.join(""),
+						SCROLLBARS.macos.join(""),
 						"dd/mac-scrollbars"
 					);
 
@@ -1228,23 +1265,23 @@ document.onreadystatechange = function() {
 				}, 100);
 
 				// Set the title if provided.
-				if (data.title) {
-					document.title = data.title;
+				if (TITLE) {
+					document.title = TITLE;
 
 					// Set the topbar information.
-					$crumbs_folder.textContent = data.title;
+					$crumbs_folder.textContent = TITLE;
 				}
 
 				// Note: Pre-load logo to prevent "blinking in".
 				return new Promise(function(resolve, reject) {
 					// Get the logo source/SVG data object.
-					var logo = data.logo;
+					var logo = COMPONENTS.logo;
 
 					// Load image if provided in data object.
 					if (logo) {
 						// If an SVG is provided...
 						if (typeof logo === "object") {
-							resolve(data);
+							resolve(DATA);
 						} else {
 							// Create HTMLImageElement instance for non SVG image.
 							var $image = new Image();
@@ -1256,7 +1293,7 @@ document.onreadystatechange = function() {
 								var h = this.height;
 
 								// Reset the logo data.
-								data.logo = {
+								COMPONENTS.logo = {
 									width: w,
 									height: h,
 									src: logo,
@@ -1266,7 +1303,7 @@ document.onreadystatechange = function() {
 											: w > h ? "landscape" : "portrait"
 								};
 
-								resolve(data);
+								resolve(DATA);
 							};
 							$image.onerror = function() {
 								reject();
@@ -1278,14 +1315,14 @@ document.onreadystatechange = function() {
 					} else {
 						// If the data object does not contain an image simply
 						// resolve the promise to continue with the chain.
-						resolve(data);
+						resolve(DATA);
 					}
 				}).then(null, function() {
 					return Promise.reject("Failed to load logo.");
 				});
 			})
-			.then(function(data) {
-				// console.log(data);
+			.then(function() {
+				// console.log(DATA);
 
 				// Animate the logo.
 				classes($splash_icon, "animate-pulse");
@@ -1931,7 +1968,7 @@ document.onreadystatechange = function() {
 					}
 
 					// Loop over the data dirs to get the file alias.
-					var dirs = data.dirs[0].files;
+					var dirs = DIRS[0].files;
 					for (var i = 0, l = dirs.length; i < l; i++) {
 						if (dirs[i].dirname === filename) {
 							filename = dirs[i].alias;
@@ -2045,16 +2082,16 @@ document.onreadystatechange = function() {
 
 					// Default to the first file when one does not exist.
 					if (!current_file) {
-						current_file = data.first_file;
+						current_file = FIRST_FILE;
 					}
 
 					// Get the file content.
-					var file = data.files.user[filename];
+					var file = USER_FILES[filename];
 
 					// Show 404 file when selected file does not exist.
 					if (!file) {
 						var error_404 = "_404";
-						file = data.files.internal[error_404];
+						file = INTERNAL_FILES[error_404];
 						filename = error_404;
 					}
 
@@ -2167,8 +2204,7 @@ document.onreadystatechange = function() {
 
 							if (!$ul) {
 								// Embed the current sub-menu list.
-								var dirs =
-									data.dirs[id.split(".")[0] * 1 - 1].files;
+								var dirs = DIRS[id.split(".")[0] * 1 - 1].files;
 								for (var i = 0, l = dirs.length; i < l; i++) {
 									var dir = dirs[i];
 									if (dir.dirname === filename) {
@@ -2267,7 +2303,7 @@ document.onreadystatechange = function() {
 											replace_html(file);
 
 											// Show the current filename.
-											inject_filename(current_file, data);
+											inject_filename(current_file, DATA);
 
 											// Get the hash.
 											let hash = location.hash;
@@ -2327,7 +2363,7 @@ document.onreadystatechange = function() {
 						replace_html(file);
 
 						// Show the current filename.
-						inject_filename(current_file, data);
+						inject_filename(current_file, DATA);
 
 						// Get the hash.
 						let hash = location.hash;
@@ -2460,7 +2496,7 @@ document.onreadystatechange = function() {
 					);
 
 					// Get the footer HTML.
-					let footer_html = data.html.footer || "";
+					let footer_html = COMPONENTS.footer || "";
 
 					// Insert the HTML.
 					$footer_ddwrap.insertAdjacentHTML(
@@ -2634,31 +2670,20 @@ document.onreadystatechange = function() {
 				// Enclose in a timeout to give the loader a chance to fade away.
 				setTimeout(function() {
 					// Get the logo source/SVG data object.
-					var logo = data.logo;
+					var logo = COMPONENTS.logo;
 
 					// Embed the logo to the page if it exists.
 					if (logo) {
-						// Get the GitHub account information.
-						var github = Object.assign(
-							{
-								// Defaults.
-								account_username: "",
-								project_name: ""
-							},
-							data.github
-						);
-
-						// Get the GitHub information.
-						var uname = github.account_username;
-						var pname = github.project_name;
+						// Get the GitHub project URL.
+						var project_url = GITHUB.project_url;
 
 						// Vars.
 						var link_start = "",
 							link_end = "";
 
 						// Make the link HTML if the GitHub info exists.
-						if (uname && pname) {
-							link_start = `<a href="https://github.com/${uname}/${pname}/" target="_blank">`;
+						if (project_url) {
+							link_start = `<a href="${project_url}" target="_blank">`;
 							link_end = "</a>";
 						}
 
@@ -2713,13 +2738,13 @@ document.onreadystatechange = function() {
 					// Get the version.
 					var params = parameters();
 					// Get the version.
-					var version = params.v || data.latest;
+					var version = params.v || LATEST;
 
 					// Show the versions container.
 					classes($versions, "!none");
 					// Add the versions.
-					var versions = data.pversions;
-					var latest = data.latest;
+					var versions = VPROCESSED;
+					var latest = LATEST;
 					var versions_html = [];
 					versions.forEach(function(v) {
 						versions_html.push(
@@ -2752,7 +2777,7 @@ document.onreadystatechange = function() {
 					// Add the sidebar HTML.
 					document.getElementById(
 						"menu-dynamic-cont"
-					).innerHTML = data.html.menu.join("");
+					).innerHTML = FETCHED.menu.join("");
 
 					// [https://davidwalsh.name/nodelist-array]
 					$l_2 = Array.prototype.slice.call(
@@ -2769,7 +2794,7 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					show_tb_loader();
-					inject(params.p ? params.p : data.first_file);
+					inject(params.p ? params.p : FIRST_FILE);
 				}, 500);
 
 				// EventListeners:Scoped:Inner //
@@ -2786,7 +2811,7 @@ document.onreadystatechange = function() {
 					// inject function the page parameter or default to the
 					// first file when the page parameter does not exist.
 					show_tb_loader();
-					inject(params.p ? params.p : data.first_file);
+					inject(params.p ? params.p : FIRST_FILE);
 				});
 
 				// When the URL changes (history) update the HTML content.
@@ -2882,9 +2907,7 @@ document.onreadystatechange = function() {
 
 								// Get the original code block text.
 								return (
-									__data.cb_orig_text[current_file][gid][
-										index
-									] || ""
+									CBS_FILES[current_file][gid][index] || ""
 								);
 							}
 						});
@@ -3398,7 +3421,7 @@ document.onreadystatechange = function() {
 						).parentNode.parentNode;
 					} else if (clist.contains("btn-home")) {
 						// Get the data-attribute.
-						filename = data.first_file;
+						filename = FIRST_FILE;
 
 						// Reset the target element.
 						$target = document.querySelector(
@@ -4230,7 +4253,7 @@ document.onreadystatechange = function() {
 							// Reset the link-docs.
 
 							// Get the GitHub data.
-							var github = data.github;
+							var github = GITHUB;
 
 							// Get the links.
 							var $links = [].slice.call(
@@ -4325,9 +4348,8 @@ document.onreadystatechange = function() {
 
 									// Get the original code block text.
 									return (
-										__data.cb_orig_text[current_file][gid][
-											index
-										] || ""
+										CBS_FILES[current_file][gid][index] ||
+										""
 									);
 								}
 							});

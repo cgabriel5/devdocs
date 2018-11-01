@@ -73,7 +73,7 @@ module.exports = function(refs) {
 			var ver = item.replace(/^data-|.json$/g, "");
 
 			// Check whether the version is in the versions array.
-			return !config.pversions.includes(ver);
+			return !config.data.versions.processed.includes(ver);
 		})
 		.map(function(item) {
 			return `${dd_path}zdata/${item}`;

@@ -5,7 +5,6 @@ let path = require("path");
 
 module.exports = function(refs) {
 	// Get needed refs.
-	let dirs = refs.dirs;
 	let root = refs.root;
 	let chalk = refs.chalk;
 	let debug = refs.debug;
@@ -19,7 +18,6 @@ module.exports = function(refs) {
 	let templates = refs.templates;
 	let transformer = refs.transformer;
 	let process_versions = refs.process_versions;
-	let cb_orig_text = refs.cb_orig_text;
 
 	// Loop over version objects to generate the HTML files from Markdown.
 	versions.forEach(function(vdata) {
@@ -40,23 +38,23 @@ module.exports = function(refs) {
 					)
 				);
 				// Store skipped version.
-				config.sversions.push(version);
+				config.data.versions.skipped.push(version);
 				return;
 			} else {
 				// Show currently processing version.
+				config.data.versions.processed.push(version);
 				print.gulp.info(
 					chalk(`PROCESSING → ${chalk.magenta(version)}`)
 				);
 			}
 		}
 
-		// Store the version.
-		config.pversions.push(version);
-
+		// Store directories in groups.
 		var gdir = [];
 		gdir.version = version;
-		dirs.push(gdir);
+		config.data.versions.dirs.push(gdir);
 
+		// Loop over all directory objects.
 		directories.forEach(function(directory, index) {
 			// Create an object to store all directory information.
 			let __dir = {};
@@ -113,10 +111,10 @@ module.exports = function(refs) {
 				let fpath = `${dirname}/${file}`;
 
 				// Store file path in object.
-				if (!cb_orig_text[fpath]) {
+				if (!config.data.versions.files.cbs[fpath]) {
 					// If the file path does not exist, add it. Object will
 					// contain all original code block text.
-					cb_orig_text[fpath] = {};
+					config.data.versions.files.cbs[fpath] = {};
 				}
 
 				// Store the file information.
@@ -153,8 +151,8 @@ module.exports = function(refs) {
 				}
 
 				// Store the first file.
-				if (!__dir.first_file) {
-					__dir.first_file = `${fpath}`;
+				if (!config.data.versions.first_file) {
+					config.data.versions.first_file = `${fpath}`;
 				}
 
 				// Placehold the eventual file before parsed/modified/worked on contents. Once the

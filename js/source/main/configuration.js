@@ -13,17 +13,6 @@ let outputpath_filename = argv.name || argv.n;
 // Load/modify configuration.
 let config = require(configpath || $app.module("@main/get_config_path.js"));
 
-// Add an object to store the converted Markdown to HTML content.
-config.files = {
-	// Add the 404 error objects to internal files object.
-	internal: Object.assign({}, $app.module("@main/templates/404.js")),
-	user: {}
-};
-// Add an object to store HTML structures.
-config.html = {};
-// Add the MacOS scrollbar styles:
-config.html.styles_macos_sb = $app.module("@main/templates/scrollbars.js");
-
 // Honor the CLI outputpath parameter but if nothing is provided reset the
 // value to the config given value. If nothing is found in the config file
 // then default to the default devdocs folder.
@@ -37,13 +26,39 @@ if (!outputpath_filename) {
 // Set the output path/file information.
 config.outputpath = outputpath;
 config.outputpath_filename = outputpath_filename;
-// Store the versions.
-config.pversions = []; // Processed versions.
-config.sversions = []; // Skipped versions.
-// All processed directory data will be contained in this array.
-config.pdirs = [];
-// Store the original code blocks' text.
-config.cb_orig_text = {};
+
+// JSON data structure.
+config.data = {
+	versions: {
+		first_file: "",
+		latest: config.latest,
+		skipped: [], // Skipped versions.
+		processed: [], // Processed versions.
+		dirs: [],
+		files: {
+			// Add the 404 error objects to internal files object.
+			internal: Object.assign({}, $app.module("@main/templates/404.js")),
+			user: {
+				// Contain the HTML content and its respective original code blocks.
+			},
+			// Store the original code blocks' text.
+			cbs: {}
+		}
+	},
+	settings: {
+		animations: config.animations,
+		title: config.title
+		// github: ""
+	},
+	components: {
+		scrollbars: {
+			// Add the MacOS scrollbar styles:
+			macos: $app.module("@main/templates/scrollbars.js")
+		},
+		footer: null,
+		logo: config.logo
+	}
+};
 
 // Make the output folder structure.
 mkdirp.sync(outputpath);

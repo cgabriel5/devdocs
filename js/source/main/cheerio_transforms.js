@@ -6,6 +6,7 @@ module.exports = function(refs, name) {
 	let $ = refs.cheerio;
 	let root = refs.root;
 	let fpath = refs.fpath;
+	let config = refs.config;
 	let format = refs.format;
 	let slugify = refs.slugify;
 	let entities = refs.entities;
@@ -13,7 +14,6 @@ module.exports = function(refs, name) {
 	let dehashify = refs.dehashify;
 	let templates = refs.templates;
 	let __headings = refs.__headings;
-	let cb_orig_text = refs.cb_orig_text;
 	let details_lookup = refs.details_lookup;
 	let details_counter = refs.details_counter;
 	let line_highlighter = refs.line_highlighter;
@@ -458,7 +458,7 @@ module.exports = function(refs, name) {
 					);
 
 					// Get the file path object.
-					var obj = cb_orig_text[fpath];
+					var obj = config.data.versions.files.cbs[fpath];
 					// If the group Id does not exist,
 					// create the containing object.
 					if (!obj.hasOwnProperty(uid)) {

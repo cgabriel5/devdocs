@@ -17,26 +17,30 @@ module.exports = function(refs) {
 	let remove_space = refs.remove_space;
 	let debug_flist = refs.debug_flist;
 	let outputpath = refs.outputpath;
-	let versions = refs.versions;
 	let config = refs.config;
 	let footer = refs.footer;
 	let debug = refs.debug;
 	let print = refs.print;
-	let dirs = refs.dirs;
 	let gulp = refs.gulp;
 	let done = refs.cb;
 	let $ = refs.$;
 
 	// Add other needed config data to config object.
-	config.html.footer = footer;
+	config.data.components.footer = footer;
+
+	// Get needed config data.
+	var vprocessed = config.data.versions.processed;
+	var vskipped = config.data.versions.skipped;
+	var latest = config.data.versions.latest;
+	var dirs = config.data.versions.dirs;
 
 	// If the latest version is not one of the processed version, throw
 	// an error message.
 	if (debug) {
-		if (!config.pversions.includes(config.latest)) {
+		if (!vprocessed.includes(latest)) {
 			print.gulp.warn(
 				"The latest version:",
-				chalk.magenta(config.latest),
+				chalk.magenta(latest),
 				"was not one of the processed versions:"
 			);
 		}
@@ -46,8 +50,8 @@ module.exports = function(refs) {
 		print(chalk.underline("Processed versions"));
 
 		// Log versions.
-		if (config.pversions.length) {
-			config.pversions.forEach(function(item) {
+		if (vprocessed.length) {
+			vprocessed.forEach(function(item) {
 				print(`  ${item}`);
 			});
 		} else {
@@ -60,8 +64,8 @@ module.exports = function(refs) {
 		print(chalk.underline("Skipped versions"));
 
 		// Log versions.
-		if (config.sversions.length) {
-			config.sversions.forEach(function(item) {
+		if (vskipped.length) {
+			vskipped.forEach(function(item) {
 				print(`  ${item}`);
 			});
 		} else {
@@ -76,7 +80,7 @@ module.exports = function(refs) {
 	pump(
 		[
 			// Create the file via gulp-file and use is at the Gulp.src.
-			$.file(outputpath_filename, JSON.stringify(config, null, 4), {
+			$.file(outputpath_filename, JSON.stringify(config.data, null, 4), {
 				src: true
 			}),
 			$.gulpif(

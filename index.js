@@ -107,8 +107,6 @@ let modifier = config.modifier;
 // let animations = config.animations;
 let outputpath = config.outputpath;
 let outputpath_filename = config.outputpath_filename;
-let cb_orig_text = config.cb_orig_text;
-let dirs = config.pdirs;
 // If debug flag was not supplied via the CL, look for it in the config file.
 debug = typeof debug === "boolean" ? debug : get(config, "debug", false);
 // If process_versions flag was not supplied via the CL, look for it in the config file.
@@ -137,7 +135,6 @@ var refs = {
 	$,
 	cwd,
 	now,
-	dirs,
 	gulp,
 	chalk,
 	debug,
@@ -166,7 +163,6 @@ var refs = {
 	id,
 	root,
 	ctags,
-	process_versions,
 	findup,
 	marked,
 	mdzero,
@@ -179,9 +175,9 @@ var refs = {
 	versions,
 	dehashify,
 	highlight,
-	cb_orig_text,
 	regexp_index,
 	line_highlighter,
+	process_versions,
 	add_commas_to_num,
 	string_index_insert,
 	remove_html_comments

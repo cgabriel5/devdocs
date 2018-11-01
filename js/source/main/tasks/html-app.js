@@ -30,7 +30,7 @@ module.exports = function(refs) {
 		var file = `_404${files[i]}`;
 
 		// Get internal files object.
-		var ifiles = config.files.internal;
+		var ifiles = config.data.versions.files.internal;
 		// Format file contents.
 		ifiles[file] = format(ifiles[file], {
 			dir_path: __path

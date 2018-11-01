@@ -6,7 +6,7 @@ let get = require("object-path-get");
 module.exports = function(config) {
 	// Get needed config data.
 	let footer = get(config, "footer", []);
-	let titlen = get(config, "title", "devdocs");
+	let title = get(config, "title", "devdocs");
 	// Get GitHub account information.
 	let github = Object.assign(
 		{
@@ -121,14 +121,25 @@ module.exports = function(config) {
 	// GitHub information.
 	let uname = github.account_username;
 	let pname = github.project_name;
+	let project_url = `https://github.com/${uname}/${pname}/`;
+
+	// Store GitHub information.
+	config.data.settings.github = {
+		account_username: github.account_username,
+		project_name: github.project_name,
+		project_url: null
+	};
 
 	// Make the link HTML if the GitHub info exists.
 	if (uname && pname) {
+		// Store GitHub information.
+		config.data.settings.github.project_url = project_url;
+
 		// Add copyright HTML.
 		footer_html.push(
-			`<div class="copyright"><a href="https://github.com/${uname}/${pname}/" target="_blank">© ${new Date(
+			`<div class="copyright"><a href="${project_url}" target="_blank">© ${new Date(
 				Date.now()
-			).getFullYear()} ${titlen}</a></div>`
+			).getFullYear()} ${title}</a></div>`
 		);
 	}
 
