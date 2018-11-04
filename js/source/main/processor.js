@@ -1,7 +1,11 @@
 "use strict";
 
 // Node modules.
+let fs = require("fs");
 let path = require("path");
+
+// Universal modules.
+let fe = require("file-exists");
 
 module.exports = function(refs) {
 	// Get needed refs.
@@ -16,14 +20,38 @@ module.exports = function(refs) {
 	let promises = refs.promises;
 	let versions = refs.versions;
 	let templates = refs.templates;
+	let outputpath = refs.outputpath;
 	let transformer = refs.transformer;
 	let process_versions = refs.process_versions;
+
+	// Check whether first run time file exists. If the file exists get the
+	// file content, which is the timestamp of the last run. If the file does
+	// not exist then use the current timestamp as the latest time.
+	let runtime_filepath = path.join(outputpath, "._rants.text");
+	let last_run_file = fe.sync(runtime_filepath);
+	let last_run_time = last_run_file
+		? fs.readFileSync(runtime_filepath, "utf8")
+		: Date.now();
+	// Add the value to the refs object for later access.
+	refs.last_run_time = last_run_time;
+	refs.last_run_file = last_run_file;
+	refs.data_files = {};
 
 	// Loop over version objects to generate the HTML files from Markdown.
 	versions.forEach(function(vdata) {
 		// Get version and directories.
 		let version = Object.keys(vdata)[0];
 		let directories = vdata[version];
+
+		// Check if a data files exists for the current version. If so, get
+		// the contents of said file.
+		let data_file_path = `${outputpath}zdata/data-${version}.json`;
+		if (fe.sync(data_file_path)) {
+			// Get the file contents.
+			refs.data_files[version] = JSON.parse(
+				fs.readFileSync(data_file_path, "utf8")
+			);
+		}
 
 		// When the process_versions flag is provided only generate docs for
 		// the versions contained within the flag. Otherwise, skip it and

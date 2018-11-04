@@ -19,16 +19,20 @@ module.exports = function(refs) {
 	let __path = refs.__path;
 	let config = refs.config;
 	let cheerio = refs.cheerio;
-	let entities = refs.entities;
+	let initial = refs.initial;
 	let version = refs.version;
+	let entities = refs.entities;
 	let renderer = refs.renderer;
 	let timedate = refs.timedate;
 	let highlight = refs.highlight;
 	let templates = refs.templates;
+	let data_files = refs.data_files;
 	let counter_dir = refs.counter_dir;
 	let ctransforms = refs.ctransforms;
 	let counter_file = refs.counter_file;
 	let regexp_index = refs.regexp_index;
+	let last_run_time = refs.last_run_time;
+	let last_run_file = refs.last_run_file;
 	let preplacements = refs.preplacements;
 	let remove_html_comments = refs.remove_html_comments;
 	let string_index_insert = refs.string_index_insert;
@@ -57,7 +61,7 @@ module.exports = function(refs) {
 					]);
 				}
 
-				// Create a start timestamp.
+				// Create start time.
 				let startt = timer();
 
 				// Get the timeago modification time.
@@ -67,6 +71,56 @@ module.exports = function(refs) {
 					d1: mtime,
 					d2: timedate(mtime, false, ", ")
 				});
+
+				// NOTE: If the file has not been updated since the last
+				// devdocs run, use the cached output instead of re-running
+				// the transformer on the file again. Check for cached file
+				// data.
+				if (last_run_file && !initial) {
+					// If the last run time is newer than the modified file
+					// time get the cached value.
+					let dataobject = data_files[version];
+					if (mtime < last_run_time && dataobject) {
+						// Get the cached file data.
+						let dirs = dataobject.dirs;
+						// Loop over each directory.
+						for (let i = 0, l = dirs.length; i < l; i++) {
+							// Cache current loop item.
+							let dir = dirs[i];
+							let fcontents = dir.contents;
+							let files = dir.files;
+
+							// Description...
+							for (let j = 0, ll = files.length; j < ll; j++) {
+								// Cache current loop item.
+								let file = files[j];
+
+								if (file.dirname === fpath) {
+									// Store the file information.
+									__file.html = file.html;
+									__file.headings = file.headings;
+									__dir.contents[file.dirname] =
+										fcontents[file.dirname];
+
+									if (debug) {
+										print.gulp.info(
+											"Processed*",
+											chalk.magenta(fpath),
+											chalk.gray(`(${version})`),
+											chalk.green(timer(startt))
+										);
+									}
+
+									return resolve([
+										__path,
+										file.contents,
+										file.headings
+									]);
+								}
+							}
+						}
+					}
+				}
 
 				// Remove HTML comments as having comments close
 				// to markup causes marked to parse them :/.
