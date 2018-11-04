@@ -21,9 +21,13 @@ module.exports = function(refs) {
 	let footer = refs.footer;
 	let debug = refs.debug;
 	let print = refs.print;
+	let timer = refs.timer;
 	let gulp = refs.gulp;
 	let done = refs.cb;
 	let $ = refs.$;
+
+	// Create start time.
+	let startt = timer();
 
 	// Add other needed config data to config object.
 	config.data.components.footer = footer;
@@ -97,7 +101,8 @@ module.exports = function(refs) {
 				print.gulp.info(
 					"Saved",
 					chalk.magenta(`${path.join(__path, outputpath_filename)}`),
-					"(main data file)"
+					"(main data file)",
+					chalk.green(timer(startt))
 				);
 			}
 
@@ -162,7 +167,8 @@ module.exports = function(refs) {
 								print.gulp.info(
 									"Saved",
 									chalk.magenta(`${outputpath}`),
-									"(version data file)"
+									"(version data file)",
+									chalk.green(timer(startt))
 								);
 							}
 
@@ -178,7 +184,8 @@ module.exports = function(refs) {
 					function(/*values*/) {
 						if (debug) {
 							print.gulp.info(
-								"All data/version promises completed."
+								"All data/version promises completed.",
+								chalk.green(timer(startt))
 							);
 						}
 
@@ -186,7 +193,8 @@ module.exports = function(refs) {
 					},
 					function(err) {
 						print.gulp.error(
-							"Failed to save data/versions JSON files."
+							"Failed to save data/versions JSON files.",
+							chalk.green(timer(startt))
 						);
 						print(err);
 					}

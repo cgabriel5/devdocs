@@ -2,11 +2,11 @@
 
 module.exports = function(refs) {
 	// Get needed refs.
-	let now = refs.now;
 	var gulp = refs.gulp;
 	let chalk = refs.chalk;
 	let debug = refs.debug;
 	let print = refs.print;
+	let timer = refs.timer;
 	let notify = refs.notify;
 	let tstart = refs.tstart;
 	let promises = refs.promises;
@@ -89,9 +89,7 @@ module.exports = function(refs) {
 						if (debug) {
 							print.gulp.success(
 								"Documentation generated.",
-								chalk.green(
-									((now() - tstart) / 1000).toFixed(2) + "s"
-								)
+								chalk.green(timer(tstart))
 							);
 						}
 

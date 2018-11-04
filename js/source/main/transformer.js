@@ -10,6 +10,7 @@ module.exports = function(refs) {
 	let debug = refs.debug;
 	let fpath = refs.fpath;
 	let print = refs.print;
+	let timer = refs.timer;
 	let format = refs.format;
 	let marked = refs.marked;
 	let mdzero = refs.mdzero;
@@ -55,6 +56,9 @@ module.exports = function(refs) {
 						err
 					]);
 				}
+
+				// Create a start timestamp.
+				let startt = timer();
 
 				// Get the timeago modification time.
 				var mtime = Math.round(stats.mtimeMs);
@@ -314,7 +318,8 @@ module.exports = function(refs) {
 						print.gulp.info(
 							"Processed",
 							chalk.magenta(fpath),
-							chalk.gray(`(${version})`)
+							chalk.gray(`(${version})`),
+							chalk.green(timer(startt))
 						);
 					}
 

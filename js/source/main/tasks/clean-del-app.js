@@ -16,9 +16,13 @@ module.exports = function(refs) {
 	let config = refs.config;
 	let debug = refs.debug;
 	let print = refs.print;
+	let timer = refs.timer;
 	let gulp = refs.gulp;
 	let cwd = refs.cwd;
 	let done = refs.cb;
+
+	// Create start time.
+	let startt = timer();
 
 	// Skip task logic if initial flag is not set.
 	if (!initial) {
@@ -96,5 +100,13 @@ module.exports = function(refs) {
 			// Reset path to relative path.
 			return path.relative(cwd, item);
 		});
+
+		//
+		if (debug) {
+			print.gulp.info(
+				"Removed old devdocs files.",
+				chalk.green(timer(startt))
+			);
+		}
 	});
 };

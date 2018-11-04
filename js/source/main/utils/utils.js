@@ -296,6 +296,59 @@ var timedate = function(timestamp, format12, delimiter, cb) {
 	return `${year}-${month}-${day}${delimiter}${hour}:${min}:${sec}`;
 };
 
+/**
+ * A performance timer. Tries to use performance-now, if installed, or hrtime
+ *     if not.
+ *
+ * @param  {number|array} start - Hrtime or performance-now value.
+ * @param  {string} suffix - Optional suffix. Defaults to "s" for seconds.
+ * @return {string} - The time difference.
+ *
+ * @resource [https://stackoverflow.com/a/34970550]
+ * @resource [https://nodejs.org/api/process.html#process_process_hrtime_time]
+ */
+var timer = function(start, suffix) {
+	// Vars.
+	var fn;
+	var is_perfnow_module;
+	var diff;
+
+	// Use performance-now module if installed. Else default to hrtime.
+	try {
+		fn = require("performance-now");
+		// Set flag.
+		is_perfnow_module = true;
+	} catch (e) {
+		fn = process.hrtime;
+	}
+
+	// If no start time, return a time value.
+	if (!start) {
+		return fn();
+	}
+
+	// Calculate the difference.
+	if (is_perfnow_module) {
+		// Make the end time.
+		let end = fn();
+		// Calculate the difference in times.
+		diff = (end - start) / 1000;
+	} else {
+		// Make the end time.
+		let end = fn(start);
+		// Calculate the difference in times.
+		diff = Math.round(end[0] * 1000 + end[1] / 1000000) / 1000;
+	}
+
+	// If false is provided as the suffix, leave it empty. Else if a string
+	// is provided use that. If nothing is given default to "s" for seconds.
+	let suff =
+		suffix === false ? "" : typeof suffix === "string" ? suffix : "s";
+
+	// Fix the difference to 2 decimals and return.
+	return `${diff.toFixed(2)}${suff}`;
+};
+
 // Export functions.
 exports.string_index_insert = string_index_insert;
 exports.slugify = slugify;
@@ -308,3 +361,4 @@ exports.apath = apath;
 exports.id = id;
 exports.regexp_index = regexp_index;
 exports.timedate = timedate;
+exports.timer = timer;

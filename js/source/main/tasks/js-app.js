@@ -6,6 +6,7 @@ let fs = require("fs");
 
 // Universal modules.
 let pump = require("pump");
+let chalk = require("chalk");
 
 /**
  * Process any SASS files into their CSS equivalents.
@@ -19,10 +20,14 @@ module.exports = function(refs) {
 	let debug = refs.debug;
 	let jsonc = refs.jsonc;
 	let print = refs.print;
+	let timer = refs.timer;
 	let gulp = refs.gulp;
 	let cwd = refs.cwd;
 	let done = refs.cb;
 	let $ = refs.$;
+
+	// Create start time.
+	let startt = timer();
 
 	// Skip task logic if initial flag is not set.
 	if (!initial) {
@@ -72,7 +77,7 @@ module.exports = function(refs) {
 		],
 		function() {
 			if (debug) {
-				print.gulp.info("Bundled JS file.");
+				print.gulp.info("Bundled JS file.", chalk.green(timer(startt)));
 			}
 		}
 	);

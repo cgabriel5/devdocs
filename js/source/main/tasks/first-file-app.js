@@ -14,7 +14,11 @@ module.exports = function(refs) {
 	let timeago = refs.timeago;
 	let debug = refs.debug;
 	let print = refs.print;
+	let timer = refs.timer;
 	let done = refs.cb;
+
+	// Create start time.
+	let startt = timer();
 
 	// Reset output path.
 	outputpath = path.join(outputpath, "._rants.text");
@@ -57,7 +61,8 @@ module.exports = function(refs) {
 			print.gulp.info(
 				file_exists ? "Updated" : "Saved",
 				chalk.magenta(outputpath),
-				"(first-time file)"
+				"(first-time file)",
+				chalk.green(timer(startt))
 			);
 		}
 

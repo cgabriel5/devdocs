@@ -50,6 +50,7 @@ let add_commas_to_num = autils.add_commas_to_num;
 let id = autils.id;
 let regexp_index = autils.regexp_index;
 let timedate = autils.timedate;
+let timer = autils.timer;
 
 // Gulp utils.
 let gutils = $app.module("@gutils/utils.js");
@@ -63,7 +64,6 @@ let globall = gutils.globall;
 let chalk = require("chalk");
 let findup = require("find-up");
 let jsonc = require("comment-json");
-let now = require("performance-now");
 let get = require("object-path-get");
 let sequence = require("run-sequence");
 let cheerio = require("cheerio");
@@ -74,7 +74,7 @@ let remove_html_comments = require("remove-html-comments");
 
 // App variables.
 // Store performance timestamp to later calculate docs render time.
-let tstart = now();
+let tstart = timer();
 
 // Lazy load Gulp plugins.
 let $ = require("gulp-load-plugins")({
@@ -134,7 +134,6 @@ let ctransforms = $app.module("@main/cheerio_transforms.js");
 var refs = {
 	$,
 	cwd,
-	now,
 	gulp,
 	chalk,
 	debug,
@@ -163,6 +162,7 @@ var refs = {
 	id,
 	root,
 	ctags,
+	timer,
 	findup,
 	marked,
 	mdzero,

@@ -5,6 +5,7 @@ let path = require("path");
 
 // Universal modules.
 let pump = require("pump");
+let chalk = require("chalk");
 
 /**
  * Process any SASS files into their CSS equivalents.
@@ -16,9 +17,13 @@ module.exports = function(refs) {
 	let globall = refs.globall;
 	let debug = refs.debug;
 	let print = refs.print;
+	let timer = refs.timer;
 	let gulp = refs.gulp;
 	let done = refs.cb;
 	let $ = refs.$;
+
+	// Create start time.
+	let startt = timer();
 
 	return pump(
 		[
@@ -29,7 +34,10 @@ module.exports = function(refs) {
 		],
 		function() {
 			if (debug) {
-				print.gulp.info("Copied needed font files.");
+				print.gulp.info(
+					"Copied needed font files.",
+					chalk.green(timer(startt))
+				);
 			}
 
 			done();

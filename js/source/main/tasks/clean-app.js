@@ -32,10 +32,6 @@ module.exports = function(refs) {
 				$.debug.edit({ loader: false, title: "removed files..." })
 			)
 		],
-		function() {
-			if (debug) {
-				print.gulp.info("Removed old devdocs files.");
-			}
-		}
+		function() {}
 	);
 };
