@@ -239,6 +239,31 @@ document.onreadystatechange = function() {
 					// [https://github.com/component/ease/blob/master/index.js#L72]
 					// [https://kodhus.com/easings/]
 					function(n) {
+						// List of possible easing functions.
+
+						// [outExpo]
+						// return 1 == n ? n : 1 - Math.pow(2, -10 * n);
+
+						// [inOutExpo]
+						// if (0 == n) return 0;
+						// if (1 == n) return 1;
+						// if ((n *= 2) < 1) return .5 * Math.pow(1024, n - 1);
+						// return .5 * (-Math.pow(2, -10 * (n - 1)) + 2);
+
+						// [inOutCirc]
+						// n *= 2
+						// if (n < 1) return -0.5 * (Math.sqrt(1 - n * n) - 1);
+						// return 0.5 * (Math.sqrt(1 - (n -= 2) * n) + 1);
+
+						// [outQuint]
+						// return --n * n * n * n * n + 1;
+
+						// [inOutQuint]
+						// n *= 2;
+						// if (n < 1) return 0.5 * n * n * n * n * n;
+						// return 0.5 * ((n -= 2) * n * n * n * n + 2);
+
+						// [outCube]
 						return --n * n * n + 1;
 					},
 				noop = function() {},
