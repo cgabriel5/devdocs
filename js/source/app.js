@@ -2038,7 +2038,7 @@ document.onreadystatechange = function() {
 						sidebar_menu_scroll = animate({
 							from: $sidebar.scrollTop,
 							to: $new_current.nextElementSibling.offsetTop + 15,
-							duration: 300,
+							duration: 700,
 							onSkip: function() {
 								// Get visibility information.
 								var inview = is_in_view(
@@ -2123,7 +2123,7 @@ document.onreadystatechange = function() {
 										""
 									) * 1,
 								to: 0,
-								duration: 250,
+								duration: 350,
 								onSkip: function() {
 									if (!$ul) {
 										return true;
@@ -2243,7 +2243,7 @@ document.onreadystatechange = function() {
 							animate({
 								from: 0,
 								to: height,
-								duration: 300,
+								duration: 400,
 								onProgress: function(val) {
 									$ul.style.height = `${val}px`;
 								},
@@ -2264,7 +2264,7 @@ document.onreadystatechange = function() {
 										to:
 											$new_current.nextElementSibling
 												.offsetTop + 15,
-										duration: 300,
+										duration: 700,
 										onSkip: function() {
 											// Get visibility information.
 											var inview = is_in_view(
@@ -3173,7 +3173,7 @@ document.onreadystatechange = function() {
 						codeblock_scroll = animate({
 							from: $parent.scrollLeft,
 							to: $target.offsetLeft - 7,
-							duration: 225,
+							duration: 725,
 							onProgress: function(val) {
 								$parent.scrollLeft = val;
 							},
