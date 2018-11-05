@@ -159,6 +159,7 @@ module.exports = function(refs, name) {
 
 				// Reset  the element id.
 				$el.attr("id", `${id}-${heading_count}`);
+				$el.attr("name", `${id}-${heading_count}`);
 				$el.attr("href", `${$el.attr().href}-${heading_count}`);
 
 				// Increment the count.
