@@ -1608,17 +1608,17 @@ document.onreadystatechange = function() {
 							// that of the scrollable height. Or else
 							// the animation will take longer to end.
 							// Causing a sense of lag.
-							if (
-								// When scrolling down and percent scrolled
-								// is >= 100 stop animation.
-								Math.round(percent_scrolled()) >= 100 &&
-								Math.sign(meta.from - meta.to) === -1
-							) {
-								// Scroll to the bottom of the page.
-								scroll_to_bottom();
+							// if (
+							// 	// When scrolling down and percent scrolled
+							// 	// is >= 100 stop animation.
+							// 	Math.round(percent_scrolled()) >= 100 &&
+							// 	Math.sign(meta.from - meta.to) === -1
+							// ) {
+							// 	// Scroll to the bottom of the page.
+							// 	scroll_to_bottom();
 
-								return true;
-							}
+							// 	return true;
+							// }
 
 							// Reset the to var if the check for sticky header is set.
 							if (
@@ -1667,12 +1667,25 @@ document.onreadystatechange = function() {
 				// Calculate scroll offset for mobile and desktop views.
 				scroll.offset = function($el) {
 					// Calculate the to y scroll position.
-					return is_mobile_viewport()
+					var offset = is_mobile_viewport()
 						? // For "mobile" size.
 							coors($el.nextElementSibling).pageY -
-								($topbar.clientHeight + $el.clientHeight)
+							($topbar.clientHeight + $el.clientHeight)
 						: // Desktop size.
-							coors($el).pageY - 10;
+							coors($el).pageY;
+
+					// Get the maximum Y page scroll position.
+					var max_y_scroll_pos = max_y_scroll_position();
+
+					// If the offset is more than the max page y scroll
+					// position, reset it
+					if (offset > max_y_scroll_pos) {
+						offset = max_y_scroll_pos;
+					}
+
+					// Reduce the offset by 20 to that it never touched the
+					// ends.
+					return offset - 20;
 				};
 				scroll.animation_handler = function(e) {
 					// Cancel event if no animation is ongoing.
