@@ -199,6 +199,9 @@ module.exports = function(refs) {
 				if (!config.data.versions.first_file) {
 					config.data.versions.first_file = fpath;
 				}
+				if (!__dir.first_file) {
+					__dir.first_file = fpath;
+				}
 
 				// Placehold the eventual file before parsed/modified/worked on contents. Once the
 				// promise is resolved the -1 will be replaced with the actual worked on file contents.
