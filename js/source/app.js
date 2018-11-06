@@ -1059,8 +1059,16 @@ document.onreadystatechange = function() {
 		var format = function(template, data) {
 			return template.replace(/\{\{\#(.*?)\}\}/g, function(match) {
 				match = match.replace(/^\{\{\#|\}\}$/g, "");
-				// If a replacement does not exist, leave the placeholder as is.
-				return data[match] ? data[match] : `{{#${match}}}`;
+				// Lookup replacement value.
+				let lookup = data[match];
+				// If the value is anything but undefined or null then use it as a
+				// substitute. All other values may be used as they will be casted
+				// to strings before replacement. This allows for falsy values
+				// like "0" (zero) and "" (an empty string) to be used as substitute
+				// values.
+				return lookup !== undefined || lookup !== null
+					? String(lookup)
+					: `{{#${match}}}`;
 			});
 		};
 

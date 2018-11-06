@@ -35,7 +35,7 @@ var errors = {
 		title: "Docs Not Found",
 		message: "No docs exist.",
 		// Supply a space to keep the entry blank.
-		content: " "
+		content: ""
 	})
 };
 
