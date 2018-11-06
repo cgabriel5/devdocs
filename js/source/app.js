@@ -1809,6 +1809,11 @@ document.onreadystatechange = function() {
 					if (!$header) {
 						$header = document.querySelector(`a[name='${hhref}']`);
 
+						// If nothing is found skip all together.
+						if (!$header) {
+							return;
+						}
+
 						var $parent = $header.parentNode;
 						// If the parent is a header return that.
 						if (/h\d/i.test($parent.tagName.toLowerCase())) {
@@ -2094,6 +2099,13 @@ document.onreadystatechange = function() {
 							sidebar_menu_scroll.cancel();
 						}
 
+						// If a sidebar menu item does not exist, or if a
+						// sidebar menu item exists but a UL element does
+						// not exist return to skip animation.
+						if (!$new_current || !$new_current.nextElementSibling) {
+							return;
+						}
+
 						// Scroll to the menu item.
 						sidebar_menu_scroll = animate({
 							from: $sidebar.scrollTop,
@@ -2316,6 +2328,17 @@ document.onreadystatechange = function() {
 									// Cancel any current sidebar menu scroll.
 									if (sidebar_menu_scroll) {
 										sidebar_menu_scroll.cancel();
+									}
+
+									// If a sidebar menu item does not exist,
+									// or if a sidebar menu item exists but
+									// a UL element does not exist return to
+									// skip animation.
+									if (
+										!$new_current ||
+										!$new_current.nextElementSibling
+									) {
+										return;
 									}
 
 									// Scroll to the menu item.
