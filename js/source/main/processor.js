@@ -138,6 +138,23 @@ module.exports = function(refs) {
 				// Build the file path.
 				let fpath = `${dirname}/${file}`;
 
+				// NOTE: Stop further processing of file if it's a duplicate.
+				if (
+					__dir.contents[fpath] &&
+					__dir.contents.hasOwnProperty(fpath)
+				) {
+					if (debug) {
+						print.gulp.warn(
+							"Skipped",
+							chalk.magenta(fpath),
+							`(duplicate file, version: ${version}, index: ${index})`
+						);
+					}
+					// Remove the item from the __dir.files array.
+					__dir.files.pop();
+					return;
+				}
+
 				// Store file path in object.
 				if (!config.data.versions.files.cbs[fpath]) {
 					// If the file path does not exist, add it. Object will
