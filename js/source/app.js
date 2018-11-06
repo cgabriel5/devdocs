@@ -1814,6 +1814,29 @@ document.onreadystatechange = function() {
 							return;
 						}
 
+						// If the header is a child of a <details> element,
+						// expand the <details> element before anything.
+						var $details = is_target_el($header, null, function(
+							$p
+						) {
+							// Get the <details> element.
+							if ($p.tagName === "DETAILS") {
+								return $p;
+							}
+						});
+						// If a <details> element exists, try and open it.
+						if ($details && !$details.open) {
+							// Get the <summary> child element.
+							var $summary = $details.getElementsByTagName(
+								"summary"
+							)[0];
+							// If there exists a child <summary> element, open
+							// the <details> element.
+							if ($summary) {
+								$summary.click();
+							}
+						}
+
 						var $parent = $header.parentNode;
 						// If the parent is a header return that.
 						if (/h\d/i.test($parent.tagName.toLowerCase())) {
