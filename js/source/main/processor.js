@@ -169,7 +169,7 @@ module.exports = function(refs) {
 					if (debug) {
 						print.gulp.warn(
 							"Skipped",
-							chalk.magenta(`${fpath}`),
+							chalk.magenta(fpath),
 							"(file not found)"
 						);
 					}
@@ -180,7 +180,7 @@ module.exports = function(refs) {
 
 				// Store the first file.
 				if (!config.data.versions.first_file) {
-					config.data.versions.first_file = `${fpath}`;
+					config.data.versions.first_file = fpath;
 				}
 
 				// Placehold the eventual file before parsed/modified/worked on contents. Once the
@@ -188,7 +188,7 @@ module.exports = function(refs) {
 				// This is done do maintain the file's array order. As promises end once they are
 				// resolved, smaller files end quicker. This sometimes causes for the files to be added
 				// in the wrong order.
-				__dir.contents[`${fpath}`] = -1;
+				__dir.contents[fpath] = -1;
 
 				// Create a Promise for each file. Store to invoke later.
 				promises.push(

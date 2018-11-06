@@ -360,10 +360,10 @@ module.exports = function(refs) {
 
 					// Add to the object.
 					// var _placeholder = config.data.versions.files.user[fpath];
-					var _placeholder = __dir.contents[`${fpath}`];
+					var _placeholder = __dir.contents[fpath];
 					if (_placeholder && _placeholder === -1) {
 						// Set the actual contents to the data object.
-						__dir.contents[`${fpath}`] = data;
+						__dir.contents[fpath] = data;
 						// Store file contents in internal files object.
 						config.data.versions.files.user[fpath] = data;
 					}

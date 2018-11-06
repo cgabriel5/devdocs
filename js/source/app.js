@@ -3122,7 +3122,7 @@ document.onreadystatechange = function() {
 						// Don't store the same hash. Only store if the hash
 						// is different than the current hash.
 						if (href && location.hash !== href) {
-							history.pushState({}, null, `${href}`);
+							history.pushState({}, null, href);
 						}
 
 						return;
@@ -3433,7 +3433,7 @@ document.onreadystatechange = function() {
 							// Don't store the same hash. Only store if the hash
 							// is different than the current hash.
 							if (href && location.hash !== href) {
-								history.pushState({}, null, `${href}`);
+								history.pushState({}, null, href);
 							}
 
 							e.preventDefault();

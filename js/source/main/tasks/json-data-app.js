@@ -166,7 +166,7 @@ module.exports = function(refs) {
 							if (debug) {
 								print.gulp.info(
 									"Saved",
-									chalk.magenta(`${outputpath}`),
+									chalk.magenta(outputpath),
 									"(version data file)",
 									chalk.green(timer(startt))
 								);
