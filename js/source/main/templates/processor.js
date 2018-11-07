@@ -38,7 +38,57 @@ var templates = {
 		<path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z">
 		</path>
 	</svg>`,
-	anchor_link: `<div>{{#d1}}</div><a href="#{{#d2}}" aria-hidden="true" class="anchor" name="{{#d2}}" id="{{#d2}}"><i class="fas fa-link"></i></a>`
+	anchor_link: `<div>{{#d1}}</div><a href="#{{#d2}}" aria-hidden="true" class="anchor" name="{{#d2}}" id="{{#d2}}"><i class="fas fa-link"></i></a>`,
+	l_3: `<li class="l-3" data-title="{{#d1}}"><a class="link link-heading" href="#{{#d2}}" data-file="{{#d3}}">{{#d4}}</a></li>`,
+	cb_group: remove_space(`<div class="cb-group" singleton="true">
+	<div class="cb-top-ui animate-fadein" data-tabs=""></div>
+	<div class="cb-blocks">{{#d1}}</div>
+</div>`),
+	tab: `<span class="tab{{#d1}}{{#d2}}" data-tab-index="{{#d3}}" data-gid="{{#d4}}">{{#d5}}</span>`,
+	tabs: `<div class="tabs" id="cb-tabs-{{#d1}}">{{#d2}}</div>`,
+	actions_right: remove_space(`<div class="actions-right">
+	<span class="btn action collapse none" data-gid="{{#d1}}">
+		<i class="fas fa-minus-square"></i><span>collapse</span>
+	</span>
+	<span class="btn action copy" data-gid="{{#d1}}">
+		<i class="fas fa-clipboard"></i><span>copy</span>
+	</span>
+</div>`),
+	cb_placeholder: remove_space(`<div class="codeblock-placeholder animate-fadein none" data-block-index="{{#d1}}" data-gid="{{#d2}}">
+			<div class="template">
+				<div class="row">
+					<div class="block size-40"></div>
+					<div class="block size-100"></div>
+				</div>
+				<div class="indent row">
+					<div class="block size-40"></div>
+					<div class="block size-130"></div>
+				</div>
+				<div class="indent row">
+					<div class="block size-40"></div>
+					<div class="block size-80"></div>
+					<div class="block size-70"></div>
+				</div>
+				<div class="row">
+					<div class="block size-40"></div>
+					<div class="block size-50"></div>
+				</div>
+			</div>
+			<div class="info">
+				<div>
+					<span class="label">Show block{{#d3}}</span>
+					<div class="details">
+						<i class="fas fa-code"></i> — {{#d4}} lines, {{#d5}} characters
+					</div>
+				</div>
+			</div>
+		</div>`),
+	line_highlight_1: `<div class="line"><span{{#d1}}>{{#d2}}</span></div>`,
+	line_highlight_2: `<div class="line{{#d1}}"> </div>`,
+	cb_name: `<div class="codeblock-name">{{#d1}}</div>`,
+	line_nums: remove_space(`<div class="line-nums hidden-clone">{{#d1}}</div>
+	<div class="line-nums lines">{{#d2}}</div>
+	<div class="line-nums numbers">{{#d3}}</div>`)
 };
 
 // Exports.

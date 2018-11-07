@@ -171,9 +171,12 @@ module.exports = function(refs, name) {
 
 			// Add the second level menu template string.
 			headings.push(
-				`<li class="l-3" data-title="${value}"><a class="link link-heading" href="#${dehashify(
-					id
-				)}${heading_count}" data-file="${fpath}">${otext}</a></li>`
+				format(templates.l_3, {
+					d1: value,
+					d2: `${dehashify(id)}${heading_count}`,
+					d3: fpath,
+					d4: otext
+				})
 			);
 		},
 		reset_hrefs: function(/*i, el*/) {
@@ -229,13 +232,11 @@ module.exports = function(refs, name) {
 			// If not part of a group, continue...
 
 			// Replace the parent with the new HTML content.
-			$parent.replaceWith(`
-		<div class="cb-group" singleton="true">
-			<div class="cb-top-ui animate-fadein" data-tabs=""></div>
-			<div class="cb-blocks">
-				${$.html($parent)}
-			</div>
-		</div>`);
+			$parent.replaceWith(
+				format(templates.cb_group, {
+					d1: $.html($parent)
+				})
+			);
 		},
 		codeblocks: function(/*i, el*/) {
 			// Cache the element.
@@ -274,28 +275,31 @@ module.exports = function(refs, name) {
 				var disable = is_singleton ? " pnone " : "";
 
 				tabs_html.push(
-					`<span class="tab${is_first}${disable}" data-tab-index="${i}" data-gid="${uid}">${tab.trim() ||
-						" "}</span>`
+					format(templates.tab, {
+						d1: is_first,
+						d2: disable,
+						d3: i,
+						d4: uid,
+						d5: tab.trim() || " "
+					})
 				);
 			});
 			// Add tabs HTML to top UI.
 			$ui_wrapper.prepend(
-				`<div class="tabs" id="cb-tabs-${uid}">${tabs_html.join(
-					""
-				)}</div>`
+				format(templates.tabs, {
+					d1: uid,
+					d2: tabs_html.join("")
+				})
 			);
 
 			// === Create the action button(s). ===
 			//
 			// Create actions HTML and to top UI.
-			$ui_wrapper.append(`<div class="actions-right">
-			<span class="btn action collapse none" data-gid="${uid}">
-				<i class="fas fa-minus-square"></i><span>collapse</span>
-			</span>
-			<span class="btn action copy" data-gid="${uid}">
-				<i class="fas fa-clipboard"></i><span>copy</span>
-			</span>
-		</div>`);
+			$ui_wrapper.append(
+				format(templates.actions_right, {
+					d1: uid
+				})
+			);
 
 			// Give IDs to children elements.
 			$el
@@ -347,37 +351,18 @@ module.exports = function(refs, name) {
 
 					// If code is over x lines show placeholder.
 					if (line_count >= 40) {
-						var placeholder_html = `<div class="codeblock-placeholder animate-fadein none" data-block-index="${i}" data-gid="${uid}">
-			<div class="template">
-				<div class="row">
-					<div class="block size-40"></div>
-					<div class="block size-100"></div>
-				</div>
-				<div class="indent row">
-					<div class="block size-40"></div>
-					<div class="block size-130"></div>
-				</div>
-				<div class="indent row">
-					<div class="block size-40"></div>
-					<div class="block size-80"></div>
-					<div class="block size-70"></div>
-				</div>
-				<div class="row">
-					<div class="block size-40"></div>
-					<div class="block size-50"></div>
-				</div>
-			</div>
-			<div class="info">
-				<div>
-					<span class="label">Show block${
-						lang ? ` <span class="lang">${lang}</span>` : ""
-					}</span>
-					<div class="details">
-						<i class="fas fa-code"></i> — ${lines} lines, ${chars} characters
-					</div>
-				</div>
-			</div>
-		</div>`;
+						var placeholder_html = format(
+							templates.cb_placeholder,
+							{
+								d1: i,
+								d2: uid,
+								d3: lang
+									? ` <span class="lang">${lang}</span>`
+									: "",
+								d4: lines,
+								d5: chars
+							}
+						);
 
 						// Remove hidden class if it's
 						// the first code bock to show
@@ -421,14 +406,17 @@ module.exports = function(refs, name) {
 						// needed array.
 
 						highlighted_numbers.push(
-							`<div class="line"><span${
-								needs_highlight ? " class='highlight-n'" : ""
-							}>${i + 1}</span></div>`
+							format(templates.line_highlight_1, {
+								d1: needs_highlight
+									? " class='highlight-n'"
+									: "",
+								d2: i + 1
+							})
 						);
 						highlighted_lines.push(
-							`<div class="line${
-								needs_highlight ? " highlight-l" : ""
-							}"> </div>`
+							format(templates.line_highlight_2, {
+								d1: needs_highlight ? " highlight-l" : ""
+							})
 						);
 					}
 
@@ -436,7 +424,9 @@ module.exports = function(refs, name) {
 					var blockname =
 						$block.attr()["data-block-name"] ||
 						"untitled" + (lang !== "" ? "." + lang : "");
-					var blockname_html = `<div class="codeblock-name">${blockname}</div>`;
+					var blockname_html = format(templates.cb_name, {
+						d1: blockname
+					});
 
 					// Add the line numbers HTML.
 					$el.prepend(
@@ -447,15 +437,13 @@ module.exports = function(refs, name) {
 						// be the longest in width since its the last line
 						// number, remove all the other line numbers to reduce
 						// the number of elements in the DOM.
-						`<div class="line-nums hidden-clone">${highlighted_numbers
-							.slice(-1)
-							.join(
+						format(templates.line_nums, {
+							d1: highlighted_numbers.slice(-1).join(""),
+							d2: highlighted_lines.join(""),
+							d3: `${blockname_html}${highlighted_numbers.join(
 								""
-							)}</div><div class="line-nums lines">${highlighted_lines.join(
-							""
-						)}</div><div class="line-nums numbers">${blockname_html}${highlighted_numbers.join(
-							""
-						)}</div>`
+							)}`
+						})
 					);
 
 					// Get the file path object.
