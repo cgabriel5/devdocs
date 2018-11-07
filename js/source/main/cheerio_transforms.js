@@ -106,12 +106,7 @@ module.exports = function(refs, name) {
 
 			$el.attr("data-orig-text", entities.encode(text));
 			// Use font-awesome over GitHub octicon-link.
-			$el.append(
-				format(templates.anchor_link, {
-					d1: html,
-					d2: escaped_text
-				})
-			);
+			$el.append(format(templates.anchor_link, html, escaped_text));
 		},
 		header_html: function(/*i, el*/) {
 			// Cache the element.
@@ -232,11 +227,7 @@ module.exports = function(refs, name) {
 			// If not part of a group, continue...
 
 			// Replace the parent with the new HTML content.
-			$parent.replaceWith(
-				format(templates.cb_group, {
-					d1: $.html($parent)
-				})
-			);
+			$parent.replaceWith(format(templates.cb_group, $.html($parent)));
 		},
 		codeblocks: function(/*i, el*/) {
 			// Cache the element.
@@ -286,20 +277,13 @@ module.exports = function(refs, name) {
 			});
 			// Add tabs HTML to top UI.
 			$ui_wrapper.prepend(
-				format(templates.tabs, {
-					d1: uid,
-					d2: tabs_html.join("")
-				})
+				format(templates.tabs, uid, tabs_html.join(""))
 			);
 
 			// === Create the action button(s). ===
 			//
 			// Create actions HTML and to top UI.
-			$ui_wrapper.append(
-				format(templates.actions_right, {
-					d1: uid
-				})
-			);
+			$ui_wrapper.append(format(templates.actions_right, uid));
 
 			// Give IDs to children elements.
 			$el
@@ -424,9 +408,7 @@ module.exports = function(refs, name) {
 					var blockname =
 						$block.attr()["data-block-name"] ||
 						"untitled" + (lang !== "" ? "." + lang : "");
-					var blockname_html = format(templates.cb_name, {
-						d1: blockname
-					});
+					var blockname_html = format(templates.cb_name, blockname);
 
 					// Add the line numbers HTML.
 					$el.prepend(

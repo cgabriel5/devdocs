@@ -280,24 +280,23 @@ module.exports = function(refs) {
 					// Create the HTML inserts.
 					var inserts = {};
 					indices.forEach(function(index, i) {
-						// <h1st --> Start.
-						// <h2nd --> End+Start.
-						// <h3rd --> End+Start.
-						// <h4th --> End+Start, Find ending tag.
+						let odiv = '<div class="header-content-ddwrap">';
+						let cdiv = "</div>";
 
-						// Start.
+						// <h1st --> [Start]
+						// <h2nd --> [End+Start]
+						// <h3rd --> [End+Start]
+						// <h4th --> [End+Start] - Find ending tag.
 						if (i === 0) {
-							inserts[index] =
-								'<div class="header-content-ddwrap">';
-							// End+Start.
+							// [Start]
+							inserts[index] = odiv;
 						} else if (i === indices.length - 1) {
-							inserts[index] =
-								'</div><div class="header-content-ddwrap">';
-							inserts[data.length] = "</div>";
+							// [End+Start]
+							inserts[index] = `${cdiv}${odiv}`;
+							inserts[data.length] = cdiv;
 						} else {
-							// End+Start, Find ending tag.
-							inserts[index] =
-								'</div><div class="header-content-ddwrap">';
+							// [End+Start] - Find ending tag.
+							inserts[index] = `${cdiv}${odiv}`;
 						}
 					});
 
