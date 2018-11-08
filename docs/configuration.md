@@ -30,7 +30,7 @@ module.exports = {
     output: {
         // The path to where devdocs should output its files. By default it
         // creates a devdocs folder at the root of the project.
-        path: "./devdocs/"
+        path: "devdocs/"
     },
 
     // A logo can be supplied to show in the sidebar and topbar. Preferably,
@@ -108,23 +108,34 @@ module.exports = {
     latest: "0.0.2",
 
     // (optional, default: [])
-    links: [
-        // Supported websites:
-        ["github", "https://github.com/cgabriel5/devdocs"]
-        // ["user", "<url/to/page>"], // (documentation editor's personal website)
-        // ["facebook", "<url/to/page>"],
-        // ["twitter", "<url/to/page>"],
-        // ["youtube", "<url/to/page>"],
-        // ["vimeo", "<url/to/page>"],
-        // ["google_plus", "<url/to/page>"],
-        // ["reddit", "<url/to/page>"],
-        // ["pinterest", "<url/to/page>"],
-        // ["snapchat", "<url/to/page>"],
-        // ["tumblr", "<url/to/page>"],
-        // ["github", "<url/to/page>"],
-        // ["bitbucket", "<url/to/page>"],
-        // ["blogger", "<url/to/page>"],
-        // ["stumbleupon", "<url/to/page>"]
+    // Versions provided in this array will only be processed. All other
+    // versions will be skipped.
+    process_versions: ["0.0.1", "0.0.2"],
+
+    // (optional, default: [])
+    // Optional site footer.
+    footer: [
+        {
+            title: "Social",
+            links: [
+                // Supported websites:
+                ["GitHub", "https://github.com/cgabriel5/devdocs", ":github"]
+                // ["user", "<url/to/page>"], // (documentation editor's personal website)
+                // ["facebook", "<url/to/page>"],
+                // ["twitter", "<url/to/page>"],
+                // ["youtube", "<url/to/page>"],
+                // ["vimeo", "<url/to/page>"],
+                // ["google_plus", "<url/to/page>"],
+                // ["reddit", "<url/to/page>"],
+                // ["pinterest", "<url/to/page>"],
+                // ["snapchat", "<url/to/page>"],
+                // ["tumblr", "<url/to/page>"],
+                // ["github", "<url/to/page>"],
+                // ["bitbucket", "<url/to/page>"],
+                // ["blogger", "<url/to/page>"],
+                // ["stumbleupon", "<url/to/page>"]
+            ]
+        }
     ],
 
     // (optional, default: {})
