@@ -1,0 +1,144 @@
+// Dimensions.
+$sidebar-width-normal: 300px;
+$sidebar-width-mobile: 280px;
+$app-width: 1280px;
+
+// Descriptive colors names.
+
+// Blacks > Grays > Whites.
+$c-black: #000000;
+$c-mine-shaft: #333333;
+$c-cinder: #24292e;
+$c-iron: #dfe2e5;
+$c-haze: #f7f7f7;
+$c-alabaster: #fbfbfb;
+$c-romance: #fcfcfc;
+$c-white: #ffffff;
+$c-trans: transparent;
+
+// Alpha grays.
+$c-limed-spruce: #39464e;
+$c-limed-spruce-40: rgba($c-limed-spruce, 0.4); //#39464e66
+$c-limed-spruce-30: rgba($c-limed-spruce, 0.3); //#39464e4c
+
+$c-black-1: rgba($c-black, 0.1);
+$c-black-02: rgba($c-black, 0.02);
+
+$c-white-95: rgba($c-white, 0.95); //#fffffff3
+$c-white-65: rgba($c-white, 0.65); // #ffffffa3
+
+// Reds.
+$c-fire-red: #e04747;
+$c-cardinal: #b31d28;
+$c-flamingo: #dd6d58;
+$c-light-red: #ffeef0;
+
+// Oranges/Yellows.
+$c-sunglow: #ffc758;
+$c-turbo: #ffe300;
+// $c-sweet-corn: rgba(255, 193, 7, 0.44); // #ffc10770
+
+// Greens.
+$c-forest-green: #22863a;
+$c-limeade: #699935;
+$c-honey-dew: #f0fff4;
+
+// Blues.
+$c-navy-blue: #005cc5;
+$c-dodger-blue: #2578f8;
+$c-havelock-blue: #5885dd;
+$c-cornflower-blue: #698cfe;
+$c-cornflower-blue-12: rgba($c-cornflower-blue, 0.12); // #698cfe20
+
+// Purples.
+$c-purple-heart: #6f42c1;
+
+// Pinks.
+
+// ============================================================================
+
+// Functional color names.
+
+// Brand.
+$-brand: $c-dodger-blue;
+
+// Text colors.
+$-text-base: $c-mine-shaft; // #333333
+$-text-black: darken($-text-base, 20%); // #000000
+$-text-gray-dark: lighten($-text-base, 10%); // #4d4d4d
+$-text-gray-mid: lighten($-text-base, 20%); // #666666
+$-text-gray: lighten($-text-base, 40%); // #999999
+$-text-gray-light: lighten($-text-base, 50%); // #b3b3b3
+$-text-gray-lightest: lighten($-text-base, 62%); // #d1d1d1
+$-text-white: lighten($-text-base, 80%); // #ffffff
+// Special text colors.
+$-text-markdown: $c-cinder;
+
+// Sidebar.
+$-sidebar-bg-gray: $c-romance;
+
+// Versions
+// - Labels:
+$-version-latest: $c-havelock-blue;
+$-version-outdated: $c-flamingo;
+
+// Diff.
+$-diff-diffline-c: $c-navy-blue;
+$-diff-deletion-bg: $c-light-red;
+$-diff-deletion-c: $c-cardinal;
+$-diff-addition-bg: $c-honey-dew;
+$-diff-addition-c: $c-forest-green;
+$-diff-coordinate-c: $c-purple-heart;
+
+// Splash-screen.
+$-leaf-active: $c-limeade;
+$-leaf-inactive: $c-iron;
+$-leaf-highlight: $c-black-02;
+
+// Code blocks.
+// - Number/line highlight:
+$-cb-linehighlight-number: $c-cornflower-blue;
+$-cb-linehighlight-line: $c-cornflower-blue-12;
+
+// Search.
+// // - No matches warning.
+// $-no-matches: $c-sweet-corn;
+$-search-error: $c-fire-red;
+// - Highlighted text/needle.
+$-search-highlight: $c-turbo;
+
+// Headers.
+// - Header scroll glow.
+$-scroll-glow: $c-sunglow;
+$-trans-white: $c-white-95;
+
+// Loaders.
+// - White mLoader.
+$-white-mloader: $c-white-65;
+
+// Borders.
+$-border: $c-iron;
+
+// Overlays.
+$-trans-black: $c-black-1;
+
+// Box-shadows:
+$-shadow-border: $c-limed-spruce-30;
+$-shadow: $c-limed-spruce-40;
+
+// Backgrounds.
+$-light-background: $c-haze;
+$-lighter-background: $c-alabaster;
+
+// ============================================================================
+
+// Build expandable message colors:
+// [https://dribbble.com/shots/1208446-Flattastic-Pro-Color-Palette-HTML-CSS]
+$colors1: #ed5565 #fc6e51 #fee450 #ffce54 #a0d468 #48cfad #4fc1e9 #5d9cec;
+$colors2: #4894f6 #ac92ec #ec87c0 #e3e3e4 #ccd1d9 #656d78 #5d687b;
+$colors: join($colors1, $colors2, space);
+$names1: "grapefruit" "bittersweet" "honeybutter" "sunflower" "grass" "mint"
+	"sky";
+$names2: "bluejeans" "aqua" "lavender" "pinkrose" "lightgray" "mediumgray"
+	"darkgray" "spacegray";
+$names: join($names1, $names2, space);

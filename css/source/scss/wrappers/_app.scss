@@ -1,0 +1,10 @@
+.app {
+	display: flex;
+	flex-flow: row nowrap;
+
+	margin: auto;
+
+	width: $app-width;
+	height: auto;
+	min-height: calc(100vh);
+}

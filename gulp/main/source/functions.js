@@ -173,7 +173,7 @@ function lint_printer(issues, filepath) {
 	// No issues found.
 	if (!issues.length) {
 		print.ln();
-		print(`  ${chalk.yellow("⚠")}  0 warnings`);
+		print(`  ${chalk.yellow("⚠")}  0 issues`);
 		print.ln();
 
 		return;
@@ -183,13 +183,16 @@ function lint_printer(issues, filepath) {
 
 	// Loop over issues to add custom reporter format/styling.
 	issues = issues.map(function(issue) {
+		// Color errors red. Warnings blue.
+		var code_color = issue.length === 5 ? "red" : "blue";
+
 		// Replace the array item with the new styled/highlighted parts.
 		return [
 			"", // Empty space for spacing purposes.
 			// Highlight parts.
 			chalk.gray(`line ${issue[0]}`),
 			chalk.gray(`char ${issue[1]}`),
-			chalk.blue(`(${issue[2]})`),
+			chalk[code_color](`(${issue[2]})`),
 			chalk.yellow(`${issue[3]}.`)
 		];
 	});
@@ -206,10 +209,10 @@ function lint_printer(issues, filepath) {
 
 	print.ln();
 
-	// Make the warning plural if needed.
-	var warning = "warning" + (issues.length > 1 ? "s" : "");
+	// Make the issue plural if needed.
+	var issue = "issue" + (issues.length > 1 ? "s" : "");
 
 	// Print the issue count.
-	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${warning}`);
+	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${issue}`);
 	print.ln();
 }

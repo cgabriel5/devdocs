@@ -1,0 +1,98 @@
+// Custom Expandable.
+.dd-exp {
+	@include bg($c-white);
+	@include flex($flow: "column nowrap");
+
+	border: 1px solid $c-trans;
+
+	&-message {
+		@include cur;
+		@include flex($align: center, $justify: flex-start, $flow: null);
+
+		transition: 0.2s ease-in-out;
+		transition-property: background, border-radius, padding;
+
+		margin-top: 10px;
+		margin-bottom: 10px;
+		padding: 6px 0;
+
+		font-weight: bold;
+
+		&-active {
+			@include bg($-light-background);
+
+			border-radius: 3px;
+			padding: 6px 10px;
+		}
+
+		&-icon {
+			transition: transform 0.4s cubic-bezier(0.04, 0.78, 0.54, 1.13);
+
+			&-active {
+				@include c($-brand);
+
+				transform: rotate(450deg);
+			}
+		}
+	}
+}
+
+.dd-exp-message {
+	@include noselect;
+
+	.dd-exp-message-icon {
+		margin-right: 5px;
+		margin-bottom: 3px;
+	}
+}
+
+// Custom Message.
+.dd-message {
+	@include bg($c-white);
+	@include flex($flow: "column nowrap");
+
+	margin: 6px 0;
+	border: 1px solid $-border;
+	border-radius: 4px;
+	padding: 10px 16px;
+
+	white-space: unset;
+
+	i {
+		margin-right: 8px;
+	}
+
+	.title {
+		@include flex($align: center, $justify: start, $flow: null);
+
+		margin-bottom: 5px;
+
+		font-weight: bold;
+	}
+
+	@mixin msg-c($color) {
+		@include bg($c-white);
+
+		border-left: 5px solid $color;
+	}
+
+	@for $i from 1 through length($colors) {
+		&--#{nth($names, $i)} {
+			@include msg-c(nth($colors, $i));
+		}
+	}
+}
+
+// Demo the message colors in the expandables.md file.
+.color-square {
+	display: inline-block;
+	float: left;
+
+	margin-top: 5px;
+	margin-right: 5px;
+	border: 1px solid $-trans-black;
+	border-radius: 3px;
+
+	width: 16px;
+	height: 16px;
+}

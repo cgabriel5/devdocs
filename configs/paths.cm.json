@@ -9,7 +9,8 @@
 	"html_source": "${homedir}html/source/",
 
 	// CSS paths.
-	"css_source": "${homedir}css/source/",
+	"css_source": "${homedir}css/source/css/",
+	"scss_source": "${homedir}css/source/scss/",
 	"css_vendor": "${homedir}css/vendor/",
 	"css_bundles": "${homedir}css/bundles/",
 
@@ -42,15 +43,18 @@
 	"config_settings_name": ".__settings.json",
 	"config_$realfavicongen": "realfavicongen",
 	"config_$perfectionist": "perfectionist",
+	"config_$browsersync": "browsersync.cm",
 	"config_$findfreeport": "findfreeport",
 	"config_$autoprefixer": "autoprefixer",
 	"config_$favicondata": "favicondata",
-	"config_$browsersync": "browsersync.cm",
+	"config_$csssorter": "csssorter.cm",
 	"config_$jsbeautify": "jsbeautify",
 	"config_$htmllint": "htmllint.cm",
+	"config_$sasslint": "sasslint.cm",
 	"config_$modernizr": "modernizr",
 	"config_$csslint": "csslint.cm",
 	"config_$prettier": "prettier",
+	"config_$uglify": "uglify.cm",
 	"config_$jshint": "jshint.cm",
 	"config_$htmlmin": "htmlmin",
 	"config_$bundles": "bundles",
@@ -87,7 +91,7 @@
 	// File paths.
 	"files_all": "**/*.*",
 	"files_min": "**/*.min.*",
-	"files_common": "**/*.{html,css,js,json}",
+	"files_common": "**/*.{html,css,scss,js,json}",
 	"files_code":
 		"**/*.{bat,coffee,css,htm,html,inc,ini,js,json,jsx,less,od,onlydata,php,pl,py,rb,sass,scm,scss,sh,sql,styl,tag,ts,tsx,xml,xhtml,markdown,md,mdwn,mdown,mkd,mkdn,mdtxt,mdtext,txt,text}",
 
@@ -95,5 +99,6 @@
 	"not_min": "!**/*.min.*",
 	"not_tests": "!**/test/**",
 	"not_vendor": "!**/vendor/**",
-	"not_ignore": "!**/*.ig.*"
+	"not_ignore": "!**/*.ig.*",
+	"not_css_source": "!**/source/css/**"
 }

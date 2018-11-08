@@ -1,0 +1,96 @@
+.versions {
+	margin-top: 5px;
+	padding: 5px;
+
+	.version-loaded {
+		@include flex($dis: inline-flex, $align: center);
+		@include cur;
+	}
+
+	.version {
+		@include c($-text-gray);
+		@include fsize(13);
+
+		i {
+			margin-right: 2px;
+		}
+	}
+
+	.version:hover {
+		@include underline;
+	}
+}
+
+.version-options {
+	@include bg($c-white);
+
+	position: absolute;
+
+	margin-top: 5px;
+	box-shadow: 0 0 1px $-shadow-border, 0 20px 55px -8px $-shadow;
+	border-radius: 4px;
+	padding: 5px;
+
+	width: calc(100% - 20px);
+	pointer-events: all;
+}
+
+.voptions-list {
+	position: relative;
+
+	max-height: 175px;
+	overflow-y: auto;
+}
+
+.version-latest {
+	@include bg($-version-latest);
+	@include fsize(7);
+	@include c($-text-white);
+
+	margin-left: 5px;
+	border-radius: 2px;
+	padding: 2px;
+
+	font-weight: bold;
+	text-transform: uppercase;
+}
+
+.version-outdated {
+	@include bg($-version-outdated);
+}
+
+.version-option {
+	@include flex($flow: null, $align: center);
+	@include truncate;
+	@include fsize(13);
+	@include bg($c-white);
+	@include cur;
+
+	border-radius: 3px;
+	padding: 8px 20px;
+
+	.vtext {
+		@include truncate;
+	}
+
+	i {
+		margin-right: 5px;
+	}
+}
+
+.version-option:hover,
+.active-version {
+	@include bg($-brand);
+	@include c($-text-white);
+	@include cur;
+}
+
+.version-option:hover .version-latest,
+.active-version .version-latest {
+	@include c($-brand);
+	@include bg($c-white);
+}
+
+.version-option i {
+	@include fsize(10);
+}

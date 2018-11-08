@@ -16,6 +16,7 @@ var $ = require("gulp-load-plugins")({
 	rename: {
 		"gulp-if": "gulpif",
 		"gulp-purifycss": "purify",
+		"gulp-scss-lint": "scsslint",
 		"gulp-clean-css": "clean_css",
 		"gulp-json-sort": "json_sort",
 		"gulp-jsbeautifier": "beautify",

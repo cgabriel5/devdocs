@@ -1,0 +1,277 @@
+// Get top-level imports.
+// @import "../base/mixins";
+// @import "../base/vars";
+
+@media (max-width: 768px) {
+	.footer {
+		@include flex($flow: "row wrap");
+
+		margin-top: 30px;
+		margin-left: -15px;
+		border-top: 1px solid $-border;
+		background: linear-gradient(
+			180deg,
+			$-sidebar-bg-gray 0%,
+			$c-white 100%
+		);
+		padding: 5px;
+
+		width: calc(100% + 30px);
+	}
+}
+
+@media (max-width: 270px) {
+	.arrownav {
+		.arrow {
+			width: 75px;
+		}
+	}
+}
+
+@media (max-width: 366px) {
+	.codeblock-placeholder .info {
+		@include fsize(13);
+	}
+}
+
+@media (max-width: 1325px) {
+	.app {
+		width: 1100px;
+	}
+
+	.sidebar {
+		flex: 1 0 $sidebar-width-normal;
+	}
+}
+
+@media (max-width: 1125px) {
+	.app {
+		width: 1000px;
+	}
+}
+
+@media (max-width: 1024px) {
+	.app {
+		width: auto;
+	}
+
+	.l-1 {
+		padding: 10px 0 10px 15px;
+	}
+
+	.search {
+		@include bg($-lighter-background);
+
+		margin-left: 0;
+		border-bottom: 1px solid $-border;
+		border-radius: 0;
+		padding: 5px;
+
+		.search-ui {
+			@include fsize(15);
+
+			background: transparent;
+			padding: 0 10px 0 5px;
+
+			.icon-clear {
+				@include c(18);
+
+				padding: 4px 6px;
+			}
+
+			.input {
+				@include fsize(16);
+
+				&::placeholder {
+					@include fsize(16);
+				}
+			}
+		}
+
+		.search-versions {
+			@include bg($-light-background);
+		}
+	}
+
+	.logo-spacer {
+		display: block;
+	}
+}
+
+@media (min-width: 768px) {
+	body {
+		overflow-y: scroll;
+	}
+
+	.app {
+		overflow-x: hidden;
+	}
+
+	.markdown {
+		overflow: auto;
+	}
+}
+
+@media (max-width: 768px) {
+	.markdown {
+		margin-left: 0;
+	}
+
+	.app {
+		// width: 900px;
+		flex-flow: column nowrap;
+	}
+
+	.topbar {
+		display: flex;
+		position: fixed;
+
+		background: $-trans-white;
+	}
+
+	.sidebar-menu {
+		margin-top: 10px;
+	}
+
+	.sidebar {
+		@include translate3d(-100%);
+		@include bg($c-white);
+
+		position: fixed;
+		top: 0;
+		left: 0;
+
+		z-index: 2;
+		transition: transform 500ms cubic-bezier(0.23, 1, 0.32, 1);
+		will-change: transform, contents;
+
+		border-right: 1px solid $-trans-black;
+
+		width: $sidebar-width-mobile;
+		height: 100%;
+	}
+
+	// To make the sidebar constantly show the y-scroller make the div
+	// dip/overflow. This or simply giving the .menu a min-height: 101%;
+	// also works.
+	// .sb-footer { margin-bottom: -40px; }
+
+	.header-spacer {
+		padding-bottom: 24px;
+	}
+
+	.codeblock-actions,
+	.cb-top-ui {
+		.action {
+			opacity: 1;
+
+			color: inherit;
+		}
+	}
+
+	.line-nums {
+		border-radius: 0;
+
+		&.hidden-clone {
+			display: none;
+		}
+
+		&.numbers {
+			position: relative;
+		}
+
+		.line {
+			.highlight-n {
+				box-shadow: none;
+			}
+		}
+	}
+
+	.search {
+		margin-right: 0;
+	}
+
+	.l-2-link {
+		a {
+			max-width: 160px;
+		}
+	}
+
+	.markdown-body {
+		@include fsize(15);
+
+		margin-top: 40px;
+		padding: 15px;
+	}
+
+	.markdown-body pre code {
+		border-radius: 0;
+	}
+
+	.markdown-body .highlight pre,
+	.markdown-body pre {
+		margin-left: -15px;
+		border-radius: 0;
+
+		width: calc(100% + 30px);
+	}
+
+	.markdown-body h1:not(.ignore-header),
+	.markdown-body h2:not(.ignore-header),
+	.markdown-body h3:not(.ignore-header),
+	.markdown-body h4:not(.ignore-header),
+	.markdown-body h5:not(.ignore-header),
+	.markdown-body h6:not(.ignore-header) {
+		@include ios-smooth-scrolling;
+		@include fsize(18);
+
+		position: sticky !important;
+		top: 42px;
+
+		z-index: 1;
+		backdrop-filter: blur(10px);
+
+		margin-top: 0;
+		margin-bottom: 0;
+		margin-left: -15px;
+		border-bottom: 1px solid $-border;
+		// Full Width Tweak.
+		border-radius: 0 !important;
+		background: $-trans-white;
+		padding: 10px 15px;
+
+		width: calc(100% + 30px);
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		font-weight: 600;
+		text-overflow: initial;
+		white-space: nowrap;
+	}
+
+	.markdown-body h1.ignore-header,
+	.markdown-body h2.ignore-header,
+	.markdown-body h3.ignore-header,
+	.markdown-body h4.ignore-header,
+	.markdown-body h5.ignore-header,
+	.markdown-body h6.ignore-header {
+		@include ios-smooth-scrolling;
+		@include fsize(18);
+
+		position: relative;
+
+		margin-top: 10px;
+		margin-bottom: 0;
+		border-bottom: 1px solid $-border;
+		border-radius: 0 !important;
+		background: $-trans-white;
+		padding: 10px 15px;
+
+		overflow-x: auto;
+		overflow-y: hidden;
+
+		font-weight: 600;
+		text-overflow: initial;
+		white-space: nowrap;
+	}
+}

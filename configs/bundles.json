@@ -89,6 +89,7 @@
 				"helpers/make.js",
 				"helpers/lintjs.js",
 				"helpers/lintcss.js",
+				"helpers/lintscss.js",
 				"helpers/linthtml.js",
 				"helpers/settings.js",
 				"helpers/indent.js",
@@ -105,7 +106,7 @@
 		"watch": {
 			"config": ["./configs/**/*.json"],
 			"css": {
-				"app": ["css{/source,/assets}/**/*.css"],
+				"app": ["css{/source,/assets}/**/*.{css,scss}"],
 				"vendor": ["css{/vendor,/assets}/**/*.css"]
 			},
 			"html": ["html/source/**/*.html"],

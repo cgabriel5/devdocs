@@ -1,0 +1,136 @@
+.mtime {
+	@include flex($flow: null, $justify: "flex-end");
+	@include fsize(11);
+
+	margin-left: 10px;
+	padding-top: 20px;
+
+	.label {
+		font-weight: bold;
+	}
+
+	.long {
+		@include c($-text-gray, "!important");
+	}
+}
+
+.arrownav {
+	@include flex($align: center, $justify: "space-evenly");
+
+	margin-top: 30px;
+	margin-bottom: 10px;
+
+	.arrow {
+		@include flex($align: center, $justify: center, $grow: "1", $shrink: "1");
+		@include fsize(14);
+
+		margin: 0 5px;
+		padding: 5px;
+
+		width: 120px;
+
+		font-weight: bold;
+
+		%span {
+			@include truncate;
+
+			max-width: 50%;
+		}
+
+		&.aleft {
+			i {
+				margin-right: 5px;
+			}
+
+			span {
+				@extend %span;
+			}
+		}
+
+		&.aright {
+			span {
+				@extend %span;
+
+				margin-right: 5px;
+			}
+		}
+	}
+}
+
+.footer {
+	@include flex($flow: "row wrap");
+
+	margin-top: 30px;
+	border-top: 1px solid $-border;
+	padding: 5px;
+
+	.section {
+		@include c($-text-gray-dark);
+
+		padding: 15px;
+
+		min-width: 150px;
+
+		.title {
+			padding-bottom: 10px;
+
+			font-weight: bold;
+		}
+
+		.content {
+			@include flex($flow: "row wrap", $align: "flex-start", $justify: "flex-start");
+
+			.link {
+				@include c($-text-gray-dark, "!important");
+
+				// [https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Mastering_Wrapping_of_Flex_Items]
+				flex: 1 1 250px;
+
+				margin: 0 10px 0 -10px;
+				border-radius: 3px;
+				padding: 3px 10px;
+
+				&:hover {
+					@include bg($-light-background);
+				}
+			}
+
+			.footer-link {
+				@include truncate;
+
+				span,
+				i {
+					margin-right: 5px;
+				}
+			}
+
+			.img {
+				@include bg($c-trans);
+				margin-right: 5px;
+
+				width: 15px;
+			}
+		}
+	}
+}
+
+.copyright {
+	@include flex($align: center, $justify: center);
+	@include fsize(12);
+	@include c($-text-gray-light);
+
+	margin-top: 10px;
+
+	a {
+		@include bg($-lighter-background);
+		@include c($-text-gray-light);
+		@include truncate;
+
+		border-radius: 100px;
+		padding: 1px 10px;
+	}
+
+	i {
+		@include fsize(9);
+	}
+}

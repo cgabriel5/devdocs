@@ -1,0 +1,28 @@
+.copied-message {
+	@include flex($flow: null, $align: center, $justify: flex-end);
+
+	position: fixed;
+
+	z-index: 10;
+	transition: opacity 0.2s ease-in-out;
+
+	padding: 5px;
+
+	width: 100%;
+
+	span {
+		@include c($-text-white);
+		@include bg($-brand);
+		@include fsize(12);
+
+		border-radius: 4px;
+		padding: 10px;
+
+		font-weight: bold;
+		line-height: 10px;
+	}
+
+	i {
+		@include fsize(10);
+	}
+}

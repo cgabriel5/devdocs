@@ -1,0 +1,19 @@
+// Used SVG to CSS converter:
+// [https://codepen.io/elliz/full/ygvgay],[https://websemantics.uk/tools/svg-to-background-image-conversion/]
+@mixin mloader($c1, $c2, $c3) {
+	position: relative;
+
+	animation: animate-spin 0.5s linear infinite;
+
+	border: 3px solid;
+	border-radius: 50%;
+	border-color: $c1 $c2 $c3;
+}
+
+.mloader {
+	@include mloader($-text-gray-mid, $-text-gray-lightest, $-text-gray-lightest);
+}
+
+.mloader-white {
+	@include mloader($-white-mloader, $c-white, $c-white);
+}

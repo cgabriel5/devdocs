@@ -20,6 +20,7 @@ var $ = require("gulp-load-plugins")({
 	rename: {
 		"gulp-if": "gulpif",
 		"gulp-purifycss": "purify",
+		"gulp-scss-lint": "scsslint",
 		"gulp-clean-css": "clean_css",
 		"gulp-json-sort": "json_sort",
 		"gulp-jsbeautifier": "beautify",
@@ -207,6 +208,8 @@ var PRETTIER = get($configs, "prettier", {});
 var JSBEAUTIFY = get($configs, "jsbeautify", {});
 var AUTOPREFIXER = get($configs, "autoprefixer", {});
 var PERFECTIONIST = get($configs, "perfectionist", {});
+var SASSLINT = get($configs, "sasslint", {});
+var CSSSORTER = get($configs, "csssorter", {});
 var REALFAVICONGEN = get($configs, "realfavicongen", {});
 var BROWSERSYNC = get($configs, "browsersync", {});
 var HTMLMIN = get($configs, "htmlmin", {});
@@ -440,7 +443,7 @@ function lint_printer(issues, filepath) {
 	// No issues found.
 	if (!issues.length) {
 		print.ln();
-		print(`  ${chalk.yellow("⚠")}  0 warnings`);
+		print(`  ${chalk.yellow("⚠")}  0 issues`);
 		print.ln();
 
 		return;
@@ -450,13 +453,16 @@ function lint_printer(issues, filepath) {
 
 	// Loop over issues to add custom reporter format/styling.
 	issues = issues.map(function(issue) {
+		// Color errors red. Warnings blue.
+		var code_color = issue.length === 5 ? "red" : "blue";
+
 		// Replace the array item with the new styled/highlighted parts.
 		return [
 			"", // Empty space for spacing purposes.
 			// Highlight parts.
 			chalk.gray(`line ${issue[0]}`),
 			chalk.gray(`char ${issue[1]}`),
-			chalk.blue(`(${issue[2]})`),
+			chalk[code_color](`(${issue[2]})`),
 			chalk.yellow(`${issue[3]}.`)
 		];
 	});
@@ -473,11 +479,11 @@ function lint_printer(issues, filepath) {
 
 	print.ln();
 
-	// Make the warning plural if needed.
-	var warning = "warning" + (issues.length > 1 ? "s" : "");
+	// Make the issue plural if needed.
+	var issue = "issue" + (issues.length > 1 ? "s" : "");
 
 	// Print the issue count.
-	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${warning}`);
+	print(`  ${chalk.yellow("⚠")}  ${issues.length} ${issue}`);
 	print.ln();
 }
 
@@ -1409,11 +1415,115 @@ gulp.task("html", function(done) {
 // -----------------------------------------------------------------------------
 
 /**
+ * Process any SASS files into their CSS equivalents.
+ *
+ * @internal - Ran via the "css" task.
+ */
+gulp.task("css:sass", function(done) {
+	// Pause the watcher to prevent infinite loops.
+	$.watcher.pause("watcher:css:app");
+
+	let sass = require("node-sass");
+
+	// Contain any SCSS processing errors here.
+	var scss_errors = { filenames: [] };
+
+	pump(
+		[
+			// Note: Make sure to exclude partials (_filename.scss) from processing.
+			// [https://stackoverflow.com/a/38095853]
+			gulp.src([$paths.files_all.replace(/\/\*\.\*$/, "/[^_]*.*scss")], {
+				cwd: $paths.scss_source
+			}),
+			$.debug({ loader: false, title: "files for SASS processing..." }),
+			$.each(function(content, file, callback) {
+				// Get the file path.
+				var __path = file.path;
+
+				// Run the Node-SASS processor on the file.
+				// [https://github.com/sass/node-sass#render-callback--v300]
+				sass.render({ file: __path }, function(err, result) {
+					if (err) {
+						// Store the error for later output.
+						if (scss_errors[__path]) {
+							// Append to the errors.
+							scss_errors[__path].push([
+								err.line,
+								err.column,
+								err.status,
+								err.message
+							]);
+						} else {
+							// Add for the first time.
+							scss_errors[__path] = [
+								[err.line, err.column, err.status, err.message]
+							];
+
+							// Maintain file processing order.
+							scss_errors.filenames.push(__path);
+						}
+					} else {
+						// Reset the file contents with the CSS output.
+						file.contents = Buffer.from(result.css.toString());
+					}
+
+					callback(null, file.contents);
+				});
+			}),
+			$.rename(function(path) {
+				// Rename the file extension from .scss to .css.
+				path.extname = ".css";
+			}),
+
+			// Old Gulp SASS method.
+			// // [https://github.com/dlmanning/gulp-sass]
+			// // [https://gist.github.com/zwinnie/9ca2409d86f3b778ea0fe02326b7731b]
+			// $.sass.sync().on("error", function(err) {
+			// 	// $.sass.logError
+			// 	// Note: For consistency, use the universal lint printer.
+
+			// 	// Pretty print the issues.
+			// 	lint_printer(
+			// 		[[err.line, err.column, err.name, err.messageOriginal]],
+			// 		err.relativePath
+			// 	);
+
+			// 	// [https://github.com/dlmanning/gulp-sass/blob/master/index.js]
+			// 	// End gulp.
+			// 	this.emit("end");
+			// }),
+
+			gulp.dest($paths.css_source),
+			$.debug.edit({ loader: false, title: "SASS files processed..." }),
+			__bs.stream()
+		],
+		function() {
+			// Un-pause and re-start the watcher.
+			$.watcher.start("watcher:css:app");
+
+			// Output any processing errors.
+			if (scss_errors.filenames.length) {
+				// Loop over the errors.
+				for (let i = 0, l = scss_errors.filenames.length; i < l; i++) {
+					// Cache current loop item.
+					var filename = scss_errors.filenames[i];
+
+					// Print the errors.
+					lint_printer(scss_errors[filename], filename);
+				}
+			}
+
+			done();
+		}
+	);
+});
+
+/**
  * Build app.css bundle (autoprefix, prettify, etc.).
  *
  * @internal - Ran via the "css" task.
  */
-gulp.task("css:app", function(done) {
+gulp.task("css:app", ["css:sass"], function(done) {
 	// Pause the watcher to prevent infinite loops.
 	$.watcher.pause("watcher:css:app");
 
@@ -2592,6 +2702,9 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
+	// PostCSS SCSS parser.
+	var postcss_scss = require("postcss-scss");
 
 	// Run yargs.
 	var __flags = yargs
@@ -2637,9 +2750,21 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var remove_prefixes = __flags.unprefix || __flags.u;
 	var ending = __flags.l || __flags["line-ending"] || EOL_ENDING;
 
+	// The PostCSS plugin order:
+	// 1. unprefix (CLI flag dependant)
+	// 2. shorthand (CLI flag dependant w/ autoprefixer flag)
+	// 3. autoprefixer? (CLI flag dependant)
+	// 4. perfectionist (Always added)
+	// 5. csssorter (Only for SCSS files)
+
 	// By default CSS files will only be unprefixed and beautified. If needed
 	// files can also be autoprefixed when the --cssprefix/-p flag is used.
 	var css_plugins = [perfectionist(PERFECTIONIST)];
+	// Add the sorter plugin for SCSS files.
+	var css_plugins_scss = [
+		// perfectionist(Object.assign(PERFECTIONIST, { syntax: "scss" })),
+		csssorter(CSSSORTER)
+	];
 
 	// To unprefix CSS files one of two things must happen. Either the
 	// unprefix or the cssprefix flag must be provided. The unprefix flag
@@ -2648,11 +2773,13 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	// unprefixd state.
 	if (remove_prefixes || cssprefix) {
 		css_plugins.unshift(unprefix());
+		css_plugins_scss.unshift(unprefix());
 	}
 
 	// If the flag is provided, shorthand and autoprefix CSS.
 	if (cssprefix) {
 		css_plugins.splice(1, 0, shorthand(), autoprefixer(AUTOPREFIXER));
+		css_plugins_scss.splice(1, 0, shorthand(), autoprefixer(AUTOPREFIXER));
 	}
 
 	// Default globs: look for HTML, CSS, JS, and JSON files. They also
@@ -2665,7 +2792,8 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 		bangify(globall($paths.node_modules_name)),
 		bangify(globall($paths.git)),
 		$paths.not_vendor,
-		$paths.not_ignore
+		$paths.not_ignore,
+		$paths.not_css_source
 	];
 
 	// When the empty flag is provided the files array will be emptied.
@@ -2774,11 +2902,24 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 			),
 			// Prettify JS/JSON files.
 			$.gulpif(function(file) {
-				// Exclude HTML and CSS files.
-				return extension(file, ["html", "css"]) ? false : true;
+				// Exclude anything but JS/JSON files.
+				return extension(file, ["js", "json"]) ? true : false;
 			}, $.prettier(PRETTIER)),
 			// Prettify CSS files.
 			$.gulpif(extension.iscss, $.postcss(css_plugins)),
+			// Prettify SCSS files.
+			// Use prettier over perfectionist as it better respects SCSS // comments.
+			$.gulpif(extension.isscss, $.prettier(PRETTIER)),
+			// Needs the "postcss-scss" parser.
+			// [https://github.com/postcss/gulp-postcss#passing-additional-options-to-postcss]
+			// [https://github.com/postcss/postcss#options]
+			// [https://github.com/postcss/postcss-scss#2-inline-comments-for-postcss]
+			// [https://github.com/moczolaszlo/postcss-inline-comment/issues/4#issuecomment-140556733]
+			// [https://github.com/postcss/postcss-scss/issues/82]
+			$.gulpif(
+				extension.isscss,
+				$.postcss(css_plugins_scss, { syntax: postcss_scss })
+			),
 			$.eol(ending),
 			$.debug.edit(),
 			gulp.dest($paths.basedir)
@@ -3970,6 +4111,142 @@ gulp.task("lintcss", function(done) {
 				// Pretty print the issues.
 				lint_printer(issues_std, file.path);
 			})
+		],
+		done
+	);
+});
+
+// -----------------------------------------------------------------------------
+// lintscss.js -- ./gulp/main/source/helpers/lintscss.js
+// -----------------------------------------------------------------------------
+
+/**
+ * Lint a SCSS file.
+ *
+ * -F, --file <array>
+ *     The SCSS file to lint.
+ *
+ * $ gulp lintscss --file ./css/source/scss/styles.scss
+ *     Lint ./css/source/scss/styles.scss.
+ *
+ * Notes
+ *
+ * • This task requires Ruby and the Ruby gem 'scss_lint' to be installed. If
+ *     running Ubuntu, simply run: '$ sudo apt-get install ruby-full --yes'
+ *     followed by '$ sudo gem install scss_lint'. For other OS's please check
+ *     for your specific OS installation.
+ *     Linux install: [https://www.thoughtco.com/instal-ruby-on-linux-2908370]
+ */
+gulp.task("lintscss", function(done) {
+	var sassLint = require("gulp-sass-lint");
+
+	// Run yargs.
+	var __flags = yargs.option("file", {
+		alias: "F",
+		type: "array"
+	}).argv;
+
+	// Get flag values.
+	var file = __flags.F || __flags.file;
+
+	// When no files are provided print an error.
+	if (!file.length) {
+		print.gulp.error("Provide a file to lint.");
+		return done();
+	}
+
+	pump(
+		[
+			gulp.src(file, {
+				cwd: $paths.basedir
+			}),
+			$.debug({ loader: false }),
+			// [https://github.com/brigade/scss-lint#notice-consider-other-tools-before-adopting-scss-lint]
+			// scss-lint warns to use sass-lint as the Ruby implementation
+			// might no longer be maintained due to switching development
+			// languages to Dart.
+			sassLint(SASSLINT),
+			// Comment out the following as a custom reporter is used.
+			// sassLint.format(),
+			// sassLint.failOnError(),
+			// Note: Use the custom reporter printer function to be consistent
+			// with the other linters.
+			$.fn(function(file) {
+				if (
+					file.path.includes("github") ||
+					file.path.includes("highlight") ||
+					file.path.includes("prism")
+				) {
+				} else {
+					// Get the attached linter object.
+					var linter = file.sassLint;
+
+					// Array will contain the standardized issues.
+					var issues_std = [];
+
+					// Only if there were issues found.
+					if (linter && linter[0]) {
+						// Get the actual linter object.
+						linter = file.sassLint[0];
+
+						// Get the issues.
+						var issues = linter.messages;
+						// var error_count = linter.errorCount;
+						// var warning_count = linter.warningCount;
+
+						// Loop over the issues to standardized.
+						issues.forEach(function(issue) {
+							// [https://github.com/juanfran/gulp-scss-lint#results]
+							// Add the standardized issue to the array.
+							var std_object = [
+								issue.line,
+								issue.column,
+								issue.ruleId,
+								issue.message
+							];
+							issues_std.push(std_object);
+
+							// If an error, color the text red.
+							if (issue.ruleId && issue.ruleId === "Fatal") {
+								std_object.push("error");
+							}
+						});
+					}
+
+					// Pretty print the issues.
+					lint_printer(issues_std, file.path);
+				}
+			})
+
+			// // $.scsslint(/* $configs.csslint */),
+			// $.scsslint({ customReport: function() {} }),
+			// // Note: Use the custom reporter printer function to be consistent
+			// // with the other linters.
+			// $.fn(function(file) {
+			// 	// Array will contain the standardized issues.
+			// 	var issues_std = [];
+
+			// 	// Only if there were issues found.
+			// 	if (!file.scsslint.success) {
+			// 		// Get the issues.
+			// 		var issues = file.scsslint.issues;
+
+			// 		// Loop over the issues to standardized.
+			// 		issues.forEach(function(issue) {
+			// 			// [https://github.com/juanfran/gulp-scss-lint#results]
+			// 			// Add the standardized issue to the array.
+			// 			issues_std.push([
+			// 				issue.line,
+			// 				issue.column,
+			// 				issue.severity,
+			// 				issue.reason
+			// 			]);
+			// 		});
+			// 	}
+
+			// 	// Pretty print the issues.
+			// 	lint_printer(issues_std, file.path);
+			// })
 		],
 		done
 	);

@@ -142,6 +142,9 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var autoprefixer = require("autoprefixer");
 	var perfectionist = require("perfectionist");
 	var shorthand = require("postcss-merge-longhand");
+	var csssorter = require("postcss-sorting");
+	// PostCSS SCSS parser.
+	var postcss_scss = require("postcss-scss");
 
 	// Run yargs.
 	var __flags = yargs
@@ -187,9 +190,21 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	var remove_prefixes = __flags.unprefix || __flags.u;
 	var ending = __flags.l || __flags["line-ending"] || EOL_ENDING;
 
+	// The PostCSS plugin order:
+	// 1. unprefix (CLI flag dependant)
+	// 2. shorthand (CLI flag dependant w/ autoprefixer flag)
+	// 3. autoprefixer? (CLI flag dependant)
+	// 4. perfectionist (Always added)
+	// 5. csssorter (Only for SCSS files)
+
 	// By default CSS files will only be unprefixed and beautified. If needed
 	// files can also be autoprefixed when the --cssprefix/-p flag is used.
 	var css_plugins = [perfectionist(PERFECTIONIST)];
+	// Add the sorter plugin for SCSS files.
+	var css_plugins_scss = [
+		// perfectionist(Object.assign(PERFECTIONIST, { syntax: "scss" })),
+		csssorter(CSSSORTER)
+	];
 
 	// To unprefix CSS files one of two things must happen. Either the
 	// unprefix or the cssprefix flag must be provided. The unprefix flag
@@ -198,11 +213,13 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 	// unprefixd state.
 	if (remove_prefixes || cssprefix) {
 		css_plugins.unshift(unprefix());
+		css_plugins_scss.unshift(unprefix());
 	}
 
 	// If the flag is provided, shorthand and autoprefix CSS.
 	if (cssprefix) {
 		css_plugins.splice(1, 0, shorthand(), autoprefixer(AUTOPREFIXER));
+		css_plugins_scss.splice(1, 0, shorthand(), autoprefixer(AUTOPREFIXER));
 	}
 
 	// Default globs: look for HTML, CSS, JS, and JSON files. They also
@@ -215,7 +232,8 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 		bangify(globall($paths.node_modules_name)),
 		bangify(globall($paths.git)),
 		$paths.not_vendor,
-		$paths.not_ignore
+		$paths.not_ignore,
+		$paths.not_css_source
 	];
 
 	// When the empty flag is provided the files array will be emptied.
@@ -324,11 +342,24 @@ gulp.task("pretty", ["pretty:gitfiles"], function(done) {
 			),
 			// Prettify JS/JSON files.
 			$.gulpif(function(file) {
-				// Exclude HTML and CSS files.
-				return extension(file, ["html", "css"]) ? false : true;
+				// Exclude anything but JS/JSON files.
+				return extension(file, ["js", "json"]) ? true : false;
 			}, $.prettier(PRETTIER)),
 			// Prettify CSS files.
 			$.gulpif(extension.iscss, $.postcss(css_plugins)),
+			// Prettify SCSS files.
+			// Use prettier over perfectionist as it better respects SCSS // comments.
+			$.gulpif(extension.isscss, $.prettier(PRETTIER)),
+			// Needs the "postcss-scss" parser.
+			// [https://github.com/postcss/gulp-postcss#passing-additional-options-to-postcss]
+			// [https://github.com/postcss/postcss#options]
+			// [https://github.com/postcss/postcss-scss#2-inline-comments-for-postcss]
+			// [https://github.com/moczolaszlo/postcss-inline-comment/issues/4#issuecomment-140556733]
+			// [https://github.com/postcss/postcss-scss/issues/82]
+			$.gulpif(
+				extension.isscss,
+				$.postcss(css_plugins_scss, { syntax: postcss_scss })
+			),
 			$.eol(ending),
 			$.debug.edit(),
 			gulp.dest($paths.basedir)

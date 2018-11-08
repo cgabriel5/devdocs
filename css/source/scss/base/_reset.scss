@@ -1,0 +1,13 @@
+::selection {
+	color: inherit;
+}
+
+details,
+summary {
+	outline: none;
+}
+
+a {
+	// [https://css-tricks.com/removing-the-dotted-outline/]
+	outline: 0;
+}

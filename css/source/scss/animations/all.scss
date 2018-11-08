@@ -1,0 +1,110 @@
+// Get top-level imports.
+@import "../base/mixins";
+@import "../base/vars";
+
+// .animate-fadein-y {
+// 	animation-duration: 0.3s;
+// 	animation-timing-function: ease-in-out;
+// 	animation-iteration-count: 1;
+// }
+
+// @keyframes animate-fadein-y {
+// 	0% {
+// 		transform: translateY(-15px);
+// 		opacity: 0;
+// 	}
+
+// 	100% {
+// 		transform: translateY(0);
+// 		opacity: 1;
+// 	}
+// }
+
+@include animation("animate-fadein", (
+	duration: 0.2s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	0: (
+		opacity: 0
+	),
+	100: (
+		opacity: 1
+	)
+));
+
+@include animation("animate-spin", (
+	duration: 0.5s,
+	timing-function: linear,
+	iteration-count: infinite
+), (
+	0: (
+		transform: rotate(0deg)
+	),
+	100: (
+		transform: rotate(360deg)
+	)
+));
+
+@include animation("animate-pulse", (
+	duration: 0.6s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	40: (
+		transform: translate3d(0, 0, 0) scale(0.5)
+	)
+));
+
+@include animation("animate-logo", (
+	duration: 0.4s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	0: (
+		transform: translate3d(0, 0, 0) scale(0)
+	),
+	50: (
+		transform: translate3d(0, 0, 0) scale(1)
+	)
+));
+
+@include animation("animate-loading", (
+	duration: 1s,
+	timing-function: linear,
+	iteration-count: infinite
+), (
+	25: (
+		opacity: 0.5,
+		margin-top: -3px
+	),
+	75: (
+		background: $c-trans,
+		opacity: 0,
+		height: 0
+	)
+));
+
+@include animation("animate-header-highlight", (
+	duration: 2s,
+	timing-function: ease-in-out,
+	iteration-count: 1
+), (
+	0: (
+		background: $-scroll-glow,
+		border-radius: 4px
+	),
+	50: (
+		background: $c-white
+	)
+), (
+	"max-width: 768px": (
+		0: (
+			background: $-scroll-glow,
+			border-radius: 0
+		),
+		50: (
+			background: $c-white
+		),
+	)
+));

@@ -1,0 +1,82 @@
+.search {
+	position: sticky !important;
+	top: 0;
+
+	z-index: 1;
+
+	border-right: 0;
+	border-radius: 0 0 0 4px;
+	background: linear-gradient(
+		to right,
+		$c-white,
+		$c-white,
+		$c-white,
+		$c-white,
+		$-sidebar-bg-gray
+	);
+	padding: 10px;
+
+	.search-ui {
+		@include fsize(13);
+		@include bg($-light-background);
+		@include flex($justify: space-around, $align: center);
+
+		transition: 0.1s ease-in-out;
+		transition-property: box-shadow;
+
+		box-shadow: none;
+
+		border-radius: 5px;
+		padding: 0 10px;
+
+		width: 100%;
+
+		&.matchless {
+			box-shadow: inset 0 0 0 2px $-search-error;
+		}
+
+		// The icons (magnifying glass/clear-reset).
+		.icon-search,
+		.icon-clear {
+			@include c($-text-gray-mid);
+		}
+
+		.icon-clear {
+			@include cur;
+
+			margin-right: -6px;
+			padding: 6px;
+		}
+
+		.icon-clear:hover {
+			@include c($-brand, "!imporant");
+		}
+
+		.icon-clear:active {
+			opacity: 0.5;
+		}
+
+		.input {
+			@include fsize(14);
+			@include flex($flow: null);
+
+			outline: none;
+			border: 0;
+			padding: 6px;
+			padding-left: 10px;
+
+			width: 100%;
+		}
+
+		.input::placeholder {
+			@include c($-text-gray);
+			@include fsize(14);
+		}
+	}
+}
+
+// The highlighted text colors.
+.search-highlight {
+	@include c($-text-black);
+	@include bg($-search-highlight);
+}

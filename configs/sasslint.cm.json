@@ -1,0 +1,55 @@
+{
+	// [https://github.com/juanfran/gulp-scss-lint#config]
+	// [https://github.com/sasstools/gulp-sass-lint#optionsrules]
+	// [https://github.com/sasstools/sass-lint/tree/master/docs/rules]
+	// [https://github.com/brigade/scss-lint/blob/master/config/default.yml]
+	"rules": {
+		"quotes": [
+			1, // Warn when single quotes are used.
+			{
+				"style": "double"
+			}
+		],
+		"indentation": [
+			// Disable. Let prettier align code as needed.
+			0,
+			{
+				"size": "tab"
+			}
+		],
+		"leading-zero": [
+			1,
+			{
+				"include": true
+			}
+		],
+		"property-sort-order": 0, // Disable order.
+		"no-misspelled-properties": [
+			1,
+			{
+				"extra-properties": [
+					// [https://davidwalsh.name/font-smoothing]
+					"font-smoothing",
+					"overflow-scrolling",
+					"touch-callout"
+				]
+			}
+		],
+		"hex-length": [
+			1,
+			{
+				"style": "long"
+			}
+		],
+		"force-pseudo-nesting": 0,
+		"force-element-nesting": 0
+
+		// Enable/disable as needed.
+		// "no-color-literals": 0,
+		// "nesting-depth": 0,
+		// "no-important": 0,
+		// "no-qualifying-elements": 0
+		// "no-invalid-hex": 0,
+		// "hex-length": 0
+	}
+}

@@ -1,0 +1,44 @@
+// Get top-level imports.
+// @import "../base/mixins";
+
+// Button UI.
+
+%btn {
+	@include c($-text-base);
+	@include noselect;
+	// Defaults to a white button.
+	@include bg($c-white);
+
+	transition: box-shadow 0.2s ease-in-out;
+	cursor: pointer;
+
+	border: 1px solid $-border;
+	border-radius: 4px;
+}
+
+.btn {
+	@extend %btn;
+
+	&:hover {
+		box-shadow: 0 0 0 3px $-light-background;
+		border: 1px solid $-brand;
+	}
+
+	&:active {
+		opacity: 0.7;
+	}
+
+	&-blue {
+		@include bg($-brand);
+		@include c($-text-white);
+
+		border: 1px solid $c-trans;
+	}
+
+	&-home {
+		padding: 6px 10px;
+
+		font-size: 12px;
+		font-weight: bold;
+	}
+}

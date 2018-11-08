@@ -1,0 +1,257 @@
+.codeblock-placeholder {
+	@include cur;
+	@include bg($-lighter-background);
+	@include flex($flow: null);
+
+	margin-bottom: 15px;
+	border: 1px solid $-border;
+	border-radius: 3px;
+	background-clip: padding-box;
+
+	.template {
+		@include flex($flow: "column nowrap");
+
+		// The gray bar code template.
+		transform: scale(0.8);
+
+		padding: 5px;
+
+		width: 50%;
+
+		.row {
+			@include flex($flow: null);
+		}
+
+		.indent {
+			margin-left: 25px;
+		}
+
+		.block {
+			@include bg($-border);
+
+			margin: 3px 10px 3px 0;
+			border-radius: 3px;
+			padding: 6px 10px;
+
+			// Loop to make the block sizes.
+			@each $w in (4 5 7 8 10 13) {
+				$w: $w * 10;
+
+				&.size-#{$w} {
+					width: #{$w}px;
+				}
+			}
+		}
+	}
+
+	.info {
+		// The right side shows code block info.
+		@include flex($flow: null, $align: center, $justify: center);
+		width: 100%;
+
+		div:first-child {
+			padding: 3px;
+
+			min-width: 50%;
+		}
+
+		.label {
+			@include noselect;
+
+			font-weight: bold;
+		}
+
+		.details {
+			@include c($-text-gray);
+			@include fsize(12);
+
+			margin-top: 5px;
+		}
+
+		.lang {
+			@include bg($c-white);
+			@include fsize(10);
+			@include c($-text-gray);
+
+			margin-left: 5px;
+			border: 1px solid $-border;
+			border-radius: 3px;
+			padding: 4px;
+
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+	}
+
+	&:active span,
+	&:hover span {
+		@include c($-brand, "!important");
+	}
+
+	&:active,
+	&:hover,
+	&:active .lang,
+	&:hover .lang {
+		border: 1px solid $-brand !important;
+	}
+}
+
+// The name of the code block (i.e. "untitled.js").
+.codeblock-name {
+	@include fsize(11);
+	@include c($-text-gray-light);
+	@include bg($-lighter-background);
+	@include def-font;
+
+	position: absolute;
+
+	margin-top: -26px;
+	margin-left: -10px;
+	border-right: 1px solid $-border;
+	border-bottom: 1px solid $-border;
+	border-radius: 3px 0;
+	padding: 2px 10px;
+
+	font-weight: bold;
+}
+
+%action {
+	@include c($-text-gray);
+	@include fsize(13);
+
+	opacity: 0.4;
+
+	margin-left: 10px;
+	// box-shadow: none;
+	border: 1px solid $-border;
+	padding: 3px 10px;
+
+	font-weight: bold;
+
+	&:hover {
+		@include c($-text-base);
+
+		opacity: 1;
+
+		border: 1px solid $-brand;
+	}
+
+	&:active {
+		opacity: 0.7;
+	}
+}
+
+// Actionb buttons + Tab actions.
+.cb-top-ui {
+	@include flex($flow: null, $justify: space-between);
+
+	margin-bottom: 3px;
+	border-radius: 3px 3px 0 0;
+
+	width: 100%;
+
+	.action {
+		@extend %action;
+	}
+
+	.tabs {
+		@include ios-smooth-scrolling;
+		@include flex($flow: null);
+		@include noselect;
+
+		position: relative;
+
+		max-width: 600px;
+		overflow: auto;
+		overflow-x: auto;
+		overflow-y: hide;
+
+		.tab {
+			@include cur;
+			@include c($-text-gray-light);
+			@include fsize(13);
+
+			border-radius: 3px;
+			padding: 5px 13px;
+
+			font-weight: bold;
+			white-space: pre;
+
+			&.activetab {
+				@include c($-text-base);
+			}
+		}
+	}
+
+	.actions-right {
+		@include flex($flow: null, $justify: center, $align: center);
+
+		margin-bottom: 3px;
+
+		.action {
+			@include flex($flow: null, $justify: center, $align: center);
+			@include noselect;
+		}
+
+		i {
+			margin-right: 5px;
+		}
+	}
+}
+
+.line-nums {
+	@include c($-text-gray-light);
+	@include bg($-lighter-background);
+	@include noselect;
+
+	border-right: 1px solid $-border;
+	border-radius: 5px 0 0 5px;
+	padding: 26px 3px 16px 10px;
+
+	pointer-events: none;
+
+	&.hidden-clone {
+		visibility: hidden;
+	}
+
+	&.lines {
+		@include bg($c-trans);
+
+		position: absolute;
+
+		border-right: 0;
+
+		width: 100%;
+	}
+
+	&.numbers {
+		position: fixed;
+	}
+
+	.line {
+		position: relative;
+
+		span {
+			padding: 0 10px;
+		}
+
+		&.highlight-l {
+			@include bg($-cb-linehighlight-line);
+			@include bg(linear-gradient(to right, $-cb-linehighlight-line 85%, $c-trans));
+
+			// Line highlight.
+			margin-right: 10px;
+			border-radius: 4px;
+		}
+
+		.highlight-n {
+			@include c($-text-white) @include bg($-cb-linehighlight-number);
+
+			// Line number highlight.
+			box-shadow: 0 -3px 0 0 $-cb-linehighlight-number;
+			border-radius: 3px;
+
+			font-weight: bold;
+		}
+	}
+}

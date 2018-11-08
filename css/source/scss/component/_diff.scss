@@ -1,0 +1,21 @@
+.diff {
+	&-deletion {
+		@include bg($-diff-deletion-bg);
+		@include c($-diff-deletion-c);
+	}
+
+	&-addition {
+		@include bg($-diff-addition-bg);
+		@include c($-diff-addition-c);
+	}
+
+	&-coordinate {
+		@include c($-diff-coordinate-c);
+
+		font-weight: bold;
+	}
+
+	&-diffline {
+		@include c($-diff-diffline-c);
+	}
+}

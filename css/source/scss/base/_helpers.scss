@@ -1,0 +1,93 @@
+// Get top-level imports.
+// @import "../base/mixins";
+
+.def-font {
+	@include def-font;
+}
+
+.truncate {
+	@include truncate;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+// Visibility Helpers.
+
+.none {
+	display: none !important;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.opa0 {
+	opacity: 0;
+}
+
+.opa1 {
+	opacity: 1;
+}
+
+// Box-modal Helpers.
+
+.mr2 {
+	margin-right: 2px;
+}
+
+.mr3 {
+	margin-right: 3px;
+}
+
+.mr5 {
+	margin-right: 5px;
+}
+
+.mb3 {
+	margin-bottom: 3px;
+}
+
+// Interaction Helpers.
+
+.noselect {
+	@include noselect;
+}
+
+.pnone {
+	pointer-events: none;
+}
+
+// Positional Helpers .
+
+.flex {
+	@include flex($flow: null);
+}
+
+.flex-center {
+	@include flex(null, null, center, center);
+}
+
+.fixed {
+	position: fixed;
+}
+
+.abs {
+	position: absolute !important;
+}
+
+// Animation Helpers.
+
+.tdelay1 {
+	transition-delay: 0.1s !important;
+}
+
+.anchor {
+	padding: 0 6px;
+}
+
+.anchor i {
+	@include fsize(12);
+	@include c($-text-markdown);
+}

@@ -1,0 +1,64 @@
+.error {
+	@include flex($flow: "column nowrap", $align: center, $justify: center);
+
+	padding-top: 25px;
+
+	.error-logo {
+		@include flex($align: center, $justify: "space-evenly");
+		@include bg($-text-gray);
+		@include fsize(12);
+
+		opacity: 0.5;
+
+		margin-bottom: 20px;
+		border: 1px solid $-border;
+		border-radius: 100px;
+		padding: 2px 6px;
+
+		width: 85px;
+
+		font-weight: bold;
+	}
+
+	.img {
+		filter: grayscale(1);
+
+		width: 10px;
+	}
+
+	.title {
+		@include c($-text-gray-dark);
+		@include fsize(20);
+
+		font-weight: bold;
+	}
+
+	.message {
+		@include c($-text-gray-mid);
+		@include fsize(14);
+
+		padding-top: 10px;
+
+		max-width: 375px;
+
+		text-align: center;
+	}
+
+	// Custom error content for errors.
+
+	.content {
+		margin-top: 15px;
+	}
+
+	.found-versions {
+		padding: 3px 0;
+
+		.found-version {
+			@include flex($flow: null, $align: center, $justify: center);
+
+			i {
+				margin-right: 5px;
+			}
+		}
+	}
+}

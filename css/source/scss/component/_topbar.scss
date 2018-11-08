@@ -1,0 +1,70 @@
+// Get top-level imports.
+// @import "../base/mixins";
+
+.topbar {
+	@include flex($flow: null, $align: center, $justify: "space-between");
+	@include translate3d;
+	@include bg($-lighter-background);
+
+	display: none;
+
+	z-index: 1;
+	backdrop-filter: blur(10px);
+
+	border-bottom: 1px solid $-border;
+	padding: 5px 20px;
+
+	width: 100%;
+
+	font-weight: bold;
+
+	.left {
+		@include flex($flow: null, $align: center, $justify: center);
+
+		.hamburger {
+			@include flex($flow: null);
+			@include cur;
+
+			margin-left: -10px;
+			padding: 7px;
+
+			font-size: 18px;
+
+			&:active {
+				opacity: 0.7;
+			}
+
+			.loader {
+				// [https://codepen.io/hoshts/pen/BHoij?editors=1100]
+				margin: 0 15px 0 5px;
+			}
+		}
+	}
+
+	.crumbs {
+		@include flex($flow: null, $align: center, $justify: center);
+
+		margin-right: -5px;
+		margin-left: -5px;
+		border: 1px solid $-border;
+		border-radius: 100px;
+		padding: 4px 8px;
+
+		font-size: 12px;
+
+		.sep {
+			padding: 0 4px;
+		}
+
+		.folder,
+		.file {
+			@include truncate;
+		}
+
+		.folder,
+		.file,
+		.sep {
+			@include flex($flow: null);
+		}
+	}
+}
