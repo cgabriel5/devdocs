@@ -407,7 +407,8 @@ module.exports = function(refs, name) {
 					// Make the block code name HTML.
 					var blockname =
 						$block.attr()["data-block-name"] ||
-						"untitled" + (lang !== "" ? "." + lang : "");
+						"untitled" +
+							(lang !== "" ? "." + lang.toLowerCase() : "");
 					var blockname_html = format(templates.cb_name, blockname);
 
 					// Add the line numbers HTML.
