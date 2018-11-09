@@ -320,14 +320,17 @@ ul.file-headers {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  margin-right: 5px;
+  margin-right: 10px;
   margin-left: 5px;
   padding: 0; }
   .logo.square {
-    width: 20px;
-    height: 20px; }
+    width: auto;
+    height: auto; }
     .logo.square img {
-      width: 16px; }
+      display: inherit;
+      vertical-align: unset;
+      width: 16px;
+      height: 100%; }
   .logo.landscape {
     min-width: 45px;
     max-width: 55px; }
@@ -1082,7 +1085,9 @@ ul.file-headers {
     .search .search-versions {
       background: #f7f7f7; }
   .logo-spacer {
-    display: block; } }
+    display: block; }
+  .logo {
+    margin-right: 5px; } }
 
 @media (min-width: 768px) {
   body {
