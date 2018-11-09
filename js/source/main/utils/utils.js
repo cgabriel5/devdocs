@@ -252,7 +252,7 @@ var timedate = function(timestamp, format12, delimiter, cb) {
 
 	// Get the needed date information.
 	var year = date.getFullYear();
-	var month = date.getMonth();
+	var month = date.getMonth() + 1;
 	var day = date.getDate();
 
 	// Get date time information.
