@@ -1,17 +1,23 @@
 .logo {
 	@include flex($flow: null, $justify: flex-start, $align: center);
-	margin-right: 5px;
+	margin-right: 10px;
 
 	margin-left: 5px;
 	padding: 0;
 
 	&.square {
-		width: 20px;
-		height: 20px;
+		width: auto; // 20px;
+		height: auto; // 20px;
 
 		img {
+			// In iOS 10.3.3 Safari there is weird flex-box behavior where
+			// the logo does not properly center vertically. The following
+			// fixes the behavior. It also works for all other browsers.
+			display: inherit;
+			vertical-align: unset;
 			// [https://stackoverflow.com/a/9445306]
 			width: 16px;
+			height: 100%;
 		}
 	}
 
