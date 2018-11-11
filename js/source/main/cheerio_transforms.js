@@ -295,6 +295,9 @@ module.exports = function(refs, name) {
 				.first()
 				.attr("id", `cbs-${uid}`);
 
+			// Get the copy button to later disable it if needed
+			var $btn_copy = $el.find(".btn.action.copy").first();
+
 			// === Loop over blocks. ===
 			$el
 				.find(".cb-blocks")
@@ -363,6 +366,16 @@ module.exports = function(refs, name) {
 						// Add the placeholder before the
 						// pre element.
 						$el.before(placeholder_html);
+
+						// Disable the copy button, since the placeholder is
+						// being shown (defaulted to). Clicking the placeholder
+						// will show the code block and also make the action
+						// buttons visible.
+						if (!i) {
+							// If the placeholder if the first code block,
+							// disable the copy button.
+							$btn_copy.addClass("btn-disabled-light");
+						}
 					}
 
 					// Set the line numbers.

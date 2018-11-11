@@ -41,4 +41,12 @@
 		font-size: 12px;
 		font-weight: bold;
 	}
+
+	&-disabled-light {
+		@include bg($c-alabaster);
+		@include cur(not-allowed);
+		@include c($-text-gray-light, "!important");
+
+		pointer-events: none;
+	}
 }

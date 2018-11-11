@@ -27,6 +27,28 @@ if (!outputpath_filename) {
 config.outputpath = outputpath;
 config.outputpath_filename = outputpath_filename;
 
+// Add GitHub information.
+let github = Object.assign(
+	// Default to empty values if not provided.
+	{ account_username: "", project_name: "" },
+	get(config, "github", {})
+);
+// Store GitHub information.
+var github_data;
+// If needed data points were provided add URLs to object.
+let uname = github.account_username;
+let pname = github.project_name;
+if (uname && pname) {
+	// Add the needed data.
+	github_data = {
+		account_username: uname,
+		project_name: pname,
+		project_url: `https://github.com/${uname}/${pname}/`,
+		releases_url: `https://github.com/${uname}/${pname}/releases`,
+		releases_api_url: `https://api.github.com/repos/${uname}/${pname}/releases`
+	};
+}
+
 // JSON data structure.
 config.data = {
 	versions: {
@@ -38,17 +60,16 @@ config.data = {
 		files: {
 			// Add the 404 error objects to internal files object.
 			internal: Object.assign({}, $app.module("@main/templates/404.js")),
-			user: {
-				// Contain the HTML content and its respective original code blocks.
-			},
+			// Contain the HTML content and its respective original code blocks.
+			user: {},
 			// Store the original code blocks' text.
 			cbs: {}
 		}
 	},
 	settings: {
 		animations: config.animations,
-		title: config.title
-		// github: ""
+		title: config.title,
+		github: github_data
 	},
 	components: {
 		scrollbars: {

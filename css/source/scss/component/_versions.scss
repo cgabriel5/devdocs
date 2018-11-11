@@ -1,4 +1,6 @@
 .versions {
+	@include flex($flow: wrap, $justify: "space-between", $align: center);
+
 	margin-top: 5px;
 	padding: 5px;
 
@@ -7,17 +9,34 @@
 		@include cur;
 	}
 
-	.version {
+	.version-loaded:hover .version {
+		@include c($c-dodger-blue);
+	}
+
+	.version,
+	.releases {
 		@include c($-text-gray);
 		@include fsize(13);
 
 		i {
 			margin-right: 2px;
 		}
+
+		&:hover {
+			@include underline;
+		}
 	}
 
-	.version:hover {
-		@include underline;
+	.releases {
+		a {
+			@include c($-text-gray);
+			text-decoration: none;
+		}
+
+		a:hover {
+			@include c($c-dodger-blue);
+			@include underline;
+		}
 	}
 }
 
@@ -26,7 +45,7 @@
 
 	position: absolute;
 
-	margin-top: 5px;
+	margin-top: 65px;
 	box-shadow: 0 0 1px $-shadow-border, 0 20px 55px -8px $-shadow;
 	border-radius: 4px;
 	padding: 5px;
