@@ -489,7 +489,8 @@ ul.file-headers {
   padding-top: 20px; }
   .mtime .label {
     font-weight: bold; }
-  .mtime .long {
+  .mtime .long,
+  .mtime .clock-icon {
     color: #999999 !important; }
 
 .arrownav {

@@ -27,6 +27,7 @@ var templates = {
 			<span class="label"><i class="fas fa-edit"></i> Last update:</span>
 			<span class="mtime-ts animate-fadein none" data-ts="{{#d1}}"></span>
 			<span class="long">({{#d2}})</span>
+			<span class="clock-icon">— <i class="far fa-clock"></i></span>
 		</div>
 	</div>
 </div>`,
