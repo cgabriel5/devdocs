@@ -3249,12 +3249,19 @@ document.onreadystatechange = function() {
 						var gid = $target.getAttribute("data-gid");
 
 						// Get the collapse action button.
-						var $button = document
+						var $collapse_btn = document
 							.getElementById(`tui-${gid}`)
 							.getElementsByClassName("collapse")[0];
 
-						// Show button.
-						classes($button, "!none");
+						// Get the copy action button.
+						var $copy_btn = document
+							.getElementById(`tui-${gid}`)
+							.getElementsByClassName("copy")[0];
+
+						// Show collapse button.
+						classes($collapse_btn, "!none");
+						// Enable the copy button.
+						classes($copy_btn, "!btn-disabled-light");
 
 						return;
 					} else if (is_target_el($target, "collapse")) {
@@ -3277,6 +3284,14 @@ document.onreadystatechange = function() {
 						classes($block, "none");
 						// Show the placeholder.
 						classes($placeholder, "!none");
+
+						// Get the copy action button.
+						var $copy_btn = document
+							.getElementById(`tui-${gid}`)
+							.getElementsByClassName("copy")[0];
+
+						// Disable the copy button.
+						classes($copy_btn, "btn-disabled-light");
 
 						return;
 					} else if (is_target_el($target, "dd-exp-message")) {

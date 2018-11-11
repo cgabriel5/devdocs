@@ -127,6 +127,12 @@ body {
   font-size: 12px;
   font-weight: bold; }
 
+.btn-disabled-light {
+  background: #fbfbfb;
+  cursor: not-allowed;
+  color: #b3b3b3 !important;
+  pointer-events: none; }
+
 .loader-top {
   background: #2578f8;
   position: fixed;
