@@ -2911,6 +2911,14 @@ document.onreadystatechange = function() {
 					);
 					$version.setAttribute("data-v", version);
 
+					// Show the released UI.
+					if (GITHUB.releases_url) {
+						// Inject the URL if provided.
+						$releases.innerHTML = `<a href="${
+							GITHUB.releases_url
+						}" target="_blank"><i class="fas fa-tag"></i> Releases</a>`;
+					}
+
 					// Inject the needed sidebar menu item tops CSS.
 					inject_sidebae_tops_css();
 

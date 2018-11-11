@@ -8,14 +8,7 @@ module.exports = function(config) {
 	let footer = get(config, "footer", []);
 	let title = get(config, "title", "devdocs");
 	// Get GitHub account information.
-	let github = Object.assign(
-		{
-			// Defaults.
-			account_username: "",
-			project_name: ""
-		},
-		get(config, "github", {})
-	);
+	let github = config.data.settings.github;
 
 	// Start footer HTML.
 	let footer_html = ['<div class="footer">'];
@@ -118,26 +111,13 @@ module.exports = function(config) {
 
 	// Add footer copyright information.
 
-	// GitHub information.
-	let uname = github.account_username;
-	let pname = github.project_name;
-	let project_url = `https://github.com/${uname}/${pname}/`;
-
-	// Store GitHub information.
-	config.data.settings.github = {
-		account_username: github.account_username,
-		project_name: github.project_name,
-		project_url: null
-	};
-
-	// Make the link HTML if the GitHub info exists.
-	if (uname && pname) {
-		// Store GitHub information.
-		config.data.settings.github.project_url = project_url;
-
+	// If the GitHub information was provided link to GitHub repo.
+	if (github) {
 		// Add copyright HTML.
 		footer_html.push(
-			`<div class="copyright"><a href="${project_url}" target="_blank">© ${new Date(
+			`<div class="copyright"><a href="${
+				github.project_url
+			}" target="_blank">© ${new Date(
 				Date.now()
 			).getFullYear()} ${title}</a></div>`
 		);
