@@ -963,12 +963,13 @@ ul.file-headers {
   background: #ffe300; }
 
 .versions {
-  display: flex;
-  flex-flow: wrap;
-  justify-content: space-between;
-  align-items: center;
   margin-top: 5px;
   padding: 5px; }
+  .versions .versions-ui {
+    display: flex;
+    flex-flow: wrap;
+    justify-content: space-between;
+    align-items: center; }
   .versions .version-loaded {
     display: inline-flex;
     flex-flow: row nowrap;
@@ -996,11 +997,13 @@ ul.file-headers {
 .version-options {
   background: #ffffff;
   position: absolute;
-  margin-top: 65px;
-  box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
+  right: 10px;
+  left: 10px;
+  margin-top: 5px;
+  margin-right: 0px;
+  box-shadow: 0 0 1px rgba(57, 70, 78, 0.4), 0 6px 12px rgba(57, 70, 78, 0.15);
   border-radius: 4px;
   padding: 5px;
-  width: calc(100% - 20px);
   pointer-events: all; }
 
 .voptions-list {
