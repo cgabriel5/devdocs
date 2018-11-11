@@ -18,8 +18,8 @@ $c-trans: transparent;
 
 // Alpha grays.
 $c-limed-spruce: #39464e;
-$c-limed-spruce-40: rgba($c-limed-spruce, 0.4); //#39464e66
-$c-limed-spruce-30: rgba($c-limed-spruce, 0.3); //#39464e4c
+$c-limed-spruce-15: rgba($c-limed-spruce, 0.15); //#39464e66
+$c-limed-spruce-40: rgba($c-limed-spruce, 0.4); //#39464e4c
 
 $c-black-1: rgba($c-black, 0.1);
 $c-black-02: rgba($c-black, 0.02);
@@ -123,8 +123,8 @@ $-border: $c-iron;
 $-trans-black: $c-black-1;
 
 // Box-shadows:
-$-shadow-border: $c-limed-spruce-30;
-$-shadow: $c-limed-spruce-40;
+$-shadow-border: $c-limed-spruce-40;
+$-shadow: $c-limed-spruce-15;
 
 // Backgrounds.
 $-light-background: $c-haze;
