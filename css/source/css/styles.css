@@ -963,6 +963,10 @@ ul.file-headers {
   background: #ffe300; }
 
 .versions {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: space-between;
+  align-items: center;
   margin-top: 5px;
   padding: 5px; }
   .versions .version-loaded {
@@ -970,18 +974,29 @@ ul.file-headers {
     flex-flow: row nowrap;
     align-items: center;
     cursor: pointer; }
-  .versions .version {
+  .versions .version-loaded:hover .version {
+    color: #2578f8; }
+  .versions .version,
+  .versions .releases {
     color: #999999;
     font-size: 13px; }
-    .versions .version i {
+    .versions .version i,
+    .versions .releases i {
       margin-right: 2px; }
-  .versions .version:hover {
+    .versions .version:hover,
+    .versions .releases:hover {
+      text-decoration: underline; }
+  .versions .releases a {
+    color: #999999;
+    text-decoration: none; }
+  .versions .releases a:hover {
+    color: #2578f8;
     text-decoration: underline; }
 
 .version-options {
   background: #ffffff;
   position: absolute;
-  margin-top: 5px;
+  margin-top: 65px;
   box-shadow: 0 0 1px rgba(57, 70, 78, 0.3), 0 20px 55px -8px rgba(57, 70, 78, 0.4);
   border-radius: 4px;
   padding: 5px;

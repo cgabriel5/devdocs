@@ -43,6 +43,7 @@ document.onreadystatechange = function() {
 		var $version_options = document.getElementById("version-options");
 		var $vlist = document.getElementById("voptions-list");
 		var $version = document.getElementById("version");
+		var $releases = document.getElementById("releases");
 
 		var $sb_menu = document.getElementById("sidebar-menu");
 		var $sb_footer = document.getElementById("sb-footer");
