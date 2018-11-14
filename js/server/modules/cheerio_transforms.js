@@ -255,7 +255,7 @@ module.exports = function(refs, name) {
 			var tabs = tabs_string.split(";");
 			// Build the tabs HTML.
 			var tabs_html = [];
-			tabs.forEach(function(tab, i) {
+			tabs.forEach(function(tab, i, array) {
 				// Make the first tab be the active tab.
 				var is_first = i === 0 ? " activetab" : "";
 
@@ -274,6 +274,13 @@ module.exports = function(refs, name) {
 						d5: tab.trim() || " "
 					})
 				);
+
+				// Add tab indicator (if not a singleton) after last tab entry.
+				if (!is_singleton && array.length - 1 === i) {
+					tabs_html.push(
+						`<div class="indicator animate-fadein none" data-gid="${uid}"></div>`
+					);
+				}
 			});
 			// Add tabs HTML to top UI.
 			$ui_wrapper.prepend(

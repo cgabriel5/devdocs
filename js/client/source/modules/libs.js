@@ -1,3 +1,13 @@
+/*jshint bitwise: false*/
+/*jshint browser: true*/
+/*jshint esversion: 6 */
+/*jshint node: false*/
+/*jshint -W014 */
+/*jshint -W018 */
+/*jshint maxerr: 10000 */
+
+"use strict";
+
 app.module(
 	"libs",
 	function(modules, name) {

@@ -1,7 +1,7 @@
 "use strict";
 
 // Universal modules.
-let mdzero = $app.module("@main/markdown-it.js").mdzero;
+let mdzero = $app.module("@module/markdown-it.js").mdzero;
 
 var ctags = {
 	// Attach an object containing needed module variables to

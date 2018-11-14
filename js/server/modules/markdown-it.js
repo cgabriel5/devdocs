@@ -1,7 +1,7 @@
 "use strict";
 
 // Universal modules.
-let highlight = $app.module("@main/syntax_highlighter.js");
+let highlight = $app.module("@module/syntax_highlighter.js");
 
 // Get markdown-it and customize module.
 let mdzero = require("markdown-it")({

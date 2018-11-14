@@ -16,10 +16,13 @@
 // info/functions relative to the main JS file. This global will then be easily
 // accessible across all project files. However, since polluting the global
 // namespace is looked down upon, THIS TO BE THE ONLY GLOBAL VARIABLE USED.
-var mpath = "./js/source/main";
-require(`${mpath}/module.js`)({
+var mpath = "./js/server";
+require(`${mpath}/modules/module.js`)({
 	"@root": __dirname,
 	"@main": mpath,
+	"@module": "@main/modules/",
+	"@tasks": "@main/tasks/",
+	"@templates": "@main/templates/",
 	"@autils": "@main/utils/",
 	"@gutils": "./gulp/assets/utils/"
 });
@@ -100,7 +103,7 @@ let $ = require("gulp-load-plugins")({
 });
 
 // Load/modify configuration.
-let config = $app.module("@main/configuration.js");
+let config = $app.module("@module/configuration.js");
 let root = get(config, "root", "docs/");
 let versions = get(config, "versions", []);
 let modifier = config.modifier;
@@ -115,20 +118,20 @@ process_versions = process_versions
 	: get(config, "process_versions", null);
 
 // Custom modules.
-let ctags = $app.module("@main/custom_tags.js");
-let line_highlighter = $app.module("@main/line_highlighter.js");
-let markdownit = $app.module("@main/markdown-it.js");
+let ctags = $app.module("@module/custom_tags.js");
+let line_highlighter = $app.module("@module/line_highlighter.js");
+let markdownit = $app.module("@module/markdown-it.js");
 let highlight = markdownit.highlight;
 let mdzero = markdownit.mdzero;
-let markedjs = $app.module("@main/marked.js")({ outputpath });
+let markedjs = $app.module("@module/marked.js")({ outputpath });
 let marked = markedjs.marked;
 let renderer = markedjs.renderer;
 // Generate site footer.
-let footer = $app.module("@main/footer.js")(config);
-let templates = $app.module("@main/templates/processor.js");
-let transformer = $app.module("@main/transformer.js");
-let preplacements = $app.module("@main/processor_replacements.js");
-let ctransforms = $app.module("@main/cheerio_transforms.js");
+let footer = $app.module("@module/footer.js")(config);
+let templates = $app.module("@templates/processor.js");
+let transformer = $app.module("@module/transformer.js");
+let preplacements = $app.module("@module/processor_replacements.js");
+let ctransforms = $app.module("@module/cheerio_transforms.js");
 
 // Pass var refs. to tasks instead of including everything over again.
 var refs = {
@@ -184,7 +187,7 @@ var refs = {
 };
 
 // Process files to generate documentation.
-$app.module("@main/processor.js")(refs);
+$app.module("@module/processor.js")(refs);
 
 // Create and run Gulp tasks.
-$app.module("@main/tasks.js")(refs);
+$app.module("@module/tasks.js")(refs);
