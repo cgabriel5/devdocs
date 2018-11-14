@@ -45,16 +45,31 @@ module.exports = function(refs) {
 		true
 	);
 
+	// The vendor path prefix.
+	var vcpath = "./js/client/vendor";
+	var vspath = "./js/client/source";
+
 	return pump(
 		[
 			gulp.src([
-				$app.rpath("./js/vendor/httpjs/http.js"),
-				$app.rpath("./js/vendor/fastclick/fastclick.js"),
-				$app.rpath("./js/vendor/uaparserjs/uaparser.js"),
-				$app.rpath("./js/vendor/clipboardjs/clipboard.js"),
-				// $app.rpath("./js/vendor/smoothscrolljs/smoothscroll.js"),
-				// $app.rpath("./js/vendor/smoothscrolljs/zenscroll.js"),
-				$app.rpath("./js/source/app.js")
+				$app.rpath(`${vcpath}/httpjs/http.js`),
+				$app.rpath(`${vcpath}/fastclick/fastclick.js`),
+				$app.rpath(`${vcpath}/uaparserjs/uaparser.js`),
+				$app.rpath(`${vcpath}/clipboardjs/clipboard.js`),
+				// $app.rpath(`${vcpath}/smoothscrolljs/smoothscroll.js`),
+				// $app.rpath(`${vcpath}/smoothscrolljs/zenscroll.js`),
+
+				// $app.rpath("./js/client/source/app.js")
+				$app.rpath(`${vspath}/app/iife/open.ig.js`),
+				$app.rpath(`${vspath}/app/__init.js`),
+				$app.rpath(`${vspath}/modules/libs.js`),
+				$app.rpath(`${vspath}/modules/globals.js`),
+				$app.rpath(`${vspath}/modules/utils.js`),
+				$app.rpath(`${vspath}/modules/$$.js`),
+				$app.rpath(`${vspath}/modules/core.js`),
+				$app.rpath(`${vspath}/modules/events.js`),
+				$app.rpath(`${vspath}/modules/main.js`),
+				$app.rpath(`${vspath}/app/iife/close.ig.js`)
 			]),
 			// Replace the default output path with the provided one.
 			$.replace(

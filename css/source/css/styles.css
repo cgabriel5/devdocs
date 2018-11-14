@@ -79,7 +79,7 @@ body {
   margin: 0;
   font-smoothing: subpixel-antialiased; }
 
-.app {
+.app-wrapper {
   display: flex;
   flex-flow: row nowrap;
   margin: auto;
@@ -709,6 +709,16 @@ ul.file-headers {
       white-space: pre; }
       .cb-top-ui .tabs .tab.activetab {
         color: #333333; }
+    .cb-top-ui .tabs .indicator {
+      background: #2578f8;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      transition: 0.35s all cubic-bezier(0.19, 1, 0.22, 1);
+      transition-delay: 0.025s;
+      border-radius: 3px;
+      width: 0px;
+      height: 3px; }
   .cb-top-ui .actions-right {
     display: flex;
     justify-content: center;
@@ -1076,17 +1086,17 @@ ul.file-headers {
     font-size: 13px; } }
 
 @media (max-width: 1325px) {
-  .app {
+  .app-wrapper {
     width: 1100px; }
   .sidebar {
     flex: 1 0 300px; } }
 
 @media (max-width: 1125px) {
-  .app {
+  .app-wrapper {
     width: 1000px; } }
 
 @media (max-width: 1024px) {
-  .app {
+  .app-wrapper {
     width: auto; }
   .l-1 {
     padding: 10px 0 10px 15px; }
@@ -1117,7 +1127,7 @@ ul.file-headers {
 @media (min-width: 768px) {
   body {
     overflow-y: scroll; }
-  .app {
+  .app-wrapper {
     overflow-x: hidden; }
   .markdown {
     overflow: auto; } }
@@ -1125,7 +1135,7 @@ ul.file-headers {
 @media (max-width: 768px) {
   .markdown {
     margin-left: 0; }
-  .app {
+  .app-wrapper {
     flex-flow: column nowrap; }
   .topbar {
     display: flex;

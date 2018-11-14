@@ -11,7 +11,7 @@ let outputpath = argv.output || argv.o;
 let outputpath_filename = argv.name || argv.n;
 
 // Load/modify configuration.
-let config = require(configpath || $app.module("@main/get_config_path.js"));
+let config = require(configpath || $app.module("@module/get_config_path.js"));
 
 // Honor the CLI outputpath parameter but if nothing is provided reset the
 // value to the config given value. If nothing is found in the config file
@@ -59,7 +59,7 @@ config.data = {
 		dirs: [],
 		files: {
 			// Add the 404 error objects to internal files object.
-			internal: Object.assign({}, $app.module("@main/templates/404.js")),
+			internal: Object.assign({}, $app.module("@templates/404.js")),
 			// Contain the HTML content and its respective original code blocks.
 			user: {},
 			// Store the original code blocks' text.
@@ -74,7 +74,7 @@ config.data = {
 	components: {
 		scrollbars: {
 			// Add the MacOS scrollbar styles:
-			macos: $app.module("@main/templates/scrollbars.js")
+			macos: $app.module("@templates/scrollbars.js")
 		},
 		footer: null,
 		logo: config.logo

@@ -76,6 +76,11 @@ module.exports = function(refs) {
 			print(` `, chalk.yellow("No skipped versions."));
 		}
 
+		// Show the set latest version.
+		print.ln();
+		print(chalk.underline("Latest version"));
+		print(`  ${latest}`);
+
 		print.ln();
 	}
 

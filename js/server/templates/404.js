@@ -9,7 +9,7 @@ let gutils = $app.module("@gutils/utils.js");
 let format = gutils.format;
 
 // The 404 error HTML template.
-var template = remove_space(`<div class="markdown-body animate-fadein">
+let template = remove_space(`<div class="markdown-body animate-fadein">
 	<div class="error">
 		<div class="error-logo none"><img alt="logo-leaf" class="img" src="{{#dir_path}}/img/leaf-216.png"> devdocs</div>
 		<div class="title">{{#title}}</div>
@@ -18,8 +18,8 @@ var template = remove_space(`<div class="markdown-body animate-fadein">
 	</div>
 </div>`);
 
-// The errors object.
-var errors = {
+// Templates.
+module.exports = {
 	// Add needed 404 errors.
 	_404: format(template, {
 		title: "Page Not Found",
@@ -38,7 +38,3 @@ var errors = {
 		content: ""
 	})
 };
-
-// Exports.
-
-module.exports = errors;

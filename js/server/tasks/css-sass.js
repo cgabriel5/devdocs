@@ -2,7 +2,7 @@
 
 // Universal modules.
 let pump = require("pump");
-let lint_printer = $app.module("@main/lint_printer.js");
+let lint_printer = $app.module("@module/lint_printer.js");
 
 /**
  * Process any SASS files into their CSS equivalents.

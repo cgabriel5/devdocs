@@ -45,7 +45,7 @@ module.exports = function(refs) {
 		return function(done) {
 			// Get and run the task.
 			return $app
-				.module(`@main/tasks/${this.__wapplr.debug.name}.js`)
+				.module(`@tasks/${this.__wapplr.debug.name}.js`)
 				.call(this, Object.assign(refs, { cb: done }));
 		};
 	};

@@ -1,15 +1,11 @@
 "use strict";
 
-// Node modules.
-let fs = require("fs");
-let path = require("path");
-
 // App utils.
 let autils = $app.module("@autils/utils.js");
 let remove_space = autils.remove_space;
 
-// The errors object.
-var templates = {
+// Templates.
+module.exports = {
 	sb_menu_item: remove_space(`<div id="parent-menu-file-{{#d1}}">
 	<li class="l-2" id="menu-file-{{#d1}}" data-dir="{{#d2}}" data-title="{{#d3}}">
 	<i class="fas fa-caret-right menu-arrow" data-file="{{#d4}}"></i>
@@ -91,7 +87,3 @@ var templates = {
 	<div class="line-nums lines">{{#d2}}</div>
 	<div class="line-nums numbers">{{#d3}}</div>`)
 };
-
-// Exports.
-
-module.exports = templates;
