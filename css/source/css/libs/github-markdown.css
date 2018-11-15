@@ -650,6 +650,25 @@ svg:not(:root) {
   vertical-align: text-top;
   fill: currentColor; }
 
+.markdown-body ol {
+  counter-reset: ordered-list-item;
+  margin-left: -9px;
+  list-style: none; }
+
+.markdown-body ol > li::before {
+  vertical-align: middle;
+  counter-increment: ordered-list-item;
+  margin-right: 10px;
+  border-radius: 100px;
+  background: #909da0;
+  padding: 4px 8px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  text-align: center;
+  content: counter(ordered-list-item); }
+
 @media (max-width: 767px) {
   .markdown-body {
     padding: 15px; } }
