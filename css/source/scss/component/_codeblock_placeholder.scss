@@ -263,13 +263,20 @@
 		}
 
 		.highlight-n {
-			@include c($-text-white) @include bg($-cb-linehighlight-number);
+			@include c($-text-white);
+			@include bg($-cb-linehighlight-number);
+
+			display: inline-block;
+			vertical-align: middle;
 
 			// Line number highlight.
-			box-shadow: 0 -3px 0 0 $-cb-linehighlight-number;
-			border-radius: 3px;
+			border-radius: 100px/90px;
+
+			height: 17px;
 
 			font-weight: bold;
+			line-height: 17px;
+			text-align: center;
 		}
 	}
 }

@@ -766,9 +766,13 @@ ul.file-headers {
     .line-nums .line .highlight-n {
       color: white;
       background: #698cfe;
-      box-shadow: 0 -3px 0 0 #698cfe;
-      border-radius: 3px;
-      font-weight: bold; }
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 100px/90px;
+      height: 17px;
+      font-weight: bold;
+      line-height: 17px;
+      text-align: center; }
 
 .cb-name-icon {
   font-size: 7px;
@@ -1178,8 +1182,6 @@ ul.file-headers {
       display: none; }
     .line-nums.numbers {
       position: relative; }
-    .line-nums .line .highlight-n {
-      box-shadow: none; }
   .search {
     margin-right: 0; }
   .l-2-link a {
