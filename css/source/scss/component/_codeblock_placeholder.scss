@@ -98,10 +98,11 @@
 
 // The name of the code block (i.e. "untitled.js").
 .codeblock-name {
+	@include def-font;
 	@include fsize(11);
 	@include c($-text-gray-light);
 	@include bg($-lighter-background);
-	@include def-font;
+	@include flex($flow: null, $justify: center, $align: center);
 
 	position: absolute;
 
@@ -271,4 +272,15 @@
 			font-weight: bold;
 		}
 	}
+}
+
+.cb-name-icon {
+	@include fsize(7);
+	@include c($-text-white);
+	@include bg($-text-gray);
+
+	margin-right: 5px;
+	border-radius: 2px;
+
+	padding: 2px 3px;
 }

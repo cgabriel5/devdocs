@@ -741,7 +741,7 @@
 	border-radius: 0 5px 5px 0;
 	/*background: #f6f8fa;*/
 	background: #fbfbfb;
-	padding: 16px 16px 16px 15px;
+	padding: 26px 16px 16px 15px;
 
 	width: 100%;
 
@@ -828,6 +828,33 @@ svg:not(:root) {
 	display: inline-block;
 	vertical-align: text-top;
 	fill: currentColor;
+}
+
+// Add custom counter to ordered lists.
+.markdown-body ol {
+	counter-reset: ordered-list-item;
+
+	margin-left: -9px;
+
+	list-style: none;
+}
+
+.markdown-body ol > li::before {
+	vertical-align: middle;
+
+	counter-increment: ordered-list-item;
+
+	margin-right: 10px;
+	border-radius: 100px;
+	background: #909da0;
+	padding: 4px 8px;
+
+	color: #ffffff;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 1;
+	text-align: center;
+	content: counter(ordered-list-item);
 }
 
 @media (max-width: 767px) {

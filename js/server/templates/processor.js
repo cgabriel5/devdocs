@@ -82,7 +82,7 @@ module.exports = {
 		</div>`),
 	line_highlight_1: `<div class="line"><span{{#d1}}>{{#d2}}</span></div>`,
 	line_highlight_2: `<div class="line{{#d1}}"> </div>`,
-	cb_name: `<div class="codeblock-name">{{#d1}}</div>`,
+	cb_name: `<div class="codeblock-name"><i class="{{#d1}}"></i> <span>{{#d2}}</span></div>`,
 	line_nums: remove_space(`<div class="line-nums hidden-clone">{{#d1}}</div>
 	<div class="line-nums lines">{{#d2}}</div>
 	<div class="line-nums numbers">{{#d3}}</div>`)

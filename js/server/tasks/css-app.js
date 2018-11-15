@@ -43,11 +43,12 @@ module.exports = function(refs) {
 
 	// The CSS file source path.
 	var css_path_source = "css/source/css/";
+	var css_path_source_libs = `${css_path_source}libs/`;
 
 	// The default CSS style sheets.
 	let css_source_files = [
 		"css/vendor/sanitize.css/sanitize.css",
-		`${css_path_source}github-markdown.css`
+		`${css_path_source_libs}github-markdown.css`
 		// "css/vendor/font-awesome/font-awesome.css"
 	];
 
@@ -62,17 +63,14 @@ module.exports = function(refs) {
 	if (highlighter_fchar !== "n") {
 		// Default to prismjs.
 		css_source_files.push(
-			`${css_path_source}${
+			`${css_path_source_libs}${
 				highlighter_fchar === "h" ? "highlightjs" : "prism-github"
 			}.css`
 		);
 	}
 
 	// Add the app styles.
-	css_source_files.push(
-		// `${css_path_source}helpers.css`,
-		`${css_path_source}styles.css`
-	);
+	css_source_files.push(`${css_path_source}styles.css`);
 	// // Add CSS animations if wanted.
 	// if (animations) {
 	// 	css_source_files.push(`${css_path_source}animations.css`);
