@@ -429,7 +429,14 @@ module.exports = function(refs, name) {
 						$block.attr()["data-block-name"] ||
 						"untitled" +
 							(lang !== "" ? "." + lang.toLowerCase() : "");
-					var blockname_html = format(templates.cb_name, blockname);
+					var cb_name_icon = ["shell", "sh", "bash"].includes(lang)
+						? "fas fa-terminal cb-name-icon"
+						: !lang ? "" : "fas fa-code cb-name-icon";
+					var blockname_html = format(
+						templates.cb_name,
+						cb_name_icon,
+						blockname
+					);
 
 					// Add the line numbers HTML.
 					$el.prepend(
