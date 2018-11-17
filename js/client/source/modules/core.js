@@ -41,6 +41,7 @@ app.module(
 		let $markdown = $$.$markdown;
 		let $soverlay = $$.$soverlay;
 		let $moverlay = $$.$moverlay;
+		let $crumbs = $$.$crumbs;
 		let $crumbs_file = $$.$crumbs_file;
 		let $crumbs_sep = $$.$crumbs_sep;
 		let $tb_loader = $$.$tb_loader;
@@ -686,6 +687,8 @@ app.module(
 				}
 			}
 
+			// Hide crumbs element.
+			classes($crumbs, "none", "!animate-fadein");
 			// If a file name exists, set it.
 			if (filename) {
 				classes($crumbs_sep, "!none");
@@ -695,6 +698,10 @@ app.module(
 				// Else, hide the element.
 				classes($crumbs_file, "none");
 			}
+			// Show crumb element.
+			setTimeout(function() {
+				classes($crumbs, "animate-fadein", "!none");
+			}, 0);
 		}
 
 		/**
