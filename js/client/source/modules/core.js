@@ -328,9 +328,10 @@ app.module(
 				offset = max_y_scroll_pos;
 			}
 
-			// Reduce the offset by 20 to that it never touched the
-			// ends.
-			return offset - 20;
+			// Make offset dependent on whether in a mobile/desktop view.
+			offset = offset - (is_mobile_viewport() ? 10 : 5);
+
+			return offset;
 		};
 		scroll.animation_handler = function(e) {
 			// Cancel event if no animation is ongoing.
@@ -752,7 +753,7 @@ app.module(
 					"sidebar_menu_scroll",
 					animate({
 						from: $sidebar.scrollTop,
-						to: $new_current.nextElementSibling.offsetTop + 15,
+						to: $new_current.offsetTop + 10,
 						duration: 700,
 						onSkip: function() {
 							// Get visibility information.
@@ -985,9 +986,7 @@ app.module(
 									"sidebar_menu_scroll",
 									animate({
 										from: $sidebar.scrollTop,
-										to:
-											$new_current.nextElementSibling
-												.offsetTop + 15,
+										to: $new_current.offsetTop + 10,
 										duration: 700,
 										onSkip: function() {
 											// Get visibility information.
