@@ -41,6 +41,7 @@ app.module(
 		let $markdown = $$.$markdown;
 		let $soverlay = $$.$soverlay;
 		let $moverlay = $$.$moverlay;
+		let $crumbs = $$.$crumbs;
 		let $crumbs_file = $$.$crumbs_file;
 		let $crumbs_sep = $$.$crumbs_sep;
 		let $tb_loader = $$.$tb_loader;
@@ -328,9 +329,10 @@ app.module(
 				offset = max_y_scroll_pos;
 			}
 
-			// Reduce the offset by 20 to that it never touched the
-			// ends.
-			return offset - 20;
+			// Make offset dependent on whether in a mobile/desktop view.
+			offset = offset - (is_mobile_viewport() ? 10 : 5);
+
+			return offset;
 		};
 		scroll.animation_handler = function(e) {
 			// Cancel event if no animation is ongoing.
@@ -685,6 +687,8 @@ app.module(
 				}
 			}
 
+			// Hide crumbs element.
+			classes($crumbs, "none", "!animate-fadein");
 			// If a file name exists, set it.
 			if (filename) {
 				classes($crumbs_sep, "!none");
@@ -694,6 +698,10 @@ app.module(
 				// Else, hide the element.
 				classes($crumbs_file, "none");
 			}
+			// Show crumb element.
+			setTimeout(function() {
+				classes($crumbs, "animate-fadein", "!none");
+			}, 0);
 		}
 
 		/**
@@ -752,7 +760,7 @@ app.module(
 					"sidebar_menu_scroll",
 					animate({
 						from: $sidebar.scrollTop,
-						to: $new_current.nextElementSibling.offsetTop + 15,
+						to: $new_current.offsetTop + 10,
 						duration: 700,
 						onSkip: function() {
 							// Get visibility information.
@@ -985,9 +993,7 @@ app.module(
 									"sidebar_menu_scroll",
 									animate({
 										from: $sidebar.scrollTop,
-										to:
-											$new_current.nextElementSibling
-												.offsetTop + 15,
+										to: $new_current.offsetTop + 10,
 										duration: 700,
 										onSkip: function() {
 											// Get visibility information.

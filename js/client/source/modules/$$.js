@@ -24,6 +24,7 @@ app.module(
 		this[name]["$moverlay"] = $("main-overlay");
 		this[name]["$splash"] = $("splash-overlay");
 		this[name]["$splash_icon"] = $("leaf");
+		this[name]["$crumbs"] = $("crumbs");
 		this[name]["$crumbs_folder"] = $("crumbs-folder");
 		this[name]["$crumbs_file"] = $("crumbs-file");
 		this[name]["$crumbs_sep"] = $("crumbs-sep");
