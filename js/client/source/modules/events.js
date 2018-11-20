@@ -57,7 +57,7 @@ app.module(
 		let get_headers = core.get_headers;
 		let get_header = core.get_header;
 		let reset_cblock_width_highlight = core.reset_cblock_width_highlight;
-		let inject_sidebae_tops_css = core.inject_sidebae_tops_css;
+		let inject_sidebar_tops_css = core.inject_sidebar_tops_css;
 		let inject = core.inject;
 		let bottom_nav = core.bottom_nav;
 		let toggle_sb_elements = core.toggle_sb_elements;
@@ -120,7 +120,7 @@ app.module(
 				reset_cblock_width_highlight();
 
 				// Inject the needed sidebar menu item tops CSS.
-				inject_sidebae_tops_css();
+				inject_sidebar_tops_css();
 
 				// Show tab indicators.
 				show_tab_indicators();
