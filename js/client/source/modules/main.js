@@ -69,7 +69,7 @@ app.module(
 
 		let core = modules.core;
 		let show_tb_loader = core.show_tb_loader;
-		let inject_sidebae_tops_css = core.inject_sidebae_tops_css;
+		let inject_sidebar_tops_css = core.inject_sidebar_tops_css;
 		let inject = core.inject;
 
 		// Grab the HTTP library.
@@ -441,7 +441,7 @@ app.module(
 					}
 
 					// Inject the needed sidebar menu item tops CSS.
-					inject_sidebae_tops_css();
+					inject_sidebar_tops_css();
 
 					// Add the sidebar HTML.
 					document.getElementById(
