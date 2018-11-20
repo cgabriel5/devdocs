@@ -487,30 +487,75 @@ app.module(
 
 		/**
 		 * Get the amount page the has been y-scrolled as a percent.
+		 *     Can also provide an element to find its amount scrolled. Axis
+		 *     can also be provided. Defaults to finding the document's y
+		 *     scroll amount.
 		 *
+		 * @param {string} axis - The axis of which to find the amount scrolled.
+		 *     Provide either "x" or "y".
+		 * @param {HTMLElement} $el - HTML Element to find the amount scrolled.
 		 * @return {number} - The percent scrolled.
 		 *
 		 * @resource [https://stackoverflow.com/a/8028584]
 		 */
-		var percent_scrolled = function() {
-			var $h = document.documentElement,
-				$b = document.body,
-				st = "scrollTop",
-				sh = "scrollHeight";
+		var percent_scrolled = function(axis, $el) {
+			// By default get the y:Width scroll amount.
+			axis = axis || "y";
+			var dimension = axis === "y" ? "Height" : "Width";
+			axis = axis === "y" ? "Top" : "Left";
+
+			var $h = $el || document.documentElement,
+				$b = $el || document.body,
+				st = `scroll${axis}`,
+				sh = `scroll${dimension}`;
 
 			// Calculate the percent.
 			var percent =
 				($h[st] || $b[st]) /
-				(($h[sh] || $b[sh]) - $h.clientHeight) *
+				(($h[sh] || $b[sh]) - $h[`client${dimension}`]) *
 				100;
 
 			// If the page is not scrollable reset the percent to 0.
-			if ($h.scrollHeight === $h.clientHeight) {
+			if ($h[`scroll${dimension}`] === $h[`client${dimension}`]) {
 				percent = 0;
 			}
 
 			// Return the percent.
 			return percent;
+		};
+
+		/**
+		 * Check whether the provided element is scrollable along the provided
+		 *     axis.
+		 * @param  {string} axis - The axis to determine scrollability.
+		 * @param  {HTMLElement} $el - The element to check.
+		 * @return {Boolean} - Boolean indicating whether the element is
+		 *     scrollable along the provided axis.
+		 *
+		 * @resource [https://stackoverflow.com/a/2146905]
+		 */
+		var is_element_scrollable = function(axis, $el) {
+			// By default check if y scrollable.
+			axis = axis || "y";
+			var dimension = axis === "y" ? "Height" : "Width";
+			var check;
+
+			// If the element is a "regular" element (i.e. not one of the
+			// following) do not check against the window.
+			if (
+				![
+					document.getElementsByTagName("html")[0],
+					document.documentElement,
+					document.body
+				].includes($el)
+			) {
+				check = $el[`scroll${dimension}`] > $el[`client${dimension}`];
+			} else {
+				// [https://stackoverflow.com/a/2147156]
+				check = $el[`scroll${dimension}`] > window[`inner${dimension}`];
+			}
+
+			return check;
 		};
 
 		/**
@@ -1102,6 +1147,7 @@ app.module(
 		this[name]["parameters"] = parameters;
 		this[name]["scroll_to_bottom"] = scroll_to_bottom;
 		this[name]["percent_scrolled"] = percent_scrolled;
+		this[name]["is_element_scrollable"] = is_element_scrollable;
 		this[name]["max_y_scroll_position"] = max_y_scroll_position;
 		this[name]["touchsupport"] = touchsupport;
 		this[name]["user_agent"] = user_agent;

@@ -543,7 +543,7 @@ app.module(
 		 *
 		 * @resource [https://davidwalsh.name/add-rules-stylesheets]
 		 */
-		var inject_sidebae_tops_css = function() {
+		var inject_sidebar_tops_css = function() {
 			// Remove the needed stylesheets.
 			stylesheet.remove(function($sheet, contents) {
 				// Check if the contents contains the title.
@@ -1466,7 +1466,7 @@ app.module(
 		this[name][
 			"reset_cblock_width_highlight"
 		] = reset_cblock_width_highlight;
-		this[name]["inject_sidebae_tops_css"] = inject_sidebae_tops_css;
+		this[name]["inject_sidebar_tops_css"] = inject_sidebar_tops_css;
 		this[name]["get_height"] = get_height;
 		this[name]["replace_html"] = replace_html;
 		this[name]["inject_filename"] = inject_filename;

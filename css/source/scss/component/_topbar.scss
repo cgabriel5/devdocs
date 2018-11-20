@@ -42,24 +42,36 @@
 	}
 
 	.crumbs {
-		@include flex($flow: null, $align: center, $justify: center);
+		// @include flex($flow: null, $align: center, $justify: center);
+		@include flex($flow: null, $align: center, $justify: null);
+		transition: max-width 0.3s ease-in-out;
+		transition-delay: 0.25s;
 
 		margin-right: -5px;
-		margin-left: -5px;
+		margin-left: 20px;
 		border: 1px solid $-border;
 		border-radius: 100px;
 		padding: 5px 10px;
 
+		max-width: 80%;
+
+		overflow: auto;
+
 		font-size: 12px;
+
+		white-space: nowrap;
+
+		overflow-scrolling: touch;
 
 		.sep {
 			padding: 0 4px;
 		}
 
-		.folder,
-		.file {
-			@include truncate;
-		}
+		// [https://stackoverflow.com/a/17783233]
+		// .folder,
+		// .file {
+		// 	@include truncate;
+		// }
 
 		.folder,
 		.file,

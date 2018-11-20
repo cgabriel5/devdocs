@@ -425,21 +425,21 @@ ul.file-headers {
         margin: 0 15px 0 5px; }
   .topbar .crumbs {
     display: flex;
-    justify-content: center;
     align-items: center;
+    transition: max-width 0.3s ease-in-out;
+    transition-delay: 0.25s;
     margin-right: -5px;
-    margin-left: -5px;
+    margin-left: 20px;
     border: 1px solid #dfe2e5;
     border-radius: 100px;
     padding: 5px 10px;
-    font-size: 12px; }
+    max-width: 80%;
+    overflow: auto;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow-scrolling: touch; }
     .topbar .crumbs .sep {
       padding: 0 4px; }
-    .topbar .crumbs .folder,
-    .topbar .crumbs .file {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap; }
     .topbar .crumbs .folder,
     .topbar .crumbs .file,
     .topbar .crumbs .sep {
@@ -1144,7 +1144,7 @@ ul.file-headers {
   .logo-spacer {
     display: block; }
   .logo {
-    margin-right: 5px; } }
+    margin-right: 10px; } }
 
 @media (min-width: 768px) {
   body {
@@ -1249,6 +1249,22 @@ ul.file-headers {
     font-weight: 600;
     text-overflow: initial;
     white-space: nowrap; } }
+
+@media (max-width: 624px) {
+  .topbar .crumbs {
+    max-width: 75%; } }
+
+@media (max-width: 524px) {
+  .topbar .crumbs {
+    max-width: 70%; } }
+
+@media (max-width: 424px) {
+  .topbar .crumbs {
+    max-width: 65%; } }
+
+@media (max-width: 324px) {
+  .topbar .crumbs {
+    max-width: 60%; } }
 
 .animate-fadein {
   animation-name: animate-fadein;

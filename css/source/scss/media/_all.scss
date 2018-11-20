@@ -98,7 +98,7 @@
 	}
 
 	.logo {
-		margin-right: 5px;
+		margin-right: 10px;
 	}
 }
 
@@ -271,5 +271,35 @@
 		font-weight: 600;
 		text-overflow: initial;
 		white-space: nowrap;
+	}
+}
+
+// Topbar crumbs media queries.
+@media (max-width: 624px) {
+	.topbar {
+		.crumbs {
+			max-width: 75%;
+		}
+	}
+}
+@media (max-width: 524px) {
+	.topbar {
+		.crumbs {
+			max-width: 70%;
+		}
+	}
+}
+@media (max-width: 424px) {
+	.topbar {
+		.crumbs {
+			max-width: 65%;
+		}
+	}
+}
+@media (max-width: 324px) {
+	.topbar {
+		.crumbs {
+			max-width: 60%;
+		}
 	}
 }
