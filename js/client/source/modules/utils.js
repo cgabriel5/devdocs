@@ -525,6 +525,40 @@ app.module(
 		};
 
 		/**
+		 * Check whether the provided element is scrollable along the provided
+		 *     axis.
+		 * @param  {string} axis - The axis to determine scrollability.
+		 * @param  {HTMLElement} $el - The element to check.
+		 * @return {Boolean} - Boolean indicating whether the element is
+		 *     scrollable along the provided axis.
+		 *
+		 * @resource [https://stackoverflow.com/a/2146905]
+		 */
+		var is_element_scrollable = function(axis, $el) {
+			// By default check if y scrollable.
+			axis = axis || "y";
+			var dimension = axis === "y" ? "Height" : "Width";
+			var check;
+
+			// If the element is a "regular" element (i.e. not one of the
+			// following) do not check against the window.
+			if (
+				![
+					document.getElementsByTagName("html")[0],
+					document.documentElement,
+					document.body
+				].includes($el)
+			) {
+				check = $el[`scroll${dimension}`] > $el[`client${dimension}`];
+			} else {
+				// [https://stackoverflow.com/a/2147156]
+				check = $el[`scroll${dimension}`] > window[`inner${dimension}`];
+			}
+
+			return check;
+		};
+
+		/**
 		 * Calculate the maximum amount the page can be scrolled.
 		 *     The calculation is determined by the following:
 		 *     (max_y_scroll_amount - window_inner_height).
@@ -1113,6 +1147,7 @@ app.module(
 		this[name]["parameters"] = parameters;
 		this[name]["scroll_to_bottom"] = scroll_to_bottom;
 		this[name]["percent_scrolled"] = percent_scrolled;
+		this[name]["is_element_scrollable"] = is_element_scrollable;
 		this[name]["max_y_scroll_position"] = max_y_scroll_position;
 		this[name]["touchsupport"] = touchsupport;
 		this[name]["user_agent"] = user_agent;

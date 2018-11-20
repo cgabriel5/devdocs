@@ -34,6 +34,7 @@ app.module(
 		let is_in_view = utils.is_in_view;
 		let timeago = utils.timeago;
 		let classes = utils.classes;
+		let is_element_scrollable = utils.is_element_scrollable;
 
 		let $$ = modules.$$;
 		let $topbar = $$.$topbar;
@@ -47,6 +48,7 @@ app.module(
 		let $version_options = $$.$version_options;
 		let $vlist = $$.$vlist;
 		let $version = $$.$version;
+		let $crumbs = $$.$crumbs;
 
 		let core = modules.core;
 		let show_tb_loader = core.show_tb_loader;
@@ -1792,6 +1794,78 @@ app.module(
 							}
 						});
 					}
+
+					if (GETGLOBAL("crumb_scroll_timer")) {
+						// Clear timer.
+						clearTimeout(GETGLOBAL("crumb_scroll_timer"));
+						// Clear the global.
+						SETGLOBAL("crumb_scroll_timer", null);
+					}
+					// Animate crumbs (if scrollable) to show it's scrollable.
+					SETGLOBAL(
+						"crumb_scroll_timer",
+						setTimeout(function() {
+							// Calculate the remaining scroll area.
+							var scroll_rem =
+								$crumbs.scrollWidth - $crumbs.clientWidth;
+							// Determine the max scroll amount for animation.
+							var cscroll_amount =
+								scroll_rem < 4 ? scroll_rem : 4;
+							var crumb_scroll_duration = 120;
+
+							animate({
+								from: 0,
+								to: cscroll_amount,
+								duration: 125,
+								onSkip: function() {
+									// If element is not scrollable then skip animation.
+									if (!is_element_scrollable("x", $crumbs)) {
+										return true;
+									}
+								},
+								onProgress: function(val, meta) {
+									$crumbs.scrollLeft = val;
+								},
+								onComplete: function() {
+									// Reset the scrolling.
+									animate({
+										easing: function(n) {
+											if (n < 1 / 2.75) {
+												return 7.5625 * n * n;
+											} else if (n < 2 / 2.75) {
+												return (
+													7.5625 *
+														(n -= 1.5 / 2.75) *
+														n +
+													0.75
+												);
+											} else if (n < 2.5 / 2.75) {
+												return (
+													7.5625 *
+														(n -= 2.25 / 2.75) *
+														n +
+													0.9375
+												);
+											} else {
+												return (
+													7.5625 *
+														(n -= 2.625 / 2.75) *
+														n +
+													0.984375
+												);
+											}
+										},
+										from: cscroll_amount,
+										to: 0,
+										duration: 250,
+										onProgress: function(val, meta) {
+											$crumbs.scrollLeft = val;
+										}
+									});
+								}
+							});
+						}, 600)
+					);
 
 					// Show tab indicators.
 					show_tab_indicators();
