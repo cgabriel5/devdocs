@@ -41,10 +41,6 @@ app.module(
 		var FETCHED;
 		var DIRS;
 
-		// Get the menu elements.
-		// [https://davidwalsh.name/nodelist-array]
-		var $l_2 = globals.$l_2;
-
 		let utils = modules.utils;
 		let parameters = utils.parameters;
 		let user_agent = utils.user_agent;
@@ -448,9 +444,13 @@ app.module(
 						"menu-dynamic-cont"
 					).innerHTML = FETCHED.menu.join("");
 
+					// Get the menu elements.
 					// [https://davidwalsh.name/nodelist-array]
-					$l_2 = Array.prototype.slice.call(
-						document.getElementsByClassName("l-2")
+					SETGLOBAL(
+						"$l_2",
+						Array.prototype.slice.call(
+							document.getElementsByClassName("l-2")
+						)
 					);
 
 					// Animate the entire menu.

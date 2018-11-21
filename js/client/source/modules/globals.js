@@ -16,30 +16,6 @@ app.module(
 		// Attach to module to "export" access to other modules.
 		this[name]["REQUEST_PATH"] = REQUEST_PATH;
 
-		// // Store all fetched data.
-		// this[name]["DATA"];
-		// // Get needed data.
-		// this[name]["VERSIONS"];
-		// this[name]["LATEST"];
-		// this[name]["VPROCESSED"];
-		// this[name]["FIRST_FILE"];
-		// this[name]["FILES"];
-		// this[name]["INTERNAL_FILES"];
-		// this[name]["USER_FILES"];
-		// this[name]["CBS_FILES"];
-		// // ------------
-		// this[name]["COMPONENTS"];
-		// this[name]["SCROLLBARS"];
-		// this[name]["LOGO"];
-		// this[name]["FOOTER"];
-		// // ------------
-		// this[name]["SETTINGS"];
-		// this[name]["TITLE"];
-		// this[name]["GITHUB"];
-		// // ------------
-		// this[name]["FETCHED"];
-		// this[name]["DIRS"];
-
 		// Contain all the sidebar submenu heights.
 		this[name]["heights"] = {};
 		// Contain all content headers.
@@ -61,10 +37,6 @@ app.module(
 		// this[name]["$moused_el3"];
 		this[name]["$moused_el2_inserts"] = [];
 		// this[name]["moused_el3_inserts"] = [];
-
-		// Get the menu elements.
-		// [https://davidwalsh.name/nodelist-array]
-		this[name]["$l_2"] = [];
 
 		// Function that sets adds a global flag.
 		this[name]["GETGLOBAL"] = function(flag) {
