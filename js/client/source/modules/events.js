@@ -1147,6 +1147,7 @@ app.module(
 
 							var at_least_one = false;
 
+							// Get the menu elements.
 							let $l_2 = GETGLOBAL("$l_2");
 
 							// Start filtering elements.
@@ -1244,6 +1245,7 @@ app.module(
 
 							// Unhide them all.
 
+							// Get the menu elements.
 							let $l_2 = GETGLOBAL("$l_2");
 
 							// Start filtering elements.
