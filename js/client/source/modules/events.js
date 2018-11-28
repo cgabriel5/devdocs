@@ -28,6 +28,7 @@ app.module(
 		let touchsupport = utils.touchsupport;
 		let is_mobile_viewport = utils.is_mobile_viewport;
 		let is_desktop_webkit = utils.is_desktop_webkit;
+		let is_mobile = utils.is_mobile;
 		let stylesheet = utils.stylesheet;
 		let selection = utils.selection;
 		let regexp_escape = utils.regexp_escape;
@@ -103,6 +104,17 @@ app.module(
 					// example, if going from mobile to desktop view enable
 					// scrollbars.
 					$sheet.disabled = !is_desktop_webkit();
+				}
+
+				// Get the style sheet.
+				var $sheet = stylesheet.get(function($sheet, contents) {
+					// Check if the contents contains the title.
+					return contents.includes("dd/desktop-crumbs");
+				});
+				if ($sheet) {
+					// Disable the sheet based on user agent condition. Only
+					// enable for non mobile devices.
+					$sheet.disabled = is_mobile();
 				}
 
 				// When the window is no longer in a mobile size

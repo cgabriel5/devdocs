@@ -31,6 +31,7 @@ app.module(
 		// ------------
 		var COMPONENTS;
 		var SCROLLBARS;
+		var CRUMBS;
 		var LOGO;
 		var FOOTER;
 		// ------------
@@ -45,6 +46,7 @@ app.module(
 		let parameters = utils.parameters;
 		let user_agent = utils.user_agent;
 		let is_desktop_webkit = utils.is_desktop_webkit;
+		let is_mobile = utils.is_mobile;
 		let stylesheet = utils.stylesheet;
 		let format = utils.format;
 		let classes = utils.classes;
@@ -115,6 +117,7 @@ app.module(
 				// ------------
 				COMPONENTS = SETGLOBAL("COMPONENTS", DATA.components);
 				SCROLLBARS = SETGLOBAL("SCROLLBARS", COMPONENTS.scrollbars);
+				CRUMBS = SETGLOBAL("CRUMBS", COMPONENTS.crumbs);
 				LOGO = SETGLOBAL("LOGO", COMPONENTS.logo);
 				FOOTER = SETGLOBAL("FOOTER", COMPONENTS.footer);
 				// ------------
@@ -254,6 +257,20 @@ app.module(
 					if (!is_desktop_webkit()) {
 						$sheet.disabled = true;
 					}
+
+					// Add crumbs desktop stylesheet only if desktop device.
+					if (user_agent().engine.name !== "WebKit") {
+						return;
+					}
+
+					// Create the stylesheet.
+					var $sheet = stylesheet(
+						CRUMBS.join(""),
+						"dd/desktop-crumbs"
+					);
+
+					// Only enable for non mobile devices.
+					$sheet.disabled = is_mobile();
 				})();
 			})
 			.then(function() {
