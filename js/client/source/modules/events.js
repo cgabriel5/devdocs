@@ -1579,10 +1579,10 @@ app.module(
 
 							// Run the regular code.
 
-							// Prevent further animations if animation ongoing.
-							if (GETGLOBAL("sb_animation")) {
-								return;
-							}
+							// // Prevent further animations if animation ongoing.
+							// if (GETGLOBAL("sb_animation")) {
+							// 	return;
+							// }
 
 							// Get touched coordinates.
 							var touch_info = e.targetTouches[0];
@@ -1598,11 +1598,17 @@ app.module(
 									1 -
 								1;
 
+							// Get topbar element's position.
+							var coors = $topbar.getBoundingClientRect();
+
 							// The menu was interacted with.
 							if (
-								is_target_el($target, "hamburger") ||
-								(x <= range &&
-									y <= range &&
+								is_target_el($target, "hamburger") &&
+								// The menu icon must albo be tapped within the
+								// added tap bounds. This is done to more easily
+								// tap the menu icon on mobile devices.
+								(x <= range - coors.top &&
+									y <= range - coors.top &&
 									$soverlay.style.display !== "block")
 							) {
 								// Cancel any current header scrolling animation.
