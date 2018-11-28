@@ -686,7 +686,9 @@ app.module(
 		};
 
 		/**
-		 * Get the CSS style element based on a function logic.
+		 * Get a CSS stylesheet (style element). Loops over all stylesheets
+		 *     while running them against the provided callback function. When
+		 *     When the callback returns true the stylesheet is returned.
 		 *
 		 * @param  {function} cb - The function logic.
 		 * @return {object} - The style element else undefined.
@@ -702,7 +704,11 @@ app.module(
 				// Cache the sheet.
 				var $sheet = $sheets[i];
 
-				cb.apply($sheet, [$sheet, $sheet.innerHTML, $sheets]);
+				// Run the callback function. If the function returns true,
+				// return the current iteration's stylesheet.
+				if (cb.apply($sheet, [$sheet, $sheet.innerHTML, $sheets])) {
+					return $sheet;
+				}
 			}
 
 			return;
