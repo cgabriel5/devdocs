@@ -76,6 +76,8 @@ config.data = {
 			// Add the MacOS scrollbar styles:
 			macos: $app.module("@templates/scrollbars.js")
 		},
+		// Add crumbs CSS.
+		crumbs: $app.module("@templates/crumbs.js"),
 		footer: null,
 		logo: config.logo
 	}

@@ -28,6 +28,7 @@ app.module(
 		let touchsupport = utils.touchsupport;
 		let is_mobile_viewport = utils.is_mobile_viewport;
 		let is_desktop_webkit = utils.is_desktop_webkit;
+		let is_mobile = utils.is_mobile;
 		let stylesheet = utils.stylesheet;
 		let selection = utils.selection;
 		let regexp_escape = utils.regexp_escape;
@@ -93,15 +94,27 @@ app.module(
 		window.addEventListener(
 			"resize",
 			debounce(function() {
-				// If the flag is not set then disable the sheet.
+				// Get the style sheet.
 				var $sheet = stylesheet.get(function($sheet, contents) {
 					// Check if the contents contains the title.
 					return contents.includes("/*title:dd/mac-scrollbars*/");
 				});
-
 				if ($sheet) {
-					// Disable the sheet based on user agent condition.
+					// Disable the sheet based on user agent condition. For
+					// example, if going from mobile to desktop view enable
+					// scrollbars.
 					$sheet.disabled = !is_desktop_webkit();
+				}
+
+				// Get the style sheet.
+				var $sheet = stylesheet.get(function($sheet, contents) {
+					// Check if the contents contains the title.
+					return contents.includes("dd/desktop-crumbs");
+				});
+				if ($sheet) {
+					// Disable the sheet based on user agent condition. Only
+					// enable for non mobile devices.
+					$sheet.disabled = is_mobile();
 				}
 
 				// When the window is no longer in a mobile size
@@ -1579,10 +1592,10 @@ app.module(
 
 							// Run the regular code.
 
-							// Prevent further animations if animation ongoing.
-							if (GETGLOBAL("sb_animation")) {
-								return;
-							}
+							// // Prevent further animations if animation ongoing.
+							// if (GETGLOBAL("sb_animation")) {
+							// 	return;
+							// }
 
 							// Get touched coordinates.
 							var touch_info = e.targetTouches[0];
@@ -1598,11 +1611,17 @@ app.module(
 									1 -
 								1;
 
+							// Get topbar element's position.
+							var coors = $topbar.getBoundingClientRect();
+
 							// The menu was interacted with.
 							if (
-								is_target_el($target, "hamburger") ||
-								(x <= range &&
-									y <= range &&
+								is_target_el($target, "hamburger") &&
+								// The menu icon must albo be tapped within the
+								// added tap bounds. This is done to more easily
+								// tap the menu icon on mobile devices.
+								(x <= range - coors.top &&
+									y <= range - coors.top &&
 									$soverlay.style.display !== "block")
 							) {
 								// Cancel any current header scrolling animation.
