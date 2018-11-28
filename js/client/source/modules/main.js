@@ -238,9 +238,8 @@ app.module(
 				FIRST_FILE = SETGLOBAL("FIRST_FILE", DIRS[0].first_file);
 			})
 			.then(function() {
-				// Add needed stylesheets.
+				// Add MacOS scrollbars stylesheet.
 				(function() {
-					// Add MacOS scrollbars stylesheet.
 					// Only if engine is webkit.
 					if (user_agent().engine.name !== "WebKit") {
 						return;
@@ -257,12 +256,10 @@ app.module(
 					if (!is_desktop_webkit()) {
 						$sheet.disabled = true;
 					}
+				})();
 
-					// Add crumbs desktop stylesheet only if desktop device.
-					if (user_agent().engine.name !== "WebKit") {
-						return;
-					}
-
+				// Add crumbs desktop stylesheet only if desktop device.
+				(function() {
 					// Create the stylesheet.
 					var $sheet = stylesheet(
 						CRUMBS.join(""),
