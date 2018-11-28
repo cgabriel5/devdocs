@@ -235,8 +235,9 @@ app.module(
 				FIRST_FILE = SETGLOBAL("FIRST_FILE", DIRS[0].first_file);
 			})
 			.then(function() {
-				// Add MacOS scrollbars style sheet.
+				// Add needed stylesheets.
 				(function() {
+					// Add MacOS scrollbars stylesheet.
 					// Only if engine is webkit.
 					if (user_agent().engine.name !== "WebKit") {
 						return;

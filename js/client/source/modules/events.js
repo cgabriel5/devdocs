@@ -93,14 +93,15 @@ app.module(
 		window.addEventListener(
 			"resize",
 			debounce(function() {
-				// If the flag is not set then disable the sheet.
+				// Get the style sheet.
 				var $sheet = stylesheet.get(function($sheet, contents) {
 					// Check if the contents contains the title.
 					return contents.includes("/*title:dd/mac-scrollbars*/");
 				});
-
 				if ($sheet) {
-					// Disable the sheet based on user agent condition.
+					// Disable the sheet based on user agent condition. For
+					// example, if going from mobile to desktop view enable
+					// scrollbars.
 					$sheet.disabled = !is_desktop_webkit();
 				}
 
